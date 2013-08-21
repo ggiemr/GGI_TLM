@@ -1,0 +1,3 @@
+cp coax_monopole.cable_current.tout PROBLEM_SPECIFICATION_FILES/coax_monopole.cable_current.tout_ref
+cp coax_monopole.field.tout PROBLEM_SPECIFICATION_FILES/coax_monopole.field.tout_ref
+

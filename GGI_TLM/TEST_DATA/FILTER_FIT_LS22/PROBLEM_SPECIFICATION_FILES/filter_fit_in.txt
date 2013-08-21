@@ -1,0 +1,7 @@
+MATERIAL_NAME
+FIT_TYPE
+1.0  	! frequency scaling to Hz
+2	! model order to calculate
+y	! stabilise_input_data
+y	! stabilise_filter
+y	! optimise_filter

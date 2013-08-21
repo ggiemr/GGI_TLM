@@ -1,0 +1,67 @@
+# Box with slot for shielding effectiveness calculation
+
+Mesh_outer_boundary_dimension
+-1.60 1.60 -1.60 1.60 -1.60 1.60
+
+# Specify the mesh dimensions
+Mesh_cell_dimension
+0.10 
+
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+Surface_list
+2   Number of surfaces 
+1       SURFACE_NUMBER 
+rectangular_block 
+2.0 2.0 2.0      surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       SURFACE_NUMBER 
+rectangle 
+0.8 0.2       surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 1.0
+
+Point_list 
+1   Number of points (integer)
+1       POINT_NUMBER (integer)
+0.0 0.0 0.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Surface_material_list
+2   Number of surface materials 
+1       SURFACE MATERIAL NUMBER 
+PEC
+1       number of surfaces
+1  	  surface list
+1  	  surface orientation list
+2       SURFACE MATERIAL NUMBER 
+FREE_SPACE
+1       number of surfaces
+2  	  surface list
+1  	  surface orientation list
+
+Excitation_function_list
+1            	! number of excitation functions
+1		! EXCITATION NUMBER
+gaussian
+1.0 1e-9 5e-9
+
+Huygens_surface
+0 surface number
+1 side of surface for excitation
+1 excitation function number
+180.0 90.0 wave vector
+1.0 0.0 polarisation
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+1		! output point
+Ey
+centre
+
+Simulation_time
+5e-6

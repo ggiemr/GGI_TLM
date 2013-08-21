@@ -1,0 +1,59 @@
+          16  POST PROCESSING OPTION: FOURIER TRANSFORM WITH FREQUENCY WARPING
+york_box.excitation.tout
+           1
+lin
+   0.01000000E+10 fmin
+   0.6000000E+10 fmax
+            1000 n_frequencies
+n
+y
+   1 Frequency scaling factor
+york_box.excitation.fout_1
+          16  POST PROCESSING OPTION: FOURIER TRANSFORM WITH FREQUENCY WARPING
+york_box.cable_current.tout
+           1
+lin
+   0.01000000E+10 fmin
+   0.6000000E+10 fmax
+            1000 n_frequencies
+n
+y
+   1 Frequency scaling factor
+york_box.cable_current.fout_1
+           6  Post processing option: Combine Frequency Domain Data
+york_box.cable_current.fout_1
+           1
+york_box.excitation.fout_1
+           1
+   50.000000000000000       constant, A
+  0.50000000000000000       constant, B
+   0.0000000000000000       constant, C
+york_box_S21.fout_1
+          16  POST PROCESSING OPTION: FOURIER TRANSFORM WITH FREQUENCY WARPING
+york_box.excitation.tout
+           1
+lin
+   0.01000000E+10 fmin
+   0.6000000E+10 fmax
+            1000 n_frequencies
+y
+york_box.excitation.fout
+          16  POST PROCESSING OPTION: FOURIER TRANSFORM WITH FREQUENCY WARPING
+york_box.cable_current.tout
+           1
+lin
+   0.01000000E+10 fmin
+   0.6000000E+10 fmax
+            1000 n_frequencies
+y
+york_box.cable_current.fout
+           6  Post processing option: Combine Frequency Domain Data
+york_box.cable_current.fout
+           1
+york_box.excitation.fout
+           1
+   50.000000000000000       constant, A
+  0.50000000000000000       constant, B
+   0.0000000000000000       constant, C
+york_box_S21.fout
+           0  Post processing option: Quit

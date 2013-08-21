@@ -1,0 +1,16 @@
+ # muscle
+   10000000.      2.00000000E+10  # frequency range of validity
+ # permittivity filter
+   1000000000000.0000       w normalisation constant
+           4    # a order, a coefficients follow below: 
+   9343.6110900000003        9894021.3953860383        1606242320.3482242        18455043517.084667        13989272798.738398     
+           4    # b order, b coefficients follow below: 
+   1.0000000000000000        124265.35743000000        30186166.702115372        557064943.10570097        2209629176.6355338     
+   0.0000000000000000          # electric conductivity
+ # permeability filter
+    1.0000000000000000        # w normalisation constant
+            0   # a order, a coefficients follow below:
+    1.0000000000000000     
+            0   # b order, b coefficients follow below:
+    1.0000000000000000     
+    0.0000000000000000       # magnetic conductivity

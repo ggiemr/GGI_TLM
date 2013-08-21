@@ -1,0 +1,3 @@
+cp waveguide_straight.field.tout PROBLEM_SPECIFICATION_FILES/waveguide_straight.field.tout_ref
+cp waveguide_straight.fout PROBLEM_SPECIFICATION_FILES/waveguide_straight.fout_ref
+cp waveguide_straight.mode.tout PROBLEM_SPECIFICATION_FILES/waveguide_straight.mode.tout_ref

@@ -1,0 +1,26 @@
+# Sheet resistance 377 ohms/square
+0.0 1e8  # frequency range of validity
+# Z11 filter
+1.0e8 # wnormalisation constant
+0   # a order
+377.0 # a coefficients
+0   # b order
+1.0 # b coefficients
+# Z12 filter
+1.0e8 # wnormalisation constant
+0   # a order
+377.0 # a coefficients
+0   # b order
+1.0 # b coefficients
+# Z21 filter
+1.0e8 # wnormalisation constant
+0   # a order
+377.0 # a coefficients
+0   # b order
+1.0 # b coefficients
+# Z22 filter
+1.0e8 # wnormalisation constant
+0   # a order
+377.0 # a coefficients
+0   # b order
+1.0 # b coefficients

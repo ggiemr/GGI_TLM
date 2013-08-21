@@ -1,0 +1,5 @@
+cp voltage_1_norm.fout PROBLEM_SPECIFICATION_FILES/voltage_1_norm.fout_ref
+cp voltage_2_norm.fout PROBLEM_SPECIFICATION_FILES/voltage_2_norm.fout_ref
+cp voltage_3_norm.fout PROBLEM_SPECIFICATION_FILES/voltage_3_norm.fout_ref
+cp voltage_4_norm.fout PROBLEM_SPECIFICATION_FILES/voltage_4_norm.fout_ref
+

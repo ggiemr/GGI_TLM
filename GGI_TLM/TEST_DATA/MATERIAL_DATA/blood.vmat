@@ -1,0 +1,16 @@
+ # blood
+   10000000.      2.00000000E+10  # frequency range of validity
+ # permittivity filter
+   1000000000000.0000       w normalisation constant
+           4    # a order, a coefficients follow below: 
+   16359.790450000000        12875299.192196969        1897037955.7779787        21608626265.938667        16489716937.238459     
+           4    # b order, b coefficients follow below: 
+   1.0000000000000000        123650.29097000000        31629756.555244513        615584873.00524962        2614282397.6406779     
+   0.0000000000000000          # electric conductivity
+ # permeability filter
+    1.0000000000000000        # w normalisation constant
+            0   # a order, a coefficients follow below:
+    1.0000000000000000     
+            0   # b order, b coefficients follow below:
+    1.0000000000000000     
+    0.0000000000000000       # magnetic conductivity

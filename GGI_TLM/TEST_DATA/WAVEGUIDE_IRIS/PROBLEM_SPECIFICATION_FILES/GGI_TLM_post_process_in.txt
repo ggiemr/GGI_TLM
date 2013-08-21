@@ -1,0 +1,95 @@
+           3  Post processing option: Fourier Transform
+waveguide_iris.mode.tout
+           1
+lin
+   0.8000000E+10 fmin
+   0.1200000E+11 fmax
+             800 n_frequencies
+Ex1.fout
+           3  Post processing option: Fourier Transform
+waveguide_iris.mode.tout
+           2
+lin
+   0.8000000E+10 fmin
+   0.1200000E+11 fmax
+             800 n_frequencies
+Hy1.fout
+           3  Post processing option: Fourier Transform
+waveguide_iris.mode.tout
+           3
+lin
+   0.8000000E+10 fmin
+   0.1200000E+11 fmax
+             800 n_frequencies
+Ex2.fout
+           3  Post processing option: Fourier Transform
+waveguide_iris.mode.tout
+           4
+lin
+   0.8000000E+10 fmin
+   0.1200000E+11 fmax
+             800 n_frequencies
+Hy2.fout
+           3  Post processing option: Fourier Transform
+waveguide_iris.mode.tout
+           5
+lin
+   0.8000000E+10 fmin
+   0.1200000E+11 fmax
+             800 n_frequencies
+Ex3.fout
+           3  Post processing option: Fourier Transform
+waveguide_iris.mode.tout
+           6
+lin
+   0.8000000E+10 fmin
+   0.1200000E+11 fmax
+             800 n_frequencies
+Hy3.fout
+           3  Post processing option: Fourier Transform
+waveguide_iris.mode.tout
+           7
+lin
+   0.8000000E+10 fmin
+   0.1200000E+11 fmax
+             800 n_frequencies
+Ex4.fout
+           3  Post processing option: Fourier Transform
+waveguide_iris.mode.tout
+           8
+lin
+   0.8000000E+10 fmin
+   0.1200000E+11 fmax
+             800 n_frequencies
+Hy4.fout
+           10  Post processing option: Twoport analysis
+Ex1.fout
+           1
+Ex2.fout
+           1
+Hy1.fout
+           1
+Hy2.fout
+           1
+Ex4.fout
+           1
+Ex3.fout
+           1
+Hy4.fout
+           1
+Hy3.fout
+           1
+  0.002  port separation (m)
+  0.010  port midpoint to interface distamce (m)
+  0.002  port separation (m)
+  0.010  port midpoint to interface distamce (m)
+1    ! excitation port number
+waveguide_iris.fout
+          17  POST PROCESSING OPTION: CREATE VECTOR FREQUENCY DOMAIN ANIMATION
+waveguide_iris.frequency_output_surface.fout
+           0  Output surface component number           1
+           1  Output surface component number           2
+           2  Output surface component number           3
+n
+waveguide_iris_field
+           0  Post processing option: Quit

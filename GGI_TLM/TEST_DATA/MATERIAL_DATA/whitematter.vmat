@@ -1,0 +1,16 @@
+ # whitematter
+   10000000.      2.00000000E+10  # frequency range of validity
+ # permittivity filter
+   1000000000000.0000       w normalisation constant
+           4    # a order, a coefficients follow below: 
+   823.11119999999994        1561133.5696503879        292584225.30159461        3700390217.1291237        3827477023.2721281     
+           4    # b order, b coefficients follow below: 
+   1.0000000000000000        26877.929389999998        8006519.1440105923        161910011.29031277        695133946.58145118     
+   0.0000000000000000          # electric conductivity
+ # permeability filter
+    1.0000000000000000        # w normalisation constant
+            0   # a order, a coefficients follow below:
+    1.0000000000000000     
+            0   # b order, b coefficients follow below:
+    1.0000000000000000     
+    0.0000000000000000       # magnetic conductivity

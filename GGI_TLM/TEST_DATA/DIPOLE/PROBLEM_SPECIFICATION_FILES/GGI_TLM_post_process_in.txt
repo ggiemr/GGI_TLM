@@ -1,0 +1,33 @@
+           3  Post processing option: Fourier Transform
+dipole.excitation.tout
+           1
+lin
+   0.1000000E+05 fmin
+   0.6000000E+08 fmax
+             600 n_frequencies
+dipole.excitation.fout
+           3  Post processing option: Fourier Transform
+dipole.cable_current.tout
+           1
+lin
+   0.1000000E+05 fmin
+   0.6000000E+08 fmax
+             600 n_frequencies
+dipole.cable_current.fout
+           6  Post processing option: Combine Frequency Domain Data
+dipole.excitation.fout
+           1
+dipole.cable_current.fout
+           1
+   2.0000000000000000       constant, A
+   1.0000000000000000       constant, B
+  -50.000000000000000       constant, C
+dipole.impedance.fout
+          17  POST PROCESSING OPTION: CREATE VECTOR FREQUENCY DOMAIN ANIMATION
+dipole.frequency_output_surface.fout
+           1  Output surface component number           1
+           0  Output surface component number           2
+           2  Output surface component number           3
+y
+E_field_13MHz
+           0  Post processing option: Quit

@@ -1,0 +1,14 @@
+FD_ribbon_cable
+3		# number of conductors
+4		# NUMBER OF PARAMETERS
+1.905e-4  	# parameter 1: conductor radius
+2.56e-4 	# parameter 2: insulation radius
+3.5  		# parameter 3: permittivity of dielectric
+1.27e-3  	# parameter 4: conductor separation
+1		# NUMBER OF FILTERS
+# Filter 1: Wire impedance filter
+1.0e8 		# w normalisation constant
+0   		# a order
+0.1944e0 	# a coefficients
+0   		# b order
+1.0 		# b coefficients

@@ -1,0 +1,112 @@
+Automatic running of GGI_TLM test cases.
+
+*Before the test cases can be run it may be necessary to edit the file:
+
+GGI_TLM/run_configuration_data
+ 
+to ensure that the correct run command is set for running mpi jobs. The line that needs to be changed is:
+
+MPI_RUN_COMMAND="mpirun.mpich2 -np "
+ 
+It may be necessary to define a command for running sequenctial processes. Often this will not be required
+but on at least one system, with the fortran compiler set to mpif90 a sequenctial run command has had to 
+be set ( set to " mpirun " in this case). The line that needs to be changed is:
+
+SEQ_RUN_COMMAND=" "
+
+The only other issue which may be encountered is with file permissions. The file run_automatic_test should be executable, as should all the run_automatic_test files in the sub-directories, plus the PROBLEM_SPECIFICATION_FILES/create_reference_result files in the sub-directories. 
+If the is a problem then the files can be flagged as executable with the command:
+
+source set_permissions
+
+(which executes the following:
+chmod +x run_automatic_test
+chmod +x */run_automatic_test
+chmod +x */PROBLEM_SPECIFICATION_FILES/create_reference_result)
+
+Nothing else should need to be changed. 
+
+Each test case has its own directory DIRECTORY_NAME. 
+
+One or all of the test cases may be run using the following command:
+ 
+run_automatic_test action
+ 
+where action is the process to run:
+
+action=run_seq NAME       : run GGI_TLM_SEQ on the test case NAME only then post process results
+action=run_mpi np NAME    : run GGI_TLM_MPI on the test case NAME only using np processors then post process results
+action=post_process NAME  : post process results
+action=clean NAME         : remove all existing results
+action=plot NAME          : plot the results to screen
+action=plot_jpg NAME      : plot the results to jpeg file(s)
+action=plot_ref NAME      : plot the results against reference results to screen
+action=plot_ref_jpg NAME  : plot the results against reference results to jpeg file(s)
+action=reference  NAME    : update the GGI_TLM reference results with the current set of results
+
+NAME can be:
+1. one of the existing test cases (directory name) 
+2. FULL_TEST_CASE_LIST to run the whole set
+3. QUICK_TEST_CASE_LIST to run a subset of the test cases
+(or leave blank which also runs the whole set)
+ 
+example 1. To run the DIPOLE test case sequentially
+run_automatic_test run_seq DIPOLE
+ 
+example 2. To plot the results of the DIPOLE test case to screen
+run_automatic_test plot DIPOLE
+ 
+example 3. To plot the results of the DIPOLE test case alongside reference results to jpg files
+run_automatic_test plot_ref_jpg DIPOLE
+ 
+example 4. To clean the DIPOLE test case i.e. remove all the existing run and result files
+run_automatic_test clean DIPOLE
+ 
+example 5. To create reference results from the current runresults for the DIPOLE test case 
+run_automatic_test clean DIPOLE
+ 
+example 6. To clean all the test cases
+run_automatic_test clean
+ 
+example 7. To run all the test cases on 4 processors
+run_automatic_test run_mpi 4
+
+alternatively each individual test case can be run from inside its own directory using the same command.
+
+
+The test case directory should contain a shell script file:
+
+run_automatic_test		: This file controlls the running, processing and viewing of the test case
+                                : the test case directory name should be specified in this file 
+
+All the files required to run, process and view the test case are in the directory:
+
+PROBLEM_SPECIFICATION_FILES.
+
+The required files are:
+
+problem_name.inp		: a GGI_TLM input file
+				: Note material and cable files can be kept in TEST_DATA/MATERIAL_DATA and
+				: TEST_DATA/CABLE_DATA directories or other repositories of material and 
+				: cable specifications. If this is the case then set the path to these directories in 
+				: TEST_DATA/run_automatic_test_include. Otherwise please be aware when specifying
+				: paths in the input file that the .inp file is copied into the test case directory 
+				: in order to run.
+
+GGI_TLM_post_process_in.txt 	: a file which controls the post processing of the result
+
+plot_result.plt 		: a gnuplot input file which plots the result of the simulation
+
+plot_result_with_reference.plt 	: a gnuplot input file which plots the result of the simulation along 
+				: with one or more reference results, including the GGI_TLM reference result
+				: created by ''create_reference_result'
+
+create_reference_result 	: an executable file which creates a reference result from the current result
+
+Reference results, both independent reference results from analytic solutions, other CEM codes etc and also
+GGI_TLM reference results are kept in the PROBLEM_SPECIFICATION_FILES directory.
+
+Cable and material files for running the test cases are in the directories:
+
+CABLE_DATA 		Directory with cable geometry data
+MATERIAL_DATA		Directory with material data

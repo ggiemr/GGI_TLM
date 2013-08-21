@@ -1,0 +1,114 @@
+
+MPI_SOLVER_NAME="GGI_TLM_MPI"
+
+SEQ_SOLVER_NAME="GGI_TLM_SEQ"
+ 
+if [ "$#" = "0" ] ; then
+
+  echo "
+ERROR: No run name specified - use run_GGI_TLM as follows:
+  
+Sequential run:
+
+run_GGI_TLM run_seq problem_name
+
+mpi run, np processes:
+
+run_GGI_TLM run_mpi np problem_name
+
+where problem_name is the name of the input file without the .inp extension and np is an integer number of processes
+
+"
+  
+else
+
+# set defaults...
+  ACTION=$1
+  NAME=$2
+  NP="1"
+
+  if [ "$ACTION" = "run_mpi" ] ; then
+# slightly different order of arguments, must include the number of processors to run on
+# check that we have an integer number of processors requested  
+    echo $2 | grep "[^0-9]" > /dev/null 2>&1
+
+    if [ "$?" = "0" ] ; then
+
+      # If the grep found something other than 0-9
+      # then it's not an integer.
+      echo "Sorry, wanted a number of processors to run on..."
+      echo " "
+      echo "For example to run the problem on 4 processors use:"
+      echo "run_GGI_TLM run_mpi 4 NAME"
+      echo " "
+
+      exit
+  
+    else
+    # The grep found only 0-9, so it's an integer. 
+    
+      NP=$2
+      NAME=$3
+      RUN_COMMAND="$MPI_RUN_COMMAND $NP $MPI_SOLVER_NAME"
+      SOLVER_NAME=$MPI_SOLVER_NAME
+      
+    fi
+        
+    if [ "$NP" = "1" ] ; then
+      echo "Running using ${NP} processor"
+    else
+      echo "Running using ${NP} processors"    
+    fi
+    
+  elif [ "$ACTION" = "run_seq" ] ; then
+    
+    RUN_COMMAND="$SEQ_RUN_COMMAND $SEQ_SOLVER_NAME"
+    SOLVER_NAME=$SEQ_SOLVER_NAME
+
+  fi
+
+  echo "Running GGI_TLM"
+  echo "Problem name: ${RUN_NAME}"
+  
+  PROGRESS_FILENAME='progress'
+  
+  echo "$NAME" > run_name.txt
+       
+  $SEQ_RUN_COMMAND GGI_TLM_model_builder < run_name.txt
+  read LINE < $PROGRESS_FILENAME
+  if [ "$LINE" = "FINISHED: GGI_TLM_model_builder" ] ; then
+    echo "STATUS: $LINE"
+  else
+    echo "Failed: $TEST_CASE: GGI_TLM_model_builder"
+    exit 1
+  fi
+#  
+  $SEQ_RUN_COMMAND GGI_TLM_cable_model_builder < run_name.txt
+  read LINE < $PROGRESS_FILENAME
+  if [ "$LINE" = "FINISHED: GGI_TLM_cable_model_builder" ] ; then
+    echo "STATUS: $LINE"
+  else
+    echo "Failed: $TEST_CASE: GGI_TLM_cable_model_builder"
+    exit 1
+  fi
+#  
+  $SEQ_RUN_COMMAND GGI_TLM_model_checks < run_name.txt
+  read LINE < $PROGRESS_FILENAME
+  if [ "$LINE" = "FINISHED: GGI_TLM_model_checks" ] ; then
+    echo "STATUS: $LINE"
+  else
+    echo "Failed: $TEST_CASE: GGI_TLM_model_checks"
+    exit 1
+  fi
+#  
+  echo "RUNNING: $RUN_COMMAND"
+  $RUN_COMMAND < run_name.txt
+  read LINE < $PROGRESS_FILENAME
+  if [ "$LINE" = "FINISHED: GGI_TLM" ] ; then
+    echo "STATUS: $LINE"
+  else
+    echo "Failed: $TEST_CASE: $SOLVER_NAME"
+    exit 1
+  fi
+
+fi

@@ -1,0 +1,69 @@
+           3  Post processing option: Fourier Transform
+filter.excitation.tout
+           1
+lin
+   3.50E+09 fmin
+   6.50E+9 fmax
+            1000 n_frequencies
+filter.excitation.fout
+           3  Post processing option: Fourier Transform
+filter.cable_current.tout
+           1
+lin
+   3.50E+09 fmin
+   6.50E+9 fmax
+            1000 n_frequencies
+filter.cable_current_1.fout
+           3  Post processing option: Fourier Transform
+filter.cable_current.tout
+           2
+lin
+   3.50E+09 fmin
+   6.50E+9 fmax
+            1000 n_frequencies
+filter.cable_current_2.fout
+           6  Post processing option: Combine Frequency Domain Data
+filter.cable_current_1.fout
+           1
+filter.excitation.fout
+           1
+   -50.000000000000000      constant, A
+  0.50000000000000000       constant, B
+   1.0000000000000000       constant, C
+filter_S11.fout
+           6  Post processing option: Combine Frequency Domain Data
+filter.cable_current_2.fout
+           1
+filter.excitation.fout
+           1
+   50.000000000000000       constant, A
+  0.50000000000000000       constant, B
+   0.0000000000000000       constant, C
+filter_S21.fout
+           0  Post processing option: Quit
+	   
+	   
+# Can remove the Quit option and continue to create the animation files.	   
+          17  POST PROCESSING OPTION: CREATE VECTOR FREQUENCY DOMAIN ANIMATION
+filter.frequency_output_surface.fout
+           1  Output surface component number           1
+           2  Output surface component number           2
+           0  Output surface component number           3
+y
+mode1
+          17  POST PROCESSING OPTION: CREATE VECTOR FREQUENCY DOMAIN ANIMATION
+filter.frequency_output_surface.fout
+           3  Output surface component number           1
+           4  Output surface component number           2
+           0  Output surface component number           3
+y
+mode2
+          18  POST PROCESSING OPTION: CREATE VECTOR VOLUME FREQUENCY DOMAIN ANIMATION
+filter.frequency_output_volume.fout
+           1  Output surface component number           1
+           2  Output surface component number           2
+           3  Output surface component number           3
+y
+Vmode_1
+0
+

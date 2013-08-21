@@ -1,0 +1,106 @@
+
+Mesh_outer_boundary_dimension
+-24.0 24.0    -28.0 28.0    -12.0 12.0
+
+Mesh_cell_dimension
+0.25
+
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+Surface_list
+4   Number of surfaces (integer)
+1       SURFACE_NUMBER 
+triangulated_surface
+Boeing_767.msh
+0.002	1	     surface parameters (scale, reverse normal direction)
+10.0 12.0 0.0
+0.0 2.0 8.0
+2       SURFACE_NUMBER 
+xplane
+0.0 -28.0 -12.0   0.0 28.0 12.0	     surface parameters 
+0.0 0.0 0.0
+0.0 0.0 0.0
+3       SURFACE_NUMBER 
+zplane
+-24.0 -28.0 0.0   24.0 28.0 0.0	     surface parameters 
+0.0 0.0 0.0
+0.0 0.0 0.0
+4       SURFACE_NUMBER 
+yplane
+-24.0 20.0 -12.0   24.0 20.0 12.0	     surface parameters 
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Point_list
+1   Number of points (integer)
+1       point_number (integer)
+-20.0 -25.0 -10.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Surface_material_list
+1   Number of surface materials (integer)
+1   SURFACE MATERIAL NUMBER
+PEC
+1       number of surfaces
+1       surface list
+1       surface orientation list
+
+Excitation_function_list
+1              ! number of excitations
+1              ! EXCITATION NUMBER
+gaussian
+1.0 1e-8 3e-8
+
+Huygens_surface
+0     surface number
+1     side of surface for excitation
+1     excitation function number
+110.0 270.0  wave vector Theta and Phi 
+1.0 0.0  Polarisation theta and Phi
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+1		! output point
+Ez
+centre
+
+Output_surface_list
+4    		! number of output surfaces
+1		! OUTPUT SURFACE NUMBER
+1                 surface number
+-1		! side of surface for output (+1 or -1)
+Jmagnitude
+output_timestep_information
+0	! first output timestep
+600	! last output timestep
+20	! output timestep interval
+2		! OUTPUT SURFACE NUMBER
+2                 surface number
+1		! side of surface for output (+1 or -1)
+Emagnitude
+output_timestep_information
+0	! first output timestep
+600	! last output timestep
+20	! output timestep interval
+3		! OUTPUT SURFACE NUMBER
+3                 surface number
+1		! side of surface for output (+1 or -1)
+Emagnitude
+output_timestep_information
+0	! first output timestep
+600	! last output timestep
+20	! output timestep interval
+4		! OUTPUT SURFACE NUMBER
+4                 surface number
+1		! side of surface for output (+1 or -1)
+Emagnitude
+output_timestep_information
+0	! first output timestep
+600	! last output timestep
+20	! output timestep interval
+
+Simulation_time
+0.5e-6

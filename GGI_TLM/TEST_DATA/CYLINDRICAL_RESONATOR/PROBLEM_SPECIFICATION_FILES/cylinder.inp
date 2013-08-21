@@ -1,0 +1,85 @@
+
+Mesh_outer_boundary_dimension
+-0.05 0.05  -1.1 1.1   -1.1 1.1
+
+Mesh_cell_dimension
+0.10  ( 3*integer)
+
+Outer_boundary_reflection_coefficient
+-1.0 -1.0    0.0 0.0    0.0 0.0    
+
+Surface_list
+1   Number of surfaces 
+1       SURFACE_NUMBER 
+cylinder
+1.0   0.20   # Resonator
+0.0 90.0 0.0
+0.0 0.0 0.0
+
+Volume_list
+1   Number of volumes 
+1       VOLUME_NUMBER 
+cylinder
+1.0   0.10   # Resonator
+0.0 90.0 0.0
+0.0 0.0 0.0
+
+Surface_material_list
+1   Number of surface materials 
+1       SURFACE MATERIAL NUMBER 
+PEC
+1       number of surfaces
+1        surface list
+1        surface orientation list
+
+Point_list 
+2   Number of points (integer)
+1       POINT_NUMBER (integer)
+0.0 -0.25 -0.45  excitation point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       POINT_NUMBER (integer)
+0.0 0.15 -0.75   output point coordinates
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Excitation_function_list
+1            	! number of excitation functions
+1		! EXCITATION NUMBER
+impulse
+1.0 0.0
+
+Excitation_point_list
+1	       ! number of output points
+1	       ! EXCITATION POINT NUMBER
+1	       ! excitation function number
+1	       ! excitation point
+Ex
+centre
+soft
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+2		! output point
+Ex
+centre
+
+Frequency_output_volume_list
+3    		! number of Frequency output volumes
+1		! FREQUENCY OUTPUT VOLUME NUMBER
+1     volume number
+2.464E+08 frequency for output   1.148E+08 1.829E+08
+Ex
+2		! FREQUENCY OUTPUT VOLUME NUMBER
+1     volume number
+2.464E+08 frequency for output
+Hy
+3		! FREQUENCY OUTPUT VOLUME NUMBER
+1     volume number
+2.464E+08 frequency for output
+Hz
+
+Simulation_time
+5e-6
+

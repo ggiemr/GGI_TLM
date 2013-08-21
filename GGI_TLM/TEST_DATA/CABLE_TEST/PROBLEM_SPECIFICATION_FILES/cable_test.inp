@@ -1,0 +1,232 @@
+# Define the problem space 
+Mesh_outer_boundary_dimension
+-2.5 2.5 -2.5 2.5 -2.5 2.5
+
+# Specify the mesh cell dimension
+Mesh_cell_dimension
+1.0   ( 3*integer)
+
+#specify the outer boundary conditions (6*real)
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+# Define the geometrical entities, 3D volumes, 2D surfaces, 1D lines. Note the ability to import
+#geometry from a file means that this is a fairly general format for geometry specification
+
+#line list designed to test the setup of cable models
+Line_list 
+4   Number of lines (integer)
+1   LINE_NUMBER (integer)
+straight_line2
+-2 0 0   2 0 0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2   LINE_NUMBER (integer)
+straight_line2
+0 -2 0    0 2 0     line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+3   LINE_NUMBER (integer)
+straight_line2
+-1 0 0    2 0 0     line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+4   LINE_NUMBER (integer)
+straight_line2
+-1 0 0    -2 0 0     line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Point_list 
+6   Number of points (integer)
+1       POINT_NUMBER (integer)
+-2 0 0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       POINT_NUMBER (integer)
+2 0 0   point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+3       POINT_NUMBER (integer)
+0 -2 0     point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+4       POINT_NUMBER (integer)
+0 2 0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+5       POINT_NUMBER (integer)
+-1 0 0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+6       POINT_NUMBER (integer)
+-1 0 -1    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+
+Cable_geometry_list
+1  number of cable geometries
+1  cable geometry number, Cable geometry type (file name) follows:
+/CABLE_DIRECTORY/1mm_single_wire                                       
+
+Cable_list
+5  number of cables
+1  	CABLE NUMBER
+1 	cable geometry number
+1 	number of lines on cable route
+1 	cable line list
+1  	end 1 junction number
+2  	end 2 junction number
+2  	CABLE NUMBER
+1 	cable geometry number
+1 	number of lines on cable route
+3 	cable line list
+3  	end 1 junction number
+2  	end 2 junction number
+3  	CABLE NUMBER
+1 	cable geometry number
+1 	number of lines on cable route
+4 	cable line list
+3  	end 1 junction number
+1  	end 2 junction number
+4  	CABLE NUMBER
+1 	cable geometry number
+1 	number of lines on cable route
+1 	cable line list
+4  	end 1 junction number
+5  	end 2 junction number
+5  	CABLE NUMBER
+1 	cable geometry number
+1 	number of lines on cable route
+2 	cable line list
+6  	end 1 junction number
+7  	end 2 junction number
+
+
+Cable_output_list
+1  number of cable_outputs
+1  CABLE OUTPUT NUMBER
+1  cable number
+1  closest point number
+
+
+Cable_junction_list
+7    number of junctions
+1    JUNCTION NUMBER
+1    junction point 
+1    number of internal connection nodes (n_int)
+2    number of cables
+1 3    cable list
+1 2    corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1   	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0   	Cable 1 voltage function source list
+0.0 	Cable 1 impedance list
+1   	Cable 3 number of external conductors (n_ext)
+1   	Cable 3 P matrix: matrix (n_int rows* n_ext columns)
+0   	Cable 3 voltage function source list
+0.0 	Cable 3 impedance list
+0	Number of internal impedances
+2   JUNCTION NUMBER
+2    junction point  
+1   number of internal connection nodes (n_int)
+2   number of cables
+1 2   cable list
+2 2  corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1   	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0   	Cable 1 voltage function source list
+0.0 	Cable 1 impedance list
+1   	Cable 2 number of external conductors (n_ext)
+1   	Cable 2 P matrix: matrix (n_int rows* n_ext columns)
+0   	Cable 2 voltage function source list
+0.0 	Cable 2 impedance list
+0	Number of internal impedances
+3   JUNCTION NUMBER
+5    junction point  
+1   number of internal connection nodes (n_int)
+2   number of cables
+2 3  cable list
+1 1  corresponding cable end number list
+1   	Cable 2 number of external conductors (n_ext)
+1   	Cable 2 P matrix: matrix (n_int rows* n_ext columns)
+0   	Cable 2 voltage function source list
+0.0 	Cable 2 impedance list
+1   	Cable 3 number of external conductors (n_ext)
+1   	Cable 3 P matrix: matrix (n_int rows* n_ext columns)
+1   	Cable 3 voltage function source list
+100.0 	Cable 3 impedance list
+0	Number of internal impedances
+4    JUNCTION NUMBER
+1    junction point 
+1    number of internal connection nodes (n_int)
+1    number of cables
+4    cable list
+1     corresponding cable end number list
+1   	Cable 4 number of external conductors (n_ext)
+1   	Cable 4 P matrix: matrix (n_int rows* n_ext columns)
+0   	Cable 4 voltage function source list
+0.0 	Cable 4 impedance list
+0	Number of internal impedances
+5   JUNCTION NUMBER
+2    junction point  
+1   number of internal connection nodes (n_int)
+1   number of cables
+4    cable list
+2   corresponding cable end number list
+1   	Cable 4 number of external conductors (n_ext)
+1   	Cable 4 P matrix: matrix (n_int rows* n_ext columns)
+0   	Cable 4 voltage function source list
+0.0 	Cable 4 impedance list
+0	Number of internal impedances
+6    JUNCTION NUMBER
+3    junction point 
+1    number of internal connection nodes (n_int)
+1    number of cables
+5     cable list
+1     corresponding cable end number list
+1   	Cable 5 number of external conductors (n_ext)
+1   	Cable 5 P matrix: matrix (n_int rows* n_ext columns)
+0   	Cable 5 voltage function source list
+0.0 	Cable 5 impedance list
+0	Number of internal impedances
+7   JUNCTION NUMBER
+4    junction point  
+1   number of internal connection nodes (n_int)
+1   number of cables
+5   cable list
+2   corresponding cable end number list
+1   	Cable 5 number of external conductors (n_ext)
+1   	Cable 5 P matrix: matrix (n_int rows* n_ext columns)
+0   	Cable 5 voltage function source list
+0.0 	Cable 5 impedance list
+0	Number of internal impedances
+
+Excitation_function_list
+1            	! number of excitation functions
+1		! EXCITATION NUMBER
+step
+1.0 0.0
+
+#Excitation_function_list
+1            	! number of excitation functions
+1		! EXCITATION NUMBER
+gaussian_step
+1.0 15e-9 40e-9
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+6		! output point
+Ez
+centre
+output_timestep_information
+1      ! first output timestep
+2000    ! last output timestep
+1     ! output timestep interval
+
+Simulation_time
+200e-8
+
+

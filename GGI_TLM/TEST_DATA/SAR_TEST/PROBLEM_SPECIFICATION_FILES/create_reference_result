@@ -1,0 +1,2 @@
+cp SAR_test.field.tout PROBLEM_SPECIFICATION_FILES/SAR_test.field.tout_ref
+cp SAR_test.SAR.fout PROBLEM_SPECIFICATION_FILES/SAR_test.SAR.fout_ref

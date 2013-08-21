@@ -1,0 +1,441 @@
+  DATE    	NAME	DESCRIPTION
+  
+6/11/2012	CJS	GGI_TLM_material_model_checks.F90: plot material volume cells and surface material faces
+			to vtk format files for viewing with paraview.
+			
+7/11/2012	CJS	Set up the mat_test test case. This may be used to test GGI_TLM_material_model_checks.
+	
+7/11/2012	CJS	GGI_TLM_material_model_checks.F90: plot volume and surface material
+			frequency responses to screen and jpeg file using system calls to gnuplot.
+
+8/11/2012	CJS	Introduce a bundle_segment_geometry data structure and use it for calculation
+			of L,C,R matrices. This is not carried through to the TLM link and stub 
+			transmission line impedances due to issues with source impedances - we need to
+			put some thought into whether to introduce impedances in a new way i.e at junctions
+			or terminations
+			
+12/11/2012	CJS	Working on build_cell_centre_junction_list.F90 and create_bundle_junctions.F90
+			Generalising the build of the bundle junctions working on a cable by cable basis.
+
+13/11/2012	CJS	Continue working on build_cell_centre_junction_list.F90 and create_bundle_junctions.F90
+			Generalising the build of the bundle junctions working on a cable by cable basis.
+			There is now a prototype code and a prototype test case (CABLE_TEST/cable_test.inp)
+			The code works for simple test cases. We need to set up some more complicated
+			tests so as to fully test the code.
+
+14/11/2012	CJS	Debugging build_cell_centre_junction_list.F90 and developing the CABLE_TEST test
+			case. Working for SOME complex multi-conductor cases with multiple junctions.
+			but we have found an unstable test case which is unresolved. 
+			Also introduced the 'step' and 'gaussian_step' functions.
+			
+15/11/2012	CJS	Debugging build_cell_centre_junction_list.F90 and developing the CABLE_TEST test
+			case. Still problems with complex junctions... Sorted a bug related to using
+			Zlink from segment structure rather than a local copy in a correctly dimensioned array.
+			Arranged that Fieldsolve and GGI_TLM give the same L and C matrices - use  
+			Fictitious_radius_lc_flag=TRUE
+			
+16/11/2012	CJS	Finished debugging build_cell_centre_junction_list.F90. We now get excellent agreement between
+                        GGI_TLM and Fieldsolve.
+			Calculate Zlink, ZLstub etc on a segment geometry basis. Also include checks, output to 
+			cable_info file and stabilisation of TLM cable matrices into the process. 
+
+19/11/2012	CJS	1. Include coaxial cable type and develop new test case COAX_TEST to compare with fieldsolve. 
+                        2. Start to work on face junctions: define augmented cable_junction_list packet 
+			   (read_cable_junction_list.F90)
+			3. Include additional segments to connect to face junctions in create_cable_meshes.F90
+
+20/11/2012	CJS	Working on build_face_junction_list.F90 to get connections to faces working correctly.
+                        The MONOPOLE test case works but fails for CABLE_TEST
+			We still need to make some more complex terminationtest cases...
+
+21/11/2012	CJS	Fixed problem which caused CABLE_TEST to fail. Include code to take account
+			of cable direction in cable source and outputs.
+			Started parallel implementaton in GGI_TLM solver. 
+
+22/11/2012	CJS	Continue parallel implementaton in GGI_TLM solver. Read_mesh is OK.
+                        read_cable_model.F90 		:not yet parallel
+                        allocate_temporary_mesh_arrays 	:now set on local mesh 
+			set_volume_material_mesh 	:needs no change 
+                        set_surface_material_mesh 	:needs no change
+			set_outputs_in_mesh		:local_surface_output(cx  ,cy  ,cz  ,face) set on local mesh
+
+23/11/2012	CJS	Continue parallel implementaton in GGI_TLM solver. 
+			Initial implementation of parallel excitations and outputs. 
+			TLM_parallel_pass_data adapted to GGI_TLM from Fieldsolve.
+			Cable_parallel_pass_data adapted to GGI_TLM from Fieldsolve. 
+			We still need to set up structures for the parallel cable update. 
+			partition_cable_mesh.F90 is compied from Fieldsolve and not developed further at the moment.
+
+26/11/2012	CJS	Continue parallel implementaton in GGI_TLM solver. 
+			Fixed numwerous problems with the initial implementation. The
+			parallel code now works correctly on the sphere test case.
+
+27/11/2012	CJS	Continue parallel implementaton in GGI_TLM solver. 
+			Starting to work on the parallel cable model. 
+			Using DIPOLE as a development test case. Not yet working...
+
+28/11/2012	CJS	Continue parallel implementaton in GGI_TLM solver. 
+			More work on the parallel cable model. 
+			The DIPOLE, CABLE_TEST, MONOPOLE, COAX_TEST, COAX MONOPOLE test cases now work OK in parallel                        
+
+29/11/2012	CJS	Transfer impedance for shielded cables R+jwL form. test case COAX_ZT_TEST
+			Fix the MATERIAL_TEST to get agreement between GGI_TLM and Fieldsolve. 
+			Note: there are still some odd mesh generation artefacts for surface meshes...
+			Start to think about Huygens surface implementation and test case SPHERE_PLANE_WAVE
+			-calculated the extent of all meshed surface
+			-Now working on SUBROUTINE intialise_excitations.
+
+4/12/2012	CJS	Continue Huygens surface work. 
+			Move output and excitation stuff into separate directories as these will become
+			much larger and have more functionality as developments progress.
+			Huygens surface works OK for SPHERE_PLANE_WAVE using an internal surface
+			We also have the outer boundary huygens surface working...
+			
+5/12/2012	CJS	Implementation of the far_field_surface using the DIPOLE test case
+			for development. Working for single process, NOT in parallel.
+			Introduce cell_face_rank(:,:) in order to simplify parallel stuff on faces. This 
+			should make the more efficient parallel implementation easier to introduce: untested...
+			Also start frequency_output_surface with no test case as yet... maybe WAVEGUIDE_RESONATOR
+			
+6/12/2012	CJS	Parallel implemantation of far_field_surface.
+			Frequency_output_surface works OK on 1 processor - not yet parallel
+			It has a problem that only tangential fields are non-zero.
+			
+10/12/2012	CJS	Bring the vector_fitting code into the GGI_TLM system (GGI_TLM_filter_fit)
+			Set up some test data (FILTER_FITTING_LS22, FLTER_FITTING_CFC) and 
+			integrate into run_automatic_test system
+			
+11/12/2012	CJS	Starting to rewrite GGI_TLM_filter_fit so as to simplify the messy code 
+                        which came from Flaviir and HIRF-SE. 
+			
+12/12/2012	CJS	Continue to rewrite GGI_TLM_filter_fit, 
+			OK apart up to the stabilisation and optimisation stages
+			also set up impedance filter fit test case: FLTER_FITTING_IMPEDANCE	
+			
+13/12/2012	CJS	reconfigure parallel code so face updates are not done twice. It should now
+                        be clear which process owns which cells and faces.
+			Start to introduce filter data into cable_geometry, bundle_segment_geometry and
+			bundle_segment types.
+			
+			create_cable_LCRG_matrices.F90
+			create_bundle_segments.F90
+			
+			Test cases: DIPOLE_JUNCTION_LOAD - tests impedances at junctions
+			Test cases: COAX_FD_TEST - tests frequency dependent cable impedance matrix
+			
+14/12/2012	CJS	Complete filter implementation in cable model. At the moment we have
+			FD transfer impedance in coaxial cables and frequency dependent loss in
+			cylindrical cables. 
+			Test case: COAX_FD_TEST is working OK- reference data is COAX_ZT_TEST
+			
+17/12/2012	CJS	Started to implement junction loads
+			
+18/12/2012	CJS	Continue to implement junction loads. Working for DIPOLE_JUNCTION_LOAD
+                        Parallel Frequency_output_surface is now OK (test case: DIPOLE)
+                        Parallel Output_surface is now OK (test case: DIPOLE)
+
+2/01/2013	CJS	RCS output and test cases: RCS_PEC_SPHERE, RCS_MATERIAL_SPHERE, RCS_SMAT_SPHERE 
+
+3/01/2013	CJS	Test cases: CAVITY_FREE_SPACE CAVITY_EPSR=2 CAVITY_MUR=2
+			Start to include ANALYTIC solutions for test cases into the software.
+			All CAVITY tests have analytic solutions plus RCS_PEC_SPHERE
+			Fixed bug in scatter.F90 - magnetic material filters didn't have filter_number set...
+
+4/01/2013	CJS	Continue to work on FILTER_FIT - implement the filter format conversions
+			required for the stabilisation and optimisation processes. This has
+			involved development of a complex_polynomial type.
+
+7/01/2013	CJS	Continue to work on FILTER_FIT - implement the optimisation of filter coefficients.
+			Needs to be tidied up and tested properly but working for simple cases.
+
+8/01/2013	CJS	write FILTER_FORMAT_CONVERT to convert material filter files from rational function to
+			pole-zero and pole-residue formats - test on FILTER_FIT_LS22.
+			set up SAR test case in readiness for SAR packet implementation
+
+9/01/2013	CJS	SAR packet implemented and run successfully on SAR_TEST
+			Set up SAR_TEM_CELL test case and run - results differ (slightly) from Fieldsolve reference
+
+10/01/2013	CJS	1.SAR_TEM_CELL results differ This may be a consequence of running the 
+			  Fieldsolve solution without:
+			  fictitious_radius_lc_flag
+			  TRUE
+                          Re-running fieldsolve solution with flag set: Not the case; must re-think this. 
+			  Maybe mesh differences?
+			2. Start to implement: excitation_mode_list
+			                       output_mode_list
+			                       mode_stir_surface_list
+			3. Set up WAVEGUIDE_RESONATOR, WAVEGUIDE_IRIS and NESTED_MODE_STIRRED_CHAMBERS test cases
+			4. Fix bug in set_excitations_in_mesh relating to excitation_surfaces
+
+11/01/2013	CJS	Continue to implement excitation_mode_list packet.
+			Initial implementation done but not tested
+			Part of the SAR_TEM_CELL discrepancy traced to the 0.5mm wire being too large for the 
+			Fieldsolve TLM cell and the cell being expanded to accomodate it. This difference has been 
+			eliminated however there is still a discrepancy... Note also the output time discrepancy
+			- there is a half timestep output in GGI_TLM...
+
+14/01/2013	CJS	Continue to implement output_mode_list packet.
+			Initial implementation done but not tested
+			More on mode_stir_surface implementation
+
+15/01/2013	CJS	Continue to implement mode_stir_surface packet.
+			Initial impementation complete. test case: CAVITY_MODE_STIR to test the 
+			outer boundary mode stirring
+
+16/01/2013	CJS	New test case: CAVITY_MODE_STIR2 to test the internal surface mode stirring.
+			Mode stirred boundary checked out OK on both CAVITY_MODE_STIR and CAVITY_MODE_STIR2
+			Note that we get different results for sequential and parallel tests as the 
+			port numbering is different in each case. 
+			Started implementating test cases which illustrate reversal of surface normals
+
+17/01/2013	CJS	1. Surface current, Magnitude E, magnitude H surface outputs	: DONE
+			2. Multiple surface outputs					: DONE
+			3. Post processing for multiple surface outputs -> animations	: DONE
+			4. include imedance filters in FD_coax cable type.		: DONE - needs testing
+			5. Implement York box straight wire test case: Done but no tested yet - awaits post processing
+			
+18/01/2013	CJS	Initial implementation of post processing procedures:
+				Combine_frequency domain data
+				Oneport analysis
+				Twoport analysis
+				Frequency stir post processing
+				IELF post processing
+			Also some re-jigging of the existing processes. Needs testing and test cases updating...
+			
+21/01/2013	CJS	Testing of post processing procedures:
+				Combine_frequency domain data 	-  DIPOLE			: DONE
+				Oneport analysis		-  WAVEGUIDE_STRAIGHT 		: DONE
+				Twoport analysis		-  WAVEGUIDE_IRIS		: DONE - some small discrepancies...
+				Frequency stir post processing	-  YORK_BOX_STRAIGHT_WIRE	: DONE
+				IELF post processing		-  YORK_BOX_STRAIGHT_WIRE	: DONE
+				Plot time domain data		: DONE
+				Plot frequency domain data	: DONE
+				Fourier transform		: DONE
+				extract time domain data	: DONE
+				Plot time domain data		: DONE
+				Combine_frequency domain magnitude data - YORK_BOX_STRAIGHT_WIRE : DONE
+
+28/01/2013	CJS	Post_processing: animate frequency surface data
+					 extract mode field
+
+30/01/2013	CJS	Attempt to incorporate EISPACK as an alternative to LAPACK
+                        for eigenvalue subroutines.
+			Also swap the numerical recipes root finder, Laguer for an
+			eigenvalue method.
+
+31/01/2013	CJS	Continue to eliminate references to LAPACK
+			New real*8 and complex*16 matrix inversion subroutines
+			The latest version does remove the dependence on LAPACK but the
+			original routines have been kept.
+			Testing the run_automatic_test system updates to ensure that it runs correctly
+			for all test cases
+			
+1/02/2013	CJS	Complete run_automatic_test updates for all small test cases.
+			Start to think about re-writing spherical bessel function evaluation to
+			get rid of Zhang-Jin subroutines...
+			
+5/02/2013	CJS	Fixed parallel bug in mode_excitation and mode_output
+			All test cases now run in parallel OK. 
+			
+6/02/2013	CJS	
+			Post processing to sum frequency domain data
+			working on Mode stirring test case for EMC Europe paper. 
+			
+8/02/2013	CJS	Introduce FREE_SPACE surface material type
+			Only include MODE_STIR faces which have PEC properties - helps simplify the setup of jobs
+			Introduce frequency_domain_power_surface which calculates the power transmitted through a
+			surface in the frequency domain.
+			Aim to test with the transmission cross section test case TCS_MODE_STIR- not yet working...
+			
+11/02/2013	CJS	Include Output_volume_average_list and output_volume_list packets
+			TCS_MODE_STIR- now working.
+			
+12/02/2013	CJS	Implement the frequency warping technique for the TLM as power balance method.
+			Compiled but not yet tested.
+			
+13/02/2013	CJS	Implement the frequency warping in Fourier transform (GGI_TLM_post_processor)
+			Also implement plotting of the cable routes in GGI_TLM_cable_checks
+			Fixed the problem with cables terminating to surfaces, cable terminations now
+			look for a surface to terminate to in a terminating cell.
+			Start to set up frequency warping test case: YORS_BOX_STRIAGHT_WIRE_WARP
+			
+19/02/2013	CJS	Make alterations to GGI_TLM_material_model_checks - the original plotted all the material
+			cells/ faces as allocated in the input file taking no account of how cells/faces may be multiply
+			allocated. The process now plots the material cells/ faces as they are allocated in the TLM solver.
+			
+21/02/2013	CJS	Include animation of vector fields in GGI_TLM_post_processor. Examples are DIPOLE 
+			and WAVEGUIDE_STRAIGHT_ANIMATION
+			
+26/02/2013	CJS	Start modifications of GGI_TLM_User_documentation i.e. convert from the original 
+			Fieldsolve document to make it specific to GGI_TLM.
+			
+27/02/2013	CJS	Continue modifications of GGI_TLM_User_documentation - complete enough for an initial version
+			apart from Post_processing and installation stuff. 
+			Start modifications of TEST_CASE_DOCUMENTATION i.e. convert from the original 
+			Fieldsolve document to make it specific to the GGI_TLM test cases. Some of the test cases
+			have been converted but the results still need to be put in. 
+			Had a look at updating the THEORETICAL_DOCUMENTATION but will need to have Mathtype in order 
+			to edit the documents to reflect the GGI_TLM specific aspects.
+			Include DOCUMENTATION into the GGI_TLM data structure.  
+			
+1/03/2013	CJS	Start to implement a frequency_output_volume packet and 
+			associated post processing for animations.
+			
+11/03/2013	CJS	Update Material modelling theoretical documentation
+
+12/03/2013	CJS	Implement TEM_MATERIAL_TEST, TEM_THIN_LAYER_TEST,
+			MATERIAL_STABILITY_TEST, THIN_LAYER_STABILITY_TEST.
+			Implement a switch for MPI/ SEQUENTIAL compilation
+			Enable the test set to be run sequential or MPI
+
+13/03/2013	CJS	Work on run_automatic_test system to remove most of the action to a single file
+			run_test_case_include.
+
+15/03/2013	CJS	Do some work to reconfigure the main Makefile to make the system more portable.
+			Include plot_jpg and plot_ref_jpg options in the run_automatic_test system - required
+			before continuing to work on the test case documentation.
+
+20/03/2013	CJS	working on surface excitations and outputs, add code such that excitations and outputs
+			refer to the correct side of the specified surface.
+
+18/04/2013	CJS	Implement spherical bessel functions in home-grown code to eliminate any license issues with
+			other implementations
+			Integrate into ANALYTIC/RCS_SPHERE
+			set up test case directory for analytic codes ANALYTIC_TEST_CASES
+			
+18/04/2013	CJS	Implement near field convolution
+                        Add MICRO_SPHERE_FIELD test case
+			Fix bug in J and M source terms in connect.F90 and outer_boundary.F90 (sign error)
+			Started to sort out the Huygens surface so that the source terms can be applied to
+			the appropriate side of a surface as required, not both sides as at present. Not yet working.
+			
+22/04/2013	CJS	Implement a method to read surface meshes in vtk format.
+			
+23/04/2013	CJS	Complete RCS_SPHERE test cases
+			Implement WIRE_OVER_GROUND_TEST case
+			Fix bug relating to P matrix dimension in face_cable_junction.F90
+			Fix COAX_COUPLING test case - cables not terminated to end plates
+			
+24/04/2013	CJS	Start to implement ribbon cable type
+			Implement MTL_CROSSTALK test case to test the ribbon cable type: initially
+			build a 3 core cable from separate cylindrical cables.
+			second  RIBBON_CABLE_CROSSTALK using the ribbon cable model. 
+			Reduce number of Fourier terms to 10 in PUL_LC_tlm_interface - 20 terms causes
+			problems with underflow/ overflow of matrix elements. Need to automate calculation of
+			number of terms to make things robust...	
+			
+25/04/2013	CJS	Implement HUYGENS_SURFACE test case to test the Huygens surface formulation and also
+			check the outputs on cell centres and faces
+			Fix sign error in Huygens surface on internal surfaces
+			Implement wrapping boundary condition
+			Implement RESONANT_ABSORBER test case	
+			
+25/04/2013	CJS	Start to document test cases 48-57.
+			Start to implement GTEM_CELL test case 
+			Implement Pyramid volume type (needed for GTEM_CELL)	
+			
+29/04/2013	CJS	Implement HUGO test case 
+			Implement tet_volume_mesh volume type (needed for HUGO)
+			Re-write write_surface_mesh_list_vtk.F90 so as to only plot the external
+			surfaces of volumes. This normally vastly reduces the .vmesh file size and also
+			improves the visualisation with PARAVIEW
+			
+			
+30/04/2013	CJS	Complete HUGO test case - create all the 4th order biological material models
+			Include mobile phone model in mesh
+			Implement gaussian_step_sinusoid excitation function
+			
+7/05/2013	CJS	Implement CYLINDRICAL_CAVITY test case
+			
+8/05/2013	CJS	Re-build GTEM_CELL test case to better model the University of Nottingahm GTEM cell
+			Tidy up the configuration stuff so that only the (newly created) make_configuration_data file
+			and run_configuration_data file need to be edited for any new installation. 
+						
+10/05/2013	CJS	Write material data to info file
+			Tinker with Makefile so that PARALLEL_MODE must be specified
+			Plot cable bundle geometry to gnuplot file in GGI_TLM_cable_model_checks
+			Create CABLE_BUNDLE_TEST to test the creation of a bundle using all the cable_geometry types
+						
+13/05/2013	CJS	Check coax cable test cases to fix the P matrix error [0 0] should be [0 1] for 
+			termination of central conductor to shield. The only test case where this makes a difference
+			is COAX_ZT_TEST. We need to check the theory to see why...
+						
+14-17/05/2013	CJS	Implement new version of the mesh generation using the 'filling method' i.e. to mesh a triangle,
+			first mesh the surrounding lines, then fill the triangle face. To mesh a tet, first mesh the 
+			four triangular faces, then fill the enclused cells. 
+			Start to enable constants and parameters in the solution  
+						
+20/05/2013	CJS	Continue with mesh generation developments - include a check for valid triangle filling. Some
+			triangles still give holes in the mesh but they are detected.  
+						
+21/05/2013	CJS	Continue with mesh generation developments - debugging new mesh generator and starting to
+			run more of the test cases using it... Still some problems...
+						
+22-23/05/2013	CJS	Re-work the cable junction update so that it conforms more to the theory document. This also
+			means that the P matrix specified in the input file is changed to make it more simple. 
+			This needs to be documented properly now and tested.
+						
+24/05/2013	CJS	Update all (coax) cable test cases to reflect the change in the P matrix definition 
+						
+28-30/05/2013	CJS	Continue with mesh generation developments - trying a surface filling routine based on
+			a non-optimum fill followed by iterative improvement. Still some problems...
+						
+3/06/2013	CJS	Continue with mesh generation developments Seems to work OK now on the full test set
+						
+5/06/2013	CJS	Create a script to run GGI_TLM without having to run the model builder, cable model builder
+			and solver separately.
+			Working on the feed for the GTEM_CELL problem using a modal feed. Tested multiple 
+			field component mode excitation - seems OK.
+			Fixed bug in output_mode: the field value wasn't multiplied by the mode value
+						
+6/06/2013	CJS	Continue working on the feed for the GTEM_CELL problem using a modal feed.
+			Modal feed using 4 field components working OK.
+						
+7/06/2013	CJS	Make GGI_TLM_cable_model_theory consistent with the code. 
+			Tidy up cell_centre_cable_junction.F90 and face_cable_junction.F90 and include references to
+			equation numbers in the theoretical documentation.
+			Set up a template problem to illustrate the cpying and re-use of the TEST_DATA automatic
+			testing structure in a user's own problems. 
+						
+12/06/2013	CJS	Fix bugs relating to junction impedances implemented at cell faces - mostly array dimensioning errors
+			This in response to problems running the problem of calculating the field radiated from a wire over a 
+			finite ground plane.
+						
+17/06/2013	CJS	Fix bug where cable ends can snap to output surfaces rather than material surfaces if an
+			output surface is closer. Now we only check surface material surface lists for terminating 
+			surfaces
+			
+19/06/2013	CJS	Implement the flags LC_correction_type_subtract_cell_inductance 
+			and LC_correction_type_geometry_scale in order to make both the geometric LC matrix correction
+			and John Paul's subtraction of the in-cell inductance available to the user.
+		
+5/07/2013	CJS	Implement an estimate of the time to finish running a simulation.
+			
+10/07/2013	CJS	Include a check to ensure that cable junctions exist
+			implement double exponential function
+						
+Next stages:  	
+		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE
+		- Start to implement and document all the Fieldsolve test cases : STARTED
+	      	- Implement excitations/ outputs as required for test cases : STARTED
+	      	- Implement analytic solutions required for test case reference results : STARTED
+	      	- User documentation for code : STARTED
+	      	- Theoretical documentation for code : STARTED
+	      	- Software documentation : STARTED
+	      	- Set up open source project
+	     	- Set up website
+
+Missing Packets...	
+		- far_field_surface: DONE
+		- frequency_output_surface: DONE
+                - rcs_surface: DONE
+		- SAR_output: DONE
+		- surface_current_output: DONE
+		- mode_excitation_surface: DONE
+		- mode_output_surface: DONE
+		- mode_stirred boundary: DONE
+		- frequency_domain_power_plane: DONE
+		- Periodic structures
+		- mesh_energy_monitor
+		- save_restart_data
+

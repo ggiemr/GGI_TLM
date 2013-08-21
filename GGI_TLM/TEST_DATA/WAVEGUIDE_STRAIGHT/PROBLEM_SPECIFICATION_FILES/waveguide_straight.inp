@@ -1,0 +1,159 @@
+# straight waveguide analysis
+
+Mesh_outer_boundary_dimension
+-0.0005 0.0005 -0.0115 0.0115 -0.025 0.025
+
+Mesh_dimensions_in_cells
+2 46 100  ( 3*integer) ! dl=0.0005
+
+Outer_boundary_reflection_coefficient
+-1.0 -1.0    -1.0 -1.0    -1.0 -1.0
+
+Surface_list
+6 ! number of surfaces
+1 ! SURFACE NUMBER
+rectangle
+0.001 0.023
+0.0 0.0 0.0
+0.0 0.0 -0.024
+2 ! SURFACE NUMBER
+rectangle
+0.001 0.023
+0.0 0.0 0.0
+0.0 0.0 0.024
+3       SURFACE_NUMBER 
+zplane
+-0.0005 -0.0115 -0.0125     0.0005 0.0115 -0.0125 surface parameters (n*real)  ! mode excitation surface
+ 0.0 0.0 0.0
+ 0.0 0.0 0.0
+4       SURFACE_NUMBER 
+zplane
+-0.0005 -0.0115 -0.0005     0.0005 0.0115 -0.0005 surface parameters (n*real)  ! mode output surface
+ 0.0 0.0 0.0
+ 0.0 0.0 0.0
+5       SURFACE_NUMBER 
+zplane
+-0.0005 -0.0115 0.0005     0.0005 0.0115 0.0005 surface parameters (n*real)  ! mode output surface
+ 0.0 0.0 0.0
+ 0.0 0.0 0.0
+6       SURFACE_NUMBER 
+xplane
+0.0 -0.0115 -0.024     0.0 0.0115 0.024 surface parameters (n*real)  ! field output surface
+ 0.0 0.0 0.0
+ 0.0 0.0 0.0
+
+Point_list 
+2   Number of points (integer)
+1       POINT_NUMBER (integer)
+0.00025 0.000 -0.00045   output point coordinates
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       POINT_NUMBER (integer)
+0.00025 -0.000 0.00045   output point coordinates
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Surface_material_list
+1	# number of surface materials
+1       SURFACE_MATERIAL_NUMBER 
+Dispersive
+MATERIAL_DIRECTORY/WR90_mode_impedance
+2    	# number of surfaces
+1 2  	# surface list
+1 1  	# surface orientation_list
+
+Excitation_function_list
+1              ! number of excitations
+1              ! EXCITATION NUMBER
+gaussian_sinusoid
+1.0 0.25e-9 0.75e-9 10e9 0.0
+
+Excitation_mode_list
+1	       ! number of excitation modes
+1	       ! EXCITATION MODE NUMBER
+1	       ! excitation function number
+3	       ! surface number
+-1	       ! side of surface for excitation
+Ex
+soft
+WR90.mode
+1		 ! x column 
+2		 ! y column 
+3		 ! z column 
+6		 ! data column to use
+
+Output_point_list
+2    		! number of output points
+1		! OUTPUT NUMBER
+1		! output point
+Ex
+zmin
+output_timestep_information
+1      ! first output timestep
+100000    ! last output timestep
+1     ! output timestep interval
+2		! OUTPUT NUMBER
+2		! output point
+Ex
+zmax
+output_timestep_information
+1      ! first output timestep
+100000    ! last output timestep
+1     ! output timestep interval
+
+Output_mode_list
+4    		! number of output modes
+1	        ! OUTPUT MODE NUMBER
+4		! surface number
+1		! side of surface for output
+Ex
+WR90.mode
+1                ! x column 
+2                ! y column 
+3                ! z column 
+6                ! data column to use
+2	        ! OUTPUT MODE NUMBER
+4		! surface number
+1		! side of surface for output
+Hy
+WR90.mode
+1                ! x column 
+2                ! y column 
+3                ! z column 
+6                ! data column to use
+3	         ! OUTPUT MODE NUMBER
+5		! surface number
+1		! side of surface for output
+Ex
+WR90.mode
+1                ! x column 
+2                ! y column 
+3                ! z column 
+6                ! data column to use
+4	         ! OUTPUT MODE NUMBER
+5		! surface number
+1		! side of surface for output
+Hy
+WR90.mode
+1                ! x column 
+2                ! y column 
+3                ! z column 
+6                ! data column to use
+
+Frequency_output_surface_list
+2    		! number of Frequency output surfaces
+1		! FREQUENCY OUTPUT SURFACE NUMBER
+6     surface number
+-1		! side of surface for output (+1 or -1)
+10e9 frequency for output
+Hy
+2		! FREQUENCY OUTPUT SURFACE NUMBER
+6     surface number
+-1		! side of surface for output (+1 or -1)
+10e9 frequency for output
+Hz
+
+
+
+Simulation_time
+2.0e-9

@@ -1,0 +1,62 @@
+           3  Post processing option: Fourier Transform
+problem_name.excitation.tout
+           1
+lin
+   0.2500000E+07 fmin
+   0.6000000E+10 fmax
+            2400 n_frequencies
+problem_name.excitation.fout
+           3  Post processing option: Fourier Transform
+problem_name.cable_current.tout
+           1
+lin
+   0.2500000E+07 fmin
+   0.6000000E+10 fmax
+            2400 n_frequencies
+problem_name.cable_current.fout
+           8  Post processing option: Frequency average
+problem_name.cable_current.fout
+1
+p
+5.0
+90.0
+f
+p
+problem_name.cable_current_stir.fout
+           8  Post processing option: Frequency average
+problem_name.excitation.fout
+1
+p
+5.0
+90.0
+f
+p
+problem_name.excitation_stir.fout
+           6  Post processing option: Combine Frequency Domain Data
+problem_name.cable_current.fout
+           1
+problem_name.excitation.fout
+           1
+   50.000000000000000       constant, A
+  0.50000000000000000       constant, B
+   0.0000000000000000       constant, C
+problem_name_S21.fout
+           7  Post processing option: Combine Frequency Domain Magnitude Data
+problem_name.cable_current_stir.fout
+           1
+problem_name.excitation_stir.fout
+           1
+   50.000000000000000       constant, A
+  0.50000000000000000       constant, B
+   0.0000000000000000       constant, C
+problem_name_S21_stir.fout
+          11  Post processing option: IELF analysis
+problem_name_S21_stir.fout
+           1
+problem_name_S21.fout
+           1
+p
+   1000000000.0000000       minimum frequency for local_ielf_value calculation
+   5000000000.0000000       maximum frequency for local_ielf_value calculation
+IELF_result.dat
+           0  Post processing option: Quit

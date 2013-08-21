@@ -1,0 +1,16 @@
+# epsr=2.4 material model
+0.0 1e8  # frequency range of validity
+# permittivity filter
+1.0e8 # wnormalisation constant
+0   # a order
+2.4 # a coefficients
+0   # b order
+1.0 # b coefficients
+0.0 # electric conductivity
+# permeability filter
+1.0e8 # wnormalisation constant
+0   # a order
+1.0 # a coefficients
+0   # b order
+1.0  # b coefficients
+0.0  # magnetic conductivity

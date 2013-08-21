@@ -1,0 +1,16 @@
+ # marrow
+   10000000.      2.00000000E+10  # frequency range of validity
+ # permittivity filter
+   1000000000000.0000       w normalisation constant
+           4    # a order, a coefficients follow below: 
+   1144.1152999999999        5901896.8918537442        439254733.54271466        4251591176.8465385        3278449059.1801744     
+           4    # b order, b coefficients follow below: 
+   1.0000000000000000        62441.559320000000        6140107.3996389341        115227944.21712172        466789455.13286650     
+   0.0000000000000000          # electric conductivity
+ # permeability filter
+    1.0000000000000000        # w normalisation constant
+            0   # a order, a coefficients follow below:
+    1.0000000000000000     
+            0   # b order, b coefficients follow below:
+    1.0000000000000000     
+    0.0000000000000000       # magnetic conductivity

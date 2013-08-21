@@ -1,0 +1,99 @@
+           3  Post processing option: Fourier Transform
+mode_stir.field.tout
+           1
+lin
+   0.10000000E+07 fmin
+   5.0000000E+09 fmax
+            10000 n_frequencies
+mode_stir1.field.fout
+           3  Post processing option: Fourier Transform
+mode_stir.field.tout
+           2
+lin
+   0.10000000E+07 fmin
+   5.0000000E+09 fmax
+            10000 n_frequencies
+mode_stir2.field.fout
+           3  Post processing option: Fourier Transform
+mode_stir.field.tout
+           3
+lin
+   0.10000000E+07 fmin
+   5.0000000E+09 fmax
+            10000 n_frequencies
+mode_stir3.field.fout
+           3  Post processing option: Fourier Transform
+mode_stir.field.tout
+           4
+lin
+   0.10000000E+07 fmin
+   5.0000000E+09 fmax
+            10000 n_frequencies
+mode_stir4.field.fout
+           3  Post processing option: Fourier Transform
+mode_stir.field.tout
+           5
+lin
+   0.10000000E+07 fmin
+   5.0000000E+09 fmax
+            10000 n_frequencies
+mode_stir5.field.fout
+           3  Post processing option: Fourier Transform
+mode_stir.field.tout
+           6
+lin
+   0.10000000E+07 fmin
+   5.0000000E+09 fmax
+            10000 n_frequencies
+mode_stir6.field.fout
+           3  Post processing option: Fourier Transform
+mode_stir.field.tout
+           7
+lin
+   0.10000000E+07 fmin
+   5.0000000E+09 fmax
+            10000 n_frequencies
+mode_stir7.field.fout
+           3  Post processing option: Fourier Transform
+mode_stir.field.tout
+           8
+lin
+   0.10000000E+07 fmin
+   5.0000000E+09 fmax
+            10000 n_frequencies
+mode_stir8.field.fout
+          14  Post processing option: Sum Frequency Domain Data
+           8  number of functions to sum
+mode_stir1.field.fout
+           1
+mode_stir2.field.fout
+           1
+mode_stir3.field.fout
+           1
+mode_stir4.field.fout
+           1
+mode_stir5.field.fout
+           1
+mode_stir6.field.fout
+           1
+mode_stir7.field.fout
+           1
+mode_stir8.field.fout
+           1
+mode_stir_sum.field.fout
+           5  Post processing option: Create Animation
+mode_stir.surface_field.tout
+           1  Output surface
+lin
+   0.0000000000000000     
+   0.0000000000000000     
+n
+           0  Output surface
+          12  Post processing option: Create Frequency Domain Animation
+mode_stir.frequency_output_surface.fout
+           1  Output surface
+           2  Output surface
+           3  Output surface
+           4  Output surface
+           0  Output surface
+           0  Post processing option: Quit

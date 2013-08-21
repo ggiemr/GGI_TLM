@@ -1,0 +1,161 @@
+# Nested reverberation chamber for aperture shielding effectiveness calculation
+
+Mesh_outer_boundary_dimension
+-0.08 0.08   -0.09 0.09   -0.10 0.10
+
+Mesh_cell_dimension
+0.010
+
+Outer_boundary_reflection_coefficient
+1.0 1.0    1.0 1.0    1.0 1.0
+#0.99 0.99    0.99 0.99    0.99 0.99
+
+Surface_list
+1   Number of surfaces (integer)
+1       surface_number (integer)    ! field output surface
+rectangle
+0.16 0.18       surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Point_list 
+9   Number of points (integer)
+1       POINT_NUMBER (integer)
+0.06 0.05 0.04  excitation point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       POINT_NUMBER (integer)
+0.05 0.05 0.05  output point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+3       POINT_NUMBER (integer)
+0.05 0.05 -0.05  output point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+4       POINT_NUMBER (integer)
+0.05 -0.05 0.05  output point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+5       POINT_NUMBER (integer)
+0.05 -0.05 -0.05  output point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+6       POINT_NUMBER (integer)
+-0.05 0.05 0.05  output point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+7       POINT_NUMBER (integer)
+-0.05 0.05 -0.05  output point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+8       POINT_NUMBER (integer)
+-0.05 -0.05 0.05  output point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+9       POINT_NUMBER (integer)
+-0.05 -0.05 -0.05  output point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Mode_stir_surface_list
+1   Number of mode_stir_surfaces (integer)
+1	MODE_STIR_SURFACE NUMBER
+0.999  	! boundary condition voltage reflection coefficient 
+1.0	! amplitude of random impulse excitation on the boundary
+1	! number of geometric surfaces in this mode_stir_surface
+0	! surface list
+1	! surface orientation list
+
+Excitation_function_list
+1 ! number of excitation functions
+1  EXCITATION FUNCTION NUMBER
+impulse
+1.0
+
+#Excitation_function_list
+1 ! number of excitation functions
+1  EXCITATION FUNCTION NUMBER
+gaussian_sinusoid
+1.0 2e-9 10e-9 5e8 90.0
+
+Output_point_list
+8    		! number of output points
+1		! OUTPUT NUMBER
+9		! output point
+Ex
+centre
+2		! OUTPUT NUMBER
+2		! output point
+Ex
+centre
+3		! OUTPUT NUMBER
+3		! output point
+Ex
+centre
+4		! OUTPUT NUMBER
+4		! output point
+Ex
+centre
+5		! OUTPUT NUMBER
+5		! output point
+Ex
+centre
+6		! OUTPUT NUMBER
+6		! output point
+Ex
+centre
+7		! OUTPUT NUMBER
+7		! output point
+Ex
+centre
+8		! OUTPUT NUMBER
+8		! output point
+Ex
+centre
+
+#Excitation_point_list
+1    		! number of excitation points
+1		! EXCITATION NUMBER
+1		! excitation function number
+2		! excitation point
+Ey
+centre
+soft
+
+Frequency_output_surface_list
+4    		! number of Frequency output surfaces
+1		! FREQUENCY OUTPUT SURFACE NUMBER
+1     surface number
+1		! side of surface for output (+1 or -1)
+1.300e8		! frequency for output
+Ex
+2		! FREQUENCY OUTPUT SURFACE NUMBER
+1     surface number
+1		! side of surface for output (+1 or -1)
+2.917e8		! frequency for output
+Ex
+3		! FREQUENCY OUTPUT SURFACE NUMBER
+1     surface number
+1		! side of surface for output (+1 or -1)
+9.212e8		! frequency for output
+Ex
+4		! FREQUENCY OUTPUT SURFACE NUMBER
+1     surface number
+1		! side of surface for output (+1 or -1)
+3.5791e9		! frequency for output
+Ex
+
+Output_surface_list
+1    		! number of output surfaces
+1		! OUTPUT SURFACE NUMBER
+1                 surface number
+1		! side of surface for output (+1 or -1)
+Ex
+output_timestep_information
+0	! first output timestep
+200	! last output timestep
+5	! output timestep interval
+
+Simulation_time
+2e-6
+

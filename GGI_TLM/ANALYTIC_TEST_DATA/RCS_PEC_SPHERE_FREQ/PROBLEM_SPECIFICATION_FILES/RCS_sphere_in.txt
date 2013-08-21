@@ -1,0 +1,20 @@
+# radius of PEC sphere      
+1.0
+# radius of coating
+1.0
+#  material filename 
+MATERIAL_DIRECTORY/air.vmat      
+# thin_layer constant. set to 0 for no sheet, 1 to include sheet                    
+0
+# thin layer filename       
+MATERIAL_DIRECTORY/air.smat
+# frequency range 
+2.998e6 2.998e8 100  
+# theta range
+180.0 180.0 1   
+# phi range
+180.0 180.0 1      
+# number of terms in series solution
+20
+# output filename
+pec.rcs

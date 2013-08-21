@@ -1,0 +1,16 @@
+# FR4 at 7GHz
+0.0 1e20  # frequency range of validity
+# permittivity filter
+1.0 # wnormalisation constant
+0   # a order
+4.45056 4.17 # a coefficients
+0   # b order
+1.0 # b coefficients
+0.036549   # electric conductivity
+# permeability filter
+1.0 # wnormalisation constant
+0   # a order
+1.0 # a coefficients
+0   # b order
+1.0 # b coefficients
+0.0  # magnetic conductivity

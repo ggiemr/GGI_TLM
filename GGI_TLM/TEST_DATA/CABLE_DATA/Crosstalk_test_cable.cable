@@ -1,0 +1,27 @@
+FD_coaxial
+2		# number of conductors
+5		# NUMBER OF PARAMETERS
+0.001475 	# parameter 1: shield radius
+0.001475 	# parameter 2: insulation radius
+1.0  		# parameter 3: permittivity of outer dielectric
+0.000421  	# parameter 4: inner radius
+2.0   		# parameter 5: permittivity of inner dielectric
+3		# NUMBER OF FILTERS
+# Filter 1: Inner wire series impedance filter
+1.0e0 		# w normalisation constant
+0   		# a order
+0.0 		# a coefficients
+0   		# b order
+1.0 		# b coefficients
+# Filter 2: Shield series impedance filter
+1.0e0 		# w normalisation constant
+0   		# a order
+0.0 		# a coefficients
+0   		# b order
+1.0 		# b coefficients
+# Filter 3: Transfer impedance filter
+1.0e0 		# w normalisation constant
+1   		# a order
+0.10 1.6e-9	# a coefficients
+0   		# b order
+1.0 		# b coefficients

@@ -1,0 +1,178 @@
+# Define the problem space 
+Mesh_outer_boundary_dimension
+-10.5 10.5 -10.5 10.5 -10.5 10.5
+
+# Specify the mesh cell dimension
+Mesh_cell_dimension
+1.0   ( 3*integer)
+
+#specify the outer boundary conditions (6*real)
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+# Define the geometrical entities, 3D volumes, 2D surfaces, 1D lines. Note the ability to import
+#geometry from a file means that this is a fairly general format for geometry specification
+
+Surface_list
+2   Number of surfaces (integer)
+1       surface_number (integer)
+rectangular_block
+15.0 15.0 15.0     surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       surface_number (integer)
+yplane
+-10.5  0.0 -10.5    10.5 0.0 10.5  surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+#z directed dipole
+Line_list 
+2   Number of lines (integer)
+1       LINE_NUMBER (integer)
+straight_line2
+0.0 0.0 -5.0    0.0 0.0 0.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       LINE_NUMBER (integer)
+straight_line2
+0.0 0.0 0.0    0.0 0.0 5.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Point_list 
+4   Number of points (integer)
+1       POINT_NUMBER (integer)
+0.0 0.0 -5.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       POINT_NUMBER (integer)
+0.0 0.0 0.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+3       POINT_NUMBER (integer)
+0.0 0.0 5.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+4       POINT_NUMBER (integer)
+0.0 1.0 1.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Cable_geometry_list
+1  number of cable geometries
+1  cable geometry number, Cable geometry type (file name) follows:
+CABLE_DIRECTORY/1mm_single_wire                                       
+
+Cable_list
+2  number of cables
+1  	CABLE NUMBER
+1 	cable geometry number
+1 	number of lines on cable route
+1 	cable line list
+1  	end 1 junction number
+2  	end 2 junction number
+2  	CABLE NUMBER
+1 	cable geometry number
+1 	number of lines on cable route
+2 	cable line list
+2  	end 1 junction number
+3  	end 2 junction number
+
+Cable_output_list
+1  number of cable_outputs
+1  CABLE OUTPUT NUMBER
+1  cable number
+2  closest point number
+
+Cable_junction_list
+3    number of junctions
+1    JUNCTION NUMBER
+1    junction point 
+1    number of internal connection nodes (n_int)
+1    number of cables
+1    cable list
+1    corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1   	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0   	Cable 1 voltage function source list
+0.0 	Cable 1 impedance list
+0	Number of internal impedances
+2   JUNCTION NUMBER
+2    junction point 
+1   number of internal connection nodes (n_int)
+2   number of cables
+1 2   cable list
+2 1   corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1   	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+1   	Cable 1 voltage source function list
+25.0 	Cable 1 impedance list
+1   	Cable 2 number of external conductors (n_ext)
+1   	Cable 2 P matrix: matrix (n_int rows* n_ext columns)
+1   	Cable 2 voltage source function list
+25.0 	Cable 2 impedance list
+0	Number of internal impedances
+3   JUNCTION NUMBER
+3    junction point  
+1   number of internal connection nodes (n_int)
+1   number of cables
+2   cable list
+2   corresponding cable end number list
+1   	Cable 2 number of external conductors (n_ext)
+1   	Cable 2 P matrix: matrix (n_int rows* n_ext columns)
+0   	Cable 2 voltage function source list
+0.0 	Cable 2 impedance list
+0	Number of internal impedances
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+4		! output point
+Ey
+centre
+output_timestep_information
+1      ! first output timestep
+2000    ! last output timestep
+1     ! output timestep interval
+
+Far_field_surface
+1     surface number
+1		! side of surface for output (+1 or -1)
+1.3E7 frequency for far field calculation
+0.0 180.0 1.0  Theta_min  Theta_max Theta_step
+0.0 90.0 90.0    Phi_min  Phi_max Phi_step
+
+Frequency_output_surface_list
+2    		! number of Frequency output surfaces
+1		! FREQUENCY OUTPUT SURFACE NUMBER
+2     surface number
+-1		! side of surface for output (+1 or -1)
+1.3E7 frequency for output
+Ex
+2		! FREQUENCY OUTPUT SURFACE NUMBER
+2     surface number
+-1		! side of surface for output (+1 or -1)
+1.3E7 frequency for output
+Ez
+
+Output_surface_list
+1    		! number of output surfaces
+1		! OUTPUT SURFACE NUMBER
+2     surface number
+-1		! side of surface for output (+1 or -1)
+Ez
+output_timestep_information
+0	! first output timestep
+600	! last output timestep
+60	! output timestep interval
+
+Excitation_function_list
+1            	! number of excitation functions
+1		! EXCITATION NUMBER
+gaussian
+0.5 5e-9 20e-9
+
+Simulation_time
+1e-6
+

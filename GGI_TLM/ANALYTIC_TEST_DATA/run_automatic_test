@@ -1,0 +1,174 @@
+#!/bin/bash
+
+### THIS NEEDS TO BE SET TO YOUR PARTICULAR COMMAND FOR RUNNING SEQENTIAL CODES (OFTEN NOT REQUIRED) ###
+SEQ_RUN_COMMAND=""
+
+### NOTHING BELOW HERE SHOULD NEED TO BE CHANGED ###
+
+# Automatically set the paths to directories for executables, module files and libraries.
+TEST_DATA_DIRECTORY=$( pwd )
+
+# the following line sets the directory name automatically, this works OK if you are runnning in GGI_TLM/TEST_DATA
+# If you are running anywhere else then it must be set appropriately so that the executables are in
+# ${GGI_TLM_DIRECTORY}/bin
+
+GGI_TLM_DIRECTORY=$( dirname ${TEST_DATA_DIRECTORY} )
+
+echo " TEST_DATA_DIRECTORY : ${TEST_DATA_DIRECTORY} "
+echo " GGI_TLM_DIRECTORY   : ${GGI_TLM_DIRECTORY} "
+
+EXECUTABLE_DIR="${GGI_TLM_DIRECTORY}/bin"
+
+echo " TEST_DATA_DIRECTORY : ${TEST_DATA_DIRECTORY} "
+echo " GGI_TLM_DIRECTORY   : ${GGI_TLM_DIRECTORY} "
+echo " EXECUTABLE_DIRECTORY: ${EXECUTABLE_DIR} "
+
+export EXECUTABLE_DIR
+export SEQ_RUN_COMMAND
+
+echo "Automatic testing of Analytic validation codes"
+echo " "
+
+FULL_TEST_CASE_LIST="
+RCS_PEC_SPHERE
+RCS_PEC_SPHERE_FREQ
+MICRO_SPHERE_FIELD
+RCS_COATED_SPHERE_FREQ
+RCS_COATED_IBC_SPHERE_FREQ
+RCS_DIELECTRIC_IBC_SPHERE_FREQ
+"
+
+ERROR_STRING="\
+Run using the following command:
+
+run_automatic_test action
+
+action is the process to run:
+action=run NAME           : run the test case
+action=clean NAME         : remove all existing results
+action=plot NAME          : plot the results to screen
+action=plot_jpg NAME      : plot the results to jpeg file(s)
+action=plot_ref NAME      : plot the results against reference results to screen
+action=plot_ref_jpg NAME  : plot the results against reference results to jpeg file(s)
+action=reference  NAME    : update the GGI_TLM reference results with the current set of results
+
+NAME can be:
+ one of the existing test cases (directory name) 
+ or leave blank which also runs the whole set
+
+Existing test cases are:
+
+$FULL_TEST_CASE_LIST
+"
+ 
+if [ "$#" = "0" ] ; then
+
+  echo "$ERROR_STRING"
+  
+else
+
+# set defaults...
+  ACTION=$1
+  NAME=$2
+      
+  if [ "$NAME" ] ; then
+  
+    TEST_CASE_LIST=$NAME
+# check that the test case directory exists
+      
+  else 
+  
+    TEST_CASE_LIST=$FULL_TEST_CASE_LIST
+    
+  fi
+  
+  rm progress
+  touch progress
+    
+  for TEST_CASE in $TEST_CASE_LIST
+  do
+
+# Check that the test case directory exists  
+    if [ -d "$TEST_CASE" ]; then
+    
+      echo "RUNNING TEST CASE: ${TEST_CASE}"
+    
+      cd $TEST_CASE
+     
+      if [ "$ACTION" = "run" ] ; then
+     
+        run_automatic_test $ACTION $NAME
+              
+      elif [ "$ACTION" = "post_process" ] ; then
+       
+        run_automatic_test $ACTION $NAME
+             
+      elif [ "$ACTION" = "clean" ] ; then
+       
+        run_automatic_test $ACTION $NAME
+    
+      elif [ "$ACTION" = "plot" ] ; then
+       
+        run_automatic_test $ACTION $NAME
+    
+      elif [ "$ACTION" = "plot_jpg" ] ; then
+       
+        run_automatic_test $ACTION $NAME
+       
+      elif [ "$ACTION" = "plot_ref" ] ; then
+       
+        run_automatic_test $ACTION $NAME
+       
+      elif [ "$ACTION" = "plot_ref_jpg" ] ; then
+       
+        run_automatic_test $ACTION $NAME
+      
+      elif [ "$ACTION" = "reference" ] ; then
+       
+        run_automatic_test $ACTION $NAME
+      
+      else 
+     
+        echo "Unknown action: $ACTION"    
+        echo " "
+        echo "$ERROR_STRING"
+        exit 1  
+     
+      fi
+      
+      RETURN_CODE=$?
+      read LINE < progress
+    
+      cd ..
+    
+      if [[ $RETURN_CODE != 0 ]] ; then
+        echo "$TEST_CASE: $LINE ***** FAILED *****" >> progress
+      else
+        echo "$TEST_CASE: FINISHED CORRECTLY" >> progress     
+      fi
+    
+    else
+    
+      echo "ERROR: Test case directory ${TEST_CASE} does not exist."
+      echo " "
+      echo "$ERROR_STRING"
+      exit 1  
+    
+    fi
+
+  done
+  
+  echo "__________________________________"
+  echo "                                  "
+  echo "Completed all specified test cases"
+  echo "__________________________________"
+  echo "                                  "
+  echo "STATUS:"
+  echo "                                  "
+  
+  cat progress
+      
+fi
+
+# we have some arguments to run_automatic_test
+

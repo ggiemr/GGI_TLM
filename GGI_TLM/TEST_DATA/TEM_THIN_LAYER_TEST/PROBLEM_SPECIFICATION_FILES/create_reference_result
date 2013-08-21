@@ -1,0 +1,2 @@
+cp Ey.tout PROBLEM_SPECIFICATION_FILES/Ey.tout_ref
+cp TEM_material.fout PROBLEM_SPECIFICATION_FILES/TEM_material.fout_ref

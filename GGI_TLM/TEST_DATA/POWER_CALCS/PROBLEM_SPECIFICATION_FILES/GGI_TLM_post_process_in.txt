@@ -1,0 +1,16 @@
+           3  Post processing option: Fourier Transform
+power_calc.field.tout
+           1
+lin
+   1e6 fmin
+   600e6 fmax
+   100 n_frequencies
+E_field.fout
+          15  Post processing option: Transmission Cross Section calculation
+power_calc.frequency_domain_power_surface.fout
+           1
+E_field.fout
+           1
+e
+TCS.fout
+           0  Post processing option: Quit

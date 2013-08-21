@@ -1,0 +1,117 @@
+# mode_stir chamber test for aperture transmission cross section calculation
+
+Mesh_outer_boundary_dimension
+-0.10 0.10 -0.10 0.10 -0.10 0.10
+
+Mesh_cell_dimension
+0.005
+
+Outer_boundary_reflection_coefficient
+0.0 0.0    0.0 0.0    0.0 0.0
+
+Volume_list
+1   Number of volumes (integer)
+1       VOLUME_NUMBER (integer)    ! output volume
+rectangular_block2
+-0.005 -0.005 -0.005 0.005 0.005 0.005       volume parameters (n*real)
+0.0 0.0 0.0
+-0.02 -0.01 -0.03
+
+Surface_list
+3   Number of surfaces (integer)
+1       surface_number (integer)    ! inner mode stirred chamber
+rectangular_block2
+-0.08 -0.08 -0.08 0.08 0.08 0.08       surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       surface_number (integer)    ! PEC face of mode stirred chamber
+rectangle
+0.16 0.16       surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.08
+3       surface_number (integer)    ! aperture in mode stirred chamber
+rectangle
+0.04 0.04       surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.08
+
+Surface_material_list
+3   Number of surface materials (integer)
+1   SURFACE_MATERIAL_NUMBER
+PEC
+1	number of surfaces
+1	surface list
+1      surface orinetation list
+2   SURFACE_MATERIAL_NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/Rsheet=1e-8
+1	number of surfaces
+2	surface list
+1      surface orinetation list
+3   SURFACE_MATERIAL_NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/Rsheet=1000
+1      number of surfaces
+3      surface list
+1	surface orinetation list
+
+Point_list 
+2   Number of points (integer)
+1       POINT_NUMBER (integer)
+-0.02 -0.01 -0.03  output point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       POINT_NUMBER (integer)
+0.02 0.03 0.04  output point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Mode_stir_surface_list
+1   Number of mode_stir_surfaces (integer)
+1	MODE_STIR_SURFACE NUMBER
+1.0  	! boundary condition voltage reflection coefficient 
+1.0	! amplitude of random impulse excitation on the boundary
+1	! number of geometric surfaces in this mode_stir_surface
+1	! surface list - surface 0 is the outer boundary
+-1	! surface orientation list
+
+Excitation_function_list
+1 ! number of excitation functions
+1  EXCITATION FUNCTION NUMBER
+impulse
+1.0
+
+#Excitation_point_list
+1	       ! number of output points
+1	       ! EXCITATION POINT NUMBER
+1	       ! excitation function number
+2	       ! excitation point
+Ex
+centre
+soft
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+1		! output point
+Ey
+zmax
+####centre
+
+Output_volume_average_list
+1    		! number of output volumes
+1		! OUTPUT NUMBER
+1		! output volume
+Ey
+
+
+Frequency_domain_power_surface_list
+1               ! number of frequency domain power surfaces
+1		! FREQUENCY DOMAIN POWER SURFACE NUMBER 
+3		! geometric surface number
+1		! side of surface for output
+100e6 10e9 1000 ! fmin fmax n_frequencies for power output
+
+Simulation_time
+100e-9
+

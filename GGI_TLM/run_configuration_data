@@ -1,0 +1,11 @@
+# This file contains all the configuration specifications for your system.
+# You should not have to edit any other files in order to run the test cases.
+
+# 1. This needs to be set to your particular command for running mpi jobs, 
+#    this command is followed by the number of processors to use 
+
+MPI_RUN_COMMAND="mpirun.mpich2 -np "
+
+# 2. This needs to be set to your particular command for running seqential codes (often not required)
+
+SEQ_RUN_COMMAND=""

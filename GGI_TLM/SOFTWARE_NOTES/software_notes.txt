@@ -1,0 +1,191 @@
+Software notes.
+_________________________________________________________
+
+Instructions to include a new packet:
+
+1. Create a new module for the packet data
+
+2. in PROCESS_INPUT_FILE/read_input_file_geometry/cables/solver.F90 include a new packet check:
+
+    else if (input_line.EQ.'new_packet') then
+    
+      CALL read_new_packet()
+
+3. Create a file read_new_packet.F90 with the new subroutine read_new_packet()
+   which reads and checks the packet data
+
+4. Add the new object file (read_new_packet.o) to the Makefile at the top level
+
+5. Add a new line to PROCESS_INPUT_FILE/reset_packet_data.F90 to reset the data associated with the new packet (if required)
+
+_________________________________________________________
+
+
+Instructions to include a new volume, surface or line type:
+
+Descibed for a new surface, volumes/lines follow the same pattern
+
+1. Define a new surface type number in
+
+MODULE geometry_types  (TLM_MODULES/Geometry_modules.F90)
+
+eg
+  integer,parameter	:: surface_type_new_surface=new_surface_number
+  
+2. Include the new surface in PROCESS_INPUT_FILE/read_surface_list.F90
+
+      else if (input_line.eq.'new_surface_name') then
+      n_params=number_of_parameters_specifying_new_surface (integer)
+      problem_surfaces(read_number)%surface_type=surface_type_new_surface
+
+3. in GEOMETRY/build_surface_geometry.F90
+
+      include code to build a triangulated surface for the new surface type
+
+_________________________________________________________
+
+
+Instructions to include a new excitation function:
+
+1. Define a new excitation_function_type in MODULE TLM_excitation, file:
+TLM_MODULES/TLM_Modules.F90
+
+eg
+integer,parameter	:: excitation_function_type_new_function=n+1   	! n+1 is the next integer in the 
+									! excitation_function_type list
+									
+2. Include code to read the new excitation function in the file:
+PROCESS_INPUT_FILE/read_excitation_function_list.F90 
+
+e.g.
+    else if (input_line.eq.'new_function') then
+    
+      n_params=2
+      excitation_functions(excitation_number)%type=excitation_function_type_new_function
+
+3. Define the new function in SUBROUTINE initialise_excitation_functions, file:
+TLM_SOLVER/excitation.F90
+
+e.g.
+      else if (excitation_functions(excitation_number)%type.EQ.excitation_function_type_gaussian) then
+      
+        amplitude=excitation_functions(excitation_number)%parameters(1)
+        width=excitation_functions(excitation_number)%parameters(2)
+        delay=excitation_functions(excitation_number)%parameters(3)
+
+! evaluate gaussian function, setting result to zero if we are too far into the tails of the function 	
+	if (abs(time-delay).lt.width*5) then
+	  excitation_functions(excitation_number)%value(timestep)=	&
+		                               ( exp(-((time-delay)/width)**2) )
+	else
+	  excitation_functions(excitation_number)%value(timestep)=0D0
+	end if
+
+_________________________________________________________
+
+
+Instructions to include a new cable type:
+
+Set a new cable type number in TLM_MODULES/Cable_Modules.F90
+example:
+  integer,parameter	:: cable_geometry_type_new_cable=6
+
+Check for the new cable name in PROCESS_INPUT_FILE/read_cable_geometry_list.F90
+
+    else if (cable_geometry_list(cable_geometry_number)%cable_geometry_type_string.EQ.'new_cable') then
+    
+      cable_geometry_list(cable_geometry_number)%cable_geometry_type=cable_geometry_type_new_cable
+      
+      
+in CABLE_MODEL/create_cable_LCRG_matrices.F90
+
+1. Set the number of conductors
+2. Set the parameters required for the external 'in-cell' L and C matrix calculation 
+3. Allocate and set internal L_internal and C_internal matrix data for the cable geometry i.e. 
+   that which relates to conductors inside the outer shield also set. This should be 
+   on a 'per cable segment' basis 
+4. Set the Tv and Sc matrices
+
+Note that the shielded conductors should come first in the conductor ordering
+    
+Example    
+    
+      n_conductors=2
+      cable_geometry_list(cable_geometry_number)%n_conductors=n_conductors
+      
+      cable_geometry_list(cable_geometry_number)%n_shielded_conductors=1
+      
+      cable_geometry_list(cable_geometry_number)%external_conductor_radius=	&
+      				cable_geometry_list(cable_geometry_number)%parameters(1)
+				
+      cable_geometry_list(cable_geometry_number)%external_dielectric_radius=	&
+      				cable_geometry_list(cable_geometry_number)%parameters(2)
+				
+      cable_geometry_list(cable_geometry_number)%external_dielectric_permittivity=	&
+      				cable_geometry_list(cable_geometry_number)%parameters(3)
+				
+      ALLOCATE( cable_geometry_list(cable_geometry_number)%L_internal(1:n_conductors,1:n_conductors) )
+      ALLOCATE( cable_geometry_list(cable_geometry_number)%C_internal(1:n_conductors,1:n_conductors) )
+      ALLOCATE( cable_geometry_list(cable_geometry_number)%Tv(1:n_conductors,1:n_conductors) )
+      ALLOCATE( cable_geometry_list(cable_geometry_number)%SC(1:n_conductors) )
+
+      cable_geometry_list(cable_geometry_number)%L_internal(1:n_conductors,1:n_conductors)=0d0
+      cable_geometry_list(cable_geometry_number)%C_internal(1:n_conductors,1:n_conductors)=0d0
+      
+      r_shield=cable_geometry_list(cable_geometry_number)%parameters(1)
+      r_inner =cable_geometry_list(cable_geometry_number)%parameters(4)
+      epsr    =cable_geometry_list(cable_geometry_number)%parameters(5)
+    
+      Lw=(mu0/(2d0*pi))*log(r_shield/r_inner)
+    
+      Cw=(2d0*pi*eps0)/log(r_shield/r_inner)
+      
+      cable_geometry_list(cable_geometry_number)%L_internal(1,1)=Lw*dl/2d0
+      cable_geometry_list(cable_geometry_number)%C_internal(1,1)=Cw*dl/2d0
+    
+      cable_geometry_list(cable_geometry_number)%Tv(1,1)= 1
+      cable_geometry_list(cable_geometry_number)%Tv(1,2)=-1
+      cable_geometry_list(cable_geometry_number)%Tv(2,1)= 0
+      cable_geometry_list(cable_geometry_number)%Tv(2,2)= 1
+      
+      cable_geometry_list(cable_geometry_number)%SC(1)=1
+      cable_geometry_list(cable_geometry_number)%SC(2)=0
+
+The inductance and capacitance matrix elements due to non-shielded conductors are set in:      
+create_bundle_LCRG_matrices.F90
+_________________________________________________________
+
+
+Volume material process
+
+_________________________________________________________
+
+
+Surface material process
+
+_________________________________________________________
+
+
+Output process
+
+_________________________________________________________
+
+
+Excitation process
+
+_________________________________________________________
+
+
+Cell centre (scatter) process
+
+Each cell has a code, zero indicates a normal free space update, any other integer then points to
+information regarding any volume material present and any required output or excitation in the cell.
+
+_________________________________________________________
+
+
+Surface (connect) process
+
+Each cell face has a code, zero indicates a normal free space update, any other integer then points to
+information regarding any surface material present and any required output or excitation on the surface.
+

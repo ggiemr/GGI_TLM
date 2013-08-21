@@ -1,0 +1,16 @@
+ # csf
+   10000000.      2.00000000E+10  # frequency range of validity
+ # permittivity filter
+   1000000000000.0000       w normalisation constant
+           4    # a order, a coefficients follow below: 
+   159129.69899000000        105869614.58645448        15483609343.183748        170915785097.76102        116343122320.71945     
+           4    # b order, b coefficients follow below: 
+   1.0000000000000000        690538.64054000005        220628062.48424104        4202496584.3807459        17291890139.951378     
+   0.0000000000000000          # electric conductivity
+ # permeability filter
+    1.0000000000000000        # w normalisation constant
+            0   # a order, a coefficients follow below:
+    1.0000000000000000     
+            0   # b order, b coefficients follow below:
+    1.0000000000000000     
+    0.0000000000000000       # magnetic conductivity

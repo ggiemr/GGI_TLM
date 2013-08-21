@@ -1,0 +1,45 @@
+           3  Post processing option: Fourier Transform
+waveguide_straight.mode.tout
+           1
+lin
+   0.8000000E+10 fmin
+   0.1200000E+11 fmax
+             800 n_frequencies
+Ex1.fout
+           3  Post processing option: Fourier Transform
+waveguide_straight.mode.tout
+           2
+lin
+   0.8000000E+10 fmin
+   0.1200000E+11 fmax
+             800 n_frequencies
+Hy1.fout
+           3  Post processing option: Fourier Transform
+waveguide_straight.mode.tout
+           3
+lin
+   0.8000000E+10 fmin
+   0.1200000E+11 fmax
+             800 n_frequencies
+Ex2.fout
+           3  Post processing option: Fourier Transform
+waveguide_straight.mode.tout
+           4
+lin
+   0.8000000E+10 fmin
+   0.1200000E+11 fmax
+             800 n_frequencies
+Hy2.fout
+           9  Post processing option: Oneport analysis
+Ex1.fout
+           1
+Ex2.fout
+           1
+Hy1.fout
+           1
+Hy2.fout
+           1
+  0.001  port separation (m)
+  0.024  port midpoint to interface distamce (m)
+waveguide_straight.fout
+           0  Post processing option: Quit

@@ -1,0 +1,345 @@
+
+Mesh_outer_boundary_dimension
+0.0e-3 303.0e-3    0.0e-3 465.0e-3    0.0e-3 303.0e-3 
+
+Mesh_cell_dimension
+0.003    ! 3mm mesh
+
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+Point_list
+4   Number of points (integer)
+1       POINT_NUMBER 
+-18.0e-3 0.0e-3 50e-3
+0.0 -30.0 0.0
+0.120 0.126 0.120
+2       POINT_NUMBER 
+0.0e-3 0.0e-3 50e-3
+0.0 -30.0 0.0
+0.120 0.126 0.120
+3       POINT_NUMBER 
+18.0e-3 0.0e-3 50e-3
+0.0 -30.0 0.0
+0.120 0.126 0.120
+4       point_number (integer)
+101.5e-3 232.5e-3 101.5e-3   point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Line_list
+2   Number of lines
+1       LINE_NUMBER 
+straight_line2
+-18.0e-3 0.0e-3 50e-3    0.0e-3 0.0e-3 50e-3      line parameters 
+0.0 -30.0 0.0
+0.120 0.126 0.120
+2       LINE_NUMBER 
+straight_line2
+0.0e-3 0.0e-3 50e-3    18.0e-3 0.0e-3 50e-3      line parameters 
+0.0 -30.0 0.0
+0.120 0.126 0.120
+
+Surface_list
+4   Number of surfaces
+1       SURFACE_NUMBER 
+xplane
+151.5e-3 0.0e-3 0.0e-3    151.5e-3 465.0e-3 303.0e-3  surface parameters 
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       SURFACE_NUMBER 
+yplane
+0.0e-3 232.5e-3 0.0e-3 	  303.0e-3 232.5e-3 303.0e-3  surface parameters 
+0.0 0.0 0.0
+0.0 0.0 0.0
+3       SURFACE_NUMBER 
+zplane
+0.0e-3 	0.0e-3 151.5e-3   303.0e-3 465.0e-3 151.5e-3  surface parameters 
+0.0 0.0 0.0
+0.0 0.0 0.0
+4       SURFACE_NUMBER 
+rectangular_block
+44e-3 16e-3 110e-3  surface parameters 
+0.0 -30.0 0.0
+0.120 0.126 0.120
+
+Volume_list
+15   Number of volumes 
+1       VOLUME_NUMBER 
+tet_volume_mesh
+blood.msh
+1.0	     volume parameters (scale factor)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       VOLUME_NUMBER 
+tet_volume_mesh
+bone.msh
+1.0	     volume parameters (scale factor)
+0.0 0.0 0.0
+0.0 0.0 0.0
+3       VOLUME_NUMBER 
+tet_volume_mesh
+cartilage.msh
+1.0	     volume parameters (scale factor)
+0.0 0.0 0.0
+0.0 0.0 0.0
+4       VOLUME_NUMBER 
+tet_volume_mesh
+csf.msh
+1.0	     volume parameters (scale factor)
+0.0 0.0 0.0
+0.0 0.0 0.0
+5       VOLUME_NUMBER 
+tet_volume_mesh
+eyelens.msh
+1.0	     volume parameters (scale factor)
+0.0 0.0 0.0
+0.0 0.0 0.0
+6       VOLUME_NUMBER 
+tet_volume_mesh
+eyevitreous.msh
+1.0	     volume parameters (scale factor)
+0.0 0.0 0.0
+0.0 0.0 0.0
+7       VOLUME_NUMBER 
+tet_volume_mesh
+fat.msh
+1.0	     volume parameters (scale factor)
+0.0 0.0 0.0
+0.0 0.0 0.0
+8       VOLUME_NUMBER 
+tet_volume_mesh
+ganglia.msh
+1.0	     volume parameters (scale factor)
+0.0 0.0 0.0
+0.0 0.0 0.0
+9       VOLUME_NUMBER 
+tet_volume_mesh
+greymatter.msh
+1.0	     volume parameters (scale factor)
+0.0 0.0 0.0
+0.0 0.0 0.0
+10       VOLUME_NUMBER 
+tet_volume_mesh
+marrow.msh
+1.0	     volume parameters (scale factor)
+0.0 0.0 0.0
+0.0 0.0 0.0
+11       VOLUME_NUMBER 
+tet_volume_mesh
+mucousmembrane.msh
+1.0	     volume parameters (scale factor)
+0.0 0.0 0.0
+0.0 0.0 0.0
+12       VOLUME_NUMBER 
+tet_volume_mesh
+muscle.msh
+1.0	     volume parameters (scale factor)
+0.0 0.0 0.0
+0.0 0.0 0.0
+13       VOLUME_NUMBER 
+tet_volume_mesh
+neuron.msh
+1.0	     volume parameters (scale factor)
+0.0 0.0 0.0
+0.0 0.0 0.0
+14       VOLUME_NUMBER 
+tet_volume_mesh
+skin.msh
+1.0	     volume parameters (scale factor)
+0.0 0.0 0.0
+0.0 0.0 0.0
+15       VOLUME_NUMBER 
+tet_volume_mesh
+whitematter.msh
+1.0	     volume parameters (scale factor)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+
+Volume_material_list
+15   Number of volume materials (integer)
+1   VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/blood
+1       number of volumes
+1       volume list
+2   VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/bone
+1       number of volumes
+2       volume list
+3   VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/cartilage
+1       number of volumes
+3       volume list
+4   VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/csf
+1       number of volumes
+4       volume list
+5   VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/eyelens
+1       number of volumes
+5       volume list
+6   VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/eyevitreous
+1       number of volumes
+6       volume list
+7   VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/fat
+1       number of volumes
+7       volume list
+8   VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/ganglia
+1       number of volumes
+8       volume list
+9   VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/greymatter
+1       number of volumes
+9       volume list
+10   VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/marrow
+1       number of volumes
+10       volume list
+11   VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/mucousmembrane
+1       number of volumes
+11       volume list
+12   VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/muscle
+1       number of volumes
+12       volume list
+13   VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/neuron
+1       number of volumes
+13       volume list
+14   VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/skin
+1       number of volumes
+14       volume list
+15   VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/whitematter
+1       number of volumes
+15       volume list
+
+Cable_geometry_list
+1  number of cable geometries
+1  cable geometry number, Cable geometry type (file name) follows:
+CABLE_DIRECTORY/0.1mm_single_wire                                       
+
+Cable_list
+2  number of cables
+1  	CABLE NUMBER
+1 	cable geometry number
+1 	number of lines on cable route
+1 	cable line list
+1  	end 1 junction number
+2  	end 2 junction number
+2  	CABLE NUMBER
+1 	cable geometry number
+1 	number of lines on cable route
+2 	cable line list
+2  	end 1 junction number
+3  	end 2 junction number
+
+Cable_output_list
+1  number of cable_outputs
+1  CABLE OUTPUT NUMBER
+1  cable number
+2  closest point number
+
+Cable_junction_list
+3    number of junctions
+1    JUNCTION NUMBER
+1    junction point 
+1    number of internal connection nodes (n_int)
+1    number of cables
+1    cable list
+1    corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1   	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0   	Cable 1 voltage function source list
+0.0 	Cable 1 impedance list
+0	Number of internal impedances
+2   JUNCTION NUMBER
+2    junction point 
+1   number of internal connection nodes (n_int)
+2   number of cables
+1 2   cable list
+2 1   corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1   	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+1   	Cable 1 voltage source function list
+25.0 	Cable 1 impedance list
+1   	Cable 2 number of external conductors (n_ext)
+1   	Cable 2 P matrix: matrix (n_int rows* n_ext columns)
+1   	Cable 2 voltage source function list
+25.0 	Cable 2 impedance list
+0	Number of internal impedances
+3   JUNCTION NUMBER
+3    junction point  
+1   number of internal connection nodes (n_int)
+1   number of cables
+2   cable list
+2   corresponding cable end number list
+1   	Cable 2 number of external conductors (n_ext)
+1   	Cable 2 P matrix: matrix (n_int rows* n_ext columns)
+0   	Cable 2 voltage function source list
+0.0 	Cable 2 impedance list
+0	Number of internal impedances
+
+Excitation_function_list
+1              ! number of excitations
+1              ! EXCITATION NUMBER
+gaussian_step_sinusoid
+1.0 1e-9 3e-9 900e6 0.0       ! period 1.111ns
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+4		! output point
+Ez
+centre
+
+Output_surface_list
+3    		! number of output surfaces
+1		! OUTPUT SURFACE NUMBER
+1                 surface number
+1		! side of surface for output (+1 or -1)
+Emagnitude
+output_timestep_information
+0	! first output timestep
+2000	! last output timestep
+20	! output timestep interval
+2		! OUTPUT SURFACE NUMBER
+2                 surface number
+1		! side of surface for output (+1 or -1)
+Emagnitude
+output_timestep_information
+0	! first output timestep
+2000	! last output timestep
+20	! output timestep interval
+3		! OUTPUT SURFACE NUMBER
+3                 surface number
+1		! side of surface for output (+1 or -1)
+Emagnitude
+output_timestep_information
+0	! first output timestep
+2000	! last output timestep
+20	! output timestep interval
+
+Simulation_time
+10e-9

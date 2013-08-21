@@ -1,0 +1,20 @@
+# radius of PEC sphere      
+0.0
+# radius of coating
+1.0
+#  material filename 
+MATERIAL_DIRECTORY/debye_2.vmat      
+# thin_layer constant. set to 0 for no sheet, 1 to include sheet                    
+1
+# thin layer filename       
+MATERIAL_DIRECTORY/Rsheet=377.smat
+# frequency range 
+1e7 3e8 200  
+# theta range
+180.0 180.0 1   
+# phi range
+180.0 180.0 1      
+# number of terms in series solution
+50
+# output filename
+dielectric_ibc.rcs

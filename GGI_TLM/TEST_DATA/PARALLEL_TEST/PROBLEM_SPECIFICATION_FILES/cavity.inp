@@ -1,0 +1,51 @@
+
+Mesh_outer_boundary_dimension
+-0.05 0.05 -0.05 0.05 -1000.5 1000.5
+
+Mesh_cell_dimension
+0.10  ( 3*integer)
+
+Outer_boundary_reflection_coefficient
+-1.0 -1.0    1.0 1.0    -1.0 -1.0
+
+Point_list 
+2   Number of points (integer)
+1       POINT_NUMBER (integer)
+0.0 0.0 -5.0  excitation point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       POINT_NUMBER (integer)
+0.0 0.0 5.0   output point coordinates
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Excitation_function_list
+1            	! number of excitation functions
+1		! EXCITATION NUMBER
+gaussian
+1.0 0.25e-9 1e-9
+
+Excitation_point_list
+1	       ! number of output points
+1	       ! EXCITATION POINT NUMBER
+1	       ! excitation function number
+1	       ! excitation point
+Ex
+centre
+soft
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+2		! output point
+Ex
+centre
+output_timestep_information
+1      ! first output timestep
+10000    ! last output timestep
+1     ! output timestep interval
+
+Simulation_time
+0.2e-6
+1e-6
+

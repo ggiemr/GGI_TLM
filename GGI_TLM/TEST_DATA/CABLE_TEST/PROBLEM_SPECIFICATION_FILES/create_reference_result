@@ -1,0 +1,3 @@
+cp cable_test.cable_current.tout PROBLEM_SPECIFICATION_FILES/Reference_current.reference
+cp cable_test.field.tout PROBLEM_SPECIFICATION_FILES/Reference_field.reference
+

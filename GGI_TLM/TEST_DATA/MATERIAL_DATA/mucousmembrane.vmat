@@ -1,0 +1,16 @@
+ # mucousmembrane
+   10000000.      2.00000000E+10  # frequency range of validity
+ # permittivity filter
+   1000000000000.0000       w normalisation constant
+           4    # a order, a coefficients follow below: 
+   7097.1470600000002        7321486.1203969996        1234295098.5343113        14514515573.833843        11054775570.298275     
+           4    # b order, b coefficients follow below: 
+   1.0000000000000000        72618.308279999997        20866191.047034889        408615054.77240020        1719848838.5220163     
+   0.0000000000000000          # electric conductivity
+ # permeability filter
+    1.0000000000000000        # w normalisation constant
+            0   # a order, a coefficients follow below:
+    1.0000000000000000     
+            0   # b order, b coefficients follow below:
+    1.0000000000000000     
+    0.0000000000000000       # magnetic conductivity

@@ -1,0 +1,59 @@
+
+Mesh_outer_boundary_dimension
+-0.5 0.5 -1.0 1.0 -1.5 1.5
+
+Mesh_dimensions_in_cells
+10 20 30  ( 3*integer)
+
+Outer_boundary_reflection_coefficient
+-1.0 -1.0    -1.0 -1.0    -1.0 -1.0
+
+Point_list 
+2   Number of points (integer)
+1       POINT_NUMBER (integer)
+-0.25 -0.45 0.15  3 6 17  excitation point coordinates (cell 3 6 17)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       POINT_NUMBER (integer)
+0.15 -0.75 -0.15   7 3 14 output point coordinates (cell 7 3 14 )
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Excitation_function_list
+1            	! number of excitation functions
+1		! EXCITATION NUMBER
+impulse
+1.0 0.0
+
+#Excitation_point_list
+1	       ! number of output points
+1	       ! EXCITATION POINT NUMBER
+1	       ! excitation function number
+1	       ! excitation point
+Ex
+centre
+soft
+
+Mode_stir_surface_list
+1   Number of mode_stir_surfaces 
+1      MODE_STIR_SURFACE NUMBER
+0.999	! boundary condition voltage reflection coefficient 
+1.0    ! amplitude of random impulse excitation on the boundary
+1      ! number of geometric surfaces in this mode_stir_surface
+0      ! surface list
+1      ! surface orientation list
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+2		! output point
+Ex
+centre
+output_timestep_information
+1      ! first output timestep
+100000    ! last output timestep
+1     ! output timestep interval
+
+Simulation_time
+10e-6
+

@@ -1,0 +1,34 @@
+SETTING UP THE MAKEFILE
+
+The Makefile uses the file ../make_configuration_data in order to set things up for a particular system
+
+The following three definitions in the ../make_configuration_data file may have to be changed:
+
+# Name of fortran compiler. Try to use one that automatically links mpi eg mpif90.
+FC=mpif90.mpich2 
+
+# MPI_INCLUDE :This is the path to the file mpif.h 
+MPI_INCLUDE_PATH=/usr/include/mpich2
+
+# compilation flags. Here we compile with bounds check
+FLAGS= -D$(MODE) -cpp -fbounds-check -finit-real=nan -finit-integer=nan -J$(MOD_DIR) -I$(MOD_DIR) -I$(MPI_INCLUDE) 
+
+USING THE MAKEFILE
+
+The makefile will make either a sequential or parallel (mpi) version of the code.
+
+To make the parallel version:
+
+make PARALLEL_MODE=MPI
+
+To make the sequential version:
+
+make PARALLEL_MODE=SEQ
+
+The default (if you just use 'make') is PARALLEL_MODE=SEQ
+
+make clean : cleans everything except executables
+
+make clean_all : cleans everything including executables
+
+IMPORTANT NOTE: you must 'make clean' before switching from making MPI to SEQ or vice-versa (but not make clean_all)

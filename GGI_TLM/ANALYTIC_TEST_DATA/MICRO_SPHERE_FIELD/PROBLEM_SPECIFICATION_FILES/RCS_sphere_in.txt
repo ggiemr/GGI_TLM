@@ -1,0 +1,20 @@
+# radius of PEC sphere      
+0.0
+# radius of coating
+1.0e-6
+#  material filename 
+MATERIAL_DIRECTORY/micro_sphere_material.vmat      
+# thin_layer constant. set to 0 for no sheet, 1 to include sheet                    
+1
+# thin layer filename       
+MATERIAL_DIRECTORY/air.smat
+# frequency range 
+0.02e14 20e14 2000  
+# theta range
+180.0 180.0 1   
+# phi range
+180.0 180.0 1      
+# number of terms in series solution
+50
+# output filename
+micro_sphere.rcs

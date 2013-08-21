@@ -1,0 +1,49 @@
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+TEM_cell.volume_average_field.tout
+           1
+Ey.tout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+TEM_cell.volume_average_field.tout
+           3
+lin
+   1e8 		fmin
+   25e9 	fmax
+            1000 n_frequencies
+Ey1.fout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+TEM_cell.volume_average_field.tout
+           4
+lin
+   1e8 		fmin
+   25e9 	fmax
+            1000 n_frequencies
+Hx1.fout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+TEM_cell.volume_average_field.tout
+           1
+lin
+   1e8 		fmin
+   25e9 	fmax
+            1000 n_frequencies
+Ey2.fout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+TEM_cell.volume_average_field.tout
+           2
+lin
+   1e8 		fmin
+   25e9 	fmax
+            1000 n_frequencies
+Hx2.fout
+           9  Post processing option: Oneport analysis
+Ey1.fout
+           1
+Ey2.fout
+           1
+Hx1.fout
+           1
+Hx2.fout
+           1
+  0.2e-3  port separation (m)
+  2.5e-3  port midpoint to interface distamce (m)
+Resonant_absorber.fout
+           0  Post processing option: Quit

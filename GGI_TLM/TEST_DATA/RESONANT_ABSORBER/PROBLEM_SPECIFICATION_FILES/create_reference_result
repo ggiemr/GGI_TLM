@@ -1,0 +1,2 @@
+cp Ey.tout PROBLEM_SPECIFICATION_FILES/Ey.tout_ref
+cp Resonant_absorber.fout PROBLEM_SPECIFICATION_FILES/Resonant_absorber.fout_ref

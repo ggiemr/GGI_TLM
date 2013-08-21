@@ -1,0 +1,16 @@
+ # eyelens
+   10000000.      2.00000000E+10  # frequency range of validity
+ # permittivity filter
+   1000000000000.0000       w normalisation constant
+           4    # a order, a coefficients follow below: 
+   6455.4133200000006        6640095.0195006300        1037866249.7284431        11907880159.236301        10340592618.791302     
+           4    # b order, b coefficients follow below: 
+   1.0000000000000000        100685.74348999999        23083434.719148643        434257703.23833740        1786788650.7047908     
+   0.0000000000000000          # electric conductivity
+ # permeability filter
+    1.0000000000000000        # w normalisation constant
+            0   # a order, a coefficients follow below:
+    1.0000000000000000     
+            0   # b order, b coefficients follow below:
+    1.0000000000000000     
+    0.0000000000000000       # magnetic conductivity

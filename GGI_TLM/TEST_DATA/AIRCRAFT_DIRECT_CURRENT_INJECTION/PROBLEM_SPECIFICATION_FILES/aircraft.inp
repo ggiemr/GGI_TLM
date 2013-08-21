@@ -1,0 +1,445 @@
+
+Mesh_outer_boundary_dimension
+-24.0 24.0    -28.0 28.0    -12.0 12.0
+
+Mesh_cell_dimension
+0.25
+
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+Surface_list
+1   Number of surfaces (integer)
+1       SURFACE_NUMBER 
+triangulated_surface
+Boeing_767.msh
+0.002	1	     surface parameters (scale, reverse normal direction)
+10.0 12.0 0.0
+0.0 2.0 8.0
+
+Line_list
+32  number of lines
+1       LINE_NUMBER (integer) nose wire
+straight_line2
+-0.5499   21.0   3.6499   -0.4999 26.499 3.6     line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       LINE_NUMBER (integer)  tail wire
+straight_line2
+8.701 -22.4 2.1   8.301 -26.499 2.4      line parameters (n*real) 
+0.0 0.0 0.0
+0.0 0.0 0.0
+3       LINE_NUMBER (integer)  RETURN CONDUCTOR 1, NOSE END
+straight_line2
+-0.4999 26.499 3.6     -0.4999 20.0 -10.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+4       LINE_NUMBER (integer)  return conductor 1, centre
+straight_line2
+-0.4999 20.0 -10.0     -0.4999 -24.0 -10.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+5       LINE_NUMBER (integer)  return conductor 1, tail end
+straight_line2
+-0.4999 -24.0 -10.0     8.301 -26.499 2.4     line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+6       LINE_NUMBER (integer)  RETURN CONDUCTOR 2, NOSE END
+straight_line2
+-0.4999 26.499 3.6     9.8 20.0 -10.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+7       LINE_NUMBER (integer)  return conductor 2, centre
+straight_line2
+9.8 20.0 -10.0     9.8 -24.0 -10.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+8       LINE_NUMBER (integer)  return conductor 2, tail end
+straight_line2
+9.8 -24.0 -10.0     8.301 -26.499 2.4     line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+9       LINE_NUMBER (integer)  RETURN CONDUCTOR 3, NOSE END
+straight_line2
+-0.4999 26.499 3.6     19.8 20.0 -2.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+10       LINE_NUMBER (integer)  return conductor 3, centre
+straight_line2
+19.8 20.0 -2.0     19.8 -24.0 -2.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+11       LINE_NUMBER (integer)  return conductor 3, tail end
+straight_line2
+19.8 -24.0 -2.0     8.301 -26.499 2.4     line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+12       LINE_NUMBER (integer)  RETURN CONDUCTOR 4, NOSE END
+straight_line2
+-0.4999 26.499 3.6     19.8 20.0 10.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+13       LINE_NUMBER (integer)  return conductor 4, centre
+straight_line2
+19.8 20.0 10.0     19.8 -24.0 10.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+14       LINE_NUMBER (integer)  return conductor 4, tail end
+straight_line2
+19.8 -24.0 10.0     8.301 -26.499 2.4     line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+15       LINE_NUMBER (integer)  RETURN CONDUCTOR 5, NOSE END
+straight_line2
+-0.4999 26.499 3.6     9.8 20.0 10.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+16       LINE_NUMBER (integer)  return conductor 5, centre
+straight_line2
+9.8 20.0 10.0     9.8 -24.0 10.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+17       LINE_NUMBER (integer)  return conductor 5, tail end
+straight_line2
+9.8 -24.0 10.0     8.301 -26.499 2.4     line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+18       LINE_NUMBER (integer)  RETURN CONDUCTOR 6, NOSE END
+straight_line2
+-0.4999 26.499 3.6     -0.4999 20.0 10.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+19       LINE_NUMBER (integer)  return conductor 6, centre
+straight_line2
+-0.4999 20.0 10.0     -0.4999 -24.0 10.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+20       LINE_NUMBER (integer)  return conductor 6, tail end
+straight_line2
+-0.4999 -24.0 10.0     8.301 -26.499 2.4     line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+21       LINE_NUMBER (integer)  RETURN CONDUCTOR 7, NOSE END
+straight_line2
+-0.4999 26.499 3.6     -10.2 20.0 10.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+22       LINE_NUMBER (integer)  return conductor 7, centre
+straight_line2
+-10.2 20.0 10.0     -10.2 -24.0 10.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+23       LINE_NUMBER (integer)  return conductor 7, tail end
+straight_line2
+-10.2 -24.0 10.0     8.301 -26.499 2.4     line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+24       LINE_NUMBER (integer)  RETURN CONDUCTOR 8, NOSE END
+straight_line2
+-0.4999 26.499 3.6     -20.2 20.0 10.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+25       LINE_NUMBER (integer)  return conductor 8, centre
+straight_line2
+-20.2 20.0 10.0     -20.2 -24.0 10.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+26       LINE_NUMBER (integer)  return conductor 8, tail end
+straight_line2
+-20.2 -24.0 10.0     8.301 -26.499 2.4     line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+27       LINE_NUMBER (integer)  RETURN CONDUCTOR 9, NOSE END
+straight_line2
+-0.4999 26.499 3.6     -20.2 20.0 -2.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+28       LINE_NUMBER (integer)  return conductor 9, centre
+straight_line2
+-20.2 20.0 -2.0     -20.2 -24.0 -2.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+29       LINE_NUMBER (integer)  return conductor 9, tail end
+straight_line2
+-20.2 -24.0 -2.0     8.301 -26.499 2.4     line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+30       LINE_NUMBER (integer)  RETURN CONDUCTOR 10, NOSE END
+straight_line2
+-0.4999 26.499 3.6     -10.2 20.0 -10.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+31       LINE_NUMBER (integer)  return conductor 2, centre
+straight_line2
+-10.2 20.0 -10.0     -10.2 -24.0 -10.0    line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+32       LINE_NUMBER (integer)  return conductor 2, tail end
+straight_line2
+-10.2 -24.0 -10.0     8.301 -26.499 2.4     line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Point_list
+4   Number of points 
+1       POINT_NUMBER 
+-0.5499   21.0   3.6499 # Junction 1
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       POINT_NUMBER 
+8.701 -22.4 2.1  # Junction 2
+0.0 0.0 0.0
+0.0 0.0 0.0
+3       POINT_NUMBER 
+-0.4999 26.499 3.6 # Junction 3
+0.0 0.0 0.0
+0.0 0.0 0.0
+4       POINT_NUMBER 
+8.301 -26.499 2.4  # Junction 4
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Surface_material_list
+1   Number of surface materials (integer)
+1   SURFACE MATERIAL NUMBER
+PEC
+1       number of surfaces
+1       surface list
+1       surface orientation list
+
+Cable_geometry_list
+1  number of cable geometries
+1  CABLE GEOMETRY NUMBER, Cable geometry type (file name) follows:
+CABLE_DIRECTORY/1cm_single_wire 
+
+Cable_list
+12  number of cables
+1  CABLE NUMBER, NOSE CONNECTION
+1 cable geometry number 
+1 number of lines on cable route
+1  cable line list
+3  end 1 junction number
+1  end 2 junction number
+2  CABLE NUMBER, TAIL CONNECTION
+1 cable geometry number 
+1 number of lines on cable route
+2  cable line list
+2  end 1 junction number
+4  end 2 junction number
+3  CABLE NUMBER, RETURN CONDUCTOR 1
+1 cable geometry number 
+3 number of lines on cable route
+3 4 5  cable line list
+3  end 1 junction number
+4   end 2 junction number
+4  CABLE NUMBER, RETURN CONDUCTOR 2
+1 cable geometry number 
+3 number of lines on cable route
+6 7 8  cable line list
+3  end 1 junction number
+4   end 2 junction number
+5  CABLE NUMBER, RETURN CONDUCTOR 3
+1 cable geometry number 
+3 number of lines on cable route
+9 10 11  cable line list
+3  end 1 junction number
+4   end 2 junction number
+6  CABLE NUMBER, RETURN CONDUCTOR 4
+1 cable geometry number 
+3 number of lines on cable route
+12 13 14  cable line list
+3  end 1 junction number
+4   end 2 junction number
+7  CABLE NUMBER, RETURN CONDUCTOR 5
+1 cable geometry number 
+3 number of lines on cable route
+15 16 17  cable line list
+3  end 1 junction number
+4   end 2 junction number
+8  CABLE NUMBER, RETURN CONDUCTOR 6
+1 cable geometry number 
+3 number of lines on cable route
+18 19 20  cable line list
+3  end 1 junction number
+4   end 2 junction number
+9  CABLE NUMBER, RETURN CONDUCTOR 7
+1 cable geometry number 
+3 number of lines on cable route
+21 22 23  cable line list
+3  end 1 junction number
+4   end 2 junction number
+10  CABLE NUMBER, RETURN CONDUCTOR 8
+1 cable geometry number 
+3 number of lines on cable route
+24 25 26  cable line list
+3  end 1 junction number
+4   end 2 junction number
+11  CABLE NUMBER, RETURN CONDUCTOR 9
+1 cable geometry number 
+3 number of lines on cable route
+27 28 29  cable line list
+3  end 1 junction number
+4   end 2 junction number
+12  CABLE NUMBER, RETURN CONDUCTOR 10
+1 cable geometry number 
+3 number of lines on cable route
+30 31 32  cable line list
+3  end 1 junction number
+4   end 2 junction number
+
+Cable_junction_list
+4    number of junctions
+1    JUNCTION NUMBER
+1    junction point 
+1    number of internal connection nodes (n_int)
+1    number of cables
+1    cable list
+2    corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+1    	Cable 1 voltage function source list
+1E6 	Cable 1 impedance list
+0	Number of internal impedances
+FACE
+-1  boundary condition (-1 indicates V=0 i.e. connection to a surface)
+2    JUNCTION NUMBER
+2    junction point 
+1    number of internal connection nodes (n_int)
+1    number of cables
+2    cable list
+1    corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 1 voltage function source list
+0.0 	Cable 1 impedance list
+0	Number of internal impedances
+FACE
+-1  boundary condition (-1 indicates V=0 i.e. connection to a surface)
+3    JUNCTION NUMBER
+3    junction point 
+1    number of internal connection nodes (n_int)
+11  number of cables
+1 3 4 5 6 7 8 9 10 11 12  cable list
+1 1 1 1 1 1 1 1  1  1  1  corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 1 voltage function source list
+0.0 	Cable 1 impedance list
+1   	Cable 3 number of external conductors (n_ext)
+1  	Cable 3 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 3 voltage function source list
+0.0 	Cable 3 impedance list
+1   	Cable 4 number of external conductors (n_ext)
+1  	Cable 4 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 4 voltage function source list
+0.0 	Cable 4 impedance list
+1   	Cable 5 number of external conductors (n_ext)
+1  	Cable 5 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 5 voltage function source list
+0.0 	Cable 5 impedance list
+1   	Cable 6 number of external conductors (n_ext)
+1  	Cable 6 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 6 voltage function source list
+0.0 	Cable 6 impedance list
+1   	Cable 7 number of external conductors (n_ext)
+1  	Cable 7 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 7 voltage function source list
+0.0 	Cable 7 impedance list
+1   	Cable 8 number of external conductors (n_ext)
+1  	Cable 8 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 8 voltage function source list
+0.0 	Cable 8 impedance list
+1   	Cable 9 number of external conductors (n_ext)
+1  	Cable 9 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 9 voltage function source list
+0.0 	Cable 9 impedance list
+1   	Cable 10 number of external conductors (n_ext)
+1  	Cable 10 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 10 voltage function source list
+0.0 	Cable 10 impedance list
+1   	Cable 11 number of external conductors (n_ext)
+1  	Cable 11 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 11 voltage function source list
+0.0 	Cable 11 impedance list
+1   	Cable 12 number of external conductors (n_ext)
+1  	Cable 12 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 12 voltage function source list
+0.0 	Cable 12 impedance list
+0	Number of internal impedances
+4    JUNCTION NUMBER
+4    junction point 
+1    number of internal connection nodes (n_int)
+11  number of cables
+2 3 4 5 6 7 8 9 10 11 12  cable list
+2 2 2 2 2 2 2 2  2  2  2  corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 1 voltage function source list
+0.0 	Cable 1 impedance list
+1   	Cable 3 number of external conductors (n_ext)
+1  	Cable 3 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 3 voltage function source list
+0.0 	Cable 3 impedance list
+1   	Cable 4 number of external conductors (n_ext)
+1  	Cable 4 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 4 voltage function source list
+0.0 	Cable 4 impedance list
+1   	Cable 5 number of external conductors (n_ext)
+1  	Cable 5 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 5 voltage function source list
+0.0 	Cable 5 impedance list
+1   	Cable 6 number of external conductors (n_ext)
+1  	Cable 6 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 6 voltage function source list
+0.0 	Cable 6 impedance list
+1   	Cable 7 number of external conductors (n_ext)
+1  	Cable 7 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 7 voltage function source list
+0.0 	Cable 7 impedance list
+1   	Cable 8 number of external conductors (n_ext)
+1  	Cable 8 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 8 voltage function source list
+0.0 	Cable 8 impedance list
+1   	Cable 9 number of external conductors (n_ext)
+1  	Cable 9 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 9 voltage function source list
+0.0 	Cable 9 impedance list
+1   	Cable 10 number of external conductors (n_ext)
+1  	Cable 10 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 10 voltage function source list
+0.0 	Cable 10 impedance list
+1   	Cable 11 number of external conductors (n_ext)
+1  	Cable 11 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 11 voltage function source list
+0.0 	Cable 11 impedance list
+1   	Cable 12 number of external conductors (n_ext)
+1  	Cable 12 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 12 voltage function source list
+0.0 	Cable 12 impedance list
+0	Number of internal impedances
+
+#Excitation_function_list
+1              ! Number of excitations
+1              ! EXCITATION NUMBER
+double_exponential
+1.0 1e-8 0.25e-6 1.0
+
+Excitation_function_list
+1              ! Number of excitations
+1              ! EXCITATION NUMBER
+gaussian
+1.0 1e-8 3e-8
+
+Output_surface_list
+1    		! number of output surfaces
+1		! OUTPUT SURFACE NUMBER
+1                 surface number
+-1		! side of surface for output (+1 or -1)
+Jmagnitude
+output_timestep_information
+0	! first output timestep
+1000	! last output timestep
+10	! output timestep interval
+
+Simulation_time
+4e-7

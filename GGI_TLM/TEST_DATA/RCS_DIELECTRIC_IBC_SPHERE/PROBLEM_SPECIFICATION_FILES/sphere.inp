@@ -1,0 +1,89 @@
+
+Mesh_outer_boundary_dimension
+-3.0 3.0    -3.0 3.0    -3.0 3.0    
+
+Mesh_cell_dimension
+0.05
+
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+Volume_list
+1   Number of volumes (integer)
+1       VOLUME_NUMBER (integer)
+sphere 
+1.0       volume parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Surface_list
+2   Number of surfaces (integer)
+1       SURFACE_NUMBER (integer)
+sphere 
+1.0       surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       SURFACE_NUMBER (integer)
+rectangular_block
+3.2 3.2 3.2       surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Point_list
+1   Number of points (integer)
+1       point_number (integer)
+0.0 0.0 0.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Volume_material_list
+1   Number of volume materials (integer)
+1   VOLUME MATERIAL NUMBER
+Dispersive
+MATERIAL_DIRECTORY/debye_2
+1       number of volumes
+1       volume list
+
+Surface_material_list
+1   Number of surface materials (integer)
+1   SURFACE MATERIAL NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Rsheet=377
+1       number of surfaces
+1       surface list
+1       surface orientation list
+
+Excitation_function_list
+1              ! number of excitations
+1              ! EXCITATION NUMBER
+gaussian
+1.0 1e-9 3e-9
+
+Huygens_surface
+0     surface number
+1     side of surface for excitation
+1     excitation function number
+0.0 0.0  wave vector Theta and Phi 
+1.0 0.0  Polarisation theta and Phi
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+1		! output point
+Ex
+centre
+output_timestep_information
+1      ! first output timestep
+1000    ! last output timestep
+1     ! output timestep interval
+
+RCS_surface
+2     surface number
+1     Side of surface for RCS output
+0.1e8 3e8 0.01e8 frequency range for far field calculation
+180.0  Theta 
+0.0  Phi
+
+Simulation_time
+7e-8
+

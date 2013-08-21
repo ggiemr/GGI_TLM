@@ -1,0 +1,26 @@
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+mtl.cable_current.tout
+           1
+log
+   1e3 fmin
+   1e8 fmax
+            1000 n_frequencies
+current_1.fout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+mtl.excitation.tout
+           1
+log
+   1e3 fmin
+   1e8 fmax
+            1000 n_frequencies
+excitation.fout
+           6  POST PROCESSING OPTION: COMBINE FREQUENCY DOMAIN DATA
+current_1.fout
+           1
+excitation.fout
+           1
+   -50000.0       constant, A
+   1.0000000000000000       constant, B
+   0.0000000000000000       constant, C
+crosstalk.fout
+           0  Post processing option: Quit

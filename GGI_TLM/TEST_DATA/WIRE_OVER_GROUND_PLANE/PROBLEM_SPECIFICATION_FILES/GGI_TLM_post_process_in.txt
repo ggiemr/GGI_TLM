@@ -1,0 +1,77 @@
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+wogp.excitation.tout
+           1
+log
+   1.000000E+06 fmin
+   0.1000000E+10 fmax
+            1000 n_frequencies
+excitation.fout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+wogp.cable_current.tout
+           1
+log
+   1.000000E+06 fmin
+   0.1000000E+10 fmax
+            1000 n_frequencies
+current_1.fout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+wogp.cable_current.tout
+           2
+log
+   1.000000E+06 fmin
+   0.1000000E+10 fmax
+            1000 n_frequencies
+current_2.fout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+wogp.cable_current.tout
+           3
+log
+   1.000000E+06 fmin
+   0.1000000E+10 fmax
+            1000 n_frequencies
+current_3.fout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+wogp.cable_current.tout
+           4
+log
+   1.000000E+06 fmin
+   0.1000000E+10 fmax
+            1000 n_frequencies
+current_4.fout
+           6  POST PROCESSING OPTION: COMBINE FREQUENCY DOMAIN DATA
+current_1.fout
+           1
+excitation.fout
+           1
+   1e5       constant, A
+   1.0000000000000000       constant, B
+   0.0000000000000000       constant, C
+voltage_1_norm.fout
+           6  POST PROCESSING OPTION: COMBINE FREQUENCY DOMAIN DATA
+current_2.fout
+           1
+excitation.fout
+           1
+   5e5       constant, A
+   1.0000000000000000       constant, B
+   0.0000000000000000       constant, C
+voltage_2_norm.fout
+           6  POST PROCESSING OPTION: COMBINE FREQUENCY DOMAIN DATA
+current_3.fout
+           1
+excitation.fout
+           1
+   5e5       constant, A
+   1.0000000000000000       constant, B
+   0.0000000000000000       constant, C
+voltage_3_norm.fout
+           6  POST PROCESSING OPTION: COMBINE FREQUENCY DOMAIN DATA
+current_4.fout
+           1
+excitation.fout
+           1
+   1e6       constant, A
+   1.0000000000000000       constant, B
+   0.0000000000000000       constant, C
+voltage_4_norm.fout
+           0  Post processing option: Quit

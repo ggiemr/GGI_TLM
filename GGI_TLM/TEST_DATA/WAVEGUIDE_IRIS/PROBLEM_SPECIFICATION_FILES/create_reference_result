@@ -1,0 +1,3 @@
+cp waveguide_iris.field.tout PROBLEM_SPECIFICATION_FILES/waveguide_iris.field.tout_ref
+cp waveguide_iris.fout PROBLEM_SPECIFICATION_FILES/waveguide_iris.fout_ref
+

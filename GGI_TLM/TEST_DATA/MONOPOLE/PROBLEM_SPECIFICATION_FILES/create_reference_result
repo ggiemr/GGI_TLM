@@ -1,0 +1,3 @@
+cp monopole.cable_current.tout  PROBLEM_SPECIFICATION_FILES/Reference_monopole_current.reference
+cp monopole.field.tout  PROBLEM_SPECIFICATION_FILES/Reference_monopole_field.reference
+

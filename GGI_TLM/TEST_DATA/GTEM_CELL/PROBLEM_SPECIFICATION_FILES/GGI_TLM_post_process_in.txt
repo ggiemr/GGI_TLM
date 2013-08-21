@@ -1,0 +1,34 @@
+           3  Post processing option: Fourier Transform
+GTEM_CELL.excitation.tout
+           1
+lin
+   10E3 fmin
+   5E+9 fmax
+            1000 n_frequencies
+port_1_voltage_source.fout
+           3  Post processing option: Fourier Transform
+GTEM_CELL.cable_current.tout
+           1
+lin
+   10E3 fmin
+   5E+9 fmax
+            1000 n_frequencies
+port_1_current.fout
+           6  Post processing option: Combine Frequency Domain Data
+port_1_current.fout
+           1
+port_1_voltage_source.fout
+           1
+ -50.0      constant, A
+   0.5      constant, B
+   1.0      constant, C
+GTEM_S11.fout
+           5  Post processing option: Create Animation
+GTEM_CELL.surface_field.tout
+           1  Output surface
+lin
+   0.0000000000000000     
+   0.0000000000000000     
+n
+           0  Output surface
+           0  Post processing option: Quit

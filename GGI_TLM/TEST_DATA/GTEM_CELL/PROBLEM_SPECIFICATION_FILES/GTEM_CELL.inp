@@ -1,0 +1,675 @@
+# GTEM cell model
+
+Mesh_outer_boundary_dimension
+-1.2 1.2 -0.02 1.45 -0.05 4.0
+
+Mesh_cell_dimension
+0.01   ( integer)
+
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+New_mesh_generation
+
+Surface_list
+9   Number of surfaces 
+1       SURFACE_NUMBER : Bottom surface
+quad
+-0.015 0.0 0.0    -1.07 0.0 3.90    1.07 0.0 3.90   0.015 0.0 0.0   
+0.0 0.0 0.0    
+0.0 0.0 0.0
+2       SURFACE_NUMBER : Top surface
+quad
+-0.015 0.03 0.0    -1.07 1.37 3.65    1.07 1.37 3.65   0.015 0.03 0.0   
+0.0 0.0 0.0    
+0.0 0.0 0.0
+3       SURFACE_NUMBER : Xmin side surface
+quad
+-0.015 0.0 0.0 -1.07 0.0 3.90   -1.07 1.37 3.65   -0.015 0.03 0.0
+0.0 0.0 0.0    
+0.0 0.0 0.0
+4       SURFACE_NUMBER : Xmax side surface
+quad
+0.015 0.0 0.0 1.07 0.0 3.90   1.07 1.37 3.65   0.015 0.03 0.0
+0.0 0.0 0.0    
+0.0 0.0 0.0
+5       SURFACE_NUMBER : Zmax end surface
+quad
+1.07 0.0 3.90   -1.07 0.0 3.90   -1.07 1.37 3.65   1.07 1.37 3.65    
+0.0 0.0 0.0    
+0.0 0.0 0.0
+6	SURFACE_NUMBER : Zmin end surface
+quad
+ -0.015 0.0 0.0  -0.015 0.03 0.0  0.015 0.03 0.0  0.015 0.0 0.0
+0.0 0.0 0.0    
+0.0 0.0 0.0
+7	SURFACE_NUMBER : sceptum 
+quad
+ -0.005 0.02 0.05    -0.61 0.90 3.43   0.61 0.90 3.43     0.005 0.02 0.05  
+0.0 0.0 0.0    
+0.0 0.0 0.0
+8	SURFACE_NUMBER : sceptum load
+quad
+ -0.61 0.90 3.43   -0.61 0.98 3.72   0.61 0.98 3.72   0.61 0.90 3.43   
+0.0 0.0 0.0    
+0.0 0.0 0.0
+9	SURFACE_NUMBER : field output surface
+xplane
+0.0 -0.02 0.10   0.0 1.45 4.0 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+
+Volume_list
+96   Number of volumes
+    1 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.82499999      0.12310097       3.8782940    
+    2 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.82499999      0.27082214       3.8522468    
+    3 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.82499999      0.41854331       3.8261995    
+    4 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.82499999      0.56626451       3.8001523    
+    5 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.82499999      0.71398562       3.7741051    
+    6 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.82499999      0.86170673       3.7480578    
+    7 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.82499999       1.1079087       3.7046456    
+    8 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.82499999       1.2556298       3.6785984    
+    9 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.67499995      0.12310097       3.8782940    
+   10 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.67499995      0.27082214       3.8522468    
+   11 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.67499995      0.41854331       3.8261995    
+   12 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.67499995      0.56626451       3.8001523    
+   13 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.67499995      0.71398562       3.7741051    
+   14 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.67499995      0.86170673       3.7480578    
+   15 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.67499995       1.1079087       3.7046456    
+   16 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.67499995       1.2556298       3.6785984    
+   17 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.52499998      0.12310097       3.8782940    
+   18 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.52499998      0.27082214       3.8522468    
+   19 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.52499998      0.41854331       3.8261995    
+   20 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.52499998      0.56626451       3.8001523    
+   21 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.52499998      0.71398562       3.7741051    
+   22 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.52499998      0.86170673       3.7480578    
+   23 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.52499998       1.1079087       3.7046456    
+   24 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.52499998       1.2556298       3.6785984    
+   25 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.37499997      0.12310097       3.8782940    
+   26 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.37499997      0.27082214       3.8522468    
+   27 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.37499997      0.41854331       3.8261995    
+   28 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.37499997      0.56626451       3.8001523    
+   29 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.37499997      0.71398562       3.7741051    
+   30 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.37499997      0.86170673       3.7480578    
+   31 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.37499997       1.1079087       3.7046456    
+   32 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.37499997       1.2556298       3.6785984    
+   33 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.22499996      0.12310097       3.8782940    
+   34 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.22499996      0.27082214       3.8522468    
+   35 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.22499996      0.41854331       3.8261995    
+   36 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.22499996      0.56626451       3.8001523    
+   37 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.22499996      0.71398562       3.7741051    
+   38 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.22499996      0.86170673       3.7480578    
+   39 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.22499996       1.1079087       3.7046456    
+   40 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -0.22499996       1.2556298       3.6785984    
+   41 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -7.49999881E-02  0.12310097       3.8782940    
+   42 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -7.49999881E-02  0.27082214       3.8522468    
+   43 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -7.49999881E-02  0.41854331       3.8261995    
+   44 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -7.49999881E-02  0.56626451       3.8001523    
+   45 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -7.49999881E-02  0.71398562       3.7741051    
+   46 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -7.49999881E-02  0.86170673       3.7480578    
+   47 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -7.49999881E-02   1.1079087       3.7046456    
+   48 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+ -7.49999881E-02   1.2556298       3.6785984    
+   49 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  7.50000477E-02  0.12310097       3.8782940    
+   50 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  7.50000477E-02  0.27082214       3.8522468    
+   51 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  7.50000477E-02  0.41854331       3.8261995    
+   52 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  7.50000477E-02  0.56626451       3.8001523    
+   53 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  7.50000477E-02  0.71398562       3.7741051    
+   54 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  7.50000477E-02  0.86170673       3.7480578    
+   55 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  7.50000477E-02   1.1079087       3.7046456    
+   56 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  7.50000477E-02   1.2556298       3.6785984    
+   57 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.22500008      0.12310097       3.8782940    
+   58 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.22500008      0.27082214       3.8522468    
+   59 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.22500008      0.41854331       3.8261995    
+   60 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.22500008      0.56626451       3.8001523    
+   61 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.22500008      0.71398562       3.7741051    
+   62 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.22500008      0.86170673       3.7480578    
+   63 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.22500008       1.1079087       3.7046456    
+   64 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.22500008       1.2556298       3.6785984    
+   65 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.37500006      0.12310097       3.8782940    
+   66 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.37500006      0.27082214       3.8522468    
+   67 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.37500006      0.41854331       3.8261995    
+   68 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.37500006      0.56626451       3.8001523    
+   69 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.37500006      0.71398562       3.7741051    
+   70 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.37500006      0.86170673       3.7480578    
+   71 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.37500006       1.1079087       3.7046456    
+   72 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.37500006       1.2556298       3.6785984    
+   73 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.52500004      0.12310097       3.8782940    
+   74 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.52500004      0.27082214       3.8522468    
+   75 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.52500004      0.41854331       3.8261995    
+   76 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.52500004      0.56626451       3.8001523    
+   77 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.52500004      0.71398562       3.7741051    
+   78 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.52500004      0.86170673       3.7480578    
+   79 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.52500004       1.1079087       3.7046456    
+   80 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.52500004       1.2556298       3.6785984    
+   81 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.67500001      0.12310097       3.8782940    
+   82 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.67500001      0.27082214       3.8522468    
+   83 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.67500001      0.41854331       3.8261995    
+   84 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.67500001      0.56626451       3.8001523    
+   85 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.67500001      0.71398562       3.7741051    
+   86 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.67500001      0.86170673       3.7480578    
+   87 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.67500001       1.1079087       3.7046456    
+   88 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.67500001       1.2556298       3.6785984    
+   89 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.82500011      0.12310097       3.8782940    
+   90 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.82500011      0.27082214       3.8522468    
+   91 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.82500011      0.41854331       3.8261995    
+   92 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.82500011      0.56626451       3.8001523    
+   93 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.82500011      0.71398562       3.7741051    
+   94 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.82500011      0.86170673       3.7480578    
+   95 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.82500011       1.1079087       3.7046456    
+   96 VOLUME_NUMBER
+pyramid_ram
+0.075 0.52  0.10 
+-170.0 0.0 0.0
+  0.82500011       1.2556298       3.6785984    
+
+Line_list
+1   Number of lines 
+1       LINE_NUMBER    !  feed wire
+straight_line2
+0.0 0.015 0.0    0.0 0.020 0.055   line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Point_list 
+3   Number of points (integer)
+1       POINT_NUMBER (integer)
+0.0 0.015 0.0    point coordinates  ! junction 1 point
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       POINT_NUMBER (integer)
+0.0 0.020 0.055    point coordinates  ! junction 2 point
+0.0 0.0 0.0
+0.0 0.0 0.0
+3       POINT_NUMBER (integer) 
+0.0 0.20 1.0    point coordinates  ! observation point
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Surface_material_list
+2   Number of surface materials 
+1   SURFACE MATERIAL NUMBER
+PEC
+7       number of surfaces
+1 2 3 4 5 6 7    surface list 
+1 1 1 1 1 1 1    surface orientation list
+2   SURFACE MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/GTEM_sceptum_load
+1       number of surfaces
+8    surface list
+1    surface orientation list
+
+Volume_material_list
+1   Number of volume materials 
+1   VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/ls22.2
+96       number of volumes
+1   2  3  4  5  6  7  8  9 10 
+11 12 13 14 15 16 17 18 19 20
+21 22 23 24 25 26 27 28 29 30
+31 32 33 34 35 36 37 38 39 40
+41 42 43 44 45 46 47 48 49 50
+51 52 53 54 55 56 57 58 59 60
+61 62 63 64 65 66 67 68 69 70
+71 72 73 74 75 76 77 78 79 80
+81 82 83 84 85 86 87 88 89 90
+91 92 93 94 95 96               ! volume list
+
+
+Cable_geometry_list
+1  number of cable geometries
+1  CABLE GEOMETRY NUMBER, Cable geometry type (file name) follows:
+CABLE_DIRECTORY/0.5mm_single_wire 
+
+Cable_list
+1  number of cables
+1  CABLE NUMBER
+1 cable geometry number
+1 number of lines on cable route
+1   cable line list
+1  end 1 junction number
+2  end 2 junction number
+
+cable_output_list
+1  number of cable_outputs
+1 CABLE OUTPUT NUMBER
+1 cable number
+1  closest point number
+
+Cable_junction_list
+2   number of junctions
+1   JUNCTION NUMBER
+1   junction point
+1   number of internal connection nodes (n_int)
+1   number of cables
+1   cable list
+1   corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+1    	Cable 1 voltage function source list
+50.0	Cable 1 impedance list
+0	Number of internal impedances
+FACE
+-1  boundary condition (-1 indicates V=0 i.e. connection to a surface)
+2   JUNCTION NUMBER
+2   junction point
+1   number of internal connection nodes (n_int)
+1   number of cables
+1   cable list
+2   corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 1 voltage function source list
+0.0	Cable 1 impedance list
+0	Number of internal impedances
+FACE
+-1  boundary condition (-1 indicates V=0 i.e. connection to a surface)
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+2		! output point
+Ey
+centre
+
+Excitation_function_list
+1            	! number of excitation functions
+1		! EXCITATION NUMBER
+gaussian
+1.0 0.8e-10 2.4e-10
+
+Output_surface_list
+1    		! number of output surfaces
+1		! OUTPUT SURFACE NUMBER
+9                 surface number
+-1		! side of surface for output (+1 or -1)
+Ey
+output_time_information
+0	! first output time
+2e-8	! last output time
+0.5e-9	! output time interval
+
+Simulation_time
+10e-8
+

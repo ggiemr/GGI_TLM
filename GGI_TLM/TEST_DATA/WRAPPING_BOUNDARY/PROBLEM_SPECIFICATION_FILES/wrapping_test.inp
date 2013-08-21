@@ -1,0 +1,95 @@
+
+Mesh_outer_boundary_dimension
+-2.0 2.0    -2.0 2.0    -2.0 2.0    
+
+Mesh_cell_dimension
+0.10
+
+Outer_boundary_reflection_coefficient
+1.0 1.0 1.0 1.0 1.0 1.0
+
+Wrapping_boundary_conditions
+1 1 1
+
+Surface_list
+3   Number of surfaces 
+1       SURFACE_NUMBER 
+xplane 
+0.0 -2.0 -2.0   0.0 2.0 2.0       surface parameters
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       SURFACE_NUMBER 
+yplane 
+-2.0 0.0 -2.0   2.0 0.0 2.0       surface parameters
+0.0 0.0 0.0
+0.0 0.0 0.0
+3       SURFACE_NUMBER 
+zplane 
+-2.0 -2.0 0.0   2.0 2.0 0.0       surface parameters
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Point_list
+2   Number of points (integer)
+1       point_number (integer)
+1.2 1.2 1.2    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       point_number (integer)
+0.0 0.0 0.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+
+Excitation_function_list
+1              ! number of excitations
+1              ! EXCITATION NUMBER
+gaussian_sinusoid
+1.0 1e-9 3e-9 1e8 0.0
+
+Excitation_point_list
+1	       ! number of output points
+1	       ! EXCITATION POINT NUMBER
+1	       ! excitation function number
+1	       ! excitation point
+Ex
+centre
+soft
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+1		! output point
+Ex
+centre
+
+Output_surface_list
+3    		! number of output surfaces
+1		! OUTPUT SURFACE NUMBER
+1                 surface number
+-1		! side of surface for output (+1 or -1)
+Emagnitude
+output_timestep_information
+0	! first output timestep
+120	! last output timestep
+4	! output timestep interval
+2		! OUTPUT SURFACE NUMBER
+2                 surface number
+-1		! side of surface for output (+1 or -1)
+Emagnitude
+output_timestep_information
+0	! first output timestep
+120	! last output timestep
+4	! output timestep interval
+3		! OUTPUT SURFACE NUMBER
+3                 surface number
+-1		! side of surface for output (+1 or -1)
+Emagnitude
+output_timestep_information
+0	! first output timestep
+120	! last output timestep
+4	! output timestep interval
+
+Simulation_time
+2e-8
+

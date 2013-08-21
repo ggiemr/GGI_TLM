@@ -1,0 +1,5 @@
+cp Current_1.tout PROBLEM_SPECIFICATION_FILES/Current_1.tout_ref
+cp Current_2.tout PROBLEM_SPECIFICATION_FILES/Current_2.tout_ref
+cp Current_3.tout PROBLEM_SPECIFICATION_FILES/Current_3.tout_ref
+cp Current_4.tout PROBLEM_SPECIFICATION_FILES/Current_4.tout_ref
+cp wire_over_ground.fout PROBLEM_SPECIFICATION_FILES/wire_over_ground.fout_ref

@@ -1,0 +1,2 @@
+cp GTEM_CELL.cable_current.tout PROBLEM_SPECIFICATION_FILES/GTEM_CELL.cable_current.tout_ref
+cp GTEM_S11.fout PROBLEM_SPECIFICATION_FILES/GTEM_S11.fout_ref

@@ -1,0 +1,38 @@
+1
+0.0          : incident angle (measured from normal)
+TE           : incident polarisation (TE/TM)
+1e6 1e9 1e6  : fmin,fmax fstep
+1	     : LAYER NUMBER
+THIN_LAYER     : layer type (MATERIAL or THIN_LAYER)
+/home/cs/EM_MODEL_DATA/MATERIAL_DATA/Rsheet=377
+
+
+
+2            : number of layers
+0.0          : incident angle (measured from normal)
+TE           : incident polarisation (TE/TM)
+1e6 1e9 1e6  : fmin,fmax fstep
+1	     : LAYER NUMBER
+MATERIAL     : layer type (MATERIAL or THIN_LAYER)
+0.05         : Thickness of material layer
+/home/cs/EM_MODEL_DATA/MATERIAL_DATA/eps_4
+2	     : LAYER NUMBER
+MATERIAL     : layer type (MATERIAL or THIN_LAYER)
+0.05         : Thickness of material layer
+/home/cs/EM_MODEL_DATA/MATERIAL_DATA/eps_4
+
+
+
+
+
+2            : number of layers
+0.0          : incident angle (measured from normal)
+TE           : incident polarisation (TE/TM)
+1e6 1e9 1e6  : fmin,fmax fstep
+1	     : LAYER NUMBER
+MATERIAL     : layer type (MATERIAL or THIN_LAYER)
+1e-3         : Thickness of material layer
+/home/cs/EM_MODEL_DATA/MATERIAL_DATA/mu_2
+2	     : LAYER NUMBER
+THIN_LAYER     : layer type (MATERIAL or THIN_LAYER)
+/home/cs/EM_MODEL_DATA/MATERIAL_DATA/cfc2_5_1000_1mm_3rd_order

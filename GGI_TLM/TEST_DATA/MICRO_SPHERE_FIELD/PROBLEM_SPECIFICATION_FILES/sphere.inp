@@ -1,0 +1,97 @@
+# 1um radius material sphere 
+
+Mesh_outer_boundary_dimension
+-2.9512195e-6 2.9512195e-6 -2.9512195e-6 2.9512195e-6 -2.9512195e-6 2.9512195e-6
+
+# Specify the mesh dimensions
+Mesh_dimensions_in_cells
+61 61 61
+121 121 121  ( 3*integer)
+
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+Volume_list
+1   Number of volumes 
+1       VOLUME_NUMBER
+sphere
+1.0e-6       Volume parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Surface_list
+3   Number of surfaces 
+1       SURFACE_NUMBER 
+rectangular_block
+5.0e-6 5.0e-6 5.0e-6     surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       SURFACE_NUMBER 
+rectangle
+6.0e-6 6.0e-6     surface parameters (n*real)
+90.0 0.0 0.0
+0.0 1e-8 0.0
+3       SURFACE_NUMBER 
+rectangle
+6.0e-6 6.0e-6     surface parameters (n*real)
+0.0 0.0 0.0
+0.0  0.0 1e-8
+
+Point_list
+1   Number of points 
+1       point_number 
+0.0 0.0 0.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Volume_material_list
+1   Number of volume materials (integer)
+1   VOLUME MATERIAL NUMBER
+Dispersive
+MATERIAL_DIRECTORY/micro_sphere_material
+1       number of volumes
+1       volume list
+
+Excitation_function_list
+1              ! number of excitations
+1              ! EXCITATION NUMBER
+gaussian
+1.0 6.67e-16 3.51e-15
+
+Huygens_surface
+1     surface number
+1     side of surface for excitation
+1     excitation function number
+0.0 0.0  wave vector Theta and Phi 
+1.0 0.0  Polarisation theta and Phi
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+1		! output point
+Ex
+centre
+
+Output_surface_list
+2    		! number of output surfaces
+1		! OUTPUT SURFACE NUMBER
+2                 surface number
+-1		! side of surface for output (+1 or -1)
+Ex
+output_timestep_information
+0	! first output timestep
+600	! last output timestep
+10	! output timestep interval
+2		! OUTPUT SURFACE NUMBER
+3                 surface number
+-1		! side of surface for output (+1 or -1)
+Ex
+output_timestep_information
+0	! first output timestep
+600	! last output timestep
+10	! output timestep interval
+
+Simulation_time
+40e-15
+
+

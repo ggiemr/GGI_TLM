@@ -1,0 +1,123 @@
+
+Mesh_outer_boundary_dimension
+-3.0 3.0 -3.0 3.0 -3.0 3.0
+
+Mesh_dimensions_in_cells
+60 60 60  ( 3*integer)
+
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+volume_list
+4   Number of volumes (integer)
+1       volume_number (integer)
+rectangular_block 
+1.0 0.8 0.6      volume parameters (n*real)
+0.0 0.0 0.0
+-1.6 -1.6 -1.6
+2       volume_number (integer)
+rectangular_block 
+1.0 0.8 0.6      volume parameters (n*real)
+0.0 0.0 0.0
+-1.6 1.6 -1.6
+3       volume_number (integer)
+rectangular_block 
+1.0 0.8 0.6      volume parameters (n*real)
+0.0 0.0 0.0
+1.6 1.6 -1.6
+4       volume_number (integer)
+rectangular_block 
+1.0 0.8 0.6      volume parameters (n*real)
+0.0 0.0 0.0
+1.6 -1.6 -1.6
+
+Surface_list
+4   Number of surfaces (integer)
+1       surface_number (integer)
+rectangular_block 
+1.0 0.8 0.6      volume parameters (n*real)
+0.0 0.0 0.0
+-1.6 -1.6 1.6
+2       surface_number (integer)
+rectangular_block 
+1.0 0.8 0.6      volume parameters (n*real)
+0.0 0.0 0.0
+-1.6 1.6 1.6
+3       surface_number (integer)
+rectangular_block 
+1.0 0.8 0.6      volume parameters (n*real)
+0.0 0.0 0.0
+1.6 1.6 1.6
+4       surface_number (integer)
+rectangular_block 
+1.0 0.8 0.6      volume parameters (n*real)
+0.0 0.0 0.0
+1.6 -1.6 1.6
+
+Point_list
+2   Number of points (integer)
+1       point_number (integer)
+1.0 1.0 1.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       point_number (integer)
+-1.0 -1.0 -1.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+volume_material_list
+2   Number of volume materials (integer)
+1   volume MATERIAL NUMBER
+Dispersive
+MATERIAL_DIRECTORY/epsr=1.5
+2       number of volumes
+1 3       volume list
+2   volume MATERIAL NUMBER
+Dispersive
+MATERIAL_DIRECTORY/debye_1
+2       number of volumes
+2 4       volume list
+
+Surface_material_list
+2   Number of surface materials (integer)
+1   SURFACE MATERIAL NUMBER
+PEC
+1       number of surfaces
+3       surface list
+1       surface orientation list
+2   SURFACE MATERIAL NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Dispersive_sheet
+3       number of surfaces
+1 2 4       surface list
+1 1 1      surface orientation list
+
+Excitation_function_list
+1              ! number of excitations
+1              ! EXCITATION NUMBER
+impulse
+1.0
+
+Excitation_point_list
+1	       ! number of output points
+1	       ! EXCITATION POINT NUMBER
+1	       ! excitation function number
+2	       ! excitation point
+Ex
+centre
+soft
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+1		! output point
+Ex
+centre
+output_timestep_information
+1      ! first output timestep
+200    ! last output timestep
+1     ! output timestep interval
+
+Simulation_time
+7e-8
+

@@ -1,0 +1,61 @@
+           1  Post processing option: Extract Time Domain Data
+wire_over_ground.cable_current.tout
+           1
+Current_1.tout
+           1  Post processing option: Extract Time Domain Data
+wire_over_ground.cable_current.tout
+           2
+Current_2.tout
+           1  Post processing option: Extract Time Domain Data
+wire_over_ground.cable_current.tout
+           3
+Current_3.tout
+           1  Post processing option: Extract Time Domain Data
+wire_over_ground.cable_current.tout
+           4
+Current_4.tout
+           3  Post processing option: Fourier Transform
+wire_over_ground.field.tout
+           1
+log
+   1e4 fmin
+   3e7 fmax
+             800 n_frequencies
+Ey1.fout
+           3  Post processing option: Fourier Transform
+wire_over_ground.field.tout
+           2
+log
+   1e4 fmin
+   3e7 fmax
+             800 n_frequencies
+Hx1.fout
+           3  Post processing option: Fourier Transform
+wire_over_ground.field.tout
+           3
+log
+   1e4 fmin
+   3e7 fmax
+             800 n_frequencies
+Ey2.fout
+           3  Post processing option: Fourier Transform
+wire_over_ground.field.tout
+           4
+log
+   1e4 fmin
+   3e7 fmax
+             800 n_frequencies
+Hx2.fout
+           9  Post processing option: Oneport analysis
+Ey1.fout
+           1
+Ey2.fout
+           1
+Hx1.fout
+           1
+Hx2.fout
+           1
+  1.0  port separation (m)
+  500.0  port midpoint to interface distamce (m)
+wire_over_ground.fout
+           0  Post processing option: Quit

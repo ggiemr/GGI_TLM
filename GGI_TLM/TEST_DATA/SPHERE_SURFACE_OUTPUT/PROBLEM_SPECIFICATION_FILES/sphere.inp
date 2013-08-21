@@ -1,0 +1,85 @@
+
+Mesh_outer_boundary_dimension
+-2.0 2.0    -2.0 2.0    -2.0 2.0    
+
+Mesh_dimensions_in_cells
+40 40 40  ( 3*integer)
+
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+Surface_list
+2   Number of surfaces (integer)
+1       SURFACE_NUMBER 
+sphere 
+1.5       surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       SURFACE_NUMBER 
+rectangle 
+4.0 4.0       surface parameters (n*real)
+90.0 0.0 0.0
+0.0 0.0 0.0
+
+Point_list
+1   Number of points (integer)
+1       point_number (integer)
+1.0 1.0 1.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Surface_material_list
+1   Number of surface materials (integer)
+1   SURFACE MATERIAL NUMBER
+PEC
+1       number of surfaces
+1       surface list
+1       surface orientation list
+
+
+Excitation_function_list
+1              ! number of excitations
+1              ! EXCITATION NUMBER
+gaussian
+1.0 1e-9 3e-9
+
+Huygens_surface
+0     surface number
+1     side of surface for excitation
+1     excitation function number
+0.0 0.0  wave vector Theta and Phi 
+1.0 0.0  Polarisation theta and Phi
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+1		! output point
+Ex
+centre
+output_timestep_information
+1      ! first output timestep
+200    ! last output timestep
+1     ! output timestep interval
+
+Output_surface_list
+2    		! number of output surfaces
+1		! OUTPUT SURFACE NUMBER
+1                 surface number
+1		! side of surface for output (+1 or -1)
+Hy
+output_timestep_information
+0	! first output timestep
+200	! last output timestep
+5	! output timestep interval
+2		! OUTPUT SURFACE NUMBER
+1                 surface number
+1		! side of surface for output (+1 or -1)
+Jmagnitude
+output_timestep_information
+0	! first output timestep
+200	! last output timestep
+5	! output timestep interval
+
+Simulation_time
+2e-8
+

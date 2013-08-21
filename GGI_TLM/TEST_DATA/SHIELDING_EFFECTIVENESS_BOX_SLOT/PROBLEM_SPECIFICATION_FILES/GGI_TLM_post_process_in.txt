@@ -1,0 +1,26 @@
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+box_slot.excitation.tout
+           1
+lin
+   1.000000E+06 fmin
+   300.0E+06 fmax
+            1000 n_frequencies
+excitation.fout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+box_slot.field.tout
+           1
+lin
+   1.000000E+06 fmin
+   300.0E+06 fmax
+            1000 n_frequencies
+Ey.fout
+           6  POST PROCESSING OPTION: COMBINE FREQUENCY DOMAIN DATA
+excitation.fout
+           1
+Ey.fout
+           1
+   1.0       constant, A
+   1.0       constant, B
+   0.0       constant, C
+Shielding_effectiveness.fout
+           0  Post processing option: Quit

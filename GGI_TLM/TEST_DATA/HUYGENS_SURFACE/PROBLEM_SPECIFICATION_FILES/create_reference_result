@@ -1,0 +1,8 @@
+cp Ex_centre.tout PROBLEM_SPECIFICATION_FILES/Ex_centre.tout_ref
+cp Ey_centre.tout PROBLEM_SPECIFICATION_FILES/Ey_centre.tout_ref
+cp Ez_centre.tout PROBLEM_SPECIFICATION_FILES/Ez_centre.tout_ref
+cp Hx_centre.tout PROBLEM_SPECIFICATION_FILES/Hx_centre.tout_ref
+cp Hy_centre.tout PROBLEM_SPECIFICATION_FILES/Hy_centre.tout_ref
+cp Hz_centre.tout PROBLEM_SPECIFICATION_FILES/Hz_centre.tout_ref
+
+

@@ -1,0 +1,29 @@
+mie: Calculates the RCS of spheres:
+PEC 
+PEC with IBC
+dielectric
+dielectric coated PEC
+dielectric coated PEC with thin layer
+
+There are some test input files in the directory TEST_DATA
+The frequency dependent material and thin layers are described using the same
+format as used in HY3D. The defining geometry files point to material and thin
+layer files for materials. 
+
+To set the core to PEC set the inner radius to 0
+For no dielectric coating set the coating radius to the core radius
+For A PEC with IBC set the thin layer flag to 2
+For a thin layer coating dielectric set the thin layer flag to 1
+
+The code outputs the field at the sphere centre for dielectric cases. The
+position can be changed by changing the defined output position in 
+
+ rcs.f
+ rcs_ibc.f
+ rcs_coated.f
+ rcs_coated_ibc.f
+ rcs_dielectric_ibc.f
+ 
+ the output format is:
+ 
+ f,theta,phi,sigma3d_db,real(Etheta),imag(Etheta),real(Ephi),imag(Ephi)

@@ -1,0 +1,6 @@
+sphere.excitation.tout
+1
+micro_sphere.rcs
+gaussian.fout
+micro_sphere.field
+8.54e-15

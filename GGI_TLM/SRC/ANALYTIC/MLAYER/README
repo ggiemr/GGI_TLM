@@ -1,0 +1,15 @@
+calculate the S parameters of multiple layers
+Layers may be characterised by either a frequency dependent material model
+or an impedance boundary model
+incident wave is TE/TM polarisation at a given angle
+output are S parameters over a specified frequency range
+
+Test data is in the input file:
+Mlayer.inp
+
+Run with
+
+Mlayer
+
+then input the name of the problem input file
+ 

@@ -1,0 +1,606 @@
+# TEM cell model
+
+# Define the problem space 
+Mesh_outer_boundary_dimension
+-0.125 0.125   -0.125 0.125   -0.175 0.175
+
+# Specify the mesh dimensions
+# (set to 1 for directions which do not exist in the problem space)
+Mesh_cell_dimension
+0.002   ( integer)
+
+# Specify the Solver technique
+# (string) "FDTD_E" "FDTD_H" "TLM" or ALL
+Solver_technique
+TLM
+
+#specify the outer boundary conditions (6*real)
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+Surface_list
+20   Number of surfaces (integer)
+1       SURFACE_NUMBER : outer conductor 1
+quad
+-0.0095 -0.0095 -0.160   -0.12 -0.12 0.0   -0.12  0.12 0.0   -0.0095  0.0095 -0.160 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+2       SURFACE_NUMBER : outer conductor 2
+quad
+ 0.0095 -0.0095 -0.160    0.12 -0.12 0.0    0.12  0.12 0.0    0.0095  0.0095 -0.160 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+3       SURFACE_NUMBER : outer conductor 3
+quad
+-0.0095 -0.0095 -0.160   -0.12 -0.12 0.0    0.12 -0.12 0.0    0.0095 -0.0095 -0.160 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+4       SURFACE_NUMBER : outer conductor 4
+quad
+-0.0095  0.0095 -0.160   -0.12  0.12 0.0    0.12  0.12 0.0    0.0095  0.0095 -0.160 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+5       SURFACE_NUMBER : outer conductor 5
+quad
+-0.0095 -0.0095  0.160   -0.12 -0.12 0.0   -0.12  0.12 0.0   -0.0095  0.0095  0.160 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+6       SURFACE_NUMBER : outer conductor 6
+quad
+ 0.0095 -0.0095  0.160    0.12 -0.12 0.0    0.12  0.12 0.0    0.0095  0.0095  0.160 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+7       SURFACE_NUMBER : outer conductor 7
+quad
+-0.0095 -0.0095  0.160   -0.12 -0.12 0.0    0.12 -0.12 0.0    0.0095 -0.0095  0.160 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+8       SURFACE_NUMBER : outer conductor 8
+quad
+-0.0095  0.0095  0.160   -0.12  0.12 0.0    0.12  0.12 0.0    0.0095  0.0095  0.160 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+9       SURFACE_NUMBER : outer conductor zmin end
+quad
+-0.0095  -0.0095 -0.160   -0.0095  0.0095 -0.160    0.0095  0.0095 -0.160    0.0095  -0.0095 -0.160 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+10       SURFACE_NUMBER : outer conductor zmax end
+quad
+-0.0095  -0.0095  0.160   -0.0095  0.0095 0.160    0.0095  0.0095 0.160    0.0095  -0.0095  0.160 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+11       SURFACE_NUMBER : sceptum 1
+quad
+-0.0005 -0.007 -0.15250   -0.0005 -0.10125 0.0   -0.0005  0.10125 0.0   -0.0005  0.007 -0.15250 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+12       SURFACE_NUMBER : sceptum 2
+quad
+ 0.0005 -0.007 -0.15250    0.0005 -0.10125 0.0    0.0005  0.10125 0.0    0.0005  0.007 -0.15250 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+13       SURFACE_NUMBER : sceptum 3
+quad
+-0.0005 -0.007 -0.15250   -0.0005 -0.10125 0.0    0.0005 -0.10125 0.0    0.0005 -0.007 -0.15250 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+14       SURFACE_NUMBER : sceptum 4
+quad
+-0.0005  0.007 -0.15250   -0.0005  0.10125 0.0    0.0005  0.10125 0.0    0.0005  0.007 -0.15250 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+15       SURFACE_NUMBER : sceptum 5
+quad
+-0.0005 -0.007  0.15250   -0.0005 -0.10125 0.0   -0.0005  0.10125 0.0   -0.0005  0.007  0.15250 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+16       SURFACE_NUMBER : sceptum 6
+quad
+ 0.0005 -0.007  0.15250    0.0005 -0.10125 0.0    0.0005  0.10125 0.0    0.0005  0.007  0.15250 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+17       SURFACE_NUMBER : sceptum 7
+quad
+-0.0005 -0.007  0.15250   -0.0005 -0.10125 0.0    0.0005 -0.10125 0.0    0.0005 -0.007  0.15250 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+18       SURFACE_NUMBER : sceptum 8
+quad
+-0.0005  0.007  0.15250   -0.0005  0.10125 0.0    0.0005  0.10125 0.0    0.0005  0.007  0.15250 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+19       SURFACE_NUMBER : sceptum zmin end
+quad
+-0.0005  -0.007 -0.15250   -0.0005  0.007 -0.15250    0.0005  0.007 -0.15250    0.0005  -0.007 -0.15250 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+20       SURFACE_NUMBER : sceptum zmax end
+quad
+-0.0005  -0.007  0.15250   -0.0005  0.007 0.15250    0.0005  0.007 0.15250    0.0005  -0.007  0.15250 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+
+Volume_list
+24   Number of volumes (integer)
+1       VOLUME_NUMBER : Sample 1
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  -0.040  -0.024 
+2       VOLUME_NUMBER : Sample 2
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  -0.024  -0.024 
+3       VOLUME_NUMBER : Sample 3
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  -0.008  -0.024 
+4       VOLUME_NUMBER : Sample 4
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  0.008  -0.024 
+5       VOLUME_NUMBER : Sample 5
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  0.024  -0.024 
+6       VOLUME_NUMBER : Sample 6
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  0.040  -0.024 
+7       VOLUME_NUMBER : Sample 7
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  -0.040  -0.008
+8       VOLUME_NUMBER : Sample 8
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  -0.024  -0.008 
+9       VOLUME_NUMBER : Sample 9
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  -0.008  -0.008 
+10       VOLUME_NUMBER : Sample 10
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  0.008  -0.008 
+11       VOLUME_NUMBER : Sample 11
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  0.024  -0.008 
+12       VOLUME_NUMBER : Sample 12
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  0.040  -0.008 
+13       VOLUME_NUMBER : Sample 13
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  -0.040  0.008 
+14       VOLUME_NUMBER : Sample 14
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  -0.024  0.008 
+15       VOLUME_NUMBER : Sample 15
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  -0.008  0.008 
+16       VOLUME_NUMBER : Sample 16
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  0.008  0.008 
+17       VOLUME_NUMBER : Sample 17
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  0.024  0.008 
+18       VOLUME_NUMBER : Sample 18
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  0.040  0.008 
+19       VOLUME_NUMBER : Sample 19
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  -0.040  0.024 
+20       VOLUME_NUMBER : Sample 20
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  -0.024  0.024 
+21       VOLUME_NUMBER : Sample 21
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  -0.008  0.024 
+22       VOLUME_NUMBER : Sample 22
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  0.008  0.024 
+23       VOLUME_NUMBER : Sample 23
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  0.024  0.024 
+24       VOLUME_NUMBER : Sample 24
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.007  0.040  0.024 
+
+Line_list
+2   Number of lines (integer)
+1       LINE_NUMBER (integer)   !  source end wire
+straight_line2
+0.0 0.0 -0.160   0.0 0.0 -0.15250   line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       LINE_NUMBER (integer)   ! load end wire
+straight_line2
+0.0 0.0 0.15250    0.0 0.0 0.160   line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Point_list 
+4   Number of points (integer)
+1       POINT_NUMBER (integer)
+0.0 0.0 -0.160    point coordinates (n*real)  ! junction 1 point
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       POINT_NUMBER (integer)
+0.0 0.0 -0.15250    point coordinates (n*real)  ! junction 2 point
+0.0 0.0 0.0
+0.0 0.0 0.0
+3       POINT_NUMBER (integer)
+0.0 0.0 0.15250    point coordinates (n*real)  ! junction 3 point
+0.0 0.0 0.0
+0.0 0.0 0.0
+4       POINT_NUMBER (integer)
+0.0 0.0 0.160    point coordinates (n*real)  ! junction 4 point and cable output point
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Surface_material_list
+1   Number of surface materials (integer)
+1   SURFACE MATERIAL NUMBER
+PEC
+20       number of surfaces
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 surface list
+1 1 1 1 1 1 1 1 1  1  1  1  1  1  1  1  1  1  1  1 surface orientation list
+
+Volume_material_list
+24   Number of volume materials (integer)
+1   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+1 volume list
+2   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+2 volume list
+3   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+3 volume list
+4   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+4 volume list
+5   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+5 volume list
+6   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+6 volume list
+7   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+7 volume list
+8   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+8 volume list
+9   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+9 volume list
+10   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+10 volume list
+11   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+11 volume list
+12   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+12 volume list
+13   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+13 volume list
+14   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+14 volume list
+15   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+15 volume list
+16   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+16 volume list
+17   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+17 volume list
+18   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+18 volume list
+19   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+19 volume list
+20   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+20 volume list
+21   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+21 volume list
+22   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+22 volume list
+23   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+23 volume list
+24   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/Biological_sample_material
+1       number of volumes
+24 volume list
+
+
+Cable_geometry_list
+1  number of cable geometries
+1  CABLE GEOMETRY NUMBER, Cable geometry type (file name) follows:
+CABLE_DIRECTORY/0.5mm_single_wire                                    
+
+cable_list
+2  number of cables
+1  CABLE NUMBER
+1 cable geometry number
+1 number of lines on cable route
+1   cable line list
+1  end 1 junction number
+2  end 2 junction number
+2  CABLE NUMBER
+1 cable geometry number
+1 number of lines on cable route
+2   cable line list
+3  end 1 junction number
+4  end 2 junction number
+
+cable_output_list
+2  number of cable_outputs
+1 CABLE OUTPUT NUMBER
+1 cable number
+1  closest point number
+2 CABLE OUTPUT NUMBER
+2 cable number
+4  closest point number
+
+Cable_junction_list
+4   number of junctions
+1   JUNCTION NUMBER
+1   junction point
+1   number of internal connection nodes (n_int)
+1   number of cables
+1   cable list
+1   corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+1    	Cable 1 voltage function source list
+50.0	Cable 1 impedance list
+0	Number of internal impedances
+FACE
+-1  boundary condition (-1 indicates V=0 i.e. connection to a surface)
+2   JUNCTION NUMBER
+2   junction point
+1   number of internal connection nodes (n_int)
+1   number of cables
+1   cable list
+2   corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 1 voltage function source list
+0.0	Cable 1 impedance list
+0	Number of internal impedances
+FACE
+-1  boundary condition (-1 indicates V=0 i.e. connection to a surface)
+3   JUNCTION NUMBER
+3   junction point
+1   number of internal connection nodes (n_int)
+1   number of cables
+2   cable list
+1   corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 1 voltage function source list
+0.0	Cable 1 impedance list
+0	Number of internal impedances
+FACE
+-1  boundary condition (-1 indicates V=0 i.e. connection to a surface)
+4   JUNCTION NUMBER
+4   junction point
+1   number of internal connection nodes (n_int)
+1   number of cables
+2   cable list
+2   corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 1 voltage function source list
+50.0	Cable 1 impedance list
+0	Number of internal impedances
+FACE
+-1  boundary condition (-1 indicates V=0 i.e. connection to a surface)
+
+Excitation_function_list
+1            	! number of excitation functions
+1		! EXCITATION NUMBER
+gaussian
+1.0 1e-10 5e-10
+
+SAR_volume_list
+24 ! number of SAR volumes
+1  ! SAR VOLUME NUMBER
+1  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+2  ! SAR VOLUME NUMBER
+2  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+3  ! SAR VOLUME NUMBER
+3  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+4  ! SAR VOLUME NUMBER
+4  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+5  ! SAR VOLUME NUMBER
+5  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+6  ! SAR VOLUME NUMBER
+6  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+7  ! SAR VOLUME NUMBER
+7  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+8  ! SAR VOLUME NUMBER
+8  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+9  ! SAR VOLUME NUMBER
+9  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+10  ! SAR VOLUME NUMBER
+10  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+11  ! SAR VOLUME NUMBER
+11  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+12  ! SAR VOLUME NUMBER
+12  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+13  ! SAR VOLUME NUMBER
+13  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+14  ! SAR VOLUME NUMBER
+14  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+15  ! SAR VOLUME NUMBER
+15  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+16  ! SAR VOLUME NUMBER
+16  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+17  ! SAR VOLUME NUMBER
+17  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+18  ! SAR VOLUME NUMBER
+18  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+19  ! SAR VOLUME NUMBER
+19  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+20  ! SAR VOLUME NUMBER
+20  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+21  ! SAR VOLUME NUMBER
+21  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+22  ! SAR VOLUME NUMBER
+22  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+23  ! SAR VOLUME NUMBER
+23  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+24  ! SAR VOLUME NUMBER
+24  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+
+Output_time_interval
+time
+1e-10
+
+Simulation_time
+5e-8
+

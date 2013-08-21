@@ -1,0 +1,16 @@
+# dielectric permittivity 1.0, conductivity 1e-6 S/m
+0.0 1e20  # frequency range of validity
+# permittivity filter
+1.0 # wnormalisation constant
+0   # a order
+1.0 # a coefficients
+0   # b order
+1.0 # b coefficients
+1e-6  # electric conductivity
+# permeability filter
+1.0 # wnormalisation constant
+0   # a order
+1.0 # a coefficients
+0   # b order
+1.0 # b coefficients
+0.0  # magnetic conductivity

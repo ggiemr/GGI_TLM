@@ -1,0 +1,4 @@
+cp power_calc.field.tout PROBLEM_SPECIFICATION_FILES/power_calc.field.tout_ref
+cp power_calc.frequency_domain_power_surface.fout PROBLEM_SPECIFICATION_FILES/power_calc.frequency_domain_power_surface.fout_ref
+cp TCS.fout PROBLEM_SPECIFICATION_FILES/TCS.fout_ref
+

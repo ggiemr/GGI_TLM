@@ -1,0 +1,4 @@
+cp filter.cable_current.tout PROBLEM_SPECIFICATION_FILES/filter.cable_current.tout_ref
+cp filter_S11.fout PROBLEM_SPECIFICATION_FILES/filter_S11.fout_ref
+cp filter_S21.fout PROBLEM_SPECIFICATION_FILES/filter_S21.fout_ref
+

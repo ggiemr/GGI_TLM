@@ -1,0 +1,179 @@
+
+echo "Automatic testing of RCS_Sphere"
+echo " "
+
+TEST_CASE_LIST="\
+MICRO_SPHERE_FIELD \
+ "
+ 
+EXECUTABLE_NAME="GGI_RCS_sphere"
+
+EXECUTABLE_NAME2="GGI_near_field_convolution"
+  
+CLEANING_LIST="\
+progress \
+sed_command \
+*.plt \
+*.txt \
+*.jpeg \
+*.field \
+*.tout \
+*.rcs \
+*.jpg \
+*.fout \
+"
+
+echo " EXECUTABLE_DIRECTORY: ${EXECUTABLE_DIR} "
+ 
+if [ "$#" = "0" ] ; then
+echo "
+Run using the following command:
+
+run_automatic_test action
+
+action is the process to run:
+action=run NAME           : run the test case
+action=clean NAME         : remove all existing results
+action=plot NAME          : plot the results to screen
+action=plot_jpg NAME      : plot the results to jpeg file(s)
+action=plot_ref NAME      : plot the results against reference results to screen
+action=plot_ref_jpg NAME  : plot the results against reference results to jpeg file(s)
+action=reference  NAME    : update the GGI_TLM reference results with the current set of results
+
+NAME can be:
+ one of the existing test cases (directory name) 
+ or leave blank which also runs the whole set
+
+Existing test cases are:
+
+$TEST_CASE_LIST"
+  
+else
+
+# set defaults...
+  ACTION=$1
+  NAME=$2
+  
+  source ../run_test_case_include
+  
+  for TEST_CASE in $TEST_CASE_LIST
+  do
+
+# get the run_name 
+     RUN_NAME=${TEST_CASE}
+     echo "TEST_CASE:${TEST_CASE}"
+     echo "RUN_NAME:${RUN_NAME}"
+     
+     PROGRESS_FILENAME='progress'
+     
+     if [ "$ACTION" = "run" ] ; then
+
+# clean any existing problem specification files   
+       rm -f $CLEANING_LIST
+# clean any existing output files     
+       rm -f $RUN_NAME.*
+
+# RUN RCS_sphere #
+	             
+       echo "{
+              s/MATERIAL_DIRECTORY/${MATERIAL_DIRECTORY}/g
+	      }" > sed_command
+       sed -f sed_command PROBLEM_SPECIFICATION_FILES/RCS_sphere_in.txt > ./RCS_sphere_in.txt      
+    
+       echo "RCS_sphere_in.txt" > problem_name.txt
+    
+       echo "${EXECUTABLE_DIR}/${EXECUTABLE_NAME} < problem_name.txt"
+    
+       $SEQ_RUN_COMMAND ${EXECUTABLE_DIR}/${EXECUTABLE_NAME} < problem_name.txt
+       
+       read LINE < $PROGRESS_FILENAME
+       if [ "$LINE" = "FINISHED: ${EXECUTABLE_NAME}" ] ; then
+         echo "STATUS: $LINE"
+       else
+         echo "Failed: $TEST_CASE: ${EXECUTABLE_NAME}"
+         exit 1
+       fi
+
+# RUN near_field_convolution #	             
+    
+       cp PROBLEM_SPECIFICATION_FILES/sphere.excitation.tout .
+       cp PROBLEM_SPECIFICATION_FILES/near_field_convolution_in.txt .
+    
+#       echo "near_field_convolution_in.txt" > problem_name.txt      
+#       echo "${EXECUTABLE_DIR}/${EXECUTABLE_NAME2} < problem_name.txt"
+    
+       echo "${EXECUTABLE_DIR}/${EXECUTABLE_NAME2} < near_field_convolution_in.txt"
+       $SEQ_RUN_COMMAND ${EXECUTABLE_DIR}/${EXECUTABLE_NAME2} < near_field_convolution_in.txt
+       
+       read LINE < $PROGRESS_FILENAME
+       if [ "$LINE" = "FINISHED: ${EXECUTABLE_NAME2}" ] ; then
+         echo "STATUS: $LINE"
+       else
+         echo "Failed: $TEST_CASE: ${EXECUTABLE_NAME2}"
+         exit 1
+       fi
+     
+     elif [ "$ACTION" = "clean" ] ; then
+
+# clean any existing problem specification files   
+       rm -f $CLEANING_LIST
+    
+     elif [ "$ACTION" = "plot" ] ; then
+          
+       echo "{
+              s/#PAUSE/ /g
+	      }" > sed_command
+
+       sed -f sed_command PROBLEM_SPECIFICATION_FILES/plot_result.plt > plot_result.plt
+       
+       gnuplot plot_result.plt
+    
+     elif [ "$ACTION" = "plot_jpg" ] ; then
+     
+       echo "{
+              s/#JPG/ /g
+              s/#OUTPUT_TO_FILE/ /g
+	      }" > sed_command
+
+       sed -f sed_command PROBLEM_SPECIFICATION_FILES/plot_result.plt > plot_result.plt
+       
+       gnuplot plot_result.plt
+       
+     elif [ "$ACTION" = "plot_ref" ] ; then
+        
+       echo "{
+              s/#PAUSE/ /g
+	      }" > sed_command
+
+       sed -f sed_command PROBLEM_SPECIFICATION_FILES/plot_result_with_reference.plt > plot_result_with_reference.plt
+       
+       gnuplot plot_result_with_reference.plt
+       
+     elif [ "$ACTION" = "plot_ref_jpg" ] ; then
+           
+       echo "{
+              s/#JPG/ /g
+              s/#OUTPUT_TO_FILE/ /g
+	      }" > sed_command
+
+       sed -f sed_command PROBLEM_SPECIFICATION_FILES/plot_result_with_reference.plt > plot_result_with_reference.plt
+       
+       gnuplot plot_result_with_reference.plt
+      
+     elif [ "$ACTION" = "reference" ] ; then
+     
+       PROBLEM_SPECIFICATION_FILES/create_reference_result       
+      
+     else 
+     
+       echo "Unknown action: $ACTION"      
+     
+     fi
+
+  done
+      
+fi
+
+exit 0
+# we have some arguments to run_automatic_test
+

@@ -1,0 +1,3 @@
+cp york_box.cable_current.tout PROBLEM_SPECIFICATION_FILES/york_box.cable_current.tout_ref
+cp york_box_S21.fout PROBLEM_SPECIFICATION_FILES/york_box_S21.fout_ref
+

@@ -1,0 +1,4 @@
+cp CFC.2.z11.fd_trial PROBLEM_SPECIFICATION_FILES/CFC.2.z11.fd_trial_ref
+cp CFC.2.z12.fd_trial PROBLEM_SPECIFICATION_FILES/CFC.2.z12.fd_trial_ref
+cp CFC.2.z21.fd_trial PROBLEM_SPECIFICATION_FILES/CFC.2.z21.fd_trial_ref
+cp CFC.2.z22.fd_trial PROBLEM_SPECIFICATION_FILES/CFC.2.z22.fd_trial_ref

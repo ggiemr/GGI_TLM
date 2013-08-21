@@ -1,0 +1,14 @@
+FD_cylindrical
+1		# number of conductors
+3		# NUMBER OF PARAMETERS
+0.001 		# parameter 1: conductor radius
+0.002 		# parameter 2: insulation radius
+1.0  		# parameter 3: permittivity of outer dielectric
+1		# NUMBER OF FILTERS
+# Filter 1: Wire impedance filter
+1.0e8 		# w normalisation constant
+0   		# a order
+2.5 		# a coefficients
+0   		# b order
+1.0 		# b coefficients
+

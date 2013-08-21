@@ -1,0 +1,285 @@
+# GTEM cell model
+
+Mesh_outer_boundary_dimension
+-0.605 0.605 -0.02 0.82 -0.05 2.15
+
+Mesh_cell_dimension
+0.01   ( integer)
+
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+Surface_list
+9   Number of surfaces 
+1       SURFACE_NUMBER : Bottom surface
+quad
+-0.015 0.0 0.0    -0.585 0.0 2.11    0.585 0.0 2.11   0.015 0.0 0.0   
+0.0 0.0 0.0    
+0.0 0.0 0.0
+2       SURFACE_NUMBER : Top surface
+quad
+-0.015 0.03 0.0    -0.585 0.78 1.98    0.585 0.78 1.98   0.015 0.03 0.0   
+0.0 0.0 0.0    
+0.0 0.0 0.0
+3       SURFACE_NUMBER : Xmin side surface
+quad
+-0.015 0.0 0.0 -0.585 0.0 2.11   -0.585 0.78 1.98   -0.015 0.03 0.0
+0.0 0.0 0.0    
+0.0 0.0 0.0
+4       SURFACE_NUMBER : Xmax side surface
+quad
+0.015 0.0 0.0 0.585 0.0 2.11   0.585 0.78 1.98   0.015 0.03 0.0
+0.0 0.0 0.0    
+0.0 0.0 0.0
+5       SURFACE_NUMBER : Zmax end surface
+quad
+0.585 0.0 2.11   -0.585 0.0 2.11   -0.585 0.78 1.98   0.585 0.78 1.98    
+0.0 0.0 0.0    
+0.0 0.0 0.0
+6	SURFACE_NUMBER : Zmin end surface
+quad
+ -0.015 0.0 0.0  -0.015 0.03 0.0  0.015 0.03 0.0  0.015 0.0 0.0
+0.0 0.0 0.0    
+0.0 0.0 0.0
+7	SURFACE_NUMBER : sceptum 
+quad
+ -0.005 0.02 0.05    -0.345 0.527 2.0    0.345 0.527 2.0    0.005 0.02 0.05  
+0.0 0.0 0.0    
+0.0 0.0 0.0
+8	SURFACE_NUMBER : sceptum load
+quad
+ -0.345 0.527 2.0   -0.345 0.527 2.02   0.345 0.527 2.02   0.345 0.527 2.0   
+0.0 0.0 0.0    
+0.0 0.0 0.0
+9	SURFACE_NUMBER : field output surface
+xplane
+0.0 -0.02 -0.05   0.0 0.82 2.15
+0.0 0.0 0.0    
+0.0 0.0 0.0
+
+Volume_list
+20   Number of volumes 
+1       volume_number : Pyramid RAM
+pyramid
+0.075 0.30   
+-170.0 0.0 0.0    
+-0.3 0.2635 2.005
+2       volume_number : Pyramid RAM
+pyramid
+0.075 0.30   
+-170.0 0.0 0.0    
+-0.15 0.2635 2.005
+3       volume_number : Pyramid RAM
+pyramid
+0.075 0.30   
+-170.0 0.0 0.0    
+0.0 0.2635 2.005
+4       volume_number : Pyramid RAM
+pyramid
+0.075 0.30   
+-170.0 0.0 0.0    
+0.15 0.2635 2.005
+5       volume_number : Pyramid RAM
+pyramid
+0.075 0.30   
+-170.0 0.0 0.0    
+0.30 0.2635 2.005
+6       volume_number : Pyramid RAM
+pyramid
+0.075 0.30   
+-170.0 0.0 0.0    
+-0.3 0.6835 1.99
+7       volume_number : Pyramid RAM
+pyramid
+0.075 0.30   
+-170.0 0.0 0.0    
+-0.15 0.6835 1.99
+8       volume_number : Pyramid RAM
+pyramid
+0.075 0.30   
+-170.0 0.0 0.0    
+0.0 0.6835 1.99
+9       volume_number : Pyramid RAM
+pyramid
+0.075 0.30   
+-170.0 0.0 0.0    
+0.15 0.6835 1.99
+10       volume_number : Pyramid RAM
+pyramid
+0.075 0.30   
+-170.0 0.0 0.0    
+0.30 0.6835 1.99
+11       volume_number : Pyramid RAM
+pyramid
+0.075 0.30   
+-170.0 0.0 0.0    
+-0.3 0.4135 2.005
+12       volume_number : Pyramid RAM
+pyramid
+0.075 0.30   
+-170.0 0.0 0.0    
+-0.15 0.4135 2.005
+13       volume_number : Pyramid RAM
+pyramid
+0.075 0.30   
+-170.0 0.0 0.0    
+0.0 0.4135 2.005
+14       volume_number : Pyramid RAM
+pyramid
+0.075 0.30   
+-170.0 0.0 0.0    
+0.15 0.4135 2.005
+15       volume_number : Pyramid RAM
+pyramid
+0.075 0.30   
+-170.0 0.0 0.0    
+0.30 0.4135 2.005
+16       volume_number : Pyramid RAM
+pyramid
+0.075 0.30   
+-170.0 0.0 0.0    
+-0.3 0.13 2.005
+17       volume_number : Pyramid RAM
+pyramid
+0.075 0.30   
+-170.0 0.0 0.0    
+-0.15 0.13 2.005
+18       volume_number : Pyramid RAM
+pyramid
+0.075 0.30   
+-170.0 0.0 0.0    
+0.0 0.13 2.005
+19       volume_number : Pyramid RAM
+pyramid
+0.075 0.30   
+-170.0 0.0 0.0    
+0.15 0.13 2.005
+20       volume_number : Pyramid RAM
+pyramid
+0.075 0.30   
+-170.0 0.0 0.0    
+0.30 0.13 2.005
+
+Line_list
+1   Number of lines 
+1       LINE_NUMBER    !  feed wire
+straight_line2
+0.0 0.015 0.0    0.0 0.020 0.055   line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Point_list 
+3   Number of points (integer)
+1       POINT_NUMBER (integer)
+0.0 0.015 0.0    point coordinates  ! junction 1 point
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       POINT_NUMBER (integer)
+0.0 0.020 0.055    point coordinates  ! junction 2 point
+0.0 0.0 0.0
+0.0 0.0 0.0
+3       POINT_NUMBER (integer) 
+0.0 0.20 1.0    point coordinates  ! observation point
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Surface_material_list
+2   Number of surface materials 
+1   SURFACE MATERIAL NUMBER
+PEC
+7       number of surfaces
+1 2 3 4 5 6 7    surface list 
+1 1 1 1 1 1 1    surface orientation list
+2   SURFACE MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/GTEM_sceptum_load
+1       number of surfaces
+8    surface list
+1    surface orientation list
+
+Volume_material_list
+1   Number of volume materials 
+1   VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/ls22.2
+20       number of volumes
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20   volume list
+
+
+Cable_geometry_list
+1  number of cable geometries
+1  CABLE GEOMETRY NUMBER, Cable geometry type (file name) follows:
+CABLE_DIRECTORY/0.5mm_single_wire 
+
+
+Cable_list
+1  number of cables
+1  CABLE NUMBER
+1 cable geometry number
+1 number of lines on cable route
+1   cable line list
+1  end 1 junction number
+2  end 2 junction number
+
+cable_output_list
+1  number of cable_outputs
+1 CABLE OUTPUT NUMBER
+1 cable number
+1  closest point number
+
+Cable_junction_list
+2   number of junctions
+1   JUNCTION NUMBER
+1   junction point
+1   number of internal connection nodes (n_int)
+1   number of cables
+1   cable list
+1   corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+1    	Cable 1 voltage function source list
+50.0	Cable 1 impedance list
+0	Number of internal impedances
+FACE
+-1  boundary condition (-1 indicates V=0 i.e. connection to a surface)
+2   JUNCTION NUMBER
+2   junction point
+1   number of internal connection nodes (n_int)
+1   number of cables
+1   cable list
+2   corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 1 voltage function source list
+0.0	Cable 1 impedance list
+0	Number of internal impedances
+FACE
+-1  boundary condition (-1 indicates V=0 i.e. connection to a surface)
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+2		! output point
+Ey
+centre
+
+Excitation_function_list
+1            	! number of excitation functions
+1		! EXCITATION NUMBER
+gaussian
+1.0 3e-10 10e-10
+
+Output_surface_list
+1    		! number of output surfaces
+1		! OUTPUT SURFACE NUMBER
+9                 surface number
+-1		! side of surface for output (+1 or -1)
+Ey
+output_time_information
+0	! first output time
+2e-8	! last output time
+0.5e-9	! output time interval
+
+Simulation_time
+2e-8
+

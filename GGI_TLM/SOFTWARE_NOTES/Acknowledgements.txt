@@ -1,0 +1,6 @@
+The GGI_TLM software made available here has been developed within the following projects:
+
+EPSRC/ BAE SYSTEMS Flaviir project
+EU Framework7 HIRF-SE project
+
+The software uses the EISPACK library, the source code of which is included in GGI_TLM.

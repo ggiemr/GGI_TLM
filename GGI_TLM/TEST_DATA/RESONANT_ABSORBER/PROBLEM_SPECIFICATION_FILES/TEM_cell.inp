@@ -1,0 +1,102 @@
+# TEM cell model # 0.3mm X 10mm X 10.5mm
+
+Mesh_outer_boundary_dimension
+-0.15e-3 0.15e-3 -5.0e-3 5e-3 0.0 10.5e-3
+
+Mesh_dimensions_in_cells
+3 100 105  ( 3*integer)
+
+Outer_boundary_reflection_coefficient
+1.0 1.0 1.0 1.0 0.0 0.0
+
+Wrapping_boundary_conditions
+1 1 0
+
+Volume_list
+3   Number of volumes 
+1       VOLUME_NUMBER 
+rectangular_block
+0.3e-3 10.0e-3 0.3e-3   volume parameters 
+0.0 0.0 0.0    
+0.0 0.0 10.15e-3
+2   VOLUME_NUMBER       ! Output volume 1
+rectangular_block
+0.3e-3 10.0e-3 0.1e-3   volume parameters 
+0.0 0.0 0.0
+0.0 0.0 7.55e-3
+3   VOLUME_NUMBER       ! Output volume 2
+rectangular_block
+0.3e-3 10.0e-3 0.1e-3   volume parameters 
+0.0 0.0 0.0
+0.0 0.0 7.35e-3
+
+Surface_list
+4   Number of surfaces 
+1   SURFACE_NUMBER 
+rectangle
+0.3e-3 10.0e-3   surface parameters 
+0.0 0.0 0.0
+0.0 0.0 10.3e-3
+2   SURFACE_NUMBER 
+rectangle
+0.3e-3 4.8e-3   surface parameters 
+0.0 0.0 0.0
+0.0 -2.6e-3 10.0e-3
+3   SURFACE_NUMBER 
+rectangle
+0.3e-3 4.9e-3   surface parameters
+0.0 0.0 0.0
+0.0 2.55e-3 10.0e-3
+4   SURFACE_NUMBER      ! Huygens surface
+rectangle
+0.3e-3 10.0e-3   surface parameters 
+0.0 0.0 0.0
+0.0 0.0 2.5e-3
+
+Volume_material_list
+1   Number of volume materials (integer)
+1   VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/FR4_at_7GHz
+1       number of volumes
+1        volume list
+
+Surface_material_list
+1   Number of surface materials 
+1   SURFACE MATERIAL NUMBER
+PEC
+3	number of surfaces
+1 2 3	surface list
+1 1 1	surface orientation list
+
+Excitation_function_list
+1    ! number of excitation functions
+1    ! EXCITATION_FUNCTION_NUMBER
+gaussian
+1.0 1e-11 5e-11
+
+Huygens_surface
+4     surface number
+1     side of surface for excitation
+1     excitation function number
+0.0 90.0  wave vector Theta and Phi 
+1.0 0.0  Polarisation theta and Phi
+
+Output_volume_average_list
+4	       ! number of output volume_averages
+1	       ! OUTPUT NUMBER
+2	       ! volume number for output
+Ey
+2	       ! OUTPUT NUMBER
+2	       ! volume number for output
+Hx
+3	       ! OUTPUT NUMBER
+3	       ! volume number for output
+Ey
+4	       ! OUTPUT NUMBER
+3	       ! volume number for output
+Hx
+
+Simulation_time
+1e-8
+

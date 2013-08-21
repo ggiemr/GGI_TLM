@@ -1,0 +1,7 @@
+###  THIS DIRECTORY NEEDS TO BE SET FOR YOUR SYSTEM ###
+# note the MATERIAL_DIRECTORY path is used in the sed command and
+# require the usual '/' to be replaced by '\/' to avoid problems with sed 
+
+MATERIAL_DIRECTORY="\/home\/chris\/SOFTWARE\/GGI_TLM\/TEST_DATA\/MATERIAL_DATA"
+
+

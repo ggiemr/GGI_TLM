@@ -1,0 +1,81 @@
+# TEM cell model
+
+Mesh_outer_boundary_dimension
+-0.05 0.05 -0.05 0.05 0 60
+
+Mesh_cell_dimension
+0.1
+
+Outer_boundary_reflection_coefficient
+1.0 1.0 -1.0 -1.0 0.0 0.0
+
+Volume_list
+1   Number of volumes 
+1   VOLUME_NUMBER 
+rectangular_block 
+0.1 0.1 40.0       Volume parameters 
+0.0 0.0 0.0
+0.0 0.0 40.0
+
+Surface_list
+1   Number of surfaces 
+1   SURFACE_NUMBER 
+rectangle 
+0.1 0.1       surface parameters 
+0.0 0.0 0.0
+0.0 0.0 0.1
+
+Point_list 
+2   Number of points 
+1       POINT_NUMBER 
+0.0 0.0 0.0    point coordinates 
+0.0 0.0 0.0
+0.0 0.0 9.95
+2       POINT_NUMBER 
+0.0 0.0 0.0    point coordinates 
+0.0 0.0 0.0
+0.0 0.0 10.05
+
+Volume_material_list
+1   Number of volume materials 
+1   VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/debye_2
+1	number of volumes
+1	volume list
+
+Excitation_function_list
+1    ! number of excitation functions
+1    ! EXCITATION_FUNCTION_NUMBER
+gaussian
+1.0 2e-9 8e-9
+
+Huygens_surface
+1     surface number
+1     side of surface for excitation
+1     excitation function number
+0.0 90.0  wave vector Theta and Phi 
+1.0 0.0  Polarisation theta and Phi
+
+Output_point_list
+4    		! number of output points
+1		! OUTPUT NUMBER
+1		! output point
+Ey
+centre
+2		! OUTPUT NUMBER
+1		! output point
+Hx
+centre
+3		! OUTPUT NUMBER
+2		! output point
+Ey
+centre
+4		! OUTPUT NUMBER
+2		! output point
+Hx
+centre
+
+Simulation_time
+30e-8
+

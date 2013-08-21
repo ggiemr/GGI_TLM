@@ -1,0 +1,162 @@
+# Two coaxial cables for crosstalk tests
+
+Mesh_outer_boundary_dimension
+-0.205 0.205 -0.105 0.105 -1.01 1.01 
+
+Mesh_dimensions_in_cells
+41 21 202 
+
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+Surface_list
+2   Number of surfaces 
+1       SURFACE_NUMBER 
+rectangle
+0.4 0.2   surface parameters 
+0.0 0.0 0.0    
+0.0 0.0 1.0
+2       SURFACE_NUMBER 
+rectangle
+0.4 0.2   surface parameters 
+0.0 0.0 0.0    
+0.0 0.0 -1.0
+
+Line_list
+2   Number of lines 
+1       LINE_NUMBER 
+straight_line2
+-0.01 0.0 -1.0  -0.01 0.0 1.0  ! line parameters 
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       LINE_NUMBER 
+straight_line2
+0.01 0.0 -1.0  0.01 0.0 1.0  ! line parameters 
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Point_list 
+4   Number of points (integer)
+1       POINT_NUMBER (integer)
+-0.01 0.0 -1.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       POINT_NUMBER (integer)
+-0.01 0.0 1.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+3       POINT_NUMBER (integer)
+0.01 0.0 -1.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+4       POINT_NUMBER (integer)
+0.01 0.0 1.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Surface_material_list
+1   Number of surface materials 
+1       SURFACE MATERIAL NUMBER 
+PEC
+2       number of surfaces
+1 2 	  surface list
+1 1 	  surface orientation list
+
+Cable_geometry_list
+1  number of cable geometries
+1  CABLE GEOMETRY NUMBER, Cable geometry type (file name) follows:
+CABLE_DIRECTORY/Crosstalk_test_cable
+
+cable_list
+2  number of cables
+1  CABLE NUMBER
+1    cable geometry number
+1    number of lines on cable route
+1    cable line list
+1    end 1 junction number
+2    end 2 junction number
+2  CABLE NUMBER
+1    cable geometry number
+1    number of lines on cable route
+2    cable line list
+3    end 1 junction number
+4    end 2 junction number
+
+Cable_output_list
+4  number of cable_outputs
+1  CABLE OUTPUT NUMBER
+1  cable number
+1  closest point number
+2  CABLE OUTPUT NUMBER
+1  cable number
+2  closest point number
+3  CABLE OUTPUT NUMBER
+2  cable number
+3  closest point number
+4  CABLE OUTPUT NUMBER
+2  cable number
+4  closest point number
+
+Cable_junction_list
+4    number of junctions
+1    JUNCTION NUMBER
+1    junction point 
+1    number of internal connection nodes (n_int)
+1    number of cables
+1    cable list
+1    corresponding cable end number list
+2   	Cable 1 number of external conductors (n_ext)
+1 1  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+1 0	Cable 1 voltage source function list
+50.0 0.0	Cable 1 impedance list
+0	Number of internal impedances
+FACE
+-1
+2    JUNCTION NUMBER
+2    junction point 
+1    number of internal connection nodes (n_int)
+1    number of cables
+1    cable list
+2    corresponding cable end number list
+2   	Cable 1 number of external conductors (n_ext)
+1 1  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0 0	Cable 1 voltage source function list
+50.0 0.0	Cable 1 impedance list
+0	Number of internal impedances
+FACE
+-1
+3    JUNCTION NUMBER
+3    junction point 
+1    number of internal connection nodes (n_int)
+1    number of cables
+2    cable list
+1    corresponding cable end number list
+2   	Cable 1 number of external conductors (n_ext)
+1 1  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0 0	Cable 1 voltage source function list
+50.0 0.0	Cable 1 impedance list
+0	Number of internal impedances
+FACE
+-1
+4    JUNCTION NUMBER
+4    junction point 
+1    number of internal connection nodes (n_int)
+1    number of cables
+2    cable list
+2    corresponding cable end number list
+2   	Cable 1 number of external conductors (n_ext)
+1 1  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0 0	Cable 1 voltage source function list
+50.0 0.0	Cable 1 impedance list
+0	Number of internal impedances
+FACE
+-1
+
+Excitation_function_list
+1            	! number of excitation functions
+1		! EXCITATION NUMBER
+gaussian
+1.0 5e-11 20e-11
+
+Simulation_time
+1e-6

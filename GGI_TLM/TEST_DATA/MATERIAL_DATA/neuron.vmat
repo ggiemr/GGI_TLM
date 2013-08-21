@@ -1,0 +1,16 @@
+ # neuron
+   10000000.      2.00000000E+10  # frequency range of validity
+ # permittivity filter
+   1000000000000.0000       w normalisation constant
+           4    # a order, a coefficients follow below: 
+   1776.5723499999999        2377945.1634755740        398705198.75397032        5126881176.1237555        4712110484.8361025     
+           4    # b order, b coefficients follow below: 
+   1.0000000000000000        23690.528760000001        8545176.9913006779        180546572.61722338        795353315.41401494     
+   0.0000000000000000          # electric conductivity
+ # permeability filter
+    1.0000000000000000        # w normalisation constant
+            0   # a order, a coefficients follow below:
+    1.0000000000000000     
+            0   # b order, b coefficients follow below:
+    1.0000000000000000     
+    0.0000000000000000       # magnetic conductivity

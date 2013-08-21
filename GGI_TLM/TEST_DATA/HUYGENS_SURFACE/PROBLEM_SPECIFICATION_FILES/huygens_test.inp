@@ -1,0 +1,207 @@
+
+Mesh_outer_boundary_dimension
+-2.0 2.0    -2.0 2.0    -2.0 2.0    
+
+Mesh_dimensions_in_cells
+40 40 40  ( 3*integer)
+
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+Surface_list
+4   Number of surfaces 
+1       SURFACE_NUMBER 
+rectangular_block
+2.0 2.0 2.0       surface parameters 
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       SURFACE_NUMBER 
+xplane 
+0.0 -2.0 -2.0   0.0 2.0 2.0       surface parameters
+0.0 0.0 0.0
+0.0 0.0 0.0
+3       SURFACE_NUMBER 
+yplane 
+-2.0 0.0 -2.0   2.0 0.0 2.0       surface parameters
+0.0 0.0 0.0
+0.0 0.0 0.0
+4       SURFACE_NUMBER 
+zplane 
+-2.0 -2.0 0.0   2.0 2.0 0.0       surface parameters
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Point_list
+1   Number of points (integer)
+1       point_number (integer)
+0.0 0.0 0.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+
+Excitation_function_list
+1              ! number of excitations
+1              ! EXCITATION NUMBER
+gaussian
+1.0 2e-9 6e-9
+
+Huygens_surface
+1     surface number
+1     side of surface for excitation
+1     excitation function number
+54.73 45.0  wave vector Theta and Phi 
+1.0 0.5  Polarisation theta and Phi
+
+Output_point_list
+30    		! number of output points
+1		! OUTPUT NUMBER
+1		! output point
+Ex
+centre
+2		! OUTPUT NUMBER
+1		! output point
+Ex
+ymin
+3		! OUTPUT NUMBER
+1		! output point
+Ex
+ymax
+4		! OUTPUT NUMBER
+1		! output point
+Ex
+zmin
+5		! OUTPUT NUMBER
+1		! output point
+Ex
+zmax
+6		! OUTPUT NUMBER
+1		! output point
+Ey
+centre
+7		! OUTPUT NUMBER
+1		! output point
+Ey
+xmin
+8		! OUTPUT NUMBER
+1		! output point
+Ey
+xmax
+9		! OUTPUT NUMBER
+1		! output point
+Ey
+zmin
+10		! OUTPUT NUMBER
+1		! output point
+Ey
+zmax
+11		! OUTPUT NUMBER
+1		! output point
+Ez
+centre
+12		! OUTPUT NUMBER
+1		! output point
+Ez
+xmin
+13		! OUTPUT NUMBER
+1		! output point
+Ez
+xmax
+14		! OUTPUT NUMBER
+1		! output point
+Ez
+ymin
+15		! OUTPUT NUMBER
+1		! output point
+Ez
+ymax
+16		! OUTPUT NUMBER
+1		! output point
+Hx
+centre
+17		! OUTPUT NUMBER
+1		! output point
+Hx
+ymin
+18		! OUTPUT NUMBER
+1		! output point
+Hx
+ymax
+19		! OUTPUT NUMBER
+1		! output point
+Hx
+zmin
+20		! OUTPUT NUMBER
+1		! output point
+Hx
+zmax
+21		! OUTPUT NUMBER
+1		! output point
+Hy
+centre
+22		! OUTPUT NUMBER
+1		! output point
+Hy
+xmin
+23		! OUTPUT NUMBER
+1		! output point
+Hy
+xmax
+24		! OUTPUT NUMBER
+1		! output point
+Hy
+zmin
+25		! OUTPUT NUMBER
+1		! output point
+Hy
+zmax
+26		! OUTPUT NUMBER
+1		! output point
+Hz
+centre
+27		! OUTPUT NUMBER
+1		! output point
+Hz
+xmin
+28		! OUTPUT NUMBER
+1		! output point
+Hz
+xmax
+29		! OUTPUT NUMBER
+1		! output point
+Hz
+ymin
+30		! OUTPUT NUMBER
+1		! output point
+Hz
+ymax
+
+Output_surface_list
+3    		! number of output surfaces
+1		! OUTPUT SURFACE NUMBER
+2                 surface number
+-1		! side of surface for output (+1 or -1)
+Emagnitude
+output_timestep_information
+0	! first output timestep
+120	! last output timestep
+4	! output timestep interval
+2		! OUTPUT SURFACE NUMBER
+3                 surface number
+-1		! side of surface for output (+1 or -1)
+Emagnitude
+output_timestep_information
+0	! first output timestep
+120	! last output timestep
+4	! output timestep interval
+3		! OUTPUT SURFACE NUMBER
+4                 surface number
+-1		! side of surface for output (+1 or -1)
+Emagnitude
+output_timestep_information
+0	! first output timestep
+120	! last output timestep
+4	! output timestep interval
+
+Simulation_time
+2e-8
+

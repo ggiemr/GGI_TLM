@@ -1,0 +1,11 @@
+coaxial
+2		# number of conductors
+7		# NUMBER OF PARAMETERS
+0.00147 	# parameter 1: shield radius
+0.00147 	# parameter 2: insulation radius
+1.0  		# parameter 3: permittivity of outer dielectric
+0.00042  	# parameter 4: inner radius
+2.25   		# parameter 5: permittivity of inner dielectric
+0.0  		# parameter 6: Transfer resistance, Rt
+0.0 		# parameter 7: Transfer inductance, Lt
+0		# NUMBER OF FILTERS

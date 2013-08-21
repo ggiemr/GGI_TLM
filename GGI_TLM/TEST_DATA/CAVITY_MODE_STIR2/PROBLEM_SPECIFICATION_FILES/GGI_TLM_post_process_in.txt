@@ -1,0 +1,9 @@
+           3  Post processing option: Fourier Transform
+cavity_1_2_3.field.tout
+           1
+lin
+   0.1000000E+07 fmin
+   0.3000000E+09 fmax
+            1000 n_frequencies
+cavity_1_2_3.fout
+           0  Post processing option: Quit

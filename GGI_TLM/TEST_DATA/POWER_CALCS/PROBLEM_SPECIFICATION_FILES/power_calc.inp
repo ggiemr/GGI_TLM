@@ -1,0 +1,77 @@
+# mode_stir chamber test for aperture transmission cross section calculation
+
+Mesh_outer_boundary_dimension
+-1.0 1.0    -1.0 1.0    -1.0 1.0
+
+Mesh_cell_dimension
+0.10
+
+Outer_boundary_reflection_coefficient
+0.0 0.0    0.0 0.0    0.0 0.0
+
+Surface_list
+3   Number of surfaces (integer)
+1       surface_number (integer)    ! huygens surface
+rectangular_block2
+-0.5 -0.5 -0.5 0.5 0.5 0.5       surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       surface_number (integer)    ! power calculation surface
+rectangle
+1.0 1.0       surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.4
+3       surface_number (integer)    ! field output surface
+rectangle
+2.0 2.0       surface parameters (n*real)
+0.0 90.0 0.0
+0.0 0.0 0.0
+
+Point_list 
+1   Number of points (integer)
+1       POINT_NUMBER (integer)
+0.0 0.0 0.0  output point coordinates
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Excitation_function_list
+1 ! number of excitation functions
+1  EXCITATION FUNCTION NUMBER
+impulse
+1.0
+
+Huygens_surface
+0     surface number
+1     side of surface for excitation
+1     excitation function number
+0.0 0.0  wave vector Theta and Phi 
+1.0 0.0  Polarisation theta and Phi
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+1		! output point
+Ex
+zmax
+
+Output_surface_list
+1    		! number of output surfaces
+1		! OUTPUT SURFACE NUMBER
+3                 surface number
+1		! side of surface for output (+1 or -1)
+Ex
+output_timestep_information
+0	! first output timestep
+200	! last output timestep
+5	! output timestep interval
+
+Frequency_domain_power_surface_list
+1               ! number of frequency domain power surfaces
+1		! FREQUENCY DOMAIN POWER SURFACE NUMBER 
+2		! geometric surface number
+1		! side of surface for output
+1e6 600e6 100    ! fmin fmax n_frequencies for power output
+
+Simulation_time
+0.5e-7
+

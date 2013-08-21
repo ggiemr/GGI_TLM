@@ -1,0 +1,92 @@
+# Nested reverberation chamber for aperture shielding effectiveness calculation
+
+Mesh_outer_boundary_dimension
+-1.0 1.0 -1.0 1.0 -1.0 1.0
+
+Mesh_cell_dimension
+0.10
+
+Outer_boundary_reflection_coefficient
+-1.0 -1.0    -1.0 -1.0    -1.0 -1.0
+
+Surface_list
+3   Number of surfaces (integer)
+1       surface_number (integer)    ! inner mode stirred chamber
+rectangular_block2
+-0.5 -0.5 -0.5 0.5 0.5 0.5       surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       surface_number (integer)    ! slot in PEC surface
+rectangle
+0.15 0.60       surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 -0.5
+3       surface_number (integer)    ! field output surface
+rectangle
+2.1 2.1       surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Surface_material_list
+2   Number of surface materials (integer)
+1   SURFACE_MATERIAL_NUMBER
+PEC
+1	number of surfaces
+1	surface list
+1       surface orinetation list
+2   SURFACE_MATERIAL_NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/Rsheet=1e8
+1	number of surfaces
+2	surface list
+1       surface orinetation list
+
+Point_list 
+1   Number of points (integer)
+1       POINT_NUMBER (integer)
+0.0 0.0 0.0  excitation point coordinates (cell 3 6 17)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Mode_stir_surface_list
+2   Number of mode_stir_surfaces (integer)
+1	MODE_STIR_SURFACE NUMBER
+0.999  	! boundary condition voltage reflection coefficient 
+0.0	! amplitude of random impulse excitation on the boundary
+1	! number of geometric surfaces in this mode_stir_surface
+0	! surface list
+1	! surface orientation list
+2	MODE_STIR_SURFACE NUMBER
+0.999  	! boundary condition voltage reflection coefficient 
+1.0	! amplitude of random impulse excitation on the boundary
+1	! number of geometric surfaces in this mode_stir_surface
+1	! surface list - surface 0 is the outer boundary
+-1	! surface orientation list
+
+Excitation_function_list
+1 ! number of excitation functions
+1  EXCITATION FUNCTION NUMBER
+gaussian_sinusoid
+1.0 5e-9 2e-8 2.5e8 0.0 
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+1		! output point
+Ey
+centre
+
+Output_surface_list
+1    		! number of output surfaces
+1		! OUTPUT SURFACE NUMBER
+3                 surface number
+1		! side of surface for output (+1 or -1)
+Ex
+output_timestep_information
+0	! first output timestep
+200	! last output timestep
+5	! output timestep interval
+
+Simulation_time
+25e-6
+

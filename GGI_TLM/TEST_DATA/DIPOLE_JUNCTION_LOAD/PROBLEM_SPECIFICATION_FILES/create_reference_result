@@ -1,0 +1,3 @@
+cp dipole.cable_current.tout PROBLEM_SPECIFICATION_FILES/dipole.cable_current.tout_ref
+cp dipole.field.tout PROBLEM_SPECIFICATION_FILES/dipole.field.tout_ref
+

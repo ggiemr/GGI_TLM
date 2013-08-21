@@ -1,0 +1,139 @@
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA: Ex field components
+huygens_test.field.tout
+           1
+Ex_centre.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           2
+Ex_ymin.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           3
+Ex_ymax.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           4
+Ex_zmin.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           5
+Ex_zmax.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA: Ey field components
+huygens_test.field.tout
+           6
+Ey_centre.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           7
+Ey_xmin.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           8
+Ey_xmax.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           9
+Ey_zmin.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           10
+Ey_zmax.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA: Ez field components
+huygens_test.field.tout
+           11
+Ez_centre.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           12
+Ez_xmin.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           13
+Ez_xmax.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           14
+Ez_ymin.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           15
+Ez_ymax.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA: Hx field components
+huygens_test.field.tout
+           16
+Hx_centre.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           17
+Hx_ymin.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           18
+Hx_ymax.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           19
+Hx_zmin.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           20
+Hx_zmax.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA: Hy field components
+huygens_test.field.tout
+           21
+Hy_centre.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           22
+Hy_xmin.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           23
+Hy_xmax.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           24
+Hy_zmin.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           25
+Hy_zmax.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA: Hz field components
+huygens_test.field.tout
+           26
+Hz_centre.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           27
+Hz_xmin.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           28
+Hz_xmax.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           29
+Hz_ymin.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+huygens_test.field.tout
+           30
+Hz_ymax.tout
+           5  Post processing option: Create Animation
+huygens_test.surface_field.tout
+           1  Output surface
+lin
+   0.0000000000000000     
+   0.0000000000000000     
+y
+           2  Output surface
+lin
+   0.0000000000000000     
+   0.0000000000000000     
+y
+           3  Output surface
+lin
+   0.0000000000000000     
+   0.0000000000000000     
+y
+           0  Output surface
+           0  Post processing option: Quit

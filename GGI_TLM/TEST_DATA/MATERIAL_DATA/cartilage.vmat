@@ -1,0 +1,16 @@
+ # cartilage
+   10000000.      2.00000000E+10  # frequency range of validity
+ # permittivity filter
+   1000000000000.0000       w normalisation constant
+           4    # a order, a coefficients follow below: 
+   3159.5066800000000        3750527.1582812634        475081589.57935607        5603006114.4572935        7072594433.7063360     
+           4    # b order, b coefficients follow below: 
+   1.0000000000000000        64067.840470000003        12264614.657854084        271134012.50807846        1262809950.5249963     
+   0.0000000000000000          # electric conductivity
+ # permeability filter
+    1.0000000000000000        # w normalisation constant
+            0   # a order, a coefficients follow below:
+    1.0000000000000000     
+            0   # b order, b coefficients follow below:
+    1.0000000000000000     
+    0.0000000000000000       # magnetic conductivity

@@ -1,0 +1,4 @@
+cp E_cavity.fout PROBLEM_SPECIFICATION_FILES/E_cavity.fout_ref
+cp TCS_mode_stir.frequency_domain_power_surface.fout TCS_mode_stir.frequency_domain_power_surface.fout_ref
+cp TCS.fout PROBLEM_SPECIFICATION_FILES/TCS.fout_ref
+

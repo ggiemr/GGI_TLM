@@ -1,0 +1,23 @@
+           3  Post processing option: Fourier Transform
+cylinder.field.tout
+           1
+lin
+   1.0e8 fmin
+   5.0e8 fmax
+            1000 n_frequencies
+cylinder.fout
+          18  POST PROCESSING OPTION: CREATE VECTOR FREQUENCY DOMAIN ANIMATION
+cylinder.frequency_output_volume.fout
+           0  Output surface component number           1
+           2  Output surface component number           2
+           3  Output surface component number           3
+y
+H_field
+          18  POST PROCESSING OPTION: CREATE VECTOR FREQUENCY DOMAIN ANIMATION
+cylinder.frequency_output_volume.fout
+           1  Output surface component number           1
+           0  Output surface component number           2
+           0  Output surface component number           3
+y
+E_field
+           0  Post processing option: Quit

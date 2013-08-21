@@ -1,0 +1,235 @@
+ls
+echo "Automatic testing of GGI_TLM_filter_fit"
+echo " "
+
+TEST_CASE_LIST="\
+ls22 \
+ "
+ 
+CLEANING_LIST="\
+progress \
+sed_command \
+*.plt \
+*.txt \
+*.jpeg \
+*.fd_* \
+*.fdmat \
+ls22* \
+fort.* \
+"
+
+echo " EXECUTABLE_DIRECTORY: ${EXECUTABLE_DIR} "
+ 
+if [ "$#" = "0" ] ; then
+
+  echo "Run using the following form:"
+  echo " "
+  echo "run_automatic_test action"
+  echo " "
+  echo "action is the process to run:"
+  echo "action=run_seq NAME       : run GGI_TLM_SEQ on the test case NAME sequentially then post process results"
+  echo "action=run_mpi np NAME    : run GGI_TLM_MPI on the test case NAME using mpi on np processors then post process results"
+  echo "action=post_process NAME  : post process results"
+  echo "action=clean NAME         : remove all existing results"
+  echo "action=plot NAME          : plot the results to screen eps or gif"
+  echo "action=plot_ref NAME      : plot the results against reference results to screen"
+  echo "action=reference  NAME    : update the reference results with the current set of results"
+  echo " "
+  echo "NAME can be one of the existing test cases or leave blank to run the whole set"
+  echo " "
+  echo "Existing test cases are:"
+  echo "$TEST_CASE_LIST"
+  
+else
+
+# set defaults...
+  ACTION=$1
+  NAME=$2
+  NP="1"
+
+  if [ "$ACTION" = "run_mpi" ] ; then
+# slightly different order of arguments, must include the number of processors to run on
+# check that we have an integer number of processors requested  
+    echo $2 | grep "[^0-9]" > /dev/null 2>&1
+
+    if [ "$?" = "0" ] ; then
+
+      # If the grep found something other than 0-9
+      # then it's not an integer.
+      echo "Sorry, wanted a number of processors to run on..."
+      echo " "
+      echo "For example to run the test on 4 processors use:"
+      echo "run_automatic_test run_mpi  4 NAME"
+      echo " "
+
+      exit
+  
+    else
+    # The grep found only 0-9, so it's an integer. 
+    
+      ACTION="run"
+      NP=$2
+      NAME=$3
+      
+    fi
+        
+    if [ "$NP" = "1" ] ; then
+      echo "Running using ${NP} processor"
+    else
+      echo "Running using ${NP} processors"    
+    fi
+    
+    echo " "
+    
+  elif [ "$ACTION" = "run_seq" ] ; then
+    
+    ACTION="run"
+
+  fi
+
+# the include file specifies the executable directory
+# material directory
+# cable directory
+# mpi run command
+####  source ../run_automatic_test_include
+  
+  for TEST_CASE in $TEST_CASE_LIST
+  do
+
+# get the run_name 
+     RUN_NAME=${TEST_CASE}
+     echo "TEST_CASE:${TEST_CASE}"
+     echo "RUN_NAME:${RUN_NAME}"
+     
+     PROGRESS_FILENAME='progress'
+     
+     if [ "$ACTION" = "run" ] ; then
+
+# clean any existing problem specification files   
+       rm -f $CLEANING_LIST
+# clean any existing output files     
+       rm -f $RUN_NAME.*
+	      
+# check the file type of the RUN_NAME file
+# ${RUN_NAME}.z11.fdmat indicates a thin lyer model,
+# ${RUN_NAME}.eps.fdmat indicates a permittivity material model,
+# ${RUN_NAME}.mu.fdmat indicates a permeability material model,
+# ${RUN_NAME}.Z.fdmat indicates a general impedance model,
+# ${RUN_NAME}.fdmat indicates a general frequency dependent function      
+	      
+       if [ -f "PROBLEM_SPECIFICATION_FILES/${RUN_NAME}.eps.fdmat" ]; then
+         FIT_TYPE="1"
+         cp PROBLEM_SPECIFICATION_FILES/${RUN_NAME}.eps.fdmat ./
+       elif [ -f "PROBLEM_SPECIFICATION_FILES/${RUN_NAME}.mu.fdmat" ]; then
+         FIT_TYPE="2"
+         cp PROBLEM_SPECIFICATION_FILES/${RUN_NAME}.mu.fdmat ./
+       elif [ -f "PROBLEM_SPECIFICATION_FILES/${RUN_NAME}.z11.fdmat" ]; then
+         FIT_TYPE="3"
+         cp PROBLEM_SPECIFICATION_FILES/${RUN_NAME}.z11.fdmat ./
+         cp PROBLEM_SPECIFICATION_FILES/${RUN_NAME}.z12.fdmat ./
+         cp PROBLEM_SPECIFICATION_FILES/${RUN_NAME}.z21.fdmat ./
+         cp PROBLEM_SPECIFICATION_FILES/${RUN_NAME}.z22.fdmat ./
+       elif [ -f "PROBLEM_SPECIFICATION_FILES/${RUN_NAME}.Z.fdmat" ]; then
+         FIT_TYPE="4"
+         cp PROBLEM_SPECIFICATION_FILES/${RUN_NAME}.Z.fdmat ./
+       else
+         echo "Failed: $TEST_CASE: GGI_TLM_filter_fit"
+         exit 1
+       fi      
+       
+       echo "{
+              s/MATERIAL_NAME/${RUN_NAME}/g
+              s/FIT_TYPE/${FIT_TYPE}/g
+	      }" > sed_command
+       sed -f sed_command PROBLEM_SPECIFICATION_FILES/filter_fit_in.txt > ./filter_fit_in.txt      
+    
+       echo "${EXECUTABLE_DIR}/GGI_TLM_filter_fit < filter_fit_in.txt"
+    
+       $SEQ_RUN_COMMAND ${EXECUTABLE_DIR}/GGI_TLM_filter_fit < filter_fit_in.txt
+       
+       read LINE < $PROGRESS_FILENAME
+       if [ "$LINE" = "FINISHED: GGI_TLM_filter_fit" ] ; then
+         echo "STATUS: $LINE"
+       else
+         echo "Failed: $TEST_CASE: GGI_TLM_filter_fit"
+         exit 1
+       fi
+       
+       sed -f sed_command PROBLEM_SPECIFICATION_FILES/filter_format_convert_in.txt > ./filter_format_convert_in.txt      
+       $SEQ_RUN_COMMAND $EXECUTABLE_DIR/GGI_TLM_filter_format_convert < filter_format_convert_in.txt
+       
+       read LINE < $PROGRESS_FILENAME
+       if [ "$LINE" = "FINISHED: GGI_TLM_filter_format_convert" ] ; then
+         echo "STATUS: $LINE"
+       else
+         echo "Failed: $TEST_CASE: GGI_TLM_filter_format_convert"
+         exit 1
+       fi
+#              
+     elif [ "$ACTION" = "post_process" ] ; then
+     
+       echo "No post_processing required for filter_fitting_tests"
+     
+     elif [ "$ACTION" = "clean" ] ; then
+
+       rm -f ${CLEANING_LIST}
+    
+     elif [ "$ACTION" = "plot" ] ; then
+     
+       echo "{
+              s/#PAUSE/ /g
+	      }" > sed_command
+
+       sed -f sed_command PROBLEM_SPECIFICATION_FILES/plot_result.plt > plot_result.plt
+       
+       gnuplot plot_result.plt
+    
+     elif [ "$ACTION" = "plot_jpg" ] ; then
+     
+       echo "{
+              s/#JPG/ /g
+              s/#OUTPUT_TO_FILE/ /g
+	      }" > sed_command
+
+       sed -f sed_command PROBLEM_SPECIFICATION_FILES/plot_result.plt > plot_result.plt
+       
+       gnuplot plot_result.plt
+       
+     elif [ "$ACTION" = "plot_ref" ] ; then
+
+       echo "{
+              s/#PAUSE/ /g
+	      }" > sed_command
+
+       sed -f sed_command PROBLEM_SPECIFICATION_FILES/plot_result_with_reference.plt > plot_result_with_reference.plt
+       
+       gnuplot plot_result_with_reference.plt
+       
+     elif [ "$ACTION" = "plot_ref_jpg" ] ; then
+           
+       echo "{
+              s/#JPG/ /g
+              s/#OUTPUT_TO_FILE/ /g
+	      }" > sed_command
+
+       sed -f sed_command PROBLEM_SPECIFICATION_FILES/plot_result_with_reference.plt > plot_result_with_reference.plt
+       
+       gnuplot plot_result_with_reference.plt
+       
+     elif [ "$ACTION" = "reference" ] ; then
+     
+       PROBLEM_SPECIFICATION_FILES/create_reference_result       
+      
+     else 
+     
+       echo "Unknown action: $ACTION"      
+     
+     fi
+
+  done
+      
+fi
+
+exit 0
+# we have some arguments to run_automatic_test
+

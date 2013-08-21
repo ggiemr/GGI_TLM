@@ -1,0 +1,294 @@
+1. Surface and volume mesh generation is fragile and crude. Needs re-writing.
+  DONE 1.Problem with meshing spheres has been solved - this related to a seam in the triangulated mesh
+     not being closed where phi=0 and phi=2*pi
+  DONE 2. Re-written surface and volume meshing based on mesh-ray- triangle intersections for surfaces and
+    cell_inside_tet test for tetrahedra. 
+  
+1b.  Still a problem with surface mesh generation. Some surface meshes may not be closed for closed geometry...
+  Should we go back to the 'model builder' approach? It is at least predictable and has known properties i.e.
+  a closed object leads to a closed mesh...
+    
+
+2. Check surface normals in GEOMETRY/build_surface_geometry.F90: 
+   DONE
+
+3. No surface normal information in mesh, surface normals are avaialable for the triangulated surface
+   through the ordering of the triangle points: 
+   DONE - in mesh we use the ijk_face type and set the mesh such that face xmax has normal in the 
+   xmax direction and xmin face has normal in the xmin direction etc.
+
+4. Visualisation data is very inefficient in terms of memory - points are defined more than once
+   in vtk files for shared points - see also point 16.
+
+5. trangulated mesh is GiD format which is a bit crap - Gid produces invalid triangles etc in the .msh file.
+   STARTED: Initial implementation of a reader for .vtk format files
+
+6. Do we need to develop a library for operations on xyz_point ijk_point types? Would this simplify the code? 
+   DONE- at least to some extent
+
+7. Define new ijk_point type to combine ijk_cell and ijk_face types. - also link into ijk_segment type
+   DONE
+
+8. Need to check DESCRIPTIONs in all files of GGI_TLM to ensure that there is something there and
+   that it is consistent with the current action of the subroutine.
+   
+9. material stuff needs to be organised properly: initialise_materials, allocate_surface_materials,
+   set_surface_material_filters: 
+   DONE
+   
+10. PEC and PMC cells give the correct E and H fields at the cell centres
+but maybe not the best way to implement it as allows some field through... 
+Needs some thought - really need to apply the appropriate reflection coefficient 
+at the cell centre and set E, H=0 at the cell centre i.e. assuming that any 
+output point is 'inside' the PEC/PMC and sees no field. 
+   
+11. Volume material update uses the old Flaviir FE form which is not the most obvious or the most efficient. 
+    DONE- changed to more intuitive TLM stub like formulation. 
+   
+12. Need to write info file
+    STARTED
+   
+13. Need to write warnings file
+    STARTED
+
+14. Need to deallocate material filter data, output data etc...
+    DONE
+
+15. There may be problems if the geometry is larger than the boundary box: 
+    DONE. Introduced the subroutine trim_mesh to remove cells and faces outside the
+          mesh 
+
+16. There appear to be repeated faces (maybe volumes) in the mesh. These get eliminated once the 
+    data is put onto the final mesh in the solver but they do appear in plotting files (s_mesh.vtk.n)
+    DONE- see 18.
+
+17. What should the time domain field header look like now we don't have to output on every timestep?
+
+18. problem_surfaces(surface_number)%face_list() may contain faces which also belong to other surfaces
+    if surfaces intersect - also repeated faces from mesh generation (see 16.)
+    This may have an impact on output_surfaces for example which makes use
+    of  problem_surfaces(surface_number)%face_list()
+    DONE. Redone the meshing (volume and surface) to exclude doubled faces in an individual surface
+
+18b. Following 18 developments, a face may appear in more than one surface definition
+    
+19. Check correct output face side for output_surfaces in SUBROUTINE set_outputs_in_mesh()
+
+20. Surface field output format only works properly for one surface at the moment
+    DONE: We can now post_process surface field output to produce animation data.
+
+21. write header for surface field outputs. Could maybe use write_surface_mesh_list_vtk.F90
+    DONE: see 20. Header is used to produce animation data. 
+
+22. We need to be able to swap surface normals in surface definition and/ or be able to reverse 
+    asymmetric thin layer models on surfaces.
+    DONE: introduced surface orientation list into surface material packet
+    
+23. It would be neater to combine local_cell_material and local_face_material arrays,
+                                  local_cell_excitation and local_face_excitation,
+                                  local_cell_output and local_face_output
+
+24. Need to draw out scatter and connect equivalent circuits including excitation terms, materials and cable models...
+    This should take into account the side of a surface for excitations
+    There is a problem with sources in the presence of materials at the moment: Note - have included a check for
+    sources at the same points as materials.
+    Also need to sort out excitations/ Huygens surface on the correct side of a cell face in the presence 
+    of a surface material.
+    
+24b. There is no H field excitation on surfaces at the moment. 
+    
+25. No shielded cables yet...
+    DONE: Coax cable implemented
+
+26. Currently limited to one unshielded condutor per cable specification - not general enough...
+
+27. Interface to PUL_LC is a bit messy... needs to be re-written
+
+28. Maybe write bundle cross section geometry data to one of our data structures so it can
+    be plotted.
+    
+29. Need to work out the bundle types based on the cable geometry decomposition then
+    calculate the L,C matrices on the basis of the bundle type - more memory and time efficient
+    STARTED: at least to some extent. Data still transferred to bundle_segment structure
+
+30. All junctions are assumed to be straight through for now - needs to be generalised - specified
+    junction data is not incorporated into the bundle junctions yet. 
+    STARTED: Needs some rigorous testing really...
+
+31. Question: Should loads and excitations be specified on cable ends as in fieldSolve? It may help resolve the 
+    ambiguity when a cable traverses a junction cell more than once.
+    DONE. Loads and sources are set on cable ends, the information is put into the junction specification
+    
+32. Cable update uses the inefficient and poorly written FieldSolve subroutines junction() and face_junction()- need
+    to re-write... We should be able to make the process work with arbitrary numbers of cables (including an internal load)
+    and use only the appropriate dimension arrays directly from the bundle_segment data. 
+    
+33. The documentation of the cable update is not complete - we need to include the Tv matrix in the documents,
+    also the arrangement of inductive/ capcitive stubs, voltage source and resistance is different in the currnet
+    document to the code. We must make this consistent.
+    STARTED but needs checking and include references to the documentation in the code. 
+    
+34. create_cable_cell_data and create_cable_face_data are not used and should be removed...
+    DONE.
+
+35. Implementation without capacitive stubs but they are included in the data structures
+    OK
+
+36. We must include checks on the input file data i.e. Do points, surfaces, volumes, materials, 
+    cables etc referred to actually exist? Could be done in a subroutine which starts writing the .info file. 
+    STARTED:
+
+37. We have set filename_length and line_length in MODULE file_general. Need to migrate these 
+    parameters across all the programs and subroutines.
+    STARTED
+    
+38. We need to put some thought into whether to introduce impedances in a new way i.e at junctions.
+    DONE- impedances are now introduced at junctions (on individual cables) and also as 'internal impedances'
+    
+39. In create_bundle_LCRG_matrices, the output is a diagonal matrix for multi-conductors...
+    DONE
+    
+40. Need to include stability checks and warnings on cable model TLM matrices (cable_bundles.F90)
+    DONE
+
+41. There is nothing to set the direction of a wire within a segment. 
+    DONE 
+
+42. The cable matrices are set on both a geometry and a segment basis - need to sort this out... 
+
+43. Cable meshes can easily get messed up near terminations due to the way in which the cable mesh
+    is generated- need to filter out problem cable meshes as in fieldsolve. 
+    STARTED - at least for the most common case in which a wire gets meshed with a short stub into the opposite cell.
+    
+44. Why is the TLM link line voltage array allocated one cell beyond the outer boundary?
+    DONE: Not needed and changed.
+    
+45. What happens to surfaces on the outer boundary? 
+    DONE: No surfaces like this get to the solver- see trim_mesh.F90
+
+46. Faces between processes get updated twice, once in each of the processes which is a little wasteful.
+    If we change this then it has implications for the use of:
+    local_surface_material, local_surface_cable, local_surface_excitation
+    STARTED: Introduce cell_face_rank(:,:) to simplify checks.
+    DONE: Parallel pass data is split into two parts and each face is only updated on one processor.
+
+47. There is still the possibility of cable source directions getting messed up... See Cable_test
+    This could be a problem with Fieldsolve - needs to be checked and rationalised so that source directions
+    may be specified with no ambiguity and no chance of it being changed by the meshing for example. 
+    
+48. Compiling with -fbounds-check stops the code working with LAPACK/BLAS stuff. 
+    DONE - remove LAPACK and replace with EISPACK
+
+49. Parallel cable algorithm is wasteful - each processor holds the whole cable mesh
+
+50. Huygens surface copies the surface mesh into the huygens_surface structure 
+    but we could use the original surface description and save this memory. We
+    really only need the offset and the normal of the surface for the source update.
+
+51. We need to store excitation functions on timesteps for cell based excitations and also
+    at half timesteps for face based excitations. 
+    DONE: introduced value_face in the excitation_functions structure.
+
+52. Do we need a test case which will demonstrate/ establish the need for source scaling on cells/ faces. 
+
+53. Huygens surface used Js and Ms terms which may not be strictly necessary.
+    Maybe helpful for further developments though and as a demo of how to deal with J, M terms in TLM. 
+    OK I think
+    
+54. Check signs in Fourier Transform exp(+jwt) or exp(-jwt)? Note: use exp(-jwt) in GGI_TLM far field calculation
+    OK use exp(-jwt) everywhere.
+
+55. Need to check the face information is correct in all excitations/ outputs. I think that the 
+    min_face is only required to be set in the local_surface_output, local_surface_excitation arrays
+
+56. Frequency_output_surface has a problem that only tangential fields are non-zero.
+    Maybe we need a frequency_output_volume packet and some 'shell' ( 1 cell thick) volume geometries.
+    STARTED- we now have volume output but no 'shell' elements yet
+    
+57. Frequency_output_surface only works on a single processor - not parallel yet.
+    DONE
+
+58. Should we become independent of Lapack? 
+    DONE- use EISPACK instead and compile alongside GGI_TLM
+
+59. We need to test the output of GGI_TLM_filter_fit especially dielectric and magnetic materials to
+    check the conductivity scaling.
+    STARTED
+    
+60. Small discrepancy between FieldSolve and GGI_TLM for the RCS_SMAT_SPHERE test case. 
+    Possibly due to the difference in the volume material implementations... (NOTE: there is 
+    no corresponding high frequency discrepancy for the RCS_PEC_SPHERE or RCS_SMAT_SPHERE test cases.
+
+61. The ANALYTIC/RCS_PEC_SPHERE code could be replaced by the original RCS_SPHERE_NAG which is more general.
+    We have made use of Zhang and Jin subroutines for spherical bessel functions. Is there a way
+    to remove this dependency?
+    STARTED: Replaced Zhang and Jin subroutines for spherical bessel functions with my own. It checks out
+    for real arguments with Abramowitz and Stegun 
+    
+62. We must count all warnings properly - only sources in materials and on cable cells at the moment. 
+    
+63. The .lmesh.vtk file shows the line mesh, not the cable mesh... Terminations to surfaces are not shown
+    properly. DONE: we can output cable mesh in GGI_TLM_cable_model_checks
+
+64. Perhaps we need a 'FREE_SPACE' surface material type to avoid the use of Rsheet=1e8 type surfaces. 
+    DONE
+
+65. mode_output does not yet get the side of the surface for output correct - always side 1 at the moment.
+
+66. Mode stirred boundary definition uses the original surface, there may be problems if the mode stirred surface 
+    is overlapped by another surface with different properties - 
+    perhaps we should use only those faces with PEC properties: 
+    DONE- checks and only uses faces with PEC properties
+
+67. We must remove unused and old code (numerical recipes, references to LAPACK etc) from GGI_TLM before 
+    putting it online.
+    DONE. The only library used is EISPACK and the source code for this is included in GGI_TLM
+
+68. There is a problem with the IELF process I think - needs to be checked.
+    OK I think
+
+69. We cannot have cables only one cell long - the centre to centre line mesh gets confused...
+    DONE
+
+70. There is still a problem if the cable is bigger than the enclosing cell - Need to check and maybe set up a test case
+
+71. Need to update COAX_COUPLING test case documentation - error found in the problem setup - cables were not 
+    connected to the PEC end plates.  
+    
+72. Need to automate calculation of the number of Fourier terms in PUL_LC_tlm_interface to make things robust...
+    20 terms causes overflow/ underflow errors in matrix element calculation for the MTL_crosstalk test case. 	
+
+73. There are solution parameters which are set hard in the source code. Maybe it should be possible to change these 
+    parameters from the input file - see point 72 for example...
+    
+74. Need to document gaussian_step_sinusoid excitation function.
+    
+75. Need to document pyramid and pyramid_ram volume geometry types.
+
+76. Cable terminations may snap to any surface - even an output surface which may cause problems. I think we need
+    to test whether a surface has a material specified...
+    DONE: We only check surfaces which have material properties set now.
+    
+77. What can we do to improve the memory requirements for the code? We really need to profile the memory usage and
+    work from there. 
+    
+78. We need to document the P matrices for shielded conductors much more clearly. There may be a problem with 
+    the P matrix for a coax termination where the internal conductor is connected to the external in the documentation. 
+    Here the P matrix is [0 0] but the figure shows connection to internal connection node 1, P matrix should be 
+    [0 1] but this needs checking. We need to check the theory to see why...
+    DONE: P matrices redefined and now code and documentation are in step.
+    
+79. PUL_LC fails for CABLE_BUNDLE_TEST if dl=0.05 whereas it works OK for dl=0.10. Need to look into this and make
+    PUL_LC more robust (see point 72)
+    
+80. We need to document the re-setting of solution parameters in the input file
+    DONE
+
+90  There is a problem when GGI_TLM_material_model checks is compiled with MPI - the code is run sequentially but links
+    to a subroutine which has MPI commands included. The solution at the moment is to compile mpi then go back and 
+    compile the sequential version. 
+    DONE: make PARALLEL_MODE=MPI now only makes the mpi version of the solver, none of the other codes.
+    
+91. The new packets to set the flags LC_correction_type_subtract_cell_inductance and LC_correction_type_geometry_scale
+    are not yet documented
+

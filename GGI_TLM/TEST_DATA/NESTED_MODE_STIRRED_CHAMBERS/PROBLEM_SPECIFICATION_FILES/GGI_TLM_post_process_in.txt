@@ -1,0 +1,17 @@
+           3  Post processing option: Fourier Transform
+nested_RC.field.tout
+           1
+lin
+   0.1000000E+07 fmin
+   0.3000000E+09 fmax
+            5000 n_frequencies
+nested_RC.field.fout
+           5  Post processing option: Create Animation
+nested_RC.surface_field.tout
+           1  Output surface
+lin
+   0.0000000000000000     
+   0.0000000000000000     
+n
+           0  Output surface
+           0  Post processing option: Quit

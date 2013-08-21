@@ -1,0 +1,16 @@
+ # skin
+   10000000.      2.00000000E+10  # frequency range of validity
+ # permittivity filter
+   1000000000000.0000       w normalisation constant
+           4    # a order, a coefficients follow below: 
+   829.15534000000002        1456409.8076507654        344565205.03858614        10500554103.780766        8120943809.8707409     
+           4    # b order, b coefficients follow below: 
+   1.0000000000000000        17372.929430000000        8296049.6892907526        331917481.83974409        1972889001.4189401     
+   0.0000000000000000          # electric conductivity
+ # permeability filter
+    1.0000000000000000        # w normalisation constant
+            0   # a order, a coefficients follow below:
+    1.0000000000000000     
+            0   # b order, b coefficients follow below:
+    1.0000000000000000     
+    0.0000000000000000       # magnetic conductivity

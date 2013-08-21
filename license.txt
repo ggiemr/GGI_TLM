@@ -1,0 +1,22 @@
+ 
+
+LICENSE ( last update: Friday 3rd May 2013 )
+--------------------------------------------
+
+There are 2 license types used in GGI_TLM.
+
+
+GPL - GNU General Public License v.3
+See COPYING in root
+
+LGPL - GNU Lesser General Public License v.3
+See COPYING.LESSER in root
+
+These licenses are applied as follows:
+
+GPL: 
+Applies to all source coded with the exception of the eispack library in /src/eispack
+
+LGPL
+Applies to the eispack library in /src/eispack	 
+

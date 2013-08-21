@@ -1,0 +1,80 @@
+# waveguide cavity for mode shape calculation 
+
+Mesh_outer_boundary_dimension
+-0.0005 0.0005 -0.0115 0.0115 -0.0115 0.0115
+
+Mesh_dimensions_in_cells  
+2 46 46  ( 3*integer)  ! dl=0.0005
+
+Outer_boundary_reflection_coefficient
+-1.0 -1.0    -1.0 -1.0    -1.0 -1.0
+
+Surface_list
+2   Number of surfaces (integer)
+1       SURFACE_NUMBER 
+zplane
+-0.0005 -0.0115 -0.009   0.0005 0.0115 -0.009 	! surface parameters (n*real) ! excitation surface
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       SURFACE_NUMBER 
+zplane
+-0.0005 -0.0115 0.0     0.0005 0.0115 0.0 surface parameters (n*real)  ! mode output surface
+ 0.0 0.0 0.0
+ 0.0 0.0 0.0
+
+Point_list 
+2   Number of points (integer)
+1       POINT_NUMBER (integer)
+0.00025 0.00025 0.00025   excitation point coordinates (cell 2 23 23)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       POINT_NUMBER (integer)
+0.00025 -0.00025 0.00025   excitation point coordinates (cell 2 23 23)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Excitation_function_list
+1            	! number of excitation functions
+1		! EXCITATION NUMBER
+gaussian
+1.0 0.0025e-9 0.01e-9
+
+Excitation_surface_list
+1	      ! number of excitation surfaces
+1	      ! EXCITATION SURFACE NUMBER
+1	      ! excitation function number
+1	      ! excitation surface
+-1	      ! side of surface for excitation
+Ex
+soft
+
+Output_point_list
+2    		! number of output points
+1		! OUTPUT NUMBER
+1		! output point
+Ex
+centre
+output_timestep_information
+1      ! first output timestep
+100000    ! last output timestep
+1     ! output timestep interval
+2		! OUTPUT NUMBER
+2		! output point
+Ex
+centre
+output_timestep_information
+1      ! first output timestep
+100000    ! last output timestep
+1     ! output timestep interval
+
+Frequency_output_surface_list
+1    		! number of Frequency output surfaces
+1		! FREQUENCY OUTPUT SURFACE NUMBER
+2     		! surface number
+-1		! side of surface for output (+1 or -1)
+9.217e9 	! frequency for output
+Ex
+
+Simulation_time
+1.0e-8
+

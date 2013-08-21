@@ -1,0 +1,86 @@
+# SAR test
+
+# Define the problem space 
+Mesh_outer_boundary_dimension
+-0.02 0.02   -0.02 0.02   -0.04 0.04 
+
+# Specify the mesh dimensions
+# (set to 1 for directions which do not exist in the problem space)
+Mesh_cell_dimension
+0.002   ( integer)
+
+#specify the outer boundary conditions (6*real)
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+Volume_list
+2   Number of volumes (integer)
+1       VOLUME_NUMBER : Sample 1
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.0 0.0 0.0
+2       VOLUME_NUMBER : Sample 1
+cylinder
+0.007 0.006   
+0.0 90.0 0.0    
+0.0 0.0 0.016
+
+Point_list 
+1   Number of points (integer)
+1       POINT_NUMBER (integer)
+0.0 0.0 0.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Volume_material_list
+2   Number of volume materials (integer)
+1   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/SAR_test_material
+1       number of volumes
+1   volume list
+2   VOLUME_MATERIAL_NUMBER
+Dispersive
+MATERIAL_DIRECTORY/SAR_test_material
+1       number of volumes
+2   volume list
+                         
+SAR_volume_list
+2  ! number of SAR volumes
+1  ! SAR VOLUME NUMBER
+1  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+2  ! SAR VOLUME NUMBER
+2  ! material number
+900E6  ! frequency
+968.6  ! material density kg/m^3
+
+Excitation_function_list
+1            	! number of excitation functions
+1		! EXCITATION NUMBER
+gaussian
+1.0 1e-10 3e-10
+
+Huygens_surface
+0     surface number
+1     side of surface for excitation
+1     excitation function number
+0.0 0.0  wave vector Theta and Phi 
+1.0 0.0  Polarisation theta and Phi
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+1		! output point
+Ex
+centre
+output_timestep_information
+1      ! first output timestep
+20000  ! last output timestep
+1      ! output timestep interval
+
+Simulation_time
+2e-9
+

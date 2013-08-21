@@ -1,0 +1,3 @@
+cp waveguide.field.fout PROBLEM_SPECIFICATION_FILES/waveguide.field.fout_ref
+cp WR90.mode PROBLEM_SPECIFICATION_FILES/WR90.mode_ref
+

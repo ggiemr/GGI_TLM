@@ -1,0 +1,9 @@
+           5  Post processing option: Create Animation
+aircraft.surface_field.tout
+           1  Output surface
+lin
+   0.0000000000000000     
+   0.0000000000000000     
+y
+           0  Output surface
+           0  Post processing option: Quit

@@ -1,0 +1,3 @@
+cp coax.cable_current.tout PROBLEM_SPECIFICATION_FILES/coax.cable_current.tout_ref
+cp coax.field.tout PROBLEM_SPECIFICATION_FILES/coax.field.tout_ref
+

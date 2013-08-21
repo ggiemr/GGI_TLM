@@ -1,0 +1,16 @@
+# ls22 Model order.2. created by GGI_filter_fit  : STABLE
+   500000000.00000000        18000000000.000000       # frequency range of validity
+# permittivity filter
+   113097335529.23256        # w normalisation constant
+           2   # a order, a coefficients follow below:
+   11.148131999459379        59.488140335318427        12.921576587785296     
+           2   # b order, b coefficients follow below:
+   1.0000000000000000        12.535097392127144        12.921574674782935     
+  0.33527748369450949       # electric conductivity
+# permeability filter
+   1.0000000000000000        # w normalisation constant
+           0   # a order, a coefficients follow below:
+   1.0000000000000000     
+           0   # b order, b coefficients follow below:
+   1.0000000000000000     
+   0.0000000000000000       # magnetic conductivity

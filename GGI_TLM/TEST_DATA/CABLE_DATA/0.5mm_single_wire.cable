@@ -1,0 +1,7 @@
+cylindrical
+1		# number of conductors
+3		# NUMBER OF PARAMETERS
+0.0005 		# parameter 1: conductor radius
+0.0005 		# parameter 2: insulation radius
+1.0  		# parameter 3: permittivity of outer dielectric
+0		# NUMBER OF FILTERS

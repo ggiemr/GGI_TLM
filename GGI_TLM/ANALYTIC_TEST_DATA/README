@@ -1,0 +1,76 @@
+Automatic running of Analytic solutions used for GGI_TLM validation.
+
+*Before the test cases can be run it may be necessary to edit the file:
+
+run_automatic_test 
+ 
+to ensure that the correct run command is set for running mpi jobs. The line that needs to be changed is:
+
+MPI_RUN_COMMAND="mpirun.mpich2 -np "
+ 
+It may be necessary to define a command for running sequenctial processes. Often this will not be required
+but on at least one system, with the fortran compiler set to mpif90 a sequenctial run command has had to 
+be set ( set to " mpirun " in this case). The line that needs to be changed is:
+
+SEQ_RUN_COMMAND=" "
+
+* You will also need to edit the file:
+
+run_test_case_include 
+
+to set the paths to the material and cable data directories i.e. the following lines
+
+MATERIAL_DIRECTORY="\/home\/chris\/SOFTWARE\/GGI_TLM\/TEST_DATA\/MATERIAL_DATA"
+CABLE_DIRECTORY="\/home\/chris\/SOFTWARE\/GGI_TLM\/TEST_DATA\/CABLE_DATA"
+
+Nothing else should need to be changed. 
+
+Each test case has its own directory DIRECTORY_NAME. 
+
+One or all of the test cases may be run using the following command:
+ 
+run_automatic_test action
+ 
+where action is the process to run:
+
+action=run NAME           : run the test case
+action=clean NAME         : remove all existing results
+action=plot NAME          : plot the results to screen
+action=plot_jpg NAME      : plot the results to jpeg file(s)
+action=plot_ref NAME      : plot the results against reference results to screen
+action=plot_ref_jpg NAME  : plot the results against reference results to jpeg file(s)
+action=reference  NAME    : update the GGI_TLM reference results with the current set of results
+
+NAME can be:
+ one of the existing test cases (directory name) 
+ or leave blank which also runs the whole set
+ 
+example To run the RCS_SPHERE test case 
+run_automatic_test run RCS_SPHERE
+
+The test case directory should contain a shell script file:
+
+run_automatic_test		: This file controlls the running, processing and viewing of the test case
+                                : the test case directory name should be specified in this file 
+
+All the files required to run, process and view the test case are in the directory:
+
+PROBLEM_SPECIFICATION_FILES.
+
+The required files are:
+
+problem_name.inp		: an input file rquired to run the job
+				: Note material files can be kept in TEST_DATA/MATERIAL_DATA directory
+
+plot_result.plt 		: a gnuplot input file which plots the result
+
+plot_result_with_reference.plt 	: a gnuplot input file which plots the result  along 
+				: with one or more reference results
+
+create_reference_result 	: an executable file which creates a reference result from the current result
+
+Reference results are kept in the PROBLEM_SPECIFICATION_FILES directory.
+
+Material files for running the test cases are in the directories:
+
+MATERIAL_DATA		Directory with material data

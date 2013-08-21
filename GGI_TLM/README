@@ -1,0 +1,136 @@
+
+Inside GGI_TLM are five main directories
+SRC			: containing the source code
+DOCUMENTATION		: containing the full user guide, theoretical documentation and test
+ 		  	  case documentation 
+TEST_DATA		: containing the test case directories
+ANALYTIC_TEST_DATA	: containing the test case directories for analytic codes 
+                          used to produce validation test data
+SOFTWARE_NOTES		: containing text files including a work log, known problems and 
+		  	  other brief notes relating to the implementation of new input file packets, 
+		  	  geometric entities, source functions etc.
+
+Also there are three directories used by the make system
+
+bin			: for executable codes
+GGI_TLM_LIBS		: for library files
+GGI_TLM_MODULE_FILES 	: for fortran990 module files
+
+In addition to the directories are this README file plus the make_configuration_data and run_configuration_data files.
+_______________________________________________________________________________________________________
+
+SYSTEM CONFIGURATION.
+
+Most directories should be set automatically relative to the GGI_TLM directory. 
+The only files which should require editing for a new installation are the 
+make_configuration_data file and the run_configuration_data
+
+The make_configuration_data file sets the following:
+
+1. FC			: Name of fortran compiler
+2. MPI_INCLUDE		: This is the path to the file mpif.h 
+3. FLAGS		: Compilation flags
+
+The run_configuration_data file sets the following:
+
+1. MPI_RUN_COMMAND	: Command for running mpi jobs, 
+2. SEQ_RUN_COMMAND	: Command for running seqential codes
+
+Please see the make_configuration_data and run_configuration_data files for an example setup and change as required
+
+Note that it is useful to ensure that the EXECUTABLE_DIR and the current directory (.) is in your path 
+_______________________________________________________________________________________________________
+
+MAKING GGI_TLM
+
+GGI_TLM can be made in two configurations, a sequential solver and a parallel solver (mpi). 
+The two versions of the solver are made with the commands
+
+Make PARALLEL_MODE=SEQ
+Make PARALLEL_MODE=MPI
+_______________________________________________________________________________________________________
+
+RUNNING GGI_TLM
+
+THE GGI_TLM system consists of 9 codes which are used to create models, visualise 
+and check geometry, meshes and cable models, create frequency dependent material 
+models from measured data, run and then post-process results.
+
+GGI_TLM consists of the following codes:	
+
+GGI_TLM_model_builder
+
+GGI_TLM_model_checks
+
+GGI_TLM_cable_model_builder
+
+GGI_TLM_cable_model_checks
+
+GGI_TLM_filter_fit
+
+GGI_TLM_filter_format_convert
+
+GGI_TLM_material_model_checks
+
+GGI_TLM_SEQ/ GGI_TLM_MPI
+
+GGI_TLM_post_process. 
+
+All the codes with the exception of the main solver GGI_TLM_MPI are sequential and are 
+run by simply typing the name of the code. The GGI_TLM_MPI solver code may be run on a
+single process in the same way however for a parallel run we require a command of the 
+form 
+
+mpirun.mpich2 -np  x   GGI_TLM_MPI
+
+where x is the number of processors to run the solution on (this may be different depending on how you run with mpi)
+
+Note that this must be specified in the file TEST_DATA/run_automatic_test_include in 
+order to run the test cases.  The process of setting up and running the test cases 
+is described in an accompanying document. 
+
+Running  a GGI_TLM model requires an input file which specifies the geometry, materials,
+cables, boundary conditions, excitation and outputs required for a problem. The input 
+file should have the extension .inp. The construction of the input file is described 
+in detail in the subsequent sections. The model may also require files which describe  material and cable properties.
+
+Each code prompts the user for the name of the input file. The name without the .inp extension should be provided i.e. if we have a file NAME.inp then enter NAME only
+All output files have the format NAME.output_extension. The file extensions for the 
+different types of output are summarised in a subsequent section.
+
+Running a model proceeds in a number of stages, firstly a 3D meshed model is created from 
+the input file using the code GGI_TLM_model_builder. This creates a mesh from the geometry description. The model may be examined and checked by using the code GGI_TLM_model_checks 
+which produces files for 3D visualisation of the model and mesh with Paraview.
+
+If the problem includes cables then the code GGI_TLM_cable_model_builder creates a cable 
+model. The cable model may be checked using the code GGI_TLM_cable_model_checks.
+
+GGI_TLM_filter_fit generates frequency dependent material models from measured material 
+parameter
+
+GGI_TLM_filter_format_convert allows the conversion of the material filter formats between rational functions, pole-zero format and pole-residue format. This is only used if the 
+material models are to be used in other codes which use a different filter format 
+definition - it is not required to run GGI_TLM. 
+
+GGI_TLM_material_model_checks allows the visualisation of material model frequency 
+responses as well as producing files for visualisation of the allocation of materials onto the computational mesh.
+
+Once the mesh and the cable model have been built then GGI_TLM is run with the command
+
+mpirun.mpich2 -np x GGI_TLM_MPI
+
+where x is the number of processors to run the solution on (or something similar...)
+
+or 
+
+GGI_TLM_SEQ
+
+for the sequenctial version
+
+A general information file with extension .info is always produced. Any warnings are 
+written to a .warnings file and if there are cables in the problem specification then a 
+.cable_info file is produced which contains details of the cable aspects of the model.
+
+Once the model has been run, the results may be post processed using GGI_TLM_post_process. 
+There are a large number of post processing options depending on the type of analysis and 
+the particular output produced. 

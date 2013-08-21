@@ -1,0 +1,326 @@
+#!/bin/bash
+
+TEST_DATA_DIRECTORY=$( pwd )
+
+## Use the following line if you are running the GGI_TLM/TEST_DATA test cases
+GGI_TLM_DIRECTORY=$( dirname ${TEST_DATA_DIRECTORY} )
+
+## If you are running anywhere else then GGI_TLM_DIRECTORY must be set appropriately so that the executables are in
+## ${GGI_TLM_DIRECTORY}/bin
+## EXAMPLE:
+#GGI_TLM_DIRECTORY=/home/chris/SOFTWARE/GGI_TLM/GGI_TLM
+
+source ${GGI_TLM_DIRECTORY}/run_configuration_data
+
+EXECUTABLE_DIR="${GGI_TLM_DIRECTORY}/bin"
+
+MPI_SOLVER_NAME="GGI_TLM_MPI"
+
+SEQ_SOLVER_NAME="GGI_TLM_SEQ"
+
+echo " TEST_DATA_DIRECTORY : ${TEST_DATA_DIRECTORY} "
+echo " GGI_TLM_DIRECTORY   : ${GGI_TLM_DIRECTORY} "
+echo " EXECUTABLE_DIRECTORY: ${EXECUTABLE_DIR} "
+
+export EXECUTABLE_DIR
+export TEST_DATA_DIRECTORY
+export MPI_SOLVER_NAME
+export MPI_RUN_COMMAND
+export SEQ_SOLVER_NAME
+export SEQ_RUN_COMMAND
+
+echo "Automatic testing of GGI_TLM"
+echo " "
+
+FULL_TEST_CASE_LIST="
+CABLE_TEST 
+CAVITY_EPSR=2 
+CAVITY_FREE_SPACE 
+CAVITY_MODE_STIR 
+CAVITY_MODE_STIR2 
+CAVITY_MUR=2 
+COAX_COUPLING 
+COAX_FD_TEST 
+COAX_MONOPOLE 
+COAX_PROPAGATION 
+COAX_TEST 
+COAX_ZT_TEST 
+DIELECTRIC_FILTER 
+DIPOLE 
+DIPOLE_JUNCTION_LOAD 
+FILTER_FIT_CFC 
+FILTER_FIT_IMPEDANCE 
+FILTER_FIT_LS22 
+HUYGENS_SURFACE
+MATERIAL_STABILITY_TEST 
+MATERIAL_TEST 
+MICRO_SPHERE_FIELD
+MODE_STIRRED_CHAMBER 
+MONOPOLE 
+MTL_CROSSTALK
+NESTED_MODE_STIRRED_CHAMBERS 
+PARALLEL_TEST
+POWER_CALCS 
+RCS_MATERIAL_SPHERE 
+RCS_PEC_SPHERE 
+RCS_SMAT_NON_SYMMETRIC_SPHERE 
+RCS_SMAT_SPHERE 
+RCS_COATED_IBC_SPHERE
+RCS_COATED_SPHERE
+RCS_DIELECTRIC_IBC_SPHERE
+RESONANT_ABSORBER
+RIBBON_CABLE_CROSSTALK
+SAR_TEM_CELL 
+SAR_TEST 
+SHIELDING_EFFECTIVENESS_BOX_SLOT
+SPHERE_SURFACE_OUTPUT 
+TCS_MODE_STIR 
+TCS_MODE_STIR_CIRCULAR_APERTURE 
+TEM_MATERIAL_TEST 
+TEM_THIN_LAYER_TEST 
+THIN_LAYER_STABILITY_TEST 
+WAVEGUIDE_RESONATOR 
+WAVEGUIDE_STRAIGHT 
+WAVEGUIDE_STRAIGHT_ANIMATION 
+WAVEGUIDE_IRIS 
+WIRE_OVER_GROUND_PLANE
+WIRE_OVER_LOSSY_GROUND 
+WRAPPING_BOUNDARY
+YORK_BOX_STRAIGHT_WIRE 
+YORK_BOX_STRAIGHT_WIRE_FWARP 
+YORK_BOX_STRAIGHT_WIRE_FSCALE
+AIRCRAFT_SURFACE_CURRENT
+AIRCRAFT_DIRECT_CURRENT_INJECTION
+GTEM_CELL
+HUMAN_HEAD_MODEL
+CYLINDRICAL_RESONATOR
+CABLE_BUNDLE_TEST 
+"
+
+QUICK_TEST_CASE_LIST="CABLE_TEST 
+COAX_COUPLING 
+COAX_FD_TEST 
+COAX_MONOPOLE 
+COAX_PROPAGATION 
+COAX_TEST 
+COAX_ZT_TEST 
+DIELECTRIC_FILTER 
+DIPOLE 
+DIPOLE_JUNCTION_LOAD 
+MTL_CROSSTALK
+RIBBON_CABLE_CROSSTALK
+SAR_TEM_CELL 
+WIRE_OVER_GROUND_PLANE
+WIRE_OVER_LOSSY_GROUND 
+YORK_BOX_STRAIGHT_WIRE 
+AIRCRAFT_DIRECT_CURRENT_INJECTION
+GTEM_CELL
+CABLE_BUNDLE_TEST 
+"
+
+ERROR_STRING="\
+Run using the following command:
+
+run_automatic_test action
+
+action is the process to run:
+action=run_seq NAME       : run GGI_TLM_SEQ on the test case NAME sequentially then post process results
+action=run_mpi np NAME    : run GGI_TLM_MPI on the test case NAME using mpi on np processors then post process results
+action=post_process NAME  : post process results
+action=clean NAME         : remove all existing results
+action=plot NAME          : plot the results to screen
+action=plot_jpg NAME      : plot the results to jpeg file
+action=plot_ref NAME      : plot the results against reference results to screen
+action=plot_ref_jpg NAME  : plot the results against reference results to jpeg file
+action=reference  NAME    : update the reference results with the current set of results
+
+NAME can be : One of the existing test cases ,
+     	    : FULL_TEST_CASE_LIST to run all the test cases
+            : QUICK_TEST_CASE_LIST to run a reduced set of the test cases
+Existing test cases are:
+
+$FULL_TEST_CASE_LIST
+"
+ 
+if [ "$#" = "0" ] ; then
+
+  echo "$ERROR_STRING"
+  
+else
+
+# set defaults...
+  ACTION=$1
+  NAME=$2
+  NP="1"
+
+  if [ "$ACTION" = "run_mpi" ] ; then
+# slightly different order of arguments, must include the number of processors to run on
+# check that we have an integer number of processors requested  
+    echo $2 | grep "[^0-9]" > /dev/null 2>&1
+
+    if [ "$?" = "0" ] ; then
+
+      # If the grep found something other than 0-9
+      # then it's not an integer.
+      echo "Sorry, wanted a number of processors to run on..."
+      echo " "
+      echo "For example to run the test set on 4 processors use:"
+      echo "run_automatic_test run_mpi 4 NAME"
+      echo " "
+
+      exit
+  
+    else
+    # The grep found only 0-9, so it's an integer. 
+    
+      NP=$2
+      NAME=$3
+      
+    fi
+        
+    if [ "$NP" = "1" ] ; then
+      echo "Running using ${NP} processor"
+    else
+      echo "Running using ${NP} processors"    
+    fi
+
+  fi
+  
+  echo " "
+  
+  if [ "$NAME" = "FULL_TEST_CASE_LIST" ] ; then
+  
+    TEST_CASE_LIST=$FULL_TEST_CASE_LIST
+  
+  elif [ "$NAME" = "QUICK_TEST_CASE_LIST" ] ; then
+  
+    TEST_CASE_LIST=$QUICK_TEST_CASE_LIST
+    
+  elif [ "$NAME" ] ; then
+  
+    TEST_CASE_LIST=$NAME
+# check that the test case directory exists
+      
+  else 
+  
+    TEST_CASE_LIST=$FULL_TEST_CASE_LIST
+    
+#    echo "No test case(s) specified"
+#    echo " "
+#    echo "$ERROR_STRING"  
+#    exit 1
+    
+  fi
+  
+  rm progress
+  touch progress
+  
+  if [ "$ACTION" = "run_mpi" ] ; then
+    echo "Running MPI, np= $NP" >> progress 
+  elif [ "$ACTION" = "run_seq" ] ; then
+    echo "Running Sequential" >> progress 
+  fi
+  
+  for TEST_CASE in $TEST_CASE_LIST
+  do
+
+# Check that the test case directory exists  
+    if [ -d "$TEST_CASE" ]; then
+    
+      echo "RUNNING TEST CASE: ${TEST_CASE}"
+    
+      cd $TEST_CASE
+     
+      if [ "$ACTION" = "run_mpi" ] ; then
+     
+        ./run_automatic_test $ACTION $NP $NAME
+     
+      elif [ "$ACTION" = "run_seq" ] ; then
+     
+        ./run_automatic_test $ACTION $NAME
+              
+      elif [ "$ACTION" = "post_process" ] ; then
+       
+        ./run_automatic_test $ACTION $NAME
+             
+      elif [ "$ACTION" = "clean" ] ; then
+       
+        ./run_automatic_test $ACTION $NAME
+    
+      elif [ "$ACTION" = "plot" ] ; then
+       
+        ./run_automatic_test $ACTION $NAME
+    
+      elif [ "$ACTION" = "plot_jpg" ] ; then
+       
+        ./run_automatic_test $ACTION $NAME
+       
+      elif [ "$ACTION" = "plot_ref" ] ; then
+       
+        ./run_automatic_test $ACTION $NAME
+       
+      elif [ "$ACTION" = "plot_ref_jpg" ] ; then
+       
+        ./run_automatic_test $ACTION $NAME
+      
+      elif [ "$ACTION" = "reference" ] ; then
+       
+        ./run_automatic_test $ACTION $NAME
+            
+      else 
+     
+        echo "Unknown action: $ACTION"    
+        echo " "
+        echo "$ERROR_STRING"
+        exit 1  
+     
+      fi
+      
+      if [ "$ACTION" != "clean" ] ; then
+      
+        RETURN_CODE=$?
+        read LINE < progress
+    
+        cd ..
+    
+        if [[ $RETURN_CODE != 0 ]] ; then
+          echo "$TEST_CASE: $LINE ***** FAILED *****" >> progress
+        else
+          echo "$TEST_CASE: FINISHED CORRECTLY" >> progress     
+        fi
+            
+      else 
+    
+        cd ..
+    
+      fi
+      
+    else
+    
+      echo "ERROR: Test case directory ${TEST_CASE} does not exist."
+      echo " "
+      echo "$ERROR_STRING"
+      exit 1  
+    
+    fi
+
+  done
+  
+  if [ "$ACTION" != "clean" ] ; then
+  
+    echo "__________________________________"
+    echo "                                  "
+    echo "Completed all specified test cases"
+    echo "__________________________________"
+    echo "                                  "
+    echo "STATUS:"
+    echo "                                  "
+  
+    cat progress
+    
+   fi
+      
+fi
+
+# we have some arguments to run_automatic_test
+

@@ -1,0 +1,14 @@
+           3  Post processing option: Fourier Transform
+waveguide.field.tout
+           1
+lin
+   0.8000000E+10 fmin
+   0.1200000E+11 fmax
+             800 n_frequencies
+waveguide.field.fout
+13  Post processing option: Extract mode from Frequency Domain Output
+waveguide.frequency_output_surface.fout
+           1  Mode Output surface
+WR90.mode                                                                       
+           0  Output surface
+           0  Post processing option: Quit

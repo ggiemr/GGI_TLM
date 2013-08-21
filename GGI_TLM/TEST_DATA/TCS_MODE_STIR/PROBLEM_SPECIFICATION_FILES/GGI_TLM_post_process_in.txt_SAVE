@@ -1,0 +1,77 @@
+           3  Post processing option: Fourier Transform
+TCS_mode_stir.field.tout
+           1
+lin
+   1e6 fmin
+   600e6 fmax
+   1000 n_frequencies
+E_cavity.fout
+           3  Post processing option: Fourier Transform
+TCS_mode_stir.volume_average_field.tout
+           1
+lin
+   1e6 fmin
+   600e6 fmax
+   1000 n_frequencies
+E_cavity_volume_average.fout
+           8  Post processing option: Frequency average
+E_cavity.fout
+           1
+p
+   5.000000000000000       averaging percentage bandwidth
+f
+p
+E_cavity_freq_stir.fout
+           8  Post processing option: Frequency average
+E_cavity_volume_average.fout
+           1
+p
+   5.000000000000000       averaging percentage bandwidth
+f
+p
+E_cavity_volume_average_freq_stir.fout
+           8  Post processing option: Frequency average
+TCS_mode_stir.frequency_domain_power_surface.fout
+           1
+p
+   5.000000000000000       averaging percentage bandwidth
+p
+p
+TCS_mode_stir.frequency_domain_power_surface_freq_stir.fout
+          15  Post processing option: Transmission Cross Section calculation
+TCS_mode_stir.frequency_domain_power_surface_freq_stir.fout
+           1
+E_cavity_freq_stir.fout
+           1
+e
+TCS_freq_stir.fout
+          15  Post processing option: Transmission Cross Section calculation
+TCS_mode_stir.frequency_domain_power_surface_freq_stir.fout
+           1
+E_cavity_volume_average_freq_stir.fout
+           1
+e
+TCS_volume_average_freq_stir.fout
+          15  Post processing option: Transmission Cross Section calculation
+TCS_mode_stir.frequency_domain_power_surface.fout
+           1
+E_cavity.fout
+           1
+e
+TCS.fout
+          15  Post processing option: Transmission Cross Section calculation
+TCS_mode_stir.frequency_domain_power_surface.fout
+           1
+E_cavity_volume_average.fout
+           1
+e
+TCS_volume_average.fout
+          5  Post processing option: Create Volume Field Animation
+TCS_mode_stir.volume_field.tout
+           1  Output volume
+lin
+   0.0000000000000000     
+   0.0000000000000000     
+n
+           0  Output volume
+           0  Post processing option: Quit

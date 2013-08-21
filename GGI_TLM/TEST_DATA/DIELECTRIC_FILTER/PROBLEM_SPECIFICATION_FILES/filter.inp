@@ -1,0 +1,294 @@
+# Two port filter
+
+Mesh_outer_boundary_dimension
+-0.001 0.067    -0.024  0.013   -0.001  0.017	 #  include space for 10mm coax feed
+
+
+Mesh_cell_dimension
+0.001	# 1mm mesh  
+
+Outer_boundary_reflection_coefficient 
+0 0   0 0    0 0		# PEC outer boundary
+
+Volume_list
+7   Number of volumes 
+1       VOLUME_NUMBER 
+cylinder
+0.00585   0.0056   # Dielectric ring 1
+0.0 0.0 0.0
+0.02045 -0.0115 0.008  
+2       VOLUME_NUMBER 
+cylinder
+0.002   0.0056   # Centre free space volume ring 1
+0.0 0.0 0.0
+0.02045 -0.0115 0.008  
+3       VOLUME_NUMBER 
+cylinder
+0.00585   0.0056   # Dielectric ring 2
+0.0 0.0 0.0
+0.04555 -0.0115 0.008  
+4       VOLUME_NUMBER 
+cylinder
+0.002   0.0056   # Centre free space volume ring 2
+0.0 0.0 0.0
+0.04555 -0.0115 0.008  
+5       VOLUME_NUMBER 
+cylinder
+0.002  0.012     # Coax feed 1 dielectric 
+90.0 0.0 0.0
+0.0085 0.0065 0.008
+6       VOLUME_NUMBER 
+cylinder
+0.002  0.012     # Coax feed 2 dielectric
+90.0 0.0 0.0
+0.0585 0.0065 0.008
+7       VOLUME_NUMBER 
+rectangular_block2
+0.000 -0.023 0.0    0.066 0.000 0.016    # Field output volume
+0.0 0.0 0.0
+0.0 0.0 0.0  
+
+Volume_material_list
+3   Number of volume materials 
+1       VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/epsr=38
+2       number of volumes
+1 3       volume list
+2       VOLUME MATERIAL NUMBER 
+DISPERSIVE
+MATERIAL_DIRECTORY/air
+2       number of volumes
+2 4       volume list
+3       VOLUME MATERIAL NUMBER
+DISPERSIVE
+MATERIAL_DIRECTORY/epsr=2.4
+2       number of volumes
+5 6       volume list
+
+Surface_list
+8   Number of surfaces 
+1       SURFACE_NUMBER 
+rectangular_block2
+0.000 -0.023 0.0    0.066 0.000 0.016    # Filter casing
+0.0 0.0 0.0
+0.0 0.0 0.0  
+2       SURFACE_NUMBER    		# Outer coax port 1
+cylinder
+0.002  0.012
+90.0 0.0 0.0
+0.0085 0.006 0.0085
+3       SURFACE_NUMBER 			# Coax to filter connection port 1
+circle
+0.002  
+90.0 0.0 0.0
+0.0085 0.00 0.0085
+4       SURFACE_NUMBER    		# Inner coax port 1
+cylinder
+0.00065  0.030
+90.0 0.0 0.0
+0.0085 -0.005 0.0085
+5       SURFACE_NUMBER     		# Outer coax port 2
+cylinder
+0.002  0.012
+90.0 0.0 0.0
+0.0585 0.006 0.0085
+6       SURFACE_NUMBER 			# Coax to filter connection port 2
+circle
+0.002  
+90.0 0.0 0.0
+0.0585 0.00 0.0085
+7       SURFACE_NUMBER    		# Inner coax port 2
+cylinder
+0.00065  0.030
+90.0 0.0 0.0
+0.0585 -0.005 0.0085
+8       SURFACE_NUMBER 
+zplane
+0.000 -0.023 0.008    0.066 0.000 0.008  ! mode output surface
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Surface_material_list
+3   Number of surface materials 
+1       SURFACE MATERIAL NUMBER 
+PEC
+3       number of surfaces
+1 2 5       surface list
+1 1 1       surface orientation list
+2       SURFACE MATERIAL NUMBER 
+FREE_SPACE
+2       number of surfaces
+3 6       surface list
+1 1       surface orientation list
+3       SURFACE MATERIAL NUMBER 
+PEC
+2       number of surfaces
+4 7       surface list
+1 1       surface orientation list
+
+Line_list
+2   Number of lines 
+1       LINE_NUMBER   port 1 feed wire
+straight_line2
+0.008 0.010 0.008   0.008 0.012 0.008  line parameters 
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       LINE_NUMBER   port 2 feed wire
+straight_line2
+0.058 0.010 0.008   0.058 0.012 0.008  line parameters 
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Point_list 
+4   Number of points 
+1       POINT_NUMBER 
+0.008 0.010 0.008    point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       POINT_NUMBER 
+0.008 0.012 0.008    point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+3       POINT_NUMBER
+0.058 0.010 0.008    point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+4       POINT_NUMBER 
+0.058 0.012 0.008    point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+
+Cable_geometry_list
+1  number of cable geometries
+1  CABLE GEOMETRY NUMBER, Cable geometry type (file name) follows:
+CABLE_DIRECTORY/0.1mm_single_wire     
+                                  
+Cable_list
+2  number of cables
+1  CABLE NUMBER 
+1 cable geometry number
+1 number of lines on cable route
+1 cable line list
+1  end 1 junction number
+2  end 2 junction number
+2  CABLE NUMBER
+1 cable geometry number
+1 number of lines on cable route
+2  cable line list
+3  end 1 junction number
+4  end 2 junction number
+
+Cable_output_list
+2 number of cable_outputs
+1 CABLE OUTPUT NUMBER
+1 cable number
+2 closest point number
+2 CABLE OUTPUT NUMBER
+2 cable number
+4 closest point number
+
+Cable_junction_list
+4    number of junctions
+1    JUNCTION NUMBER
+1    junction point 
+1    number of internal connection nodes (n_int)
+1    number of cables
+1    cable list
+1    corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 1 voltage function source list
+0.0 	Cable 1 impedance list
+0	Number of internal impedances
+FACE
+-1  boundary condition (-1 indicates V=0 i.e. connection to a surface)
+2    JUNCTION NUMBER
+2    junction point 
+1    number of internal connection nodes (n_int)
+1    number of cables
+1    cable list
+2    corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+1    	Cable 1 voltage function source list
+50.0 	Cable 1 impedance list
+0	Number of internal impedances
+FACE
+-1  boundary condition (-1 indicates V=0 i.e. connection to a surface)
+3    JUNCTION NUMBER
+3    junction point 
+1    number of internal connection nodes (n_int)
+1    number of cables
+2    cable list
+1    corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 1 voltage function source list
+0.0 	Cable 1 impedance list
+0	Number of internal impedances
+FACE
+-1  boundary condition (-1 indicates V=0 i.e. connection to a surface)
+4    JUNCTION NUMBER
+4    junction point 
+1    number of internal connection nodes (n_int)
+1    number of cables
+2    cable list
+2    corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0    	Cable 1 voltage function source list
+50.0 	Cable 1 impedance list
+0	Number of internal impedances
+FACE
+-1  boundary condition (-1 indicates V=0 i.e. connection to a surface)
+
+Excitation_function_list
+1    number of excitation functions
+1    EXCITATION FUNCTION NUMBER
+gaussian
+1.0 5e-11 20e-11
+
+Frequency_output_surface_list
+4    		! number of Frequency output surfaces
+1		! FREQUENCY OUTPUT SURFACE NUMBER
+8     surface number
+1		! side of surface for output (+1 or -1)
+4.51e9 frequency for output
+Ex
+2		! FREQUENCY OUTPUT SURFACE NUMBER
+8     surface number
+1		! side of surface for output (+1 or -1)
+4.51e9 frequency for output
+Ey
+3		! FREQUENCY OUTPUT SURFACE NUMBER
+8     surface number
+1		! side of surface for output (+1 or -1)
+3.88e9 frequency for output
+Ex
+4		! FREQUENCY OUTPUT SURFACE NUMBER
+8     surface number
+1		! side of surface for output (+1 or -1)
+3.88e9 frequency for output
+Ey
+
+Frequency_output_volume_list
+3    		! number of Frequency output volumes
+1		! FREQUENCY OUTPUT VOLUME NUMBER
+7     volume number
+4.51e9 frequency for output
+Ex
+2		! FREQUENCY OUTPUT VOLUME NUMBER
+7     volume number
+4.51e9 frequency for output
+Ey
+3		! FREQUENCY OUTPUT VOLUME NUMBER
+7     volume number
+4.51e9 frequency for output
+Ez
+
+Simulation_time
+1e-7  # this is a short runtime for testing, we should really run for 1e-6s to get a good result.
+
+
