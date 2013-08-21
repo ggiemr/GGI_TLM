@@ -1,0 +1,3 @@
+chmod +x run_automatic_test
+chmod +x */run_automatic_test
+chmod +x */PROBLEM_SPECIFICATION_FILES/create_reference_result

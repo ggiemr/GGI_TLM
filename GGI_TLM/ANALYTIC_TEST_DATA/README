@@ -14,14 +14,15 @@ be set ( set to " mpirun " in this case). The line that needs to be changed is:
 
 SEQ_RUN_COMMAND=" "
 
-* You will also need to edit the file:
+The only other issue which may be encountered is with file permissions. The file run_automatic_test should be executable, as should all the run_automatic_test files in the sub-directories, plus the PROBLEM_SPECIFICATION_FILES/create_reference_result files in the sub-directories. 
+If the is a problem then the files can be flagged as executable with the command:
 
-run_test_case_include 
+source set_permissions
 
-to set the paths to the material and cable data directories i.e. the following lines
-
-MATERIAL_DIRECTORY="\/home\/chris\/SOFTWARE\/GGI_TLM\/TEST_DATA\/MATERIAL_DATA"
-CABLE_DIRECTORY="\/home\/chris\/SOFTWARE\/GGI_TLM\/TEST_DATA\/CABLE_DATA"
+(which executes the following:
+chmod +x run_automatic_test
+chmod +x */run_automatic_test
+chmod +x */PROBLEM_SPECIFICATION_FILES/create_reference_result)
 
 Nothing else should need to be changed. 
 
