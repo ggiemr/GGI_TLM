@@ -1,29 +1,33 @@
 #!/bin/bash
 
-### THIS NEEDS TO BE SET TO YOUR PARTICULAR COMMAND FOR RUNNING SEQENTIAL CODES (OFTEN NOT REQUIRED) ###
-SEQ_RUN_COMMAND=""
-
-### NOTHING BELOW HERE SHOULD NEED TO BE CHANGED ###
-
-# Automatically set the paths to directories for executables, module files and libraries.
 TEST_DATA_DIRECTORY=$( pwd )
 
-# the following line sets the directory name automatically, this works OK if you are runnning in GGI_TLM/TEST_DATA
-# If you are running anywhere else then it must be set appropriately so that the executables are in
-# ${GGI_TLM_DIRECTORY}/bin
-
+## Use the following line if you are running the GGI_TLM/TEST_DATA test cases
 GGI_TLM_DIRECTORY=$( dirname ${TEST_DATA_DIRECTORY} )
 
-echo " TEST_DATA_DIRECTORY : ${TEST_DATA_DIRECTORY} "
-echo " GGI_TLM_DIRECTORY   : ${GGI_TLM_DIRECTORY} "
+## If you are running anywhere else then GGI_TLM_DIRECTORY must be set appropriately so that the executables are in
+## ${GGI_TLM_DIRECTORY}/bin
+## EXAMPLE:
+#GGI_TLM_DIRECTORY=/home/chris/SOFTWARE/GGI_TLM/GGI_TLM
+
+source ${GGI_TLM_DIRECTORY}/run_configuration_data
 
 EXECUTABLE_DIR="${GGI_TLM_DIRECTORY}/bin"
+
+MPI_SOLVER_NAME="GGI_TLM_MPI"
+
+SEQ_SOLVER_NAME="GGI_TLM_SEQ"
 
 echo " TEST_DATA_DIRECTORY : ${TEST_DATA_DIRECTORY} "
 echo " GGI_TLM_DIRECTORY   : ${GGI_TLM_DIRECTORY} "
 echo " EXECUTABLE_DIRECTORY: ${EXECUTABLE_DIR} "
 
 export EXECUTABLE_DIR
+export GGI_TLM_DIRECTORY
+export TEST_DATA_DIRECTORY
+export MPI_SOLVER_NAME
+export MPI_RUN_COMMAND
+export SEQ_SOLVER_NAME
 export SEQ_RUN_COMMAND
 
 echo "Automatic testing of Analytic validation codes"
