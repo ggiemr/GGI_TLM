@@ -68,7 +68,7 @@ integer	:: triangle_count
 
 type(xyz)	:: triangle_point1,triangle_point2,triangle_point3
 
-real,allocatable	:: points(:,:)
+real*8,allocatable	:: points(:,:)
 integer,allocatable	:: triangles(:,:)
 logical,allocatable	:: triangle_OK(:)
 

@@ -276,9 +276,10 @@ else
      
       fi
       
+      RETURN_CODE=$?
+      
       if [ "$ACTION" != "clean" ] ; then
       
-        RETURN_CODE=$?
         read LINE < progress
     
         cd ..

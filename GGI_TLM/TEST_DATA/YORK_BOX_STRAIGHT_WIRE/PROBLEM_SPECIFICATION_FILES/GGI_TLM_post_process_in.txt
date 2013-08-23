@@ -19,6 +19,7 @@ york_box.cable_current.fout
 1
 p
 5.0
+   100			 percentage uniform bandwidth of trapezoidal wwindow
 f
 p
 york_box.cable_current_stir.fout
@@ -27,6 +28,7 @@ york_box.excitation.fout
 1
 p
 5.0
+   100			 percentage uniform bandwidth of trapezoidal wwindow
 f
 p
 york_box.excitation_stir.fout

@@ -19,6 +19,7 @@ E_cavity.fout
            1
 p
    5.000000000000000       averaging percentage bandwidth
+   100			 percentage uniform bandwidth of trapezoidal wwindow
 f
 p
 E_cavity_freq_stir.fout
@@ -27,6 +28,7 @@ E_cavity_volume_average.fout
            1
 p
    5.000000000000000       averaging percentage bandwidth
+   100			 percentage uniform bandwidth of trapezoidal wwindow
 f
 p
 E_cavity_volume_average_freq_stir.fout
@@ -35,6 +37,7 @@ TCS_mode_stir.frequency_domain_power_surface.fout
            1
 p
    5.000000000000000       averaging percentage bandwidth
+   100			 percentage uniform bandwidth of trapezoidal wwindow
 p
 p
 TCS_mode_stir.frequency_domain_power_surface_freq_stir.fout

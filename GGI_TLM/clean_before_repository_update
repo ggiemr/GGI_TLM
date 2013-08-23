@@ -1,0 +1,12 @@
+cd SRC
+make clean_all
+cd ..
+cd TEST_DATA
+run_automatic_test clean
+cd ..
+cd ANALYTIC_TEST_DATA
+run_automatic_test clean
+cd ..
+cd TEMPLATE_PROJECT
+run_automatic_test clean
+cd ..

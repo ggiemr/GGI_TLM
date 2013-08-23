@@ -895,7 +895,7 @@ IMPLICIT NONE
 
   do cell=1,nz
   
-    cell_rank(cell)=INT(np*real(cell-1)/real(nz))
+    cell_rank(cell)=INT(np*dble(cell-1)/dble(nz))
     
   end do
   

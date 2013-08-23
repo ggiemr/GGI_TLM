@@ -181,7 +181,7 @@ straight_line2
 0.0 0.0 0.0
 
 Point_list
-4   Number of points 
+5   Number of points 
 1       POINT_NUMBER 
 -0.5499   21.0   3.6499 # Junction 1
 0.0 0.0 0.0
@@ -196,6 +196,10 @@ Point_list
 0.0 0.0 0.0
 4       POINT_NUMBER 
 8.301 -26.499 2.4  # Junction 4
+0.0 0.0 0.0
+0.0 0.0 0.0
+5       POINT_NUMBER 
+1.0   20.0   4.0  # field output point
 0.0 0.0 0.0
 0.0 0.0 0.0
 
@@ -429,6 +433,14 @@ Excitation_function_list
 1              ! EXCITATION NUMBER
 gaussian
 1.0 1e-8 3e-8
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+5		! output point
+Ex
+centre
+
 
 Output_surface_list
 1    		! number of output surfaces
