@@ -15,5 +15,9 @@ Sequential and parallel (mpi) implementation
 
 Over 50 example test cases
 
+This is a new project and is still undergoing development, testing and documenting.
+Please report any issues which you have with the code, test cases or documentation and we will
+do our best to help...
+
 
 Current release is Version 1.0.0
