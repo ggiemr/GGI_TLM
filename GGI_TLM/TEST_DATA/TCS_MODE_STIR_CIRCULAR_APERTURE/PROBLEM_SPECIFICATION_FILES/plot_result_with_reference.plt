@@ -11,7 +11,7 @@ plot "E_cavity.fout" u 1:5 title "Cavity E field: GGI_TLM" w l,\
 set xlabel "Frequency (Hz)"
 set ylabel "W"
 plot "TCS_mode_stir.frequency_domain_power_surface.fout" u 1:7 title "Transmitted Power: GGI_TLM" w l,\
-"TCS_mode_stir.frequency_domain_power_surface.fout_ref" u 1:7 title "Transmitted Power: GGI_TLM reference" w p
+"PROBLEM_SPECIFICATION_FILES/TCS_mode_stir.frequency_domain_power_surface.fout_ref" u 1:7 title "Transmitted Power: GGI_TLM reference" w p
 #PAUSE pause -1
 
 #OUTPUT_TO_FILE set output "Test_case_40_TCS_MODE_STIR_TCS_ref.jpg"
