@@ -125,6 +125,9 @@ IMPLICIT NONE
   real*8	:: Ms_min(3)
   real*8	:: Ms_max(3)
   
+  real*8	:: Is_min(3)
+  real*8	:: Is_max(3)
+  
   logical min_face_excitation
   
 ! Cable parameters  

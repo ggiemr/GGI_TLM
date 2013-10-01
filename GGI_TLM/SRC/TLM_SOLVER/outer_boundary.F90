@@ -150,7 +150,7 @@ IMPLICIT NONE
 	huygens_face=huygens_face+1 
 	offset=huygens_surface%offset(huygens_face)
 	
-	CALL get_interpolated_excitation_value(offset,offset_min,function_number,value,huygens_face)
+	CALL get_interpolated_excitation_value(offset,offset_min,function_number,value)
 	  
         normx=huygens_surface%nx(huygens_face)
         normy=huygens_surface%ny(huygens_face)
@@ -171,7 +171,7 @@ IMPLICIT NONE
 	huygens_face=huygens_face+1 
 	offset=huygens_surface%offset(huygens_face)
 	
-	CALL get_interpolated_excitation_value(offset,offset_min,function_number,value,huygens_face)
+	CALL get_interpolated_excitation_value(offset,offset_min,function_number,value)
 	  
         normx=huygens_surface%nx(huygens_face)
         normy=huygens_surface%ny(huygens_face)
@@ -199,7 +199,7 @@ IMPLICIT NONE
 	huygens_face=huygens_face+1 
 	offset=huygens_surface%offset(huygens_face)
 	
-	CALL get_interpolated_excitation_value(offset,offset_min,function_number,value,huygens_face)
+	CALL get_interpolated_excitation_value(offset,offset_min,function_number,value)
 	  
         normx=huygens_surface%nx(huygens_face)
         normy=huygens_surface%ny(huygens_face)
@@ -220,7 +220,7 @@ IMPLICIT NONE
 	huygens_face=huygens_face+1 
 	offset=huygens_surface%offset(huygens_face)
 	
-	CALL get_interpolated_excitation_value(offset,offset_min,function_number,value,huygens_face)
+	CALL get_interpolated_excitation_value(offset,offset_min,function_number,value)
 	  
         normx=huygens_surface%nx(huygens_face)
         normy=huygens_surface%ny(huygens_face)
@@ -251,7 +251,7 @@ IMPLICIT NONE
 	  huygens_face=huygens_face+1 
 	  offset=huygens_surface%offset(huygens_face)
 	
-	  CALL get_interpolated_excitation_value(offset,offset_min,function_number,value,huygens_face)
+	  CALL get_interpolated_excitation_value(offset,offset_min,function_number,value)
 	  
           normx=huygens_surface%nx(huygens_face)
           normy=huygens_surface%ny(huygens_face)
@@ -284,7 +284,7 @@ IMPLICIT NONE
 	  huygens_face=huygens_face+1 
 	  offset=huygens_surface%offset(huygens_face)
 	
-	  CALL get_interpolated_excitation_value(offset,offset_min,function_number,value,huygens_face)
+	  CALL get_interpolated_excitation_value(offset,offset_min,function_number,value)
 	  
           normx=huygens_surface%nx(huygens_face)
           normy=huygens_surface%ny(huygens_face)

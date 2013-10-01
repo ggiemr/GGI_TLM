@@ -16,6 +16,7 @@
 !    along with this program.  If not, see <http://www.gnu.org/licenses/>.   
 !
 ! SUBROUTINE read_field_component
+! SUBROUTINE read_field_or_current_component
 ! SUBROUTINE read_field_component_surface_output
 !
 ! NAME
@@ -80,6 +81,76 @@ character*256	:: input_line
      STOP
   
 END SUBROUTINE read_field_component
+!
+! NAME
+!     read_field_or_currrent_component
+!
+! DESCRIPTION
+!     read a field or currrent component for point output
+!
+!
+! COMMENTS
+!     
+!
+! HISTORY
+!
+!     started 26/09/2013 CJS
+!
+!
+SUBROUTINE read_field_or_currrent_component(file_unit,field_component)
+
+USE TLM_general
+
+IMPLICIT NONE
+
+  integer		:: file_unit
+  integer		:: field_component
+
+! local variables
+
+character*256	:: input_line
+
+! START  
+    read(file_unit,'(A)')input_line
+
+! convert text to lower case
+    CALL convert_to_lower_case(input_line,256)
+
+    if (input_line.EQ.Ex_string) then
+      field_component=Ex
+    else if (input_line.EQ.Ey_string) then
+      field_component=Ey
+    else if (input_line.EQ.Ez_string) then
+      field_component=Ez
+    else if (input_line.EQ.Hx_string) then
+      field_component=Hx
+    else if (input_line.EQ.Hy_string) then
+      field_component=Hy
+    else if (input_line.EQ.Hz_string) then
+      field_component=Hz
+    else if (input_line.EQ.Jx_string) then
+      field_component=Jx
+    else if (input_line.EQ.Jy_string) then
+      field_component=Jy
+    else if (input_line.EQ.Jz_string) then
+      field_component=Jz
+    else
+      GOTO 9010
+    end if  
+    
+  RETURN
+  
+9000 CALL write_line('Error reading field component from file:',0,.TRUE.)
+     CALL write_error_line(file_unit)
+     STOP
+     
+9010 CALL write_line('Error reading field component',0,.TRUE.)
+     CALL write_line("Expecting field compoent 'Ex', 'Ey', 'Ez', 'Hx', 'Hy', 'Hz', Ix', 'Iy' or 'Iz'",0,.TRUE.)
+     CALL write_error_line(file_unit)
+     STOP
+  
+END SUBROUTINE read_field_or_currrent_component
+
 ! SUBROUTINE read_field_component_surface_output
 !
 ! NAME

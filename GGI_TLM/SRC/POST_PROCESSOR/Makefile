@@ -20,6 +20,8 @@ oneport.o \
 twoport.o \
 transmission_cross_section.o \
 IELF.o \
+S_to_Z.o \
+correlation.o \
 fourier_transform_warp.o 
 
 default: $(POST_PROCESSOR_OBJS)

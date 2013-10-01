@@ -70,7 +70,7 @@ character*256	:: input_line
   
   allocate ( excitation_points(1:n_excitation_points) )
 
-  do excitation_number=1,n_excitation_functions
+  do excitation_number=1,n_excitation_points
   
     CALL write_line_integer('Reading excitation number',excitation_number,0,output_to_screen_flag)
     
@@ -85,7 +85,7 @@ character*256	:: input_line
                    excitation_points(excitation_number)%cell_point%cell,			&
 		   excitation_points(excitation_number)%point  )
        
-    CALL read_field_component(input_file_unit,excitation_points(excitation_number)%field_component)
+    CALL read_field_or_currrent_component(input_file_unit,excitation_points(excitation_number)%field_component)
 
     CALL read_centre_or_face(input_file_unit,excitation_points(excitation_number)%cell_point%point)
 ! point excitation assumed at cell centre at the moment

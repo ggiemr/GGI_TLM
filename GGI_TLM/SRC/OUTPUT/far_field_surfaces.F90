@@ -251,6 +251,7 @@ END SUBROUTINE initialise_far_field_surfaces
 ! HISTORY
 !
 !     started 14/08/2012 CJS
+!     include dt in Fourier Integral to make the output consistent with other Fourier Transformed outputs 26/9/2013
 !
 !
 SUBROUTINE face_output_far_field
@@ -289,7 +290,7 @@ IMPLICIT NONE
     number_of_faces=far_field_surface%number_of_faces
     
     frequency=far_field_surface%frequency
-    ejwt=exp(-j*2d0*pi*frequency*time)
+    ejwt=exp(-j*2d0*pi*frequency*time)*dt
     
     do output_face=1,number_of_faces
          

@@ -384,6 +384,8 @@ POST_PROCESSOR/oneport.o \
 POST_PROCESSOR/twoport.o \
 POST_PROCESSOR/transmission_cross_section.o \
 POST_PROCESSOR/IELF.o \
+POST_PROCESSOR/S_to_Z.o \
+POST_PROCESSOR/correlation.o \
 POST_PROCESSOR/fourier_transform_warp.o
 
 OBJS= \

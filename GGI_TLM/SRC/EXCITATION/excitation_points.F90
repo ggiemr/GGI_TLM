@@ -224,6 +224,7 @@ END SUBROUTINE initialise_excitation_points
 ! HISTORY
 !
 !     started 14/08/2012 CJS
+!     allow superposition of point sources 26/9/3013
 !
 !
 SUBROUTINE Point_excitation
@@ -270,7 +271,9 @@ IMPLICIT NONE
 
           excitation_array_point=excitation_points(excitation_point)%cell_excitation_field_number
           value=excitation_functions(function_number)%value(timestep)
-          cell_excitation_field(excitation_array_point,field_component)=value
+	  
+          cell_excitation_field(excitation_array_point,field_component)=	&
+	       cell_excitation_field(excitation_array_point,field_component)+value
 	  
 	end if ! excitation point in this processor's mesh
 
@@ -278,6 +281,9 @@ IMPLICIT NONE
 ! must be an excitation point on a face
 
         if (rank.eq.cell_face_rank(cz,face)) then
+      
+          function_number=excitation_points(excitation_point)%excitation_function_number
+          field_component=excitation_points(excitation_point)%field_component
  	     
           if	(face.eq.face_xmin) then
 	    side=1
@@ -296,7 +302,11 @@ IMPLICIT NONE
           excitation_array_point=excitation_points(excitation_point)%face_excitation_field_number
           value=excitation_functions(function_number)%value_face(timestep)
 	
-          face_excitation_field(excitation_array_point,side,field_component)=value
+!          face_excitation_field(excitation_array_point,side,field_component)=value
+          face_excitation_field(excitation_array_point,1,field_component)=	&
+	    face_excitation_field(excitation_array_point,1,field_component)+value
+          face_excitation_field(excitation_array_point,2,field_component)=	&
+	    face_excitation_field(excitation_array_point,2,field_component)+value
 	
         end if ! excitation point in this processor's mesh
 	

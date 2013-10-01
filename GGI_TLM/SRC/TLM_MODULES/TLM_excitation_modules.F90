@@ -45,6 +45,11 @@ TYPE::excitation_function_type
   real*8	:: parameters(6) 
   real*8,allocatable	:: value(:)
   real*8,allocatable	:: value_face(:)
+  
+  character*256		:: filename
+  integer		:: n_values_from_file
+  real*8,allocatable	:: time_values_from_file(:)
+  real*8,allocatable	:: function_values_from_file(:)
  
 END TYPE excitation_function_type
 
@@ -133,6 +138,9 @@ END TYPE excitation_mode_type
   integer,parameter	:: excitation_function_type_gaussian_sinusoid=6
   integer,parameter	:: excitation_function_type_gaussian_step_sinusoid=7
   integer,parameter	:: excitation_function_type_double_exponential=8
+  integer,parameter	:: excitation_function_type_differential_gaussian=9
+  integer,parameter	:: excitation_function_type_noise=10
+  integer,parameter	:: excitation_function_type_file=11
   
   integer,parameter	:: source_type_hard=1
   

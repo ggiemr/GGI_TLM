@@ -48,7 +48,7 @@ _________________________________________________________
 Instructions to include a new excitation function:
 
 1. Define a new excitation_function_type in MODULE TLM_excitation, file:
-TLM_MODULES/TLM_Modules.F90
+TLM_MODULES/TLM_excitation_modules.F90
 
 eg
 integer,parameter	:: excitation_function_type_new_function=n+1   	! n+1 is the next integer in the 
@@ -64,7 +64,7 @@ e.g.
       excitation_functions(excitation_number)%type=excitation_function_type_new_function
 
 3. Define the new function in SUBROUTINE initialise_excitation_functions, file:
-TLM_SOLVER/excitation.F90
+EXCITATION/excitation.F90
 
 e.g.
       else if (excitation_functions(excitation_number)%type.EQ.excitation_function_type_gaussian) then

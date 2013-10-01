@@ -291,4 +291,13 @@ output point is 'inside' the PEC/PMC and sees no field.
     
 91. The new packets to set the flags LC_correction_type_subtract_cell_inductance and LC_correction_type_geometry_scale
     are not yet documented
+    
+92. Perhaps it is worth thinking about a proper format for S parameter data...
+
+93. Need to document excitation function defined in file and the noise source, plus note that sources
+    can now be added e.g. adding noise to a signal source
+    DONE
+
+94. Need to document test case EXCITATION_FUNCTION_TEST
+
 

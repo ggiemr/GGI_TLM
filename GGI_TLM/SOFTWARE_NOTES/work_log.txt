@@ -413,6 +413,21 @@
 			
 10/07/2013	CJS	Include a check to ensure that cable junctions exist
 			implement double exponential function
+			
+13/19/2013	CJS	Fix bug in create_cable_meshes SUBROUTINE filter_cable_segment_list which occurs when the number of segments is 3. 
+
+19/9/2013	CJS	Implement S to Z parameter transform for symmetric structures 
+
+23/9/2013	CJS	Implement excitation function defined in file plus a test case 	
+			EXCITATION_FUNCTION_TEST
+
+25/9/2013	CJS	Implement differentiated gaussian source function
+			Fix a big with excitation points on surfaces
+26/9/2013	CJS	Re-normalise the far field correctly to 1m distance
+			implement current density sources Jx Jy Jz
+			implement noise source function  uniform distribution for now...
+			fix another bug in excitation points
+			implement time domain correlation calculation in GGI_TLM_post_process
 						
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE

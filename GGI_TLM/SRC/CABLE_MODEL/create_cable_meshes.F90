@@ -460,6 +460,7 @@ END SUBROUTINE create_cable_meshes
 ! HISTORY
 !
 !     started 28/11/2012 CJS
+!     13/8/2013 fix counting error which occurs when there are only 3 segments
 !
 !
 SUBROUTINE filter_cable_segment_list(segment_list,direction_sign_list,	&
@@ -536,7 +537,8 @@ IMPLICIT NONE
     
   end if
 
-! we are now at segment 3: loop over segment list copying the segments until we reach the other end
+! The next segment is now segment 3
+! loop over segment list copying the segments until we reach the other end
   do i=3,n_segments_in-2
   
     old_segment=old_segment+1
@@ -547,6 +549,13 @@ IMPLICIT NONE
   end do
   
 ! check end 2 termination
+
+! 13/8/2013 fix counting error which occurs when there are only 3 segments
+! check if there are only 3 segments and if so reduce old_segment and new_segment by 1
+  if (n_segments_in.eq.3) then
+    old_segment=1
+    new_segment=max(new_segment-1,0)
+  end if
   
   if ( .NOT.same_cell_point(segment_list(n_segments_in-1)%segment_point(1),	&
                             segment_list(n_segments_in)%segment_point(2)) ) then
@@ -562,7 +571,7 @@ IMPLICIT NONE
     new_direction_sign_list(new_segment)=direction_sign_list(old_segment)
 
   else
-! skip the first two segments
+! skip the last two segments
 
     old_segment=old_segment+2
     

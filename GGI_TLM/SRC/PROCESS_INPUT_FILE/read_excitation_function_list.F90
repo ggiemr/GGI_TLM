@@ -26,13 +26,16 @@
 ! Example packet:
 !
 !Excitation_function_list
-!2       ! number of excitations
+!3       ! number of excitations
 !1       ! EXCITATION NUMBER
 !impulse
-!0.0
+!1.0 0.0
 !2       ! EXCITATION NUMBER
 !gaussian
-!1e-9 3e-9
+!1.0 1e-9 3e-9
+!3       ! EXCITATION NUMBER
+!filename
+!1.0 1e-9
 !
 ! COMMENTS
 !     
@@ -40,6 +43,7 @@
 ! HISTORY
 !
 !     started 10/08/2012 CJS
+!     excitation function defined in a file: 23/9/2013
 !
 !
 SUBROUTINE read_excitation_function_list
@@ -59,6 +63,9 @@ integer	:: n_params
 integer	:: i
 
 character*256	:: input_line
+
+integer	:: loop,sample,n_samples
+real*8	:: t_in,ft_in
 
 ! START  
 
@@ -126,10 +133,70 @@ character*256	:: input_line
     
       n_params=3
       excitation_functions(excitation_number)%type=excitation_function_type_double_exponential
+   
+    else if (input_line.eq.'differential_gaussian') then
+    
+      n_params=3
+      excitation_functions(excitation_number)%type=excitation_function_type_differential_gaussian
+   
+    else if (input_line.eq.'noise') then
+    
+      n_params=1
+      excitation_functions(excitation_number)%type=excitation_function_type_noise
 
     else
-    
-      goto 9030
+
+! we assume that the excitation type is a filename so try and open the file and read the contents
+
+! go back to the original input line read from the input file and check whether this is a function in a file
+
+      excitation_functions(excitation_number)%filename=input_line
+      
+      write(*,*)'Excitation function file name='
+      write(*,*)trim(excitation_functions(excitation_number)%filename)
+      write(*,*)'Opening file:',trim(excitation_functions(excitation_number)%filename)
+
+      open(UNIT=excitation_function_unit,						&
+           FILE=excitation_functions(excitation_number)%filename,	&
+           STATUS='old',							&
+           ERR=9030)
+	   
+      do loop=1,2
+
+        sample=0
+       
+10      continue
+
+          read(excitation_function_unit,*,end=1000,ERR=9040)t_in,ft_in
+	  sample=sample+1
+	  if (loop.eq.2) then  
+	    excitation_functions(excitation_number)%time_values_from_file(sample)=t_in
+	    excitation_functions(excitation_number)%function_values_from_file(sample)=ft_in
+	  end if
+	 
+        goto 10  ! read next sample
+        
+1000    continue 
+
+        n_samples=sample
+        excitation_functions(excitation_number)%n_values_from_file=n_samples
+	 
+        if (loop.eq.1) then
+	  allocate ( excitation_functions(excitation_number)%time_values_from_file(1:n_samples) )
+	  allocate ( excitation_functions(excitation_number)%function_values_from_file(1:n_samples) )
+	end if
+	 
+	rewind(unit=excitation_function_unit)
+	 
+      end do ! next loop
+      
+      excitation_functions(excitation_number)%type=excitation_function_type_file
+                
+      close(UNIT=excitation_function_unit)
+      
+      write(*,*)'Number of excitation samples read:',excitation_functions(excitation_number)%n_values_from_file
+      
+      n_params=2
 
     end if
     
@@ -166,7 +233,15 @@ character*256	:: input_line
      
 9030 CALL write_line('Error reading excitation function list packet',0,.TRUE.)
      CALL write_line('Unrecognised excitation function:',0,.TRUE.)
+     write(*,*)trim(input_line)
      CALL write_error_line(input_file_unit)
      STOP
+     
+9040 CALL write_line('Error reading excitation function list packet',0,.TRUE.)
+     CALL write_line('Problem reading excitation function from file:',0,.TRUE.)
+     write(*,*)trim(input_line)
+     CALL write_error_line(input_file_unit)
+     STOP
+     
   
 END SUBROUTINE read_excitation_function_list

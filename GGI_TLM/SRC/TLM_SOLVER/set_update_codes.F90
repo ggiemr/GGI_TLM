@@ -151,7 +151,7 @@ IMPLICIT NONE
 ! Allocate memory for all cell excitations and outputs 
   
   if (total_number_excitation_cells.GT.0) then
-    ALLOCATE( cell_excitation_field(1:total_number_excitation_cells,1:6) )
+    ALLOCATE( cell_excitation_field(1:total_number_excitation_cells,1:9) )
   end if
   
   if (total_number_output_cells.GT.0) then

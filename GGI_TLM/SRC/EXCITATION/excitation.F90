@@ -171,6 +171,9 @@ IMPLICIT NONE
   real*8	:: beta
   real*8	:: tpeak
   real*8	:: fpeak
+  real*8	:: r_random
+  
+  real*8 	:: interpolate_function
 
 ! START
 
@@ -378,6 +381,8 @@ IMPLICIT NONE
       
         end if  
 
+! half timestep evaluation	
+
         if (time-dt/2d0.ge.0d0) then
     
           amplitude=1d0/excitation_functions(excitation_number)%parameters(1)
@@ -394,8 +399,59 @@ IMPLICIT NONE
           excitation_functions(excitation_number)%value_face(timestep)=0d0
       
         end if  
+	
+      else if (excitation_functions(excitation_number)%type.EQ.excitation_function_type_differential_gaussian) then
+      
+        amplitude=excitation_functions(excitation_number)%parameters(1)
+        width    =excitation_functions(excitation_number)%parameters(2)
+        delay    =excitation_functions(excitation_number)%parameters(3)
+	
+        tpeak=-width/sqrt(2d0)
+        fpeak=-2d0*(tpeak/(width**2))*( exp(-(tpeak/width)**2) )
 
-! half timestep evaluation	
+! evaluate differential gaussian function, setting result to zero if we are too far into the tails of the function 	
+	if (abs(time-delay).lt.width*5d0) then
+	  excitation_functions(excitation_number)%value(timestep)=	&
+		              -2d0*((time-delay)/width**2)*amplitude*( exp(-((time-delay)/width)**2) )/fpeak
+	else
+	  excitation_functions(excitation_number)%value(timestep)=0D0
+	end if
+	
+	if (abs(time+dt/2d0-delay).lt.width*5) then
+	  excitation_functions(excitation_number)%value_face(timestep)=	&
+		              -2d0*((time+dt/2d0-delay)/width**2)*amplitude*( exp(-((time+dt/2d0-delay)/width)**2) )/fpeak
+	else
+	  excitation_functions(excitation_number)%value_face(timestep)=0D0
+	end if
+	
+      else if (excitation_functions(excitation_number)%type.EQ.excitation_function_type_noise) then
+      
+        amplitude=excitation_functions(excitation_number)%parameters(1)
+	
+        CALL random_number(r_random)
+	excitation_functions(excitation_number)%value(timestep)=amplitude*(r_random-0.5d0)
+	  
+        CALL random_number(r_random)
+	excitation_functions(excitation_number)%value_face(timestep)=	amplitude*(r_random-0.5d0)
+
+      else if (excitation_functions(excitation_number)%type.EQ.excitation_function_type_file) then
+      
+        amplitude=excitation_functions(excitation_number)%parameters(1)
+        delay=excitation_functions(excitation_number)%parameters(2)
+
+! evaluate excitation function	
+
+	excitation_functions(excitation_number)%value(timestep)=					&
+	amplitude*interpolate_function(time-delay,							&
+	                               excitation_functions(excitation_number)%n_values_from_file,	&
+	                               excitation_functions(excitation_number)%time_values_from_file,	&
+	                               excitation_functions(excitation_number)%function_values_from_file)
+	
+	excitation_functions(excitation_number)%value_face(timestep)=					&
+	amplitude*interpolate_function(time+dt/2d0-delay,						&
+	                               excitation_functions(excitation_number)%n_values_from_file,	&
+	                               excitation_functions(excitation_number)%time_values_from_file,	&
+	                               excitation_functions(excitation_number)%function_values_from_file)
  	
       end if  ! excitation_function_type
       
@@ -496,7 +552,7 @@ END SUBROUTINE excitation
 !     started  4/12/2012 CJS
 !
 !
-SUBROUTINE get_interpolated_excitation_value(offset,offset_min,function_number,value,huygens_face)
+SUBROUTINE get_interpolated_excitation_value(offset,offset_min,function_number,value)
 
 
 USE TLM_general
@@ -507,7 +563,6 @@ IMPLICIT NONE
 
   real*8	:: offset,offset_min
   integer	:: function_number
-  integer	:: huygens_face  ! ********* TEMP FOR TESTING ***********
   real*8	:: value
 
 ! local variables
@@ -539,21 +594,85 @@ IMPLICIT NONE
   end if
   
   value=value1+delta_t*(value2-value1)/dt
-
-!  if (huygens_face.eq.1) then
-!    write(*,*)'timestep=',timestep
-!    write(*,*)'offset=',offset
-!    write(*,*)'offset=',offset_min
-!    write(*,*)'t_offset=',t_offset
-!    write(*,*)'local_time=',local_time
-!    write(*,*)'timestep1=',timestep1
-!    write(*,*)'timestep2=',timestep2
-!    write(*,*)'delta_t=',delta_t
-!    write(*,*)'value1=',value1
-!    write(*,*)'value2=',value2
-!    write(*,*)'value=',value
-!  end if
   
   RETURN
 
 END SUBROUTINE get_interpolated_excitation_value
+!
+! FUNCTION interpolate_function
+!
+! NAME
+!     interpolate_function
+!
+! DESCRIPTION
+!     interpolate/ extyrapolate excitation values defined in a file
+!
+!
+! COMMENTS
+!     
+!
+! HISTORY
+!
+!     started 23/9/2013
+!
+!
+
+FUNCTION interpolate_function(time,n_values,time_values,function_values)
+
+real*8 	:: interpolate_function
+
+real*8 	:: time
+integer	:: n_values
+real*8 	:: time_values(1:n_values)
+real*8 	:: function_values(1:n_values)
+
+! local variables
+
+integer 	:: i
+real*8		:: tmin,tmax
+real*8        	:: delta_t,time1,time2
+real*8        	:: value1,value2
+
+! START
+
+  tmin=time_values(1)
+  tmax=time_values(n_values)
+  
+  if (time.LE.tmin) then
+    interpolate_function=function_values(1)
+    RETURN
+  else if (time.GE.tmax) then
+    interpolate_function=function_values(n_values)
+    RETURN
+  else
+  
+    do i=1,n_values-1
+    
+      time1=time_values(i)
+      time2=time_values(i+1)
+      
+      if ( (time.GE.time1).AND.(time.LE.time2) ) then
+!  calculate interpolated value and return
+  
+        value1=function_values(i)
+        value2=function_values(i+1)
+  
+        interpolate_function=value1+(time-time1)*(value2-value1)/(time2-time1)
+	
+	RETURN
+	
+      end if
+
+    end do  ! next value in file data
+
+  end if
+  
+  write(*,*)'Error in interpolate_function'
+  write(*,*)'No value found'
+  write(*,*)'time=',time
+  write(*,*)'tmin=',tmin
+  write(*,*)'tmax=',tmax
+  STOP
+
+
+END FUNCTION interpolate_function

@@ -723,6 +723,7 @@ END SUBROUTINE set_huygens_surface_data
 ! HISTORY
 !
 !     started  4/12/2012 CJS
+!     allow superposition of point sources 26/9/3013
 !
 !
 SUBROUTINE Huygens_surface_excitation
@@ -773,7 +774,7 @@ IMPLICIT NONE
 	  offset    =huygens_surface%offset(huygens_face)
 	  offset_min=huygens_surface%offset_min
 	  
-	  CALL get_interpolated_excitation_value(offset,offset_min,function_number,value,huygens_face)
+	  CALL get_interpolated_excitation_value(offset,offset_min,function_number,value)
 	
           normx=huygens_surface%nx(huygens_face)
           normy=huygens_surface%ny(huygens_face)
@@ -814,18 +815,18 @@ IMPLICIT NONE
 !	face_excitation_field(excitation_array_point,side,Mz)=Ms(3)
 		
 ! Set the same excitation both sides of the face at the moment - need to think about this...
-	face_excitation_field(excitation_array_point,1,Jx)=Js(1)
-	face_excitation_field(excitation_array_point,2,Jx)=Js(1)
-	face_excitation_field(excitation_array_point,1,Jy)=Js(2)
-	face_excitation_field(excitation_array_point,2,Jy)=Js(2)
-	face_excitation_field(excitation_array_point,1,Jz)=Js(3)
-	face_excitation_field(excitation_array_point,2,Jz)=Js(3)
-	face_excitation_field(excitation_array_point,1,Mx)=Ms(1)
-	face_excitation_field(excitation_array_point,2,Mx)=Ms(1)
-	face_excitation_field(excitation_array_point,1,My)=Ms(2)
-	face_excitation_field(excitation_array_point,2,My)=Ms(2)
-	face_excitation_field(excitation_array_point,1,Mz)=Ms(3)
-	face_excitation_field(excitation_array_point,2,Mz)=Ms(3)
+	face_excitation_field(excitation_array_point,1,Jx)=face_excitation_field(excitation_array_point,1,Jx)+Js(1)
+	face_excitation_field(excitation_array_point,2,Jx)=face_excitation_field(excitation_array_point,2,Jx)+Js(1)
+	face_excitation_field(excitation_array_point,1,Jy)=face_excitation_field(excitation_array_point,1,Jy)+Js(2)
+	face_excitation_field(excitation_array_point,2,Jy)=face_excitation_field(excitation_array_point,2,Jy)+Js(2)
+	face_excitation_field(excitation_array_point,1,Jz)=face_excitation_field(excitation_array_point,1,Jz)+Js(3)
+	face_excitation_field(excitation_array_point,2,Jz)=face_excitation_field(excitation_array_point,2,Jz)+Js(3)
+	face_excitation_field(excitation_array_point,1,Mx)=face_excitation_field(excitation_array_point,1,Mx)+Ms(1)
+	face_excitation_field(excitation_array_point,2,Mx)=face_excitation_field(excitation_array_point,2,Mx)+Ms(1)
+	face_excitation_field(excitation_array_point,1,My)=face_excitation_field(excitation_array_point,1,My)+Ms(2)
+	face_excitation_field(excitation_array_point,2,My)=face_excitation_field(excitation_array_point,2,My)+Ms(2)
+	face_excitation_field(excitation_array_point,1,Mz)=face_excitation_field(excitation_array_point,1,Mz)+Ms(3)
+	face_excitation_field(excitation_array_point,2,Mz)=face_excitation_field(excitation_array_point,2,Mz)+Ms(3)
 	  
 	end if ! excitation point in this processor's mesh
 		  

@@ -46,7 +46,7 @@ IMPLICIT NONE
 
 ! local variables
 
-  integer,parameter	:: number_of_options=18
+  integer,parameter	:: number_of_options=21
   integer	:: option
 
   character(len=256)	:: command
@@ -75,7 +75,7 @@ IMPLICIT NONE
   write(*,*)'7.  Combine Frequency Domain Magnitude Data'
   write(*,*)'8.  Frequency average'
   write(*,*)'9.  Oneport analysis'
-  write(*,*)'10. Twoport analysis'
+  write(*,*)'10. Twoport analysis for symmetric structures'
   write(*,*)'11. IELF analysis'
   write(*,*)'12. Create Animation of Frequency Domain Surface Field Output'
   write(*,*)'13. Extract mode from Frequency Domain Surface Field Output'
@@ -84,6 +84,9 @@ IMPLICIT NONE
   write(*,*)'16. Fourier Transform with frequency warping (Time Domain to Frequency Domain)'
   write(*,*)'17. Create vector field Animation of Frequency Domain Surface Field Output'
   write(*,*)'18. Create vector field Animation of Frequency Domain Volume Field Output'
+  write(*,*)'19. S parameter to Z parameter transformation for symmetric structures'
+  write(*,*)'20. Calculate correlation of time domain data'
+  write(*,*)'21. Calculate correlation of frequency domain data'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -91,7 +94,7 @@ IMPLICIT NONE
   
   if (option.EQ.0) then  ! close files, deallocate memory and stop
   
-    write(record_user_inputs_unit,*)option,' Post processing option: Quit'
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: QUIT'
     CLOSE(unit=record_user_inputs_unit)
     
     command='mv GGI_TLM_post_process_in_temp.txt GGI_TLM_post_process_in.txt'
@@ -228,6 +231,27 @@ IMPLICIT NONE
     write(*,*)'Create Vector Field Animation of Frequency Domain Volume Field Output'
     write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: CREATE VECTOR VOLUME FREQUENCY DOMAIN ANIMATION'
     CALL create_vector_volume_frequency_domain_animation()
+    
+  else if (option.EQ.19) then
+  
+    write(*,*)'S parameter to Z parameter transformation for symmetric structures'
+    write(record_user_inputs_unit,*)option,	&
+    ' POST PROCESSING OPTION: S PARAMETER TO Z PARAMETER TRANSFORMATION FOR SYMMETRIC STRUCTURES'
+    CALL S_to_Z_symmetric()
+    
+  else if (option.EQ.20) then
+  
+    write(*,*)'Calculate correlation of time domain data'
+    write(record_user_inputs_unit,*)option,	&
+    ' POST PROCESSING OPTION: CALCULATE CORRELATION OF TIME DOMAIN DATA'
+    CALL correlation_time()
+    
+  else if (option.EQ.21) then
+  
+    write(*,*)'Calculate correlation of frequency domain data'
+    write(record_user_inputs_unit,*)option,	&
+    ' POST PROCESSING OPTION: CALCULATE CORRELATION OF FREQUENCY DOMAIN DATA'
+    CALL correlation_frequency()
 
   end if
   

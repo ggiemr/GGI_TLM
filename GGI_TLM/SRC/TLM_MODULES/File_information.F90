@@ -163,12 +163,14 @@ IMPLICIT NONE
  
   character(len=10)	:: mode_output_extn='.mode.tout'
   integer,parameter 	:: mode_output_unit=66
-  
+   
   character(len=36)	:: frequency_domain_power_surface_extn='.frequency_domain_power_surface.fout'
   integer,parameter 	:: frequency_domain_power_surface_unit=67
   
   character(len=29)	:: frequency_output_volume_extn='.frequency_output_volume.fout'
   integer,parameter 	:: frequency_output_volume_unit=68
+  
+  integer,parameter 	:: excitation_function_unit=69
 
   integer,parameter 	:: animation_output_unit=70
   
