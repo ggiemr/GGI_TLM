@@ -1,4 +1,4 @@
-Time Domain Electromagnetic Field Simluation using the Transmission Line Modelleing (TLM) method
+Time Domain Electromagnetic Field Simulation using the Transmission Line Modelling (TLM) method
 
 Features:
 
