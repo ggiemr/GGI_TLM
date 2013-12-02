@@ -54,6 +54,7 @@ IMPLICIT NONE
   integer,parameter	:: magnetic_material   =2	    
   integer,parameter	:: thin_layer	   =3	    
   integer,parameter	:: impedance	   =4
+  integer,parameter	:: general	   =5
 
 END MODULE FF_parameters
 
@@ -87,6 +88,8 @@ IMPLICIT NONE
   
   integer	:: order
   real*8	:: fscale
+  
+  integer	:: n_opt_iterations
   
   logical	:: stabilise_input_data_flag
   logical	:: stabilise_filter_flag
@@ -229,6 +232,7 @@ IMPLICIT NONE
        integer,parameter 		:: filter_fit_data_file_unit =12
        integer,parameter 		:: filter_file_unit          =13
        integer,parameter 		:: testing_frequency_file_unit=14
+       integer,parameter 		:: local_file_unit=90
 !
        character(LEN=10),parameter 	:: dielectric_initial_data_extension    ='.eps.fdmat'
        character(LEN=9) ,parameter 	:: magnetic_initial_data_extension      ='.mu.fdmat'
@@ -245,6 +249,7 @@ IMPLICIT NONE
        character(LEN=13),parameter 	:: thin_layer_z21_input_data_extension     ='.z21.fd_input'
        character(LEN=13),parameter 	:: thin_layer_z22_input_data_extension     ='.z22.fd_input'
        character(LEN=11),parameter 	:: impedance_input_data_extension          ='.Z.fd_input'
+       character(LEN=9),parameter 	:: general_input_data_extension          ='.fd_input'
 !      
        character(LEN=13),parameter 	:: dielectric_trial_extension         ='.eps.fd_trial'
        character(LEN=12),parameter 	:: magnetic_trial_extension           ='.mu.fd_trial'
@@ -253,11 +258,13 @@ IMPLICIT NONE
        character(LEN=13),parameter 	:: thin_layer_z21_trial_extension     ='.z21.fd_trial'
        character(LEN=13),parameter 	:: thin_layer_z22_trial_extension     ='.z22.fd_trial'
        character(LEN=11),parameter 	:: impedance_trial_extension          ='.Z.fd_trial'
+       character(LEN=9),parameter 	:: general_trial_extension          ='.fd_trial'
 !                            
        character(LEN=5),parameter 	:: dielectric_filter_extension='.vmat'
        character(LEN=5),parameter 	:: magnetic_filter_extension  ='.vmat'
        character(LEN=5),parameter 	:: thin_layer_filter_extension='.smat'
        character(LEN=2),parameter 	:: impedance_filter_extension ='.Z'
+       character(LEN=7),parameter 	:: general_filter_extension ='.filter'
        
        character(LEN=26),parameter 	:: testing_frequency_filename ='testing_frequencies.fd_out'
 

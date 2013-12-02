@@ -28,6 +28,9 @@ Excitation_function_list
 1              ! number of excitations
 1              ! EXCITATION NUMBER
 gaussian_from_file.dat
+0   ! number of lines at the top of the file to ignore
+1   ! time data column
+2   ! function data column
 5.0 1e-9
 
 Huygens_surface

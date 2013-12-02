@@ -46,7 +46,7 @@ IMPLICIT NONE
 
 ! local variables
 
-  integer,parameter	:: number_of_options=21
+  integer,parameter	:: number_of_options=30
   integer	:: option
 
   character(len=256)	:: command
@@ -68,11 +68,11 @@ IMPLICIT NONE
   write(*,*)
   write(*,*)'1.  Extract Time Domain Data'
   write(*,*)'2.  Plot Time Domain Data'
-  write(*,*)'3.  Fourier Transform (Time Domain to Frequency Domain)'
+  write(*,*)'3.  Discrete Time Fourier Transform (Time Domain to Frequency Domain)'
   write(*,*)'4.  Plot Frequency Domain Data'
   write(*,*)'5.  Create Animation of Time Domain Surface/Volume Field/ Current Output'
-  write(*,*)'6.  Combine Frequency Domain Data'
-  write(*,*)'7.  Combine Frequency Domain Magnitude Data'
+  write(*,*)'6.  Combine Frequency Domain Data: S(f)=A f1(f)/(B f2(f))+C'
+  write(*,*)'7.  Combine Frequency Domain Magnitude Data: S(f)=A f1(f)/(B f2(f))+C'
   write(*,*)'8.  Frequency average'
   write(*,*)'9.  Oneport analysis'
   write(*,*)'10. Twoport analysis for symmetric structures'
@@ -81,12 +81,21 @@ IMPLICIT NONE
   write(*,*)'13. Extract mode from Frequency Domain Surface Field Output'
   write(*,*)'14. Sum Frequency Domain Data'
   write(*,*)'15. Transmission cross section calculation'
-  write(*,*)'16. Fourier Transform with frequency warping (Time Domain to Frequency Domain)'
+  write(*,*)'16. Discrete Time Fourier Transform with frequency warping (Time Domain to Frequency Domain)'
   write(*,*)'17. Create vector field Animation of Frequency Domain Surface Field Output'
   write(*,*)'18. Create vector field Animation of Frequency Domain Volume Field Output'
   write(*,*)'19. S parameter to Z parameter transformation for symmetric structures'
   write(*,*)'20. Calculate correlation of time domain data'
   write(*,*)'21. Calculate correlation of frequency domain data'
+  write(*,*)'22. Calculate complex antenna factor from (S21) measurement for two identical antennas'
+  write(*,*)'23. Calculate complex antenna factor from antenna coupling (S21) measurement with one unknown antenna'
+  write(*,*)'24. Fast Fourier Transform (Time Domain to Frequency Domain)'
+  write(*,*)'25. Generate random sample sequence either with or without an imposed correlation matrix'
+  write(*,*)'26. Apply a filter function to time domain data'
+  write(*,*)'27. Apply a filter function to frequency domain data'
+  write(*,*)'28. Calculate the frequency domain transfer function of a filter function'
+  write(*,*)'29. Combine Frequency Domain Data: S(f)=f1(f) f2(f)'
+  write(*,*)'30. Calculate PDF and CDF from a data set'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -149,14 +158,15 @@ IMPLICIT NONE
   
     write(*,*)'Combine Frequency Domain Data'
 
-    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: COMBINE FREQUENCY DOMAIN DATA'
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: COMBINE FREQUENCY DOMAIN DATA: S(f)=A f1(f)/(B f2(f))+C'
     CALL Combine_Frequency_Domain_Data()
    
   else if (option.EQ.7) then
   
     write(*,*)'Combine Frequency Domain Magnitude Data'
 
-    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: COMBINE FREQUENCY DOMAIN MAGNITUDE DATA'
+    write(record_user_inputs_unit,*)option,	&
+          ' POST PROCESSING OPTION: COMBINE FREQUENCY DOMAIN MAGNITUDE DATA: S(f)=A f1(f)/(B f2(f))+C'
     CALL Combine_Frequency_Domain_Magnitude_Data()
    
   else if (option.EQ.8) then
@@ -252,6 +262,78 @@ IMPLICIT NONE
     write(record_user_inputs_unit,*)option,	&
     ' POST PROCESSING OPTION: CALCULATE CORRELATION OF FREQUENCY DOMAIN DATA'
     CALL correlation_frequency()
+    
+  else if (option.EQ.22) then
+  
+    write(*,*)'Calculate complex antenna factor from two antenna coupling (S21) measurement'
+    write(record_user_inputs_unit,*)option,	&
+    ' POST PROCESSING OPTION: CALCULATE COMPLEX ANTENNA FACTOR, TWO UNKNOWN ANTENNAS'
+    CALL complex_antenna_factor()
+    
+  else if (option.EQ.23) then
+  
+    write(*,*)'Calculate complex antenna factor from two antenna coupling (S21) measurement'
+    write(record_user_inputs_unit,*)option,	&
+    ' POST PROCESSING OPTION: CALCULATE COMPLEX ANTENNA FACTOR, ONE UNKNOWN ANTENNA'
+    CALL complex_antenna_factor_2()
+    
+  else if (option.EQ.24) then
+  
+    write(*,*)'Fast Fourier Transform (Time Domain to Frequency Domain)'
+    write(record_user_inputs_unit,*)option,	&
+    ' POST PROCESSING OPTION: FAST FOURIER TRANSFORM (TIME DOMAIN TO FREQUENCY DOMAIN)'
+    CALL FFT_MAIN()
+    
+  else if (option.EQ.25) then
+  
+    write(*,*)'Generate random sample sequence either with or without an imposed correlation matrix'
+    write(record_user_inputs_unit,*)option,	&
+    ' POST PROCESSING OPTION: GENERATE RANDOM SAMPLE SEQUENCE'
+    CALL Generate_random_sequence()
+    
+  else if (option.EQ.26) then
+  
+    write(*,*)'Apply a filter function to time domain data'
+    write(record_user_inputs_unit,*)option,	&
+    ' POST PROCESSING OPTION: APPLY A FILTER FUNCTION TO TIME DOMAIN DATA'
+    CALL Apply_filter_in_time_domain()
+    
+  else if (option.EQ.27) then
+  
+    write(*,*)'Apply a filter function to frequency domain data'
+    write(record_user_inputs_unit,*)option,	&
+    ' POST PROCESSING OPTION: APPLY A FILTER FUNCTION TO FREQUENCY DOMAIN DATA'
+    CALL Apply_filter_in_frequency_domain()
+    
+  else if (option.EQ.28) then
+  
+    write(*,*)'Calculate the frequency domain transfer function of a filter function'
+    write(record_user_inputs_unit,*)option,	&
+    ' POST PROCESSING OPTION: CALCULATE THE FREQUENCY DOMAIN TRANSFER FUNCTION OF A FILTER FUNCTION'
+    CALL Calculate_filter_frequency_response()
+    
+  else if (option.EQ.29) then
+  
+    write(*,*)'Combine Frequency Domain Data: S(f)=f1(f) f2(f)'
+    write(record_user_inputs_unit,*)option,	&
+    ' POST PROCESSING OPTION: COMBINE FREQUENCY DOMAIN DATA: S(f)=F1(f) F2(f)'
+    CALL Combine_Frequency_Domain_Data_2()
+    
+  else if (option.EQ.30) then
+  
+    write(*,*)'Calculate PDF and CDF from a data set'
+    write(record_user_inputs_unit,*)option,	&
+    ' POST PROCESSING OPTION: CALCULATE PDF AND CDF FROM A DATA SET'
+    CALL PDF_CDF()
+  
+  else
+   
+    write(*,*)'Unknown option',option
+    write(*,'(A,I2)')'Option should be in the range 0 to',number_of_options
+    
+    CALL write_progress('FAILED: GGI_TLM_post_process')
+  
+    STOP
 
   end if
   

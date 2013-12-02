@@ -128,6 +128,10 @@ IMPLICIT NONE
 	end if
         
       end if
+      
+    else if (fit_type.eq.general) then 
+
+! No action
    
     end if ! fit_type
     

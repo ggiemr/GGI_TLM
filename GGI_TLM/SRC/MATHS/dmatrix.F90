@@ -29,6 +29,7 @@
 ! subroutine dinvert_Gauss_Jordan(A,ar,AI,matdim) 
 ! subroutine deig(A,ar,GAMMA,matdim) 
 ! subroutine check_difference(m1,nr,nc,m2,matdim)
+! subroutine Cholesky
 
 !_____________________________________________________________________
 !
@@ -993,5 +994,76 @@ IMPLICIT NONE
   RETURN
   
   END
+!
+! ______________________________________________________________________
+!
+!
+SUBROUTINE Cholesky(C,n,L,U)
+
+integer	:: n
+real*8 :: C(n,n)
+real*8 :: L(n,n)
+real*8 :: U(n,n)
+
+! local variables
+
+integer	:: i,j,k
+real*8	:: sum
+real*8  :: A(n,n)
+real*8  :: P(n)
+
+! START
+
+! Copy C to A, then operate on A
+  A(:,:)=C(:,:)
+
+  do i=1,n  
+    do j=i,n
+    
+      sum=A(i,j)
+      
+      do k=i-1,1,-1
+        sum=sum-A(i,k)*A(j,k)
+      end do ! next k
+      
+      if (i.EQ.j) then
+        if (sum.LE.0d0) then
+	  write(*,*)'Error in Cholesky'
+	  STOP
+	end if ! error
+	
+	P(i)=sqrt(sum)
+       
+      else ! i.NE.k
+      
+        A(j,i)=sum/P(i)
+	
+      end if ! i.EQ.k
+    
+    end do ! next j 
+  end do ! next i
+
+! Generate the L and U matrices from the lower triangle of A and the diagonal elements from P  
+
+  L(:,:)=0d0
+  U(:,:)=0d0
+  
+  do i=1,n  
+    do j=1,i
+    
+      if (i.eq.j) then
+        L(i,j)=P(i)
+      else
+        L(i,j)=A(i,j)
+      end if
+      
+      U(j,i)=L(i,j)
+    
+    end do ! next j 
+  end do ! next i
+
+  RETURN
+  
+END SUBROUTINE Cholesky
 
 

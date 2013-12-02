@@ -215,7 +215,6 @@ type(xyz)	:: point5,point6,point7,point8
       problem_volumes(volume_number)%tet_list(tet_count)%vertex(2)=point5
       problem_volumes(volume_number)%tet_list(tet_count)%vertex(3)=point8
       problem_volumes(volume_number)%tet_list(tet_count)%vertex(4)=point0
-      
 
   RETURN
 

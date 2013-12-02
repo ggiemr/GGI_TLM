@@ -77,6 +77,10 @@ IMPLICIT NONE
   else if (fit_type.eq.impedance) then 
    
     filename(1)=trim(temp_filename)//impedance_trial_extension
+ 
+  else if (fit_type.eq.general) then 
+   
+    filename(1)=trim(temp_filename)//general_trial_extension
 
   end if
   

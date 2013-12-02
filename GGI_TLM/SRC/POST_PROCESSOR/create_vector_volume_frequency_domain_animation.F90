@@ -29,7 +29,7 @@
 ! HISTORY
 !
 !     started 28/01/2013 CJS
-!
+!     bug fix 22/11/2013 CJS n_cells not set correctly when writing animation data to file
 !
 SUBROUTINE create_vector_volume_frequency_domain_animation
 
@@ -281,7 +281,8 @@ IMPLICIT NONE
   do i=1,3
     surface=output_volume_xyz(i)
     if ( (surface.ne.0).AND.(.NOT.found_volume) ) then
-    
+! this is the first component of the volume data found    
+
       template_volume=surface
       n_quads=volume_animation(surface)%n_quads
       n_points=volume_animation(surface)%n_points
@@ -291,11 +292,12 @@ IMPLICIT NONE
       min_data=min(volume_animation(surface)%min_data,min_data)
       
     else if ( (surface.ne.0).AND.(found_volume) ) then
+! An output volume has alreeady been found so just check that the data is consistent 
     
       if (  (n_quads.NE.volume_animation(surface)%n_quads).OR.	&
             (n_points.NE.volume_animation(surface)%n_points).OR.	&
             (n_frames.NE.volume_animation(surface)%n_frames ) ) then
-	write(*,*)'Error increate_vector_volume_frequency_domain_animation'
+	write(*,*)'Error in create_vector_volume_frequency_domain_animation'
 	write(*,*)'Component surfaces have different amounts of data'
 	STOP
       end if
@@ -329,6 +331,8 @@ IMPLICIT NONE
   n_points=volume_animation(template_volume)%n_points
   n_quads=volume_animation(template_volume)%n_quads
   n_frames=volume_animation(template_volume)%n_frames
+  
+  n_cells=n_points/8   ! bug fix 22/11/2013 CJS 
   
   n_quads_arrow=n_cells*number_of_cone_surfaces
   n_points_arrow=n_quads_arrow*4
@@ -407,7 +411,7 @@ IMPLICIT NONE
 	length=max_data/1000d0
  
       end if
-      
+            
       volume_animation(template_volume)%magnitude_data(cell)=length
       
       if (scale_vector) then

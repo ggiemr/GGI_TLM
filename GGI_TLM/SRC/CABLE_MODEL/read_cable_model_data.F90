@@ -30,6 +30,7 @@
 ! HISTORY
 !
 !     started 19/09/2012 CJS
+!     29/11/2013 CJS Fixed error writing bundle segement geometry data
 !
 !
 SUBROUTINE read_cable_model(read_data_for_computation_only)
@@ -67,7 +68,7 @@ logical :: read_data_for_computation_only
   character*256	:: cable_model_file_name
 
   logical	:: file_exists
-
+  
 ! START
 
   CALL write_line('CALLED: read_cable_model',0,output_to_screen_flag)
@@ -330,15 +331,15 @@ logical :: read_data_for_computation_only
       end do ! next col
     end do ! next row
     
-    do row=1,n_filters
+    do row=1,n_filters     
       read(cable_model_file_unit,*)
       CALL read_Sfilter(bundle_segment_geometry_list(segment_geometry)%Sfilter(row),cable_model_file_unit)        
     end do ! next row
     
     do row=1,n_filters
-      read(cable_model_file_unit,*)          
-      read(cable_model_file_unit,*)bundle_segment_geometry_list(segment_geometry)%Z_f(row)
       read(cable_model_file_unit,*)        
+      read(cable_model_file_unit,*)bundle_segment_geometry_list(segment_geometry)%Z_f(row)
+      read(cable_model_file_unit,*)     
       CALL read_Zfilter(bundle_segment_geometry_list(segment_geometry)%Zfilter(row),cable_model_file_unit)
     end do ! next row
  	

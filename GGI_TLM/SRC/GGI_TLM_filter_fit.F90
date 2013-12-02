@@ -45,6 +45,7 @@
 !     started 11/12/12 CJS
 !     based on process developed in the Flaviir project and HIRF-SE at the 
 !     University of Nottingham
+!     Include general functions with no constraints other than pole stability 10/10/2013
 !
 !
   PROGRAM GGI_TLM_filter_fit
@@ -64,12 +65,14 @@ IMPLICIT NONE
 ! local variables
 
   integer	:: function_loop
+  logical	:: write_error_to_file
 
 ! START
 
   CALL write_progress('STARTED: GGI_TLM_filter_fit')
 
   ff_output_to_screen=.TRUE.
+  write_error_to_file=.FAlSE.
   
   CALL write_line('GGI_TLM_filter_fit',0,output_to_screen_flag)
   
@@ -91,7 +94,7 @@ IMPLICIT NONE
   CALL get_initial_filter_coefficients()
   
 ! test the stability of this filter
-  CALL test_stability()
+  CALL test_stability(write_error_to_file)
   
   if (stabilise_filter_flag) then
 ! Ensure that this filter is stable
@@ -99,7 +102,7 @@ IMPLICIT NONE
   end if
   
 ! test the stability of the stabilised filter
-  CALL test_stability()
+  CALL test_stability(write_error_to_file)
   
   if (optimise_filter_flag) then
 ! optimise the filter coefficients
@@ -107,7 +110,8 @@ IMPLICIT NONE
   end if
   
 ! test the stability of the optimised filter
-  CALL test_stability()
+  write_error_to_file=.TRUE.
+  CALL test_stability(write_error_to_file)
   
 ! write the filter coefficients to file
   CALL write_filter()

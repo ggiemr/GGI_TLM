@@ -113,7 +113,7 @@ IMPLICIT NONE
   
     corr(i,i)=1d0   ! autocorrelation =1
     
-    do j=i+1,n_functions_of_time
+    do j=i,n_functions_of_time
        
       R12=0D0       
       ss1=0D0       
@@ -184,50 +184,51 @@ IMPLICIT NONE
 
   character(len=256)	:: filename
   character		:: ch
-
+  integer		:: n_functions_of_frequency_in 
   integer		:: function_number
   
-  real*8,allocatable	:: corr(:,:)
-  real*8,allocatable	:: mu(:)
+  complex*16,allocatable	:: corr(:,:)
   
   integer 		:: i,j
   integer		:: type
-  real*8		:: value,value1,value2
+  complex*16		:: value,value1,value2
   
   integer 		:: n_samples,sample
-  real*8		:: mu1,mu2,ss1,ss2,R12
+  complex*16		:: ss1,ss2,R12
+  
+  integer		:: n_average
 
 ! START
   
   write(*,*)'Enter the number of frequency domain quantities for correlation calculation'
-  read(*,*)n_functions_of_frequency
-  write(record_user_inputs_unit,*)n_functions_of_frequency,' number of frequency domain quantities for correlation calculation'
+  read(*,*)n_functions_of_frequency_in
+  write(record_user_inputs_unit,*)n_functions_of_frequency_in,' number of frequency domain quantities for correlation calculation'
 
   if (n_functions_of_time.gt.max_files) then
     write(*,*)'Maximum number of frequency domain functions exceeded'
     write(*,*)'max_files=',max_files
-    write(*,*)'number of time domain quantities for correlation calculation=',n_functions_of_frequency
+    write(*,*)'number of frequency domain quantities for correlation calculation=',n_functions_of_frequency
     STOP
   end if
-
+  
+  n_functions_of_frequency=n_functions_of_frequency_in
   n_functions_of_time=0
   
   CALL Allocate_post_data()
   
-  do function_number=1,n_functions_of_frequency
+  do function_number=1,n_functions_of_frequency_in
   
     CALL read_Frequency_Domain_Data(function_number) ! read function of frequency from output dataset
   
   end do
   
-  ALLOCATE( corr(1:n_functions_of_frequency,1:n_functions_of_frequency) )  
-  ALLOCATE( mu(1:n_functions_of_frequency) )  
+  ALLOCATE( corr(1:n_functions_of_frequency_in,1:n_functions_of_frequency_in) )  
 
 ! Check that we have the same number of samples in all functions  
 
   n_samples=function_of_frequency(1)%n_frequencies
   
-  do i=2,n_functions_of_frequency
+  do i=2,n_functions_of_frequency_in
     if ( function_of_frequency(i)%n_frequencies.ne.n_samples ) then
     
       write(*,*)'Not all the functions have the same number of samples'
@@ -239,10 +240,15 @@ IMPLICIT NONE
     end if
   end do
   
-  write(*,*)'Enter the quantity to operate on: Real Imaginary or Magnitude'
+  write(*,*)'Enter the quantity to operate on: Complex, Real, Imaginary or Magnitude'
   read(*,'(A)')ch
   
-  if ( (ch.eq.'r').OR.(ch.eq.'R') ) then
+  if ( (ch.eq.'c').OR.(ch.eq.'C') ) then
+  
+    write(record_user_inputs_unit,*)'Complex'
+    type=0
+  
+  else if ( (ch.eq.'r').OR.(ch.eq.'R') ) then
   
     write(record_user_inputs_unit,*)'Real'
     type=1
@@ -259,48 +265,27 @@ IMPLICIT NONE
     
   else
   
-    write(*,*)'Quantity to operate on should be one of: Real Imaginary or Magnitude'
+    write(*,*)'Quantity to operate on should be one of: Complex, Real, Imaginary or Magnitude'
     STOP
     
   end if
   
-! Calculate mean of each of the functions
-
-  do i=1,n_functions_of_frequency
-    mu(i)=0d0	 
-    do sample=1,n_samples
-    
-      if (type.eq.1) then
-        value=Dble(function_of_frequency(i)%value(sample))
-      else if (type.eq.2) then
-        value=imag(function_of_frequency(i)%value(sample))
-      else if (type.eq.3) then
-        value=function_of_frequency(i)%magnitude(sample)
-      end if
-      
-      mu(i)=mu(i)+value
-      
-    end do
-    
-    mu(i)=mu(i)/n_samples
-    
-  end do
-  
 ! Calculate the correlation matrix
 
   do i=1,n_functions_of_frequency
-  
-    corr(i,i)=1d0   ! autocorrelation =1
     
-    do j=i+1,n_functions_of_frequency
+    do j=i,n_functions_of_frequency
        
-      R12=0D0       
-      ss1=0D0       
-      ss2=0D0       
+      R12=(0D0,0D0)    
+      ss1=(0D0,0D0)      
+      ss2=(0D0,0D0)      
   
       do sample=1,n_samples
     
-        if (type.eq.1) then
+        if (type.eq.0) then
+          value1=function_of_frequency(i)%value(sample)
+          value2=function_of_frequency(j)%value(sample)
+        else if (type.eq.1) then
           value1=Dble(function_of_frequency(i)%value(sample))
           value2=Dble(function_of_frequency(j)%value(sample))
         else if (type.eq.2) then
@@ -311,9 +296,10 @@ IMPLICIT NONE
           value2=function_of_frequency(j)%magnitude(sample)
         end if
       
-        R12=R12+((value1-mu(i))*(value2-mu(j)))
-        ss1=ss1+(value1-mu(i))**2
-        ss2=ss2+(value2-mu(j))**2
+        R12=R12+value1*conjg(value2) 
+        ss1=ss1+value1*conjg(value1)
+        ss2=ss2+value2*conjg(value2)
+	
       end do
 
       R12=R12/sqrt(ss1*ss2)
@@ -329,18 +315,22 @@ IMPLICIT NONE
   write(record_user_inputs_unit,'(A)')trim(filename)
 
   OPEN(unit=local_file_unit,file=filename)
-  	 
-  do i=1,n_functions_of_frequency
-  
-    write(local_file_unit,8000)(corr(i,j),j=1,n_functions_of_frequency)
-8000 format(100F10.4)
 
+  write(local_file_unit,*)'Real part of correlation matrix'
+  do i=1,n_functions_of_frequency  
+    write(local_file_unit,8000)(Real(corr(i,j)),j=1,n_functions_of_frequency)
+8000 format(100F10.4)
+  end do
+
+  write(local_file_unit,*)''
+  write(local_file_unit,*)'Imaginary part of correlation matrix'
+  do i=1,n_functions_of_frequency  
+    write(local_file_unit,8000)(Imag(corr(i,j)),j=1,n_functions_of_frequency)
   end do
 	 
   CLOSE(unit=local_file_unit)
   
   DEALLOCATE( corr )  
-  DEALLOCATE( mu )  
   
   CALL Deallocate_post_data()
 

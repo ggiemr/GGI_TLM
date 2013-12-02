@@ -428,6 +428,29 @@
 			implement noise source function  uniform distribution for now...
 			fix another bug in excitation points
 			implement time domain correlation calculation in GGI_TLM_post_process
+
+10/10/2013	CJS	1. Implement a general filter function fit in GGI_TLM_filter_fit. Also allow the number of iterations in the optimisation
+			to be set in the input file if required.
+			2. Implement the calculation of complex antenna factor in GGI_TLM_post_process
+
+11/10/2013	CJS	Write filter fit error and stability assessment to the file 'Filter_fit_error.dat' . This allows
+			the result of a series of model order fits controlled by a script to be summarised 
+
+19/11/2013	CJS	Start to implement statistical EM tools into GGI_TLM_post_process. Correlation in time and frequency
+			Generation of random time sample sequences including correlated sequences
+			Application of filter functions to time and frequency domain data
+
+20/11/2013	CJS	Continue to implement statistical EM tools into GGI_TLM_post_process. FFT, PDF and CDF calculations
+			Change the format for reading excitation functions from a file so as to allow header lines to be ignored
+			and also for time and function data to be read from specified columns. Update the relevant test cases in TEST_DATA.
+
+22/11/2013	CJS	Fix bug in create_vector_volume_frequency_domain_animation: n_cells not set correctly
+			The error showed up when output from more than one volume was requested
+
+29/11/2013	CJS	Fix bug relating to the new mesh generation. There was a proble with the ordering of the 
+			triangle faces enclosing a tet volume. (order_points_3, in local_grid_subroutines.F90)
+			Create VOLUME_GEOMETRY_TEST and SURFACE_GOEMETRY_TEST test cases
+
 						
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE
@@ -437,14 +460,14 @@ Next stages:
 	      	- User documentation for code : STARTED
 	      	- Theoretical documentation for code : STARTED
 	      	- Software documentation : STARTED
-	      	- Set up open source project
-	     	- Set up website
+	      	- Set up open source project : DONE
+	     	- Set up website : DONE - page on the university GGIEMR web pages
 
 Missing Packets...	
 		- far_field_surface: DONE
 		- frequency_output_surface: DONE
                 - rcs_surface: DONE
-		- SAR_output: DONE
+		- SAR_output: DONE - not for dispersive materials though...
 		- surface_current_output: DONE
 		- mode_excitation_surface: DONE
 		- mode_output_surface: DONE

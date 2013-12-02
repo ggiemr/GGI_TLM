@@ -2295,12 +2295,13 @@ IMPLICIT NONE
   END SUBROUTINE order_points_2
 !
 ! NAME
-!     SUBROUTINE order_points_2
+!     SUBROUTINE order_points_3
 !
 ! DESCRIPTION
-!     order_points_2:
+!     order_points_3:
 !
-!     put two points in order defined by their x, y and z coordinates
+!     put three points in order defined by their x, y and z coordinates
+!     the ordering is worked out based on the direction of the triangle normal
 !     
 ! COMMENTS
 !     
@@ -2323,6 +2324,12 @@ IMPLICIT NONE
   real*8		:: x1,y1,z1
   real*8		:: x2,y2,z2
   real*8		:: x3,y3,z3
+  
+  integer		:: point_order
+  
+  real*8		:: vx1,vy1,vz1
+  real*8		:: vx2,vy2,vz2
+  real*8		:: xn,yn,zn
 
 ! local variables
   
@@ -2331,47 +2338,81 @@ IMPLICIT NONE
 ! work out the ordering of the points i.e. which way to traverse a triangle defined by three points
 ! Ordering the points should make the mesh generation more consistent
 
-!! OLD 
-!! copy points
-!  x1=x1_in
-!  y1=y1_in
-!  z1=z1_in
-!  
-!  x2=x2_in
-!  y2=y2_in
-!  z2=z2_in
-!  
-!  x3=x3_in
-!  y3=y3_in
-!  z3=z3_in
-!
-!  CALL order_points_2(x2,y2,z2,x3,y3,z3,x2,y2,z2,x3,y3,z3) 
-!  CALL order_points_2(x1,y1,z1,x2,y2,z2,x1,y1,z1,x2,y2,z2)  
-!  CALL order_points_2(x2,y2,z2,x3,y3,z3,x2,y2,z2,x3,y3,z3)
+! assume a point order
+  point_order=1
   
-  CALL order_points_2(x2_in,y2_in,z2_in,x3_in,y3_in,z3_in,x2,y2,z2,x3,y3,z3)
+! work out the trinagle normal direction
   
-! copy points  
-  x2_in=x2
-  y2_in=y2
-  z2_in=z2
+  vx1=x3_in-x1_in
+  vy1=y3_in-y1_in
+  vz1=z3_in-z1_in
   
-  x3_in=x3
-  y3_in=y3
-  z3_in=z3
+  vx2=x2_in-x1_in
+  vy2=y2_in-y1_in
+  vz2=z2_in-z1_in
   
-  CALL order_points_2(x1_in,y1_in,z1_in,x2_in,y2_in,z2_in,x1,y1,z1,x2,y2,z2)
+  CALL vector_product(vx1,vy1,vz1,vx2,vy2,vz2,xn,yn,zn)
   
-! copy points  
-  x3_in=x3
-  y3_in=y3
-  z3_in=z3
+! look for normal in the +x direction first  
+  if (xn.gt.0d0) then
+    point_order=1
+  else if (xn.lt.0d0) then
+    point_order=2
+  else
   
-  x2_in=x2
-  y2_in=y2
-  z2_in=z2
+! look for normal in the +y direction  
+    if (yn.gt.0d0) then
+      point_order=1
+    else if (yn.lt.0d0) then
+      point_order=2
+    else
     
-  CALL order_points_2(x2_in,y2_in,z2_in,x3_in,y3_in,z3_in,x2,y2,z2,x3,y3,z3)
+! look for normal in the +z direction  
+      if (zn.gt.0d0) then
+        point_order=1
+      else if (zn.lt.0d0) then
+        point_order=2
+      else
+! the end points must be the same
+        point_order=1      
+      end if ! look for normal in the +z direction  
+      
+    end if ! look for normal in the +y direction  
+
+  end if ! look for normal in the +x direction first  
+  
+  if (point_order.eq.1) then
+! retain the original order
+
+    x1=x1_in
+    y1=y1_in
+    z1=z1_in
+
+    x2=x2_in
+    y2=y2_in
+    z2=z2_in
+
+    x3=x3_in
+    y3=y3_in
+    z3=z3_in
+    
+  else
+! reverse the original order
+
+    x1=x1_in
+    y1=y1_in
+    z1=z1_in
+
+    x2=x3_in
+    y2=y3_in
+    z2=z3_in
+
+    x3=x2_in
+    y3=y2_in
+    z3=z2_in
+  
+  end if
+
    
   RETURN
     

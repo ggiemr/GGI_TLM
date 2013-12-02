@@ -85,6 +85,13 @@ IMPLICIT NONE
     ALLOCATE( params(1:opt_dim) )
     CALL impedance_S_PZ_filter_to_opt_param_list(opt_dim,params)
     
+  else if (fit_type.eq.general) then  
+    
+    opt_dim=order*2+1  ! 2*order+1 filter coefficients 
+
+    ALLOCATE( params(1:opt_dim) )
+    CALL impedance_S_PZ_filter_to_opt_param_list(opt_dim,params)
+    
   end if
 
 ! CALL the optimisation routine...  
@@ -99,6 +106,10 @@ IMPLICIT NONE
     CALL opt_param_list_to_thin_layer_S_PZ_filter(opt_dim,params)
     
   else if (fit_type.eq.impedance) then  
+    
+    CALL opt_param_list_to_impedance_S_PZ_filter(opt_dim,params)
+        
+  else if (fit_type.eq.general) then  ! use the same process as for impedance functions
     
     CALL opt_param_list_to_impedance_S_PZ_filter(opt_dim,params)
     
@@ -203,7 +214,7 @@ IMPLICIT NONE
   last_error=1e30
 
 ! start optimisation loop
-  do iteration=1,max_opt_iterations
+  do iteration=1,n_opt_iterations
        
 ! Set all other points to be the same as point 1 initially   
     do p=1,opt_dim
@@ -383,6 +394,10 @@ IMPLICIT NONE
     CALL opt_param_list_to_thin_layer_S_PZ_filter(opt_dim,params)
     
   else if (fit_type.eq.impedance) then  
+    
+    CALL opt_param_list_to_impedance_S_PZ_filter(opt_dim,params)
+    
+  else if (fit_type.eq.general) then  ! use the same process as for impedance functions
     
     CALL opt_param_list_to_impedance_S_PZ_filter(opt_dim,params)
     

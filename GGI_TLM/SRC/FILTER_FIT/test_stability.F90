@@ -32,7 +32,7 @@
 !     started 7/1/2013 CJS
 !
 !
-SUBROUTINE test_stability
+SUBROUTINE test_stability(write_error_to_file)
 
 USE FF_parameters
 USE FF_general
@@ -44,6 +44,8 @@ USE filter_functions
 USE constants
 
 IMPLICIT NONE
+
+  logical	:: write_error_to_file
  
 ! local variables
 
@@ -133,14 +135,30 @@ IMPLICIT NONE
         
       end if
    
+     		      
+    else if (fit_type.eq.general) then 
+    
+! No action
+   
     end if ! fit_type
     
   end do ! next freq_loop
   
   if (.NOT.stable_filter) then
     CALL write_line('The filter is UNSTABLE',0,ff_output_to_screen)
+    if (write_error_to_file) then
+      open(UNIT=local_file_unit,FILE='Filter_fit_error.dat')
+      write(local_file_unit,8000)'Final Sfilter, order',order,' Mean square error=',Mean_square_error,': UNSTABLE'
+8000 format(A20,I5,A19,F12.4,A10)
+      close(UNIT=local_file_unit)
+    end if
   else
     CALL write_line('The filter is STABLE',0,ff_output_to_screen)
+    if (write_error_to_file) then
+      open(UNIT=local_file_unit,FILE='Filter_fit_error.dat')
+      write(local_file_unit,8000)'Final Sfilter, order',order,' Mean square error=',Mean_square_error,':   STABLE'
+      close(UNIT=local_file_unit)
+    end if
   end if 
 
   CALL write_line('FINISHED: test_stability ',0,ff_output_to_screen)
@@ -150,7 +168,7 @@ IMPLICIT NONE
 END SUBROUTINE test_stability
 !
 ! NAME
-!     test_stability
+!     test_stability_PZ
 !
 ! DESCRIPTION
 !     Evaluate the filter function at all testing frequencies and test for stability of the model
@@ -197,7 +215,8 @@ IMPLICIT NONE
 !  CALL write_line('CALLED: test_stability_PZ ',0,ff_output_to_screen)
 
   stable_filter=.TRUE.
-                  
+
+! Check the stability of the poles i.e. are they on the LHS of the S plane?                  
   do function_loop=1,n_functions
     do i=1,filter_S_PR(function_loop)%order
       if (dble(filter_S_PZ(function_loop)%poles(i)).gt.0d0) then 
@@ -263,6 +282,10 @@ IMPLICIT NONE
         stable_filter=.FALSE.
         
       end if
+     		      
+    else if (fit_type.eq.general) then 
+   
+! No action
    
     end if ! fit_type
     

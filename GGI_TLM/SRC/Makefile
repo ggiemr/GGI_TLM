@@ -15,26 +15,9 @@ SHELL = /bin/sh
 # note that you must 'make clean' before switching from making MPI to SEQ or vice-versa
 
 #
-# May2013: these now set in the file ../configuration_data
+# You may need to edit the file: ../configuration_data
+# in order to set the compiler name, flags etc.
 #
-#### THE FOLLOWING LINES MAY HAVE TO CHANGED ###
-#
-## Name of fortran compiler. Try to use one that automatically links mpi eg mpif90.
-#FC=mpif90.mpich2 
-#
-## MPI_INCLUDE :This is the path to the file mpif.h 
-#MPI_INCLUDE=/usr/include/mpich2
-#
-## Compilation flags, Here we compile with bounds check - slow...
-##FLAGS= -D$(MODE) -fdefault-real-8 -cpp -fbounds-check -finit-real=nan -finit-integer=nan -J$(MOD_DIR) -I$(MOD_DIR) -I$(MPI_INCLUDE) 
-#
-## Compile without bounds check - faster...
-##FLAGS= -D$(MODE) -fdefault-real-8 -cpp  -finit-real=nan -finit-integer=nan -J$(MOD_DIR) -I$(MOD_DIR) -I$(MPI_INCLUDE) 
-#
-## Compilation flags, Here we compile with optimisation
-#FLAGS= -D$(MODE) -fdefault-real-8 -cpp -J$(MOD_DIR) -I$(MOD_DIR) -I$(MPI_INCLUDE) -O4
-#
-### NOTHING BELOW THIS SHOULD NEED TO BE CHANGED ###
 
 include ../make_configuration_data
 
@@ -386,7 +369,12 @@ POST_PROCESSOR/transmission_cross_section.o \
 POST_PROCESSOR/IELF.o \
 POST_PROCESSOR/S_to_Z.o \
 POST_PROCESSOR/correlation.o \
-POST_PROCESSOR/fourier_transform_warp.o
+POST_PROCESSOR/antenna_factor.o \
+POST_PROCESSOR/fourier_transform_warp.o \
+POST_PROCESSOR/generate_random_time_sequence.o \
+POST_PROCESSOR/frequency_domain_filter.o \
+POST_PROCESSOR/time_domain_filter.o \
+POST_PROCESSOR/PDF_CDF.o
 
 OBJS= \
 $(CONSTANTS_OBJS) \
@@ -406,12 +394,6 @@ $(EXCITATION_OBJS) \
 $(OUTPUT_OBJS) \
 $(TLM_SOLVER_OBJS) \
 $(POST_PROCESSOR_OBJS) 
-
-# These in libraries now...
-#$(MATHS_OBJS) \
-#$(EISPACK_OBJS) \
-#$(POLYNOMIAL_OBJS) \
-#$(FILTER_OBJS) \
 
 ifeq ($(PARALLEL_MODE),MPI)
 	MODE=MPI
@@ -437,7 +419,7 @@ MAKE_materials \
 MAKE_excitation \
 MAKE_output \
 MAKE_tlm_solver \
-MAKE_post_processor \
+MAKE_post_processor 
 $(SOLVER_NAME) 
 
 else

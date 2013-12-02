@@ -70,6 +70,10 @@ IMPLICIT NONE
   else if (fit_type.eq.impedance) then 
    
     filename(1)=trim(FF_name)//impedance_input_data_extension
+ 
+  else if (fit_type.eq.general) then 
+   
+    filename(1)=trim(FF_name)//general_input_data_extension
 
   end if
   

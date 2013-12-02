@@ -72,7 +72,7 @@ character*256	:: input_line
 
   do cable_output_number=1,n_cable_outputs
   
-    CALL write_line_integer('Reading cable number',cable_output_number,0,output_to_screen_flag)
+    CALL write_line_integer('Reading cable output number',cable_output_number,0,output_to_screen_flag)
     
     read(input_file_unit,*,err=9005)read_number
     if (read_number.ne.cable_output_number) goto 9010

@@ -1,0 +1,4 @@
+cp geometry.rcs.tout PROBLEM_SPECIFICATION_FILES/geometry.rcs.tout_ref
+cp geometry.rcs.fout PROBLEM_SPECIFICATION_FILES/geometry.rcs.fout_ref
+
+

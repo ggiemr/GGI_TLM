@@ -57,14 +57,15 @@ IMPLICIT NONE
   write(*,*)'2 : magnetic material model fit '
   write(*,*)'3 : thin layer model fit'
   write(*,*)'4 : impedance model fit '
+  write(*,*)'5 : general model fit '
   
   read(*,*)fit_type
   
-  if ( (fit_type.lt.1).or.(fit_type.gt.4) ) then
+  if ( (fit_type.lt.1).or.(fit_type.gt.5) ) then
     write(*,*)'Error specifying fit_type'
     write(*,*)'Fit_type=',fit_type
     write(*,*)   &
-    'Fittype must be 1 to 4'
+    'Fittype must be 1 to 5'
     STOP
   end if
          
@@ -99,6 +100,12 @@ IMPLICIT NONE
   if ( (ch_in.eq.'y').OR.(ch_in.eq.'Y') ) then
     optimise_filter_flag=.TRUE.
   end if
+  
+  n_opt_iterations=max_opt_iterations
+  write(*,*)'Enter the number of iterations in the optimisation process'
+  read(*,*,end=1000)n_opt_iterations
+  
+1000 CONTINUE
 
   RETURN
 

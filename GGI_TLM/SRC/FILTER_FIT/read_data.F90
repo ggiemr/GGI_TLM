@@ -81,6 +81,11 @@ IMPLICIT NONE
    
     n_functions=1
     filename(1)=trim(FF_name)//impedance_initial_data_extension
+ 
+  else if (fit_type.eq.general) then 
+   
+    n_functions=1
+    filename(1)=trim(FF_name)
 
   end if
 

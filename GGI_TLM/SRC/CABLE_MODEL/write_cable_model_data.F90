@@ -257,7 +257,7 @@ IMPLICIT NONE
       CALL write_Sfilter(bundle_segment_geometry_list(segment_geometry)%Sfilter(row),cable_model_file_unit)
     end do ! next row
     
-    do row=1,bundle_segment_list(segment_geometry)%n_filters
+    do row=1,bundle_segment_geometry_list(segment_geometry)%n_filters
       write(cable_model_file_unit,*)'! Z_f',row          
       write(cable_model_file_unit,*)bundle_segment_geometry_list(segment_geometry)%Z_f(row)
       write(cable_model_file_unit,*)'! Zfilter number',row          

@@ -17,6 +17,7 @@
 !
 ! SUBROUTINE read_time_domain_data
 ! SUBROUTINE write_time_domain_data
+! SUBROUTINE write_time_domain_data_array
 !
 ! NAME
 !    read_time_domain_data
@@ -205,3 +206,76 @@ integer			:: function_number
   
   
 END SUBROUTINE write_time_domain_data
+!
+! NAME
+!    write_time_domain_data_array
+!
+! DESCRIPTION
+!     
+!     
+! COMMENTS
+!     
+!
+! HISTORY
+!
+!     started 9/11/2013 CJS
+!
+!
+SUBROUTINE write_time_domain_data_array(n_functions)
+
+USE post_process
+USE file_information
+USE file_header
+USE output_formats
+
+IMPLICIT NONE
+
+integer			:: n_functions
+
+! local variables
+
+integer			:: function_number
+
+  character(len=256)	:: filename
+
+  integer		:: n_data_points
+  integer		:: n_timesteps
+  
+  integer		:: timestep
+    
+! START
+  
+  write(*,*)'Enter the filename for the time domain data'
+  read(*,'(A256)')filename
+  write(record_user_inputs_unit,'(A)')trim(filename)
+
+  OPEN(unit=local_file_unit,file=filename)
+  
+  n_timesteps  =function_of_time(1)%n_timesteps
+  
+  n_data_points=n_functions
+  
+  CALL write_time_domain_header_data(local_file_unit,n_data_points,n_timesteps)
+    
+! write the data file   
+
+  do function_number=1,n_functions
+       
+    n_timesteps  =function_of_time(function_number)%n_timesteps
+    
+    do timestep=1,n_timesteps
+  
+      write(local_file_unit,time_domain_output_format)	&
+                                      function_of_time(function_number)%time(timestep),function_number,	&
+                                      function_of_time(function_number)%value(timestep)
+          
+    end do ! next timestep
+    
+  end do ! next function
+  	 
+  CLOSE(unit=local_file_unit)
+
+  RETURN
+  
+  
+END SUBROUTINE write_time_domain_data_array

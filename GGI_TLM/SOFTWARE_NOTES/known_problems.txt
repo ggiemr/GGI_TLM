@@ -300,4 +300,14 @@ output point is 'inside' the PEC/PMC and sees no field.
 
 94. Need to document test case EXCITATION_FUNCTION_TEST
 
+95. Need to document to specification of the number of iterations in GGI_TLM_filter_fit
+
+96. Problem with GGI_TLM_PROJECTS/VALIDATION_BOXES/NESTED_BOXES/ when using the FD_RG58 cable model. 
+    Problem loading the cable model into GGI_TLM
+    DONE: error in write_cable_model_data.F90
+    
+97. New mesh generation fails for type rectangular_block2 - some tets are missing... 
+    Need to fix this and check all geometry types.
+    DONE
+
 

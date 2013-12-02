@@ -22,7 +22,12 @@ transmission_cross_section.o \
 IELF.o \
 S_to_Z.o \
 correlation.o \
-fourier_transform_warp.o 
+antenna_factor.o \
+fourier_transform_warp.o \
+generate_random_time_sequence.o \
+frequency_domain_filter.o \
+PDF_CDF.o \
+time_domain_filter.o
 
 default: $(POST_PROCESSOR_OBJS)
 

@@ -66,6 +66,13 @@ character*256	:: input_line
 
 integer	:: loop,sample,n_samples
 real*8	:: t_in,ft_in
+	   
+integer   :: n_ignore
+integer   :: n_time
+integer   :: n_function
+integer   :: n_max_read
+
+real*8,allocatable	  :: read_data(:)
 
 ! START  
 
@@ -161,17 +168,35 @@ real*8	:: t_in,ft_in
            STATUS='old',							&
            ERR=9030)
 	   
+      write(*,*)'Enter the number of lines to ignore at the top of the data file'
+      read(input_file_unit,*)n_ignore
+      
+      write(*,*)'Enter the column number for time data'
+      read(input_file_unit,*)n_time
+      
+      write(*,*)'Enter the column number for function data'
+      read(input_file_unit,*)n_function
+      
+      n_max_read=max(n_time,n_function)
+      
+      ALLOCATE( read_data(1:n_max_read) )
+	   
       do loop=1,2
 
+! read lines to ignore
+        do i=1,n_ignore
+          read(excitation_function_unit,*,end=1000,ERR=9040)
+        end do
+	
         sample=0
        
 10      continue
 
-          read(excitation_function_unit,*,end=1000,ERR=9040)t_in,ft_in
+          read(excitation_function_unit,*,end=1000,ERR=9040)(read_data(i),i=1,n_max_read)
 	  sample=sample+1
 	  if (loop.eq.2) then  
-	    excitation_functions(excitation_number)%time_values_from_file(sample)=t_in
-	    excitation_functions(excitation_number)%function_values_from_file(sample)=ft_in
+	    excitation_functions(excitation_number)%time_values_from_file(sample)=read_data(n_time)
+	    excitation_functions(excitation_number)%function_values_from_file(sample)=read_data(n_function)
 	  end if
 	 
         goto 10  ! read next sample
@@ -193,6 +218,8 @@ real*8	:: t_in,ft_in
       excitation_functions(excitation_number)%type=excitation_function_type_file
                 
       close(UNIT=excitation_function_unit)
+      
+      DEALLOCATE( read_data )
       
       write(*,*)'Number of excitation samples read:',excitation_functions(excitation_number)%n_values_from_file
       

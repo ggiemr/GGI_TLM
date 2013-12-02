@@ -79,6 +79,8 @@ IMPLICIT NONE
     filename=trim(temp_filename)//thin_layer_filter_extension
   else if (fit_type.eq.impedance) then  
     filename=trim(temp_filename)//impedance_filter_extension
+  else if (fit_type.eq.general) then  
+    filename=trim(temp_filename)//general_filter_extension
   end if
 
 ! create the header string  
@@ -136,7 +138,12 @@ IMPLICIT NONE
     
     write(filter_file_unit,'(A)')'# Impedance filter'
     CALL write_Sfilter(filter_S(1),filter_file_unit)
+        
+  else if (fit_type.eq.general) then  
     
+    write(filter_file_unit,'(A)')'# General filter'
+    CALL write_Sfilter(filter_S(1),filter_file_unit)
+   
   end if
   
   CLOSE(unit=filter_file_unit)

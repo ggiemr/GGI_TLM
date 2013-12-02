@@ -100,6 +100,10 @@ IMPLICIT NONE
     
     CALL stabilise_impedance()
     
+  else if (fit_type.eq.general) then  
+    
+! No action
+    
   end if
 
 ! 7. Calculate the mean square error of the fully stabilised Pole-Residue format filter 

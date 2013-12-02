@@ -78,8 +78,16 @@ IMPLICIT NONE
     write(info_file_unit,*)'' 
     write(info_file_unit,*)'Number of timesteps=',n_timesteps
     write(info_file_unit,*)'____________________________________________________'
+    write(info_file_unit,*)'' 
+    write(info_file_unit,*)'Timesteps=',dt
+    write(info_file_unit,*)'____________________________________________________'
     write(info_file_unit,*)''
     write(info_file_unit,*)'Number of processes= ',np
+    write(info_file_unit,*)'____________________________________________________'
+    write(info_file_unit,*)''
+    write(info_file_unit,*)'bicubic_warp_flag= ',bicubic_warp_flag
+    write(info_file_unit,*)'frequency_scale_flag= ',frequency_scale_flag
+    write(info_file_unit,*)'frequency_scale= ',frequency_scale
     write(info_file_unit,*)'____________________________________________________'
     write(info_file_unit,*)''
     write(info_file_unit,*)'TLM solution Started:'
@@ -172,7 +180,7 @@ IMPLICIT NONE
       
 	write(6,'(A)',advance='no')char(13)
 	write(6,8010,advance='no')'Timestep ',timestep,' of ',n_timesteps,	&
-	             '  Esimated time to finish: ',time_to_finish_hrs,':',time_to_finish_min,':',time_to_finish_sec
+	             '  Estimated time to finish: ',time_to_finish_hrs,':',time_to_finish_min,':',time_to_finish_sec
 	flush(6)
     
 8000    format(A9,I10,A4,I10)    
