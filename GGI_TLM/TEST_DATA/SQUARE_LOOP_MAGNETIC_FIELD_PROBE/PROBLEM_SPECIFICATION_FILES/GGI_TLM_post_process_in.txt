@@ -1,0 +1,47 @@
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+probe.cable_current.tout
+           1
+probe_current.tout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+probe.cable_current.tout
+           1
+log
+   0.1000000E+06 fmin
+   0.1000000E+10 fmax
+            1000 n_frequencies
+probe_current.fout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+probe.volume_average_field.tout
+           1
+log
+   0.1000000E+06 fmin
+   0.1000000E+10 fmax
+            1000 n_frequencies
+average_Hz.fout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+probe.excitation.tout
+           1
+log
+   0.1000000E+06 fmin
+   0.1000000E+10 fmax
+            1000 n_frequencies
+excitation.fout
+           6  POST PROCESSING OPTION: COMBINE FREQUENCY DOMAIN DATA
+probe_current.fout
+           1
+excitation.fout
+           1
+   50.0       constant, A: convert from current through 50 ohms to voltage across it
+   0.00265    constant, B: convert from incident E field to incident H field
+   0.0000000000000000       constant, C
+normalised_voltage.fout
+           6  POST PROCESSING OPTION: COMBINE FREQUENCY DOMAIN DATA
+probe_current.fout
+           1
+average_Hz.fout
+           1
+   50.0       constant, A: convert from current through 50 ohms to voltage across it
+   1.0        constant, B: 
+   0.0000000000000000       constant, C
+normalised_voltage2.fout
+           0  Post processing option: Quit

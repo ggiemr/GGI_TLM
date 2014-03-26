@@ -1,0 +1,46 @@
+include $(HOME)/F90_include/make.inc
+
+
+OBJS= opt_module.o optimise.o calc_error.o bisect.o simplex.o map.o
+
+LIBS=   $(LIB_DIR)/lib_general.a $(LIB_DIR)/lib_geometry.a \
+        $(LIB_DIR)/lib_filter.a $(LIB_DIR)/lib_polynomial.a \
+        $(LIB_DIR)/libmatrix.a \
+        $(LAPACK_DIR)/lib_lapack_CJS.a \
+        $(LAPACK_DIR)/lib_blas_CJS.a \
+        $(LAPACK_DIR)/lib_linsrc_CJS.a \
+        $(LAPACK_DIR)/lib_tmglib_CJS.a \
+        $(LAPACK_DIR)/lib_eigsrc_CJS.a 
+
+#FLAGS= -r8
+
+default: lib_optimisation.a
+#
+opt_module.o: 		opt_module.F90 
+	$(FC) $(FLAGS) -c opt_module.F90
+#
+optimise.o: 		optimise.F90  opt_module.o
+	$(FC) $(FLAGS) -c optimise.F90
+#
+calc_error.o: 		calc_error.F90 opt_module.o
+	$(FC) $(FLAGS) -c calc_error.F90
+#
+bisect.o: 		bisect.F90 opt_module.o
+	$(FC) $(FLAGS) -c bisect.F90
+#
+simplex.o: 		simplex.F90 opt_module.o
+	$(FC) $(FLAGS) -c simplex.F90
+#
+map.o: 		map.F90 opt_module.o
+	$(FC) $(FLAGS) -c map.F90
+#
+lib_optimisation.a:   $(OBJS)
+	ar rv lib_optimisation.a $(OBJS)
+	mv lib_optimisation.a $(LIB_DIR)/lib_optimisation.a
+##		
+clean:
+	rm -f optimise
+	rm -f *.o
+	rm -f *.mod
+	rm -f core
+# 

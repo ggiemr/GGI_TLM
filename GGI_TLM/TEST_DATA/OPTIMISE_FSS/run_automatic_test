@@ -1,0 +1,49 @@
+
+CURRENT_DIRECTORY=$( pwd )
+
+TEST_CASE=$( basename ${CURRENT_DIRECTORY} )
+
+ACTION=$1
+
+if [[ "$ACTION" = "run_seq" || "$ACTION" = "run_mpi" ]] ; then
+
+  echo "Running optimisation"
+    
+# COMPILE THE OPTIMISATION PROGRAM
+
+  cd PROBLEM_SPECIFICATION_FILES
+  make GGI_TLM_DIRECTORY=${GGI_TLM_DIRECTORY}
+# check that it made OK  
+  RETURN_CODE=$?
+  if [[ $RETURN_CODE != 0 ]] ; then
+    echo "Make optimise_FSS" > ../progress
+    cd ..
+    exit 1
+  fi
+  
+  mv optimise_FSS ..
+  cd ..
+
+# RUN THE OPTIMISATION
+
+  cp PROBLEM_SPECIFICATION_FILES/optimise_in.txt .
+
+#include $GGI_TLM_DIRECTORY/run_configuration_data
+      
+  $SEQ_RUN_COMMAND optimise_FSS < optimise_in.txt
+  
+elif [ "$ACTION" = "clean" ] ; then
+
+    rm -f FSS_dimensions
+    rm -f optimisation_progress
+    rm -f optimise_FSS
+    
+# run the normal process: this will operate on the last solution to be run i.e. the optimal solution
+    source ../run_test_case_include
+
+else
+    
+# run the normal process: this will operate on the last solution to be run i.e. the optimal solution
+    source ../run_test_case_include
+
+fi  

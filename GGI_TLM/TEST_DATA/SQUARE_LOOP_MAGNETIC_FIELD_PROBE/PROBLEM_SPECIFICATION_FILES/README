@@ -1,0 +1,8 @@
+Calculation of the ratio of load voltage/ H field  for a magnetic loop antenna.
+
+The calculation gives Vload/Hincident with H incident calculated both from the
+illuminating field and as an average over the surface area of the loop.
+
+The result shows a peak at high frequency which is due to a dipole like response
+originating from an E field excitation of the antenna. This may be established by altering the incident field in the input file to a field with no H field component through the loop (commented out in 
+the input file.)  

@@ -1,0 +1,120 @@
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+single_cell.volume_average_field.tout
+           1
+Ey1.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+single_cell.volume_average_field.tout
+           2
+Hx1.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+single_cell.volume_average_field.tout
+           3
+Ey2.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+single_cell.volume_average_field.tout
+           4
+Hx2.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+single_cell.volume_average_field.tout
+           5
+Ey3.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+single_cell.volume_average_field.tout
+           6
+Hx3.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+single_cell.volume_average_field.tout
+           7
+Ey4.tout
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+single_cell.volume_average_field.tout
+           8
+Hx4.tout
+           3  Post processing option: Fourier Transform
+single_cell.volume_average_field.tout
+           1
+lin
+   1e6 fmin
+   3e9 fmax
+             1000 n_frequencies
+Ex1.fout
+           3  Post processing option: Fourier Transform
+single_cell.volume_average_field.tout
+           2
+lin
+   1e6 fmin
+   3e9 fmax
+             1000 n_frequencies
+Hy1.fout
+           3  Post processing option: Fourier Transform
+single_cell.volume_average_field.tout
+           3
+lin
+   1e6 fmin
+   3e9 fmax
+             1000 n_frequencies
+Ex2.fout
+           3  Post processing option: Fourier Transform
+single_cell.volume_average_field.tout
+           4
+lin
+   1e6 fmin
+   3e9 fmax
+             1000 n_frequencies
+Hy2.fout
+           3  Post processing option: Fourier Transform
+single_cell.volume_average_field.tout
+           5
+lin
+   1e6 fmin
+   3e9 fmax
+             1000 n_frequencies
+Ex3.fout
+           3  Post processing option: Fourier Transform
+single_cell.volume_average_field.tout
+           6
+lin
+   1e6 fmin
+   3e9 fmax
+             1000 n_frequencies
+Hy3.fout
+           3  Post processing option: Fourier Transform
+single_cell.volume_average_field.tout
+           7
+lin
+   1e6 fmin
+   3e9 fmax
+             1000 n_frequencies
+Ex4.fout
+           3  Post processing option: Fourier Transform
+single_cell.volume_average_field.tout
+           8
+lin
+   1e6 fmin
+   3e9 fmax
+             1000 n_frequencies
+Hy4.fout
+           10  Post processing option: Twoport analysis
+Ex1.fout
+           1
+Ex2.fout
+           1
+Hy1.fout
+           1
+Hy2.fout
+           1
+Ex4.fout
+           1
+Ex3.fout
+           1
+Hy4.fout
+           1
+Hy3.fout
+           1
+  0.5e-3  port separation (m)
+  5e-3  port midpoint to interface distamce (m)
+  0.5e-3  port separation (m)
+  5e-3  port midpoint to interface distamce (m)
+1    ! excitation port number
+S21.fout_#RUN_NUMBER
+           0  Post processing option: Quit

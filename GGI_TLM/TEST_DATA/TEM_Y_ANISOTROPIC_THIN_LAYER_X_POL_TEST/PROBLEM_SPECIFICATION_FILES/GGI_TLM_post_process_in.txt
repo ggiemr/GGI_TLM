@@ -1,0 +1,49 @@
+           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+TEM_cell.field.tout
+           1
+Ey.tout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+TEM_cell.field.tout
+           1
+lin
+   0.100000E+06 fmin
+   0.3000000E+08 fmax
+            100 n_frequencies
+Ey1.fout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+TEM_cell.field.tout
+           2
+lin
+   0.100000E+06 fmin
+   0.3000000E+08 fmax
+            100 n_frequencies
+Hx1.fout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+TEM_cell.field.tout
+           3
+lin
+   0.100000E+06 fmin
+   0.3000000E+08 fmax
+            100 n_frequencies
+Ey2.fout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+TEM_cell.field.tout
+           4
+lin
+   0.100000E+06 fmin
+   0.3000000E+08 fmax
+            100 n_frequencies
+Hx2.fout
+           9  Post processing option: Oneport analysis
+Ey1.fout
+           1
+Ey2.fout
+           1
+Hx1.fout
+           1
+Hx2.fout
+           1
+  0.10  port separation (m)
+  10.0  port midpoint to interface distamce (m)
+TEM_material.fout
+           0  Post processing option: Quit

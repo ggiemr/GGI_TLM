@@ -1,0 +1,20 @@
+#!/bin/bash
+
+  read  UNIT_CELL_SIZE DIM1 DIM2 DIM3 DIM4 < FSS_dimensions
+  
+  echo "Unit cell size: $UNIT_CELL_SIZEDimension 1=$DIM1, Dimension 2=$DIM2, Dimension 3=$DIM3, Dimension 4=$DIM4"       
+
+# create the input file for this run with the specified dimensions substituted  
+  echo "{
+       s/#FSS_unit_cell_size/${UNIT_CELL_SIZE}/g
+       s/#DIM1/${DIM1}/g
+       s/#DIM2/${DIM2}/g
+       s/#DIM3/${DIM3}/g
+       s/#DIM4/${DIM4}/g
+           }" > sed_command
+
+  sed -f sed_command PROBLEM_SPECIFICATION_FILES/single_cell.inp_TEMPLATE > PROBLEM_SPECIFICATION_FILES/single_cell.inp
+ 
+# RUN THE DEFAULT TEST CASE SEQUENCE
+  source ../run_test_case_include
+  

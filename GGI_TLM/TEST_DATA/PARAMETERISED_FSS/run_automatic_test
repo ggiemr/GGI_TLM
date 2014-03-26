@@ -1,0 +1,142 @@
+
+CURRENT_DIRECTORY=$( pwd )
+
+TEST_CASE_LIST=$( basename ${CURRENT_DIRECTORY} )
+
+ACTION=$1
+
+echo "Running parameter loop, action=$ACTION"
+
+cp PROBLEM_SPECIFICATION_FILES/parameter_list .
+
+if [[ "$ACTION" = "run_seq" || "$ACTION" = "run_mpi" ]] ; then
+
+  echo "Running parameterised test set"
+
+  rm -f ./RESULTS/*fout*
+
+  RUN_NUMBER=1
+
+  while read  UNIT_CELL_SIZE DIM1 DIM2 DIM3 DIM4
+  do          
+  
+    echo "Run number $RUN_NUMBER : Dimension 1=$DIM1, Dimension 2=$DIM2, Dimension 3=$DIM3, Dimension 4=$DIM4"       
+
+# create the input file for this run with the specified dimensions substituted  
+    echo "{
+       s/#FSS_unit_cell_size/${UNIT_CELL_SIZE}/g
+       s/#DIM1/${DIM1}/g
+       s/#DIM2/${DIM2}/g
+       s/#DIM3/${DIM3}/g
+       s/#DIM4/${DIM4}/g
+           }" > sed_command
+
+    sed -f sed_command PROBLEM_SPECIFICATION_FILES/single_cell.inp_TEMPLATE > PROBLEM_SPECIFICATION_FILES/single_cell.inp
+
+# CREATE THE POST PROCESING  FILE FOR THIS RUN WITH THE SPECIFIED DIMENSIONS SUBSTITUTED  
+    echo "{
+       s/#RUN_NUMBER/${RUN_NUMBER}/g
+           }" > sed_command
+
+    sed -f sed_command PROBLEM_SPECIFICATION_FILES/GGI_TLM_post_process_in.txt_TEMPLATE > PROBLEM_SPECIFICATION_FILES/GGI_TLM_post_process_in.txt
+  
+# RUN THE DEFAULT TEST CASE SEQUENCE
+    source ../run_test_case_include
+    
+# copy the output file with the S11/S21 data to the RESULTS directory
+    cp S21.fout_${RUN_NUMBER} RESULTS
+  
+    RUN_NUMBER=$((RUN_NUMBER+1))
+  
+  done < parameter_list
+  
+elif [ "$ACTION" = "post_process" ] ; then
+
+  echo "ERROR: cannot post proces a parameterised set of runs - need to run the set again"
+  exit 1
+  
+elif [[ "$ACTION" = "plot" || "$ACTION" = "plot_jpg" ]] ; then
+
+
+# CREATE THE GNUPLOT FILE FOR THIS SET OF RUNS 
+
+rm -f PROBLEM_SPECIFICATION_FILES/plot_result.plt
+
+    echo "
+#JPG set term jpeg
+#OUTPUT_TO_FILE set output 'S11_dB.jpg'
+set autoscale x
+set autoscale y
+set title 'S11 '
+set xlabel 'Frequency (Hz)'
+set ylabel 'S11 (dB)'
+plot \\" > PROBLEM_SPECIFICATION_FILES/plot_result.plt
+
+  RUN_NUMBER=1
+
+  while read  UNIT_CELL_SIZE DIM1 DIM2 DIM3 DIM4
+  do          
+
+# append a line to plot the current result     
+    if [ "$RUN_NUMBER" = "1" ] ; then
+      echo " 'RESULTS/S21.fout_$RUN_NUMBER' u 1:5 title '  |S11|: Run number $RUN_NUMBER' w l \\" >> PROBLEM_SPECIFICATION_FILES/plot_result.plt
+    else
+      echo ",'RESULTS/S21.fout_$RUN_NUMBER' u 1:5 title '  |S11|: Run number $RUN_NUMBER' w l \\" >> PROBLEM_SPECIFICATION_FILES/plot_result.plt   
+    fi
+    
+    RUN_NUMBER=$((RUN_NUMBER+1))
+  
+  done < parameter_list
+  
+  echo "
+  #PAUSE pause -1 
+  
+#OUTPUT_TO_FILE set output 'S21_dB.jpg'
+set autoscale x
+set autoscale y
+set title 'S21 '
+set xlabel 'Frequency (Hz)'
+set ylabel 'S21 (dB)'
+plot \\" >> PROBLEM_SPECIFICATION_FILES/plot_result.plt
+  
+  RUN_NUMBER=1
+ 
+  while read   UNIT_CELL_SIZE DIM1 DIM2 DIM3 DIM4
+  do          
+
+# append a line to plot the current result     
+    if [ "$RUN_NUMBER" = "1" ] ; then
+      echo " 'RESULTS/S21.fout_$RUN_NUMBER' u 1:9 title '  |S21|: Run number $RUN_NUMBER' w l \\" >> PROBLEM_SPECIFICATION_FILES/plot_result.plt
+    else
+      echo ",'RESULTS/S21.fout_$RUN_NUMBER' u 1:9 title '  |S21|: Run number $RUN_NUMBER' w l \\" >> PROBLEM_SPECIFICATION_FILES/plot_result.plt   
+    fi
+    
+    RUN_NUMBER=$((RUN_NUMBER+1))
+  
+  done < parameter_list
+  
+  echo "
+  #PAUSE pause -1 " >> PROBLEM_SPECIFICATION_FILES/plot_result.plt
+  
+# RUN THE DEFAULT TEST CASE SEQUENCE
+    source ../run_test_case_include
+ 
+elif [ "$ACTION" = "reference" ] ; then
+
+# RUN THE DEFAULT TEST CASE SEQUENCE
+    source ../run_test_case_include
+ 
+elif [ "$ACTION" = "plot_ref" ] ; then
+
+# RUN THE DEFAULT TEST CASE SEQUENCE
+    source ../run_test_case_include
+  
+elif [ "$ACTION" = "clean" ] ; then
+  
+    rm -f parameter_list
+    rm -f RESULTS/*fout*
+  
+# RUN THE DEFAULT TEST CASE SEQUENCE
+    source ../run_test_case_include
+  
+fi

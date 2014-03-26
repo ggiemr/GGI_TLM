@@ -1,0 +1,165 @@
+This directory creates general optimisation routines which can be linked to 
+code to evaluate a function to minimise. The optimisation can be with respect to
+multiple parameters (up to 10).
+
+The file:optimise_in.txt is created which defines the number of parameters,
+the optimisation technique to be applied, convergence criterion and starting
+point for the optimisation. En example for a 10 parameter optimisation is:
+
+____________________________________________________________
+
+10   		! number of parameters 
+bisection	! type of optimisation ('bisection' or 'simplex' or 'map')
+1e-12		! convergence criterion
+1       	! max number of function evaluations
+0.5  0.1      	! initial value of parameters and delta value
+0.5  0.1      	! initial value of parameters and delta value
+0.5  0.1      	! initial value of parameters and delta value
+0.5  0.1      	! initial value of parameters and delta value
+0.5  0.1      	! initial value of parameters and delta value
+0.5  0.1      	! initial value of parameters and delta value
+0.5  0.1      	! initial value of parameters and delta value
+0.5  0.1      	! initial value of parameters and delta value
+0.5  0.1      	! initial value of parameters and delta value
+0.5  0.1      	! initial value of parameters and delta value
+
+____________________________________________________________
+
+Example:
+ 
+The subroutine  epsr_Sparam(function) evaluates the objective function as a
+function of the optimisation parameters
+
+The optimisation parameters are assumed to be in the range [0:1] therefore
+a scaling function may need to be applied
+
+epsr_Sparam(function) mauy look something like:
+
+__________________________________________________________________
+
+  SUBROUTINE epsr_Sparam(function)
+
+USE constants
+USE filter_types
+USE filter_operators
+USE filter_functions
+
+USE epsr_Sparam_module_opt
+
+USE opt_module      
+
+! variables passed to subroutine
+
+  real*8		:: function
+
+! local variables
+
+  real*8 p1,p2,p3
+
+! START
+
+  if ((evaluation_number.eq.1).AND.(last_call.ne.1)) then
+  
+!   initialise the problem...  
+    
+  end if
+   
+  function=0d0
+
+! set p1 to have a range -infinity to infinity
+
+  p1=tan(pi*(parameters(1)-0.5d0))
+  
+! set p2 to have a range 0 to infinity
+
+  p2=tan(pi*parameters(2)/2d0)
+  
+! set p3 to have a range 1 to 5 
+
+  p3=parameters(3)*4d0+1d0
+
+! evaluate the function to minimise
+
+    function=p1+p2*p3
+           
+  if (last_call.eq.1) then
+
+!    output optimium data and tidy up
+    
+  end if
+  
+  END SUBROUTINE  epsr_Sparam
+
+__________________________________________________________________
+
+An optimisation is set up by creating the wrapping code something like the
+following in which the value returned by the subroutine epsr_Sparam() is
+optimised:
+
+optimise_epsr_Sparam.F90
+_______________________________________________________________________
+
+PROGRAM optimise_epsr_Sparam
+
+ USE opt_module      
+
+call optimise()
+
+END PROGRAM optimise_epsr_Sparam
+!
+!
+!
+SUBROUTINE calculate_function(function)
+
+! evaluate the function to minimise using the optimisation procedure
+
+USE opt_module      
+
+real*8 			:: function
+
+! START
+    
+  call epsr_Sparam(function)
+ 
+END SUBROUTINE calculate_function
+
+
+_______________________________________________________________________
+ 
+The system must be linked to the optimisation using something like the makefile:
+_______________________________________________________________________
+
+include /home/cs/F90_include/make.inc
+
+OBJS=   optimise_epsr_Sparam.o epsr_Sparam_module.o epsr_Sparam.o 
+
+
+LIBS=   $(LIB_DIR)/lib_general.a $(LIB_DIR)/lib_geometry.a \
+        $(LIB_DIR)/lib_filter.a $(LIB_DIR)/lib_polynomial.a \
+        $(LIB_DIR)/libmatrix.a \
+        $(LIB_DIR)/lib_optimisation.a \
+        $(LIB_DIR)/libgeneral_functions.a \
+        $(LAPACK_DIR)/lib_lapack_CJS.a \
+	$(LAPACK_DIR)/lib_blas_CJS.a \
+	$(LAPACK_DIR)/lib_linsrc_CJS.a \
+	$(LAPACK_DIR)/lib_tmglib_CJS.a \
+	$(LAPACK_DIR)/lib_eigsrc_CJS.a 
+#
+default: optimise_epsr_Sparam
+#
+optimise_epsr_Sparam.o: optimise_epsr_Sparam.F90
+	f90 $(FLAGS) -c optimise_epsr_Sparam.F90
+
+optimise_epsr_Sparam:	$(OBJS)
+	f90 $(FLAGS) -o optimise_epsr_Sparam $(OBJS) $(LIBS)
+# 
+epsr_Sparam_module.o: 	epsr_Sparam_module.F90
+	$(FC) $(FLAGS) -c epsr_Sparam_module.F90 
+# 
+epsr_Sparam.o: 	epsr_Sparam.F90
+	$(FC) $(FLAGS) -c epsr_Sparam.F90 
+#		
+clean:
+	rm -f *.o
+	rm -f *.mod
+# 

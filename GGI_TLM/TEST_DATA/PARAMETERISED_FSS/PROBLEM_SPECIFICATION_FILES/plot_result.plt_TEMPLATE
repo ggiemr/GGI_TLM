@@ -1,0 +1,14 @@
+
+#JPG set term jpeg
+
+#OUTPUT_TO_FILE set output "S21_S11_dB_#RUN_NUMBER.jpg"
+set autoscale x
+set autoscale y
+set title "S11/ S21 for run number #RUN_NUMBER"
+set xlabel "Frequency (Hz)"
+set ylabel "S11/S21 (dB)"
+plot "RESULTS/S21.fout_#RUN_NUMBER" u 1:5 title "  |S11|: GGI_TLM" w l,\
+     "RESULTS/S21.fout_#RUN_NUMBER" u 1:9 title "  |S21|: GGI_TLM" w l
+     
+#PAUSE pause -1
+

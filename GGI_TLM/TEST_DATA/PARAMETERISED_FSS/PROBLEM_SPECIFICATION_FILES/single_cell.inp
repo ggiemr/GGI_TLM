@@ -1,0 +1,131 @@
+# FSS with two square loops for two band reflection
+
+Mesh_outer_boundary_dimension
+-8.00e-2 8.00e-2     -8.00e-2 8.00e-2     -10e-2 10e-2
+
+Mesh_cell_dimension
+0.25e-2 
+
+Outer_boundary_reflection_coefficient
+1.0 1.0 1.0 1.0 0.0 0.0
+
+Wrapping_boundary_conditions
+1 1 0
+
+Surface_list
+5   Number of surfaces 
+1       SURFACE_NUMBER 
+zplane
+-4.00e-2 -4.00e-2 0.0e-2      4.00e-2  4.00e-2 0.0e-2    !  outer square
+0.0 0.0 0.0    
+0.0 0.0 0.0
+2       SURFACE_NUMBER
+zplane
+-3.50e-2 -3.50e-2 0.0e-2      3.50e-2  3.50e-2 0.0e-2    !  outer square
+0.0 0.0 0.0    
+0.0 0.0 0.0
+3       SURFACE_NUMBER
+zplane
+-2.25e-2 -2.25e-2 0.0e-2      2.25e-2  2.25e-2 0.0e-2    !  outer square
+0.0 0.0 0.0    
+0.0 0.0 0.0
+4       SURFACE_NUMBER
+zplane
+-1.75e-2 -1.75e-2 0.0e-2      1.75e-2  1.75e-2 0.0e-2    !  outer square
+0.0 0.0 0.0    
+0.0 0.0 0.0
+5       SURFACE_NUMBER 
+zplane
+-8.00e-2 -8.00e-2 -8.0e-2      8.00e-2  8.00e-2 -8.0e-2    !  Huygens surface
+0.0 0.0 0.0    
+0.0 0.0 0.0
+
+Surface_material_list
+4   Number of surface materials 
+1       SURFACE MATERIAL NUMBER 
+PEC
+1       number of surfaces
+1      surface list
+1 	surface orientation list
+2       SURFACE MATERIAL NUMBER
+FREE_SPACE
+1       number of surfaces
+2 	 surface list
+1 	surface orientation list
+3       SURFACE MATERIAL NUMBER 
+PEC
+1       number of surfaces
+3      surface list
+1 	surface orientation list
+4       SURFACE MATERIAL NUMBER
+FREE_SPACE
+1       number of surfaces
+4 	 surface list
+1 	surface orientation list
+
+Volume_list
+4   Number of volumes 
+1       VOLUME_NUMBER 
+rectangular_block2
+-8.00e-2 -8.00e-2 -5.5e-2      8.00e-2  8.00e-2 -5.0e-2   !  output volume 1
+0.0 0.0 0.0    
+0.0 0.0 0.0
+2       VOLUME_NUMBER 
+rectangular_block2
+-8.00e-2 -8.00e-2 -5.0e-2      8.00e-2  8.00e-2 -4.5e-2   !  output volume 2
+0.0 0.0 0.0    
+0.0 0.0 0.0
+3       VOLUME_NUMBER 
+rectangular_block2
+-8.00e-2 -8.00e-2 4.5e-2      8.00e-2  8.00e-2 5.0e-2     !  output volume 3
+0.0 0.0 0.0    
+0.0 0.0 0.0
+4       VOLUME_NUMBER 
+rectangular_block2
+-8.00e-2 -8.00e-2 5.0e-2      8.00e-2  8.00e-2 5.5e-2     !  output volume 4
+0.0 0.0 0.0    
+0.0 0.0 0.0
+
+
+Excitation_function_list
+1    number of excitation functions
+1    EXCITATION FUNCTION NUMBER
+gaussian
+1.0 1e-12 4e-12
+
+Huygens_surface
+5     surface number
+1     side of surface for excitation
+1     excitation function number
+0.0 90.0  wave vector Theta and Phi 
+1.0 0.0  Polarisation theta and Phi
+
+Output_volume_average_list
+8    		! number of output volume_averages
+1		! OUTPUT NUMBER
+1		! volume number for output
+Ey
+2		! OUTPUT NUMBER
+1		! volume number for output
+Hx
+3		! OUTPUT NUMBER
+2		! volume number for output
+Ey
+4		! OUTPUT NUMBER
+2		! volume number for output
+Hx
+5		! OUTPUT NUMBER
+3		! volume number for output
+Ey
+6		! OUTPUT NUMBER
+3		! volume number for output
+Hx
+7		! OUTPUT NUMBER
+4		! volume number for output
+Ey
+8		! OUTPUT NUMBER
+4		! volume number for output
+Hx
+
+Simulation_time
+10.0e-9
