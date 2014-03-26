@@ -1,4 +1,4 @@
-# Sheet resistance 377 ohms/square
+# Dispersive impedance sheet
 0.0 1e8     # frequency range of validity
 # Z11 filter
 1.0e8       # wnormalisation constant

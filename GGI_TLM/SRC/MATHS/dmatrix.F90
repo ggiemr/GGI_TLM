@@ -147,7 +147,7 @@ IMPLICIT NONE
 !    dmatvmul
 !
 ! DESCRIPTION
-!    post multiply a complex vector by a real*8 matrix
+!    multiply a vector by a real*8 matrix
 !
 !
 ! SEE ALSO

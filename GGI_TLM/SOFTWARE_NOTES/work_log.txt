@@ -451,6 +451,59 @@
 			triangle faces enclosing a tet volume. (order_points_3, in local_grid_subroutines.F90)
 			Create VOLUME_GEOMETRY_TEST and SURFACE_GOEMETRY_TEST test cases
 
+2/12/2013	CJS	Implement ANISOTROPIC_DISPERSIVE thin layer material type
+
+3/12/2013	CJS	1. Complete ANISOTROPIC_DISPERSIVE implementation and 
+			2. Set up test cases for the ANISOTROPIC_DISPERSIVE thin layer material type
+
+5/12/2013	CJS	in GGI_TLM_filter_fit: Write a gnuplot file to view model fit to input data 
+
+3/1/2014	CJS	Add the SQUARE_LOOP_MAGNETIC_FIELD_PROBE test case
+
+16/1/2014	CJS	Start to implement a time domain vector volume animation post process
+			Include a volume time domain animation in the HUYGENS SURFACE test case
+
+20/1/2014	CJS	Continue to implement a time domain vector volume animation post process
+			Working but needs to be tidied up - notation in the code is not clear.
+
+24/1/2014	CJS	Make changes to the RCS test cases. Originally the Huygens surface was 
+			the outer boundary and the RCS surface was inside - works OK for back 
+			scatter but generally a bad example. Now the RCS surface has been
+			placed inside the Huygens surface. 
+			Also improve the way that RCS surface errors are handled - only one 
+			warning is written to the screen and a line is put into the warning 
+			file to flag the problem. 
+			
+29/1/2014	CJS	allow the seeding of the random number generator either from the system clock or
+			using values specified in the input file (packet random_number_seed)
+			
+3/2/2014	CJS	Implement the no_geometry_vtk_files packet to prevent GGI_TLM from writing geometry
+			vtk files. Useful for optimisation type problems when a problem is being run many times. 
+			
+6/2/2014	CJS	Start to include time-gating into the GGI_TLM procesing of frequency_output_volumes and 
+			frequency_output_surfaces
+
+10/2/2014	CJS	Implement reset random number seed in the post processor
+
+12/2/2014	CJS	Implement hard sources 
+
+20/2/2014	CJS	Develop a test case which illustrates the running of a parameterised geometry for a number of specifed sets of parameters
+
+21/2/2014	CJS	Incorporate some optimisation routines into the source code directory. These need to be linked with a fortran90 code which
+			evaluates the function to be minimised. Start work on an optimisation based on a FSS specification.
+			
+28/2/2014	CJS	Work on updating the documentation to incorporate some of the new developemnts and test cases. Still need to put a lot of work into this...
+			Check the TEST_DATA
+			
+4/3/2014	CJS	Start to implement periodic structure analysis 
+			
+5/3/2014	CJS	Continue to implement periodic structure analysis 
+			Fix parallel Anisotropic thin layer test cases
+			
+26/3/2014	CJS	Ensure that line end points are correct in straight_line2 line type. The 'stepping along the line'
+			approach has led to a tolerance problem in the aircraft_direct_currect_injection test case on 
+			one particular machine.
+			
 						
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE

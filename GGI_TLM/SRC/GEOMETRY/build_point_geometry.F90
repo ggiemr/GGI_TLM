@@ -57,8 +57,10 @@ integer	:: point_number
     CALL apply_transformation(problem_points(point_number)%point,problem_points(point_number)%trans)
 
   end do ! next point number
-  
-  CALL plot_points()
+      
+  if (write_geometry_vtk_files) then
+    CALL plot_points()
+  end if
 
   CALL write_line('FINISHED: Build_point_geometry',0,output_to_screen_flag)
   

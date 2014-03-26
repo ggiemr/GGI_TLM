@@ -555,7 +555,7 @@ IMPLICIT NONE
     n_conductors=cable_list(cable)%n_conductors
     n_external=n_conductors
     
-    write(*,*)'cable',cable,' n_external=',n_external
+!    write(*,*)'cable',cable,' n_external=',n_external
     
 ! End 1 junction
     
@@ -650,7 +650,7 @@ IMPLICIT NONE
 ! Calculate Z domain susceptibility admittance filter coefficients by bilinear transformation
 !        Zfilter1=s_to_z(cable_junction_list(junction)%Sfilter(impedance_filter),dt) 
         Zfilter1=s_to_z_warp(cable_junction_list(junction)%Sfilter(impedance_filter),dt,bicubic_warp_flag,frequency_scale) 
-        CALL Z_fast_slow_docomposition( Zfilter1 ,Z_f  , Zfilter2 )
+        CALL Z_fast_slow_decomposition( Zfilter1 ,Z_f  , Zfilter2 )
 	
 	face_junction_list(cable_face)%Zfilter(first_external+impedance_filter-1)=Zfilter2
 	face_junction_list(cable_face)%Z_f(first_external+impedance_filter-1)=Z_f
@@ -833,7 +833,7 @@ IMPLICIT NONE
 ! Calculate Z domain susceptibility admittance filter coefficients by bilinear transformation
 !        Zfilter1=s_to_z(cable_junction_list(junction)%Sfilter(impedance_filter),dt) 
         Zfilter1=s_to_z_warp(cable_junction_list(junction)%Sfilter(impedance_filter),dt,bicubic_warp_flag,frequency_scale) 
-        CALL Z_fast_slow_docomposition( Zfilter1 ,Z_f  , Zfilter2 )
+        CALL Z_fast_slow_decomposition( Zfilter1 ,Z_f  , Zfilter2 )
 	
 	face_junction_list(cable_face)%Zfilter(first_external+impedance_filter-1)=Zfilter2
 	face_junction_list(cable_face)%Z_f(first_external+impedance_filter-1)=Z_f

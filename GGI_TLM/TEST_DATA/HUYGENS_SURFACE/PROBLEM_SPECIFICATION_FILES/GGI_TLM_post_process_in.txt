@@ -136,4 +136,13 @@ lin
    0.0000000000000000     
 y
            0  Output surface
-           0  Post processing option: Quit
+           33  Post processing option: Create vector time domain Animation
+huygens_test.volume_field.tout
+           1  Output surface x
+           2  Output surface y
+           3  Output surface z
+0
+0
+vector_field
+0 POST PROCESSING OPTION:Quit
+

@@ -26,32 +26,32 @@ Line_list
 6   Number of lines 
 1       LINE_NUMBER 
 straight_line2
-0.13 0.10 0.10 0.13 0.15 0.10     line parameters (n*real)
+0.135 0.10 0.105 0.135 0.155 0.105     line parameters (n*real)
 0.0 0.0 0.0
 0.0 0.0 0.0
 2       LINE_NUMBER 
 straight_line2
-0.13 0.15 0.10 0.13 0.15 1.10    line parameters (n*real)
+0.135 0.155 0.105 0.135 0.155 1.105    line parameters (n*real)
 0.0 0.0 0.0
 0.0 0.0 0.0
 3       LINE_NUMBER  
 straight_line2
-0.13 0.15 1.10 0.13 0.10 1.10    line parameters (n*real)
+0.135 0.155 1.105 0.135 0.10 1.105    line parameters (n*real)
 0.0 0.0 0.0
 0.0 0.0 0.0
 4       LINE_NUMBER   
 straight_line2
-0.17 0.10 0.10 0.17 0.12 0.10     line parameters (n*real)
+0.175 0.10 0.105 0.175 0.125 0.105     line parameters (n*real)
 0.0 0.0 0.0
 0.0 0.0 0.0
 5       LINE_NUMBER  
 straight_line2
-0.17 0.12 0.10 0.17 0.12 1.10    line parameters (n*real)
+0.175 0.125 0.105 0.175 0.125 1.105    line parameters (n*real)
 0.0 0.0 0.0
 0.0 0.0 0.0
 6       LINE_NUMBER  
 straight_line2
-0.17 0.12 1.10 0.17 0.10 1.10    line parameters (n*real)
+0.175 0.125 1.105 0.175 0.10 1.105    line parameters (n*real)
 0.0 0.0 0.0
 0.0 0.0 0.0
 
@@ -59,19 +59,19 @@ straight_line2
 Point_list 
 4   Number of points (integer)
 1       POINT_NUMBER (integer)
-0.13 0.10 0.10    point coordinates (n*real)
+0.135 0.10 0.105    point coordinates (n*real)
 0.0 0.0 0.0
 0.0 0.0 0.0
 2       POINT_NUMBER (integer)
-0.13 0.10 1.10    point coordinates (n*real)
+0.135 0.10 1.105    point coordinates (n*real)
 0.0 0.0 0.0
 0.0 0.0 0.0
 3       POINT_NUMBER (integer)
-0.17 0.10 0.10    point coordinates (n*real)
+0.175 0.10 0.105    point coordinates (n*real)
 0.0 0.0 0.0
 0.0 0.0 0.0
 4       POINT_NUMBER (integer)
-0.17 0.10 1.10     point coordinates (n*real)
+0.175 0.10 1.105     point coordinates (n*real)
 0.0 0.0 0.0
 0.0 0.0 0.0
 

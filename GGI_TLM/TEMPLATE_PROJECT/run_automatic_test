@@ -22,6 +22,7 @@ export MPI_SOLVER_NAME
 export MPI_RUN_COMMAND
 export SEQ_SOLVER_NAME
 export SEQ_RUN_COMMAND
+export GGI_TLM_DIRECTORY
 
 echo "Automatic testing of GGI_TLM"
 echo " "

@@ -1,10 +1,11 @@
 # Two coaxial cables for crosstalk tests
 
 Mesh_outer_boundary_dimension
--0.205 0.205 -0.105 0.105 -1.01 1.01 
+-0.215 0.215 -0.115 0.115 -1.01 1.01 
 
-Mesh_dimensions_in_cells
-41 21 202 
+Mesh_cell_dimension
+0.01
+
 
 Outer_boundary_reflection_coefficient
 0.0 0.0 0.0 0.0 0.0 0.0
@@ -13,12 +14,12 @@ Surface_list
 2   Number of surfaces 
 1       SURFACE_NUMBER 
 rectangle
-0.4 0.2   surface parameters 
+0.41 0.21   surface parameters 
 0.0 0.0 0.0    
 0.0 0.0 1.0
 2       SURFACE_NUMBER 
 rectangle
-0.4 0.2   surface parameters 
+0.41 0.21   surface parameters 
 0.0 0.0 0.0    
 0.0 0.0 -1.0
 

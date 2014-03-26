@@ -38,17 +38,17 @@ Point_list
 Cable_geometry_list
 6  number of cable geometries
 1  cable geometry number, Cable geometry type (file name) follows:
-/CABLE_DIRECTORY/1mm_single_wire                                       
+CABLE_DIRECTORY/1mm_single_wire                                       
 2  cable geometry number, Cable geometry type (file name) follows:
-/CABLE_DIRECTORY/1mm_single_wire                                     
+CABLE_DIRECTORY/1mm_single_wire                                     
 3  cable geometry number, Cable geometry type (file name) follows:
-/CABLE_DIRECTORY/RG58_coax                                    
+CABLE_DIRECTORY/RG58_coax                                    
 4  cable geometry number, Cable geometry type (file name) follows:
-/CABLE_DIRECTORY/RG58_coax                            
+CABLE_DIRECTORY/RG58_coax                            
 5  cable geometry number, Cable geometry type (file name) follows:
-/CABLE_DIRECTORY/3_conductor_ribbon_cable                                
+CABLE_DIRECTORY/3_conductor_ribbon_cable                                
 6  cable geometry number, Cable geometry type (file name) follows:
-/CABLE_DIRECTORY/3_conductor_FD_ribbon_cable                                  
+CABLE_DIRECTORY/3_conductor_FD_ribbon_cable                                  
 
 Cable_list
 6  number of cables

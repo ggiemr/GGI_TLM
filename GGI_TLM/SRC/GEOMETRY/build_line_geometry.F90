@@ -73,8 +73,10 @@ integer	:: line_number
     end if ! line_type
 
   end do ! next line number
-  
-  CALL plot_line_segments()
+      
+  if (write_geometry_vtk_files) then
+    CALL plot_line_segments()
+  end if
 
   CALL write_line('FINISHED: Build_line_geometry',0,output_to_screen_flag)
   

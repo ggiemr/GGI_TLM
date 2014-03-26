@@ -525,7 +525,7 @@ END SUBROUTINE initialise_mode_excitations
 !
 !     started 11/01/2013 CJS
 !     allow superposition of sources 26/9/3013
-!
+!     allow hard and soft sources 12/2/2014 CJS
 !
 SUBROUTINE Mode_excitation
 
@@ -588,6 +588,9 @@ IMPLICIT NONE
 	  
           face_excitation_field(excitation_array_point,side,field_component)=	&
 	    face_excitation_field(excitation_array_point,side,field_component)+mode_field_value*value
+          if (field_component.le.6) then
+            face_excitation_type(excitation_array_point,side,field_component)=excitation_mode_list(excitation_mode)%source_type
+	  end if
 	  	  
 	end if ! excitation point in this processor's mesh
 		  

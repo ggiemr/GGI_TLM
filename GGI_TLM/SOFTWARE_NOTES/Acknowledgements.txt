@@ -4,3 +4,8 @@ EPSRC/ BAE SYSTEMS Flaviir project
 EU Framework7 HIRF-SE project
 
 The software uses the EISPACK library, the source code of which is included in GGI_TLM.
+
+The seeding of the random number generator (read_random_number_seed.F90) is based on a 
+fortran90 subroutine from the webpage:
+
+http://gcc.gnu.org/onlinedocs/gfortran/RANDOM_005fSEED.html

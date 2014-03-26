@@ -16,6 +16,7 @@
 !    along with this program.  If not, see <http://www.gnu.org/licenses/>.   
 !
 ! MODULE TLM_general
+! MODULE TLM_periodic
 !
 ! NAME
 !     MODULE TLM_general
@@ -56,7 +57,11 @@ IMPLICIT NONE
   logical	:: output_to_screen_flag=.TRUE.
   logical	:: timestepping_output_to_screen_flag=.FALSE.
   
+  logical	:: write_geometry_vtk_files
+  
   integer	:: number_of_warnings
+  
+  logical	:: periodic_boundary
 
 ! number of cells in x, y and z directions  
   integer 	:: nx,ny,nz
@@ -90,6 +95,27 @@ IMPLICIT NONE
   logical 	:: wrap_x
   logical 	:: wrap_y
   logical 	:: wrap_z
+  
+  real*8	:: delay_x
+  real*8	:: delay_y
+  real*8	:: delay_z
+  
+  integer	:: wrap_array_point
+  
+  real*8,allocatable	:: Vy_xmin_save(:,:)
+  real*8,allocatable	:: Vz_xmin_save(:,:)
+  real*8,allocatable	:: Vy_xmax_save(:,:)
+  real*8,allocatable	:: Vz_xmax_save(:,:)
+  
+  real*8,allocatable	:: Vx_ymin_save(:,:)
+  real*8,allocatable	:: Vz_ymin_save(:,:)
+  real*8,allocatable	:: Vx_ymax_save(:,:)
+  real*8,allocatable	:: Vz_ymax_save(:,:)
+  
+  real*8,allocatable	:: Vx_zmin_save(:,:)
+  real*8,allocatable	:: Vy_zmin_save(:,:)
+  real*8,allocatable	:: Vx_zmax_save(:,:)
+  real*8,allocatable	:: Vy_zmax_save(:,:)
   
   real*8,allocatable	:: Vx_wrap_zmin_send(:,:)
   real*8,allocatable	:: Vy_wrap_zmin_send(:,:)
@@ -161,4 +187,50 @@ IMPLICIT NONE
   
   real*8	:: Max_cable_bundle_diameter_factor
   
+  logical	:: set_random_number_seed
+  
+  
 END MODULE TLM_general
+!
+! NAME
+!     MODULE TLM_periodic
+!
+! DESCRIPTION
+!      Data required for modelling periodic structures. See run_TLM_periodic_BC.F90
+!     
+! COMMENTS
+!     
+!
+! HISTORY
+!
+!     started 3/03/2014 CJS
+!
+MODULE TLM_periodic
+
+IMPLICIT NONE
+
+  
+! periodic structure parameters
+  
+  real*8  t_cycle
+  integer n_cycles
+  real*8  tmax_cycle
+  integer ntmax_cycle
+  integer nt_cycle,ntmin,ntmax,nt_cycle_start
+  integer nt_run(4),n_pbc_timesteps(4),n_save(4)
+  integer ntdx,ntdy
+
+  integer pbc_xface,pbc_yface
+
+! perodic boundary transfer data  
+
+  real*8,allocatable  :: V_pbc_save(:,:,:,:)
+  real*8,allocatable  :: Jsource_save(:,:,:,:)
+  real*8,allocatable  :: Msource_save(:,:,:,:)
+  real*8,allocatable  :: V_pbc_x(:,:,:,:)
+  real*8,allocatable  :: V_pbc_y(:,:,:,:)
+  real*8,allocatable  :: V_pbc_x_save(:,:,:,:)
+  real*8,allocatable  :: V_pbc_y_save(:,:,:,:)
+
+  
+END MODULE TLM_periodic

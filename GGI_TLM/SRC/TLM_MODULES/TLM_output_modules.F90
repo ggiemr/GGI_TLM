@@ -165,6 +165,17 @@ TYPE::frequency_output_surface_type
   
   integer			:: field_component
   complex*16,allocatable	:: value(:)
+
+  logical			:: specified_timestep_information
+  integer			:: first_timestep
+  integer			:: last_timestep
+  integer			:: timestep_interval
+  integer			:: number_of_output_timesteps
+  
+  logical			:: specified_time_information
+  real*8			:: first_time
+  real*8			:: last_time
+  real*8			:: time_interval
    
 END TYPE frequency_output_surface_type
 
@@ -179,6 +190,17 @@ TYPE::frequency_output_volume_type
   
   integer			:: field_component
   complex*16,allocatable	:: value(:)
+
+  logical			:: specified_timestep_information
+  integer			:: first_timestep
+  integer			:: last_timestep
+  integer			:: timestep_interval
+  integer			:: number_of_output_timesteps
+  
+  logical			:: specified_time_information
+  real*8			:: first_time
+  real*8			:: last_time
+  real*8			:: time_interval
    
 END TYPE frequency_output_volume_type
 
@@ -294,8 +316,9 @@ integer							:: n_frequency_domain_power_surfaces
 type(frequency_domain_power_surface_type),allocatable   :: frequency_domain_power_surface(:)
 
 integer					:: n_rcs_surfaces
-type(RCS_surface_type)    	:: rcs_surface
-integer, parameter 			:: n_rcs_points_per_cell=2
+type(RCS_surface_type)    		:: rcs_surface
+integer, parameter 			:: n_rcs_points_per_cell=2 
+logical					:: rcs_output_warning
 
 integer				    	:: n_SAR_volumes
 type(SAR_volume_type),allocatable    	:: SAR_volume_list(:)

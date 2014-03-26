@@ -251,7 +251,7 @@ IMPLICIT NONE
     
 ! Stage 3. calculate fast permittivity and slow permittivity filter
 
-        call Z_fast_slow_docomposition( Zs_eps_Zfilter1 ,Zs_eps_f  , Zs_eps_Zfilter2 )
+        call Z_fast_slow_decomposition( Zs_eps_Zfilter1 ,Zs_eps_f  , Zs_eps_Zfilter2 )
           
         write(*,*)'Zs_eps_f',Zs_eps_f
         write(*,*)'Ys_eps_f',1d0/Zs_eps_f
@@ -317,7 +317,7 @@ IMPLICIT NONE
     
 ! Stage 3. calculate fast permeability and slow permeability filter
 
-        call Z_fast_slow_docomposition( Zs_mu_Zfilter1 ,Zs_mu_f  , Zs_mu_Zfilter2 )
+        call Z_fast_slow_decomposition( Zs_mu_Zfilter1 ,Zs_mu_f  , Zs_mu_Zfilter2 )
           
         write(*,*)'Zs_mu_f',Zs_mu_f
         write(*,*)'Zs_mu_Z filter2'

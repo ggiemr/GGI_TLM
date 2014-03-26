@@ -16,10 +16,6 @@
 !    along with this program.  If not, see <http://www.gnu.org/licenses/>.   
 !
 ! SUBROUTINE stabilise_filter
-! SUBROUTINE stabilise_dielectric_material
-! SUBROUTINE stabilise_magnetic_material
-! SUBROUTINE stabilise_thin_layer
-! SUBROUTINE stabilise_impedance
 !
 ! NAME
 !     stabilise_filter
@@ -94,8 +90,9 @@ IMPLICIT NONE
        
   else if (fit_type.eq.thin_layer) then  
     
-    CALL stabilise_thin_layer()
-    
+    CALL stabilise_thin_layer_OLD()   ! based on stabilising eigenvalues
+!    CALL stabilise_thin_layer()     ! based on stabilising matrix determinant and trace - not so effective it seems...
+   
   else if (fit_type.eq.impedance) then  
     
     CALL stabilise_impedance()

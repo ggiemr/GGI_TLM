@@ -282,6 +282,8 @@ IMPLICIT NONE
   integer		:: param_count
   integer		:: pole_count
   integer		:: zero_count
+  
+  real*8		:: re,im
 
 ! START 
 
@@ -323,11 +325,15 @@ IMPLICIT NONE
     do i=1,filter_S_PZ(filter_function)%n_complex_pole_pairs
       param_count=param_count+1
       pole_count=pole_count+1
-      params(param_count)=dble(filter_S_PZ(filter_function)%poles(pole_count))
- ! conjugate pole    
+      
+! take the first of the conjugate pole pair
+      re=dble(filter_S_PZ(filter_function)%poles(pole_count))
+      im=imag(filter_S_PZ(filter_function)%poles(pole_count))
+      params(param_count)=re
       param_count=param_count+1
+      params(param_count)=im
+! skip over conjugate pole    
       pole_count=pole_count+1
-      params(param_count)=imag(filter_S_PZ(filter_function)%poles(pole_count))
     end do
   
 ! Zeros  
@@ -347,11 +353,13 @@ IMPLICIT NONE
     do i=1,filter_S_PZ(filter_function)%n_complex_zero_pairs
       param_count=param_count+1
       zero_count=zero_count+1
-      params(param_count)=dble(filter_S_PZ(filter_function)%zeros(zero_count))
- ! conjugate zero    
+      re=dble(filter_S_PZ(filter_function)%zeros(zero_count))
+      im=imag(filter_S_PZ(filter_function)%zeros(zero_count))
+      params(param_count)=re
       param_count=param_count+1
+      params(param_count)=im
+ ! skip over conjugate zero    
       zero_count=zero_count+1
-      params(param_count)=imag(filter_S_PZ(filter_function)%zeros(zero_count))
     end do
      
   end do ! next filter function   
@@ -403,6 +411,8 @@ IMPLICIT NONE
   integer		:: param_count
   integer		:: pole_count
   integer		:: zero_count
+  
+  real*8		:: re,im
 
 ! START 
 
@@ -444,10 +454,12 @@ IMPLICIT NONE
     do i=1,filter_S_PZ(filter_function)%n_complex_pole_pairs
       param_count=param_count+1
       pole_count=pole_count+1
-      filter_S_PZ(filter_function)%poles(pole_count)  =DCMPLX(params(param_count), params(param_count+1))
-      filter_S_PZ(filter_function)%poles(pole_count+1)=DCMPLX(params(param_count),-params(param_count+1))
+      re=params(param_count)
       param_count=param_count+1
+      im=params(param_count)
+      filter_S_PZ(filter_function)%poles(pole_count)=DCMPLX(re,im)
       pole_count=pole_count+1
+      filter_S_PZ(filter_function)%poles(pole_count)=DCMPLX(re,-im)
     end do
   
 ! Zeros  
@@ -467,10 +479,12 @@ IMPLICIT NONE
     do i=1,filter_S_PZ(filter_function)%n_complex_zero_pairs
       param_count=param_count+1
       zero_count=zero_count+1
-      filter_S_PZ(filter_function)%zeros(zero_count)  =DCMPLX(params(param_count), params(param_count+1))
-      filter_S_PZ(filter_function)%zeros(zero_count+1)=DCMPLX(params(param_count),-params(param_count+1))
+      re=params(param_count)
       param_count=param_count+1
+      im=params(param_count)
+      filter_S_PZ(filter_function)%zeros(zero_count)  =DCMPLX(re,im)
       zero_count=zero_count+1
+      filter_S_PZ(filter_function)%zeros(zero_count)=DCMPLX(re,-im)
     end do
   
   end do ! next filter function

@@ -91,7 +91,13 @@ type(xyz)	:: point1,point2
         point2%x=xmin+line_segment_loop*dx
         point2%y=ymin+line_segment_loop*dy
         point2%z=zmin+line_segment_loop*dz
-    
+	
+	if (line_segment_loop.EQ.number_of_line_segments) then
+          point2%x=xmax
+          point2%y=ymax
+          point2%z=zmax
+	end if
+     
 ! apply the transformation to each of the points
         CALL apply_transformation(point1,problem_lines(line_number)%trans)
         CALL apply_transformation(point2,problem_lines(line_number)%trans)

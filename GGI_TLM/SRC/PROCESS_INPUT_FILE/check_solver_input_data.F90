@@ -30,6 +30,7 @@
 ! HISTORY
 !
 !     started 12/10/2012 CJS
+!     periodic_boundary 5/03/2014 CJS
 !
 !
 SUBROUTINE check_solver_input_data
@@ -61,6 +62,12 @@ IMPLICIT NONE
 
   CALL write_line('CALLED: check_solver_input_data',0,output_to_screen_flag)
 
+! make sure we don't have any cables in a periodic structure problem  
+  if ( (periodic_boundary).AND.(n_cables.NE.0) ) then
+    CALL write_line('ERROR: Cannot have cables in a periodic structure problem',0,.TRUE.)
+    STOP
+  end if
+  
 ! Check volume material data i.e. do the volumes in the volume list exist?
   do i=1,n_volume_materials
   

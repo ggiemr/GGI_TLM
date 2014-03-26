@@ -3,7 +3,8 @@ MATHS_OBJS=  \
 dmatrix.o \
 cmatrix.o \
 Legendre.o \
-bessel.o 
+bessel.o \
+set_random_seed.o
 
 default: $(MATHS_OBJS)
 

@@ -95,11 +95,18 @@ IMPLICIT NONE
   
     log_fmin=log10(fmin)
     log_fmax=log10(fmax)
-    log_fstep=(log_fmax-log_fmin)/dble(n_frequencies-1)
-  
+    if (n_frequencies.ne.1) then
+      log_fstep=(log_fmax-log_fmin)/dble(n_frequencies-1)
+    else
+      log_fstep=0d0
+    end if
   else if (freq_range_type.EQ.'lin') then
   
-    fstep=(fmax-fmin)/dble(n_frequencies-1)
+    if (n_frequencies.ne.1) then
+      fstep=(fmax-fmin)/dble(n_frequencies-1)
+    else
+      fstep=0d0
+    end if
   
   end if
 
@@ -384,3 +391,58 @@ IMPLICIT NONE
   RETURN
  
 END SUBROUTINE FFT
+!
+! SUBROUTINE INVERSE_FFT
+!
+! NAME
+!    INVERSE_FFT
+!
+! DESCRIPTION
+!     Inverse Fast Fourier Transform routine 
+!     
+! COMMENTS
+!     
+!
+! HISTORY
+!
+!     started 20/11/2013 CJS
+!
+!
+SUBROUTINE INVERSE_FFT(x,N)
+
+USE constants
+
+IMPLICIT NONE
+
+  integer	:: n
+  complex*16	:: x(n)
+
+! local variables
+
+  integer 	:: i
+  complex*16	:: x2(n)
+  complex*16 	:: swap
+
+! START
+
+! copy the dataset into a local array
+  do i=1,n
+    x2(i)=x(i)
+  end do
+
+! Call the forward FFT routine
+  CALL FFT(x2,n)
+  
+  do i=1,n
+    x2(i)=x2(i)/n
+  end do
+  
+! loop over the result dividing by n and reversing the imaginary part
+  x(1)=x2(1)
+  do i=2,n
+    x(i)=x2(n-i+2)
+  end do
+  
+  RETURN
+ 
+END SUBROUTINE INVERSE_FFT

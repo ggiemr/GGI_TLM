@@ -283,6 +283,7 @@ END SUBROUTINE initialise_excitation_surfaces
 !
 !     started 14/08/2012 CJS
 !     allow superposition of sources 26/9/3013
+!     allow hard and soft sources 12/2/2014 CJS
 !
 !
 SUBROUTINE Surface_excitation
@@ -346,6 +347,9 @@ IMPLICIT NONE
 	
           face_excitation_field(excitation_array_point,side,field_component)=	&
 	      face_excitation_field(excitation_array_point,side,field_component)+value
+          if (field_component.le.6) then
+            face_excitation_type(excitation_array_point,side,field_component)=excitation_surfaces(excitation_surface)%source_type
+	  end if
 	  
 	end if ! excitation point in this processor's mesh
 		  

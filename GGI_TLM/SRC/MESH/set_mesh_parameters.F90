@@ -35,7 +35,6 @@
 !
 !     started 8/08/2012 CJS
 !
-!
 SUBROUTINE set_mesh_parameters()
 
 USE TLM_general

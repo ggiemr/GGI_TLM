@@ -76,6 +76,11 @@ IMPLICIT NONE
   bicubic_warp_flag=.FALSE.
   frequency_scale_flag=.FALSE.
   frequency_scale=1d0
+  set_random_number_seed=.FALSE.
+  
+  periodic_boundary=.FALSE.
+  
+  write_geometry_vtk_files=.TRUE.
   
   wrap_x=.FALSE.
   wrap_y=.FALSE.

@@ -245,6 +245,17 @@ IMPLICIT NONE
 	end if ! cell belongs to this process
 		  
       end do !next cell face in this surface	  
+      
+! set output timestep information
+      CALL set_output_time_information(frequency_output_surface(output_surface)%specified_timestep_information,	&
+                                       frequency_output_surface(output_surface)%first_timestep,   &
+                                       frequency_output_surface(output_surface)%last_timestep,    &
+                                       frequency_output_surface(output_surface)%timestep_interval,	    &
+                                       frequency_output_surface(output_surface)%specified_time_information,	    &
+                                       frequency_output_surface(output_surface)%first_time,	    &		  
+                                       frequency_output_surface(output_surface)%last_time,	    &				  
+                                       frequency_output_surface(output_surface)%time_interval,	&
+                                       frequency_output_surface(output_surface)%number_of_output_timesteps )
   
     end do ! next output surface
 
@@ -312,6 +323,8 @@ IMPLICIT NONE
   
   real*8	:: frequency
   complex*16	:: ejwt
+  
+  logical	:: output_flag
 
 ! START
   
@@ -319,63 +332,72 @@ IMPLICIT NONE
 
   
   do output_surface=1,n_frequency_output_surfaces
+  
+    CALL get_output_flag(output_flag,	&
+                         frequency_output_surface(output_surface)%first_timestep,	&
+                         frequency_output_surface(output_surface)%last_timestep,	&
+                         frequency_output_surface(output_surface)%timestep_interval )
+			 
+    if (output_flag) then
       
-    number_of_faces=frequency_output_surface(output_surface)%number_of_faces
-    frequency=frequency_output_surface(output_surface)%frequency
-    ejwt=exp(-j*2d0*pi*frequency*time)
-    
-    do output_face=1,number_of_faces
+      number_of_faces=frequency_output_surface(output_surface)%number_of_faces
+      frequency=frequency_output_surface(output_surface)%frequency
+      ejwt=exp(-j*2d0*pi*frequency*time)
+      
+      do output_face=1,number_of_faces
          
-      output_field_number=frequency_output_surface(output_surface)%face_output_field_number_list(output_face)
-      field_component=frequency_output_surface(output_surface)%field_component  
-      face=frequency_output_surface(output_surface)%face_list(output_face)%point
-      cz  =frequency_output_surface(output_surface)%face_list(output_face)%cell%k
+        output_field_number=frequency_output_surface(output_surface)%face_output_field_number_list(output_face)
+        field_component=frequency_output_surface(output_surface)%field_component  
+        face=frequency_output_surface(output_surface)%face_list(output_face)%point
+        cz  =frequency_output_surface(output_surface)%face_list(output_face)%cell%k
       
-      if (rank.eq.cell_face_rank(cz,face)) then
+        if (rank.eq.cell_face_rank(cz,face)) then
 ! the output point is in this process so set the value   	     
-        if	(face.eq.face_xmin) then
-	  side=1
-        else if (face.eq.face_xmax) then
-	  side=2
-        else if (face.eq.face_ymin) then
-	  side=1	
-        else if (face.eq.face_ymax) then
-	  side=2	
-        else if (face.eq.face_zmin) then
-	  side=1	
-        else if (face.eq.face_zmax) then
-	  side=2	
-        end if
+          if	(face.eq.face_xmin) then
+	    side=1
+          else if (face.eq.face_xmax) then
+	    side=2
+          else if (face.eq.face_ymin) then
+	    side=1	
+          else if (face.eq.face_ymax) then
+	    side=2	
+          else if (face.eq.face_zmin) then
+	    side=1	
+          else if (face.eq.face_zmax) then
+	    side=2	
+          end if
  
-	field(1:6)=face_output_field(output_field_number,side,1:6)
+	  field(1:6)=face_output_field(output_field_number,side,1:6)
 	
-	if (field_component.LE.6) then
+	  if (field_component.LE.6) then
 
-          value=field(field_component)  
+            value=field(field_component)  
 
-        else if (field_component.EQ.Jx) then
+          else if (field_component.EQ.Jx) then
 	
-	  Jsx= ( normy*field(Hz)-normz*field(Hy) )   ! J=nxH
-	  value=Jsx
+	    Jsx= ( normy*field(Hz)-normz*field(Hy) )   ! J=nxH
+	    value=Jsx
 	
-        else if (field_component.EQ.Jy) then
+          else if (field_component.EQ.Jy) then
 	
-	  Jsy= ( normz*field(Hx)-normx*field(Hz) )   ! J=nxH
-	  value=Jsy
+	    Jsy= ( normz*field(Hx)-normx*field(Hz) )   ! J=nxH
+	    value=Jsy
 	
-        else if (field_component.EQ.Jz) then
+          else if (field_component.EQ.Jz) then
 	
-	  Jsz= ( normx*field(Hy)-normy*field(Hx) )   ! J=nxH
-	  value=Jsz
+	    Jsz= ( normx*field(Hy)-normy*field(Hx) )   ! J=nxH
+	    value=Jsz
 		  
-	end if
+	  end if
 	
-	frequency_output_surface(output_surface)%value(output_face)=	&
-	    frequency_output_surface(output_surface)%value(output_face)+value*ejwt   !*dt
+	  frequency_output_surface(output_surface)%value(output_face)=	&
+	      frequency_output_surface(output_surface)%value(output_face)+value*ejwt   !*dt
 
-      end if ! output face belongs to this process
+        end if ! output face belongs to this process
           
-    end do !next cell face in this surface	  
+      end do !next cell face in this surface	  
+
+    end if ! this timestep should contribute to the output
   
   end do ! next frequency_output_surface
 

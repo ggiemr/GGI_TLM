@@ -1,5 +1,7 @@
 ! SUBROUTINE correlation_time
 ! SUBROUTINE correlation_frequency
+! SUBROUTINE correlation_function_time
+! SUBROUTINE correlation_function_frequency
 !
 !    GGI_TLM Time domain electromagnetic field solver based on the TLM method
 !    Copyright (C) 2013  Chris Smartt
@@ -337,3 +339,620 @@ IMPLICIT NONE
   RETURN
   
 END SUBROUTINE correlation_frequency
+!
+! NAME
+!    correlation_function_time
+!
+! DESCRIPTION
+!     
+!     
+! COMMENTS
+!     
+!
+! HISTORY
+!
+!     started 6/01/2014 CJS
+!
+!
+SUBROUTINE correlation_function_time
+
+USE post_process
+USE file_information
+
+IMPLICIT NONE
+
+! local variables
+
+  character(len=256)	:: filename
+
+  integer		:: function_number
+    
+  integer 		:: i,j
+  
+  integer 		:: n_samples1,n_samples2,n_samples3,sample
+  real*8		:: dt1,dt2,dt,t1,t2
+  
+  integer 		:: n_timesteps
+  
+  real*8		:: min_lag,max_lag
+  integer		:: sample_min,sample_max,sample_count
+  
+  real*8		:: min_tint,max_tint
+  integer		:: sample_tint_min,sample_tint_max,n_tint
+  
+  character 		:: ch
+  logical 		:: periodic_extension
+  logical 		:: normalise
+  
+  integer		:: sample1,sample2
+  real*8		:: mu1,mu2,f1,f2,CYY,CXX,CXY
+
+! START
+  
+  n_functions_of_time=3 ! two input functions and one output function
+
+  n_functions_of_frequency=0
+  
+  CALL Allocate_post_data()
+  
+  do function_number=1,2
+  
+    CALL read_Time_Domain_Data(function_number) ! read functions of time 
+  
+  end do
+  
+  n_samples1=function_of_time(1)%n_timesteps
+  n_samples2=function_of_time(2)%n_timesteps
+  dt1=function_of_time(1)%time(2)-function_of_time(1)%time(1)
+  dt2=function_of_time(2)%time(2)-function_of_time(2)%time(1)
+  
+  write(*,*)'Number of time domain samples in file 1=',n_samples1
+  write(*,*)'Timestep for data in  file 1           =',dt1
+  write(*,*)'Minimum time for data in  file 1       =',function_of_time(1)%time(1)
+  write(*,*)'Maximum time for data in  file 1       =',function_of_time(1)%time(n_samples1)
+  write(*,*)'Number of time domain samples in file 2=',n_samples2
+  write(*,*)'Timestep for data in  file 2           =',dt2
+  write(*,*)'Minimum time for data in  file 2       =',function_of_time(2)%time(1)
+  write(*,*)'Maximum time for data in  file 2       =',function_of_time(2)%time(n_samples1)
+
+  if (n_samples1.ne.n_samples2) then
+    write(*,*)'Error in correlation_function_time'
+    write(*,*)'The number of timesteps in the two files should be the same at the moment...'
+    STOP
+  end if
+  
+  if (dt1.ne.dt2) then
+    write(*,*)'Error in correlation_function_time'
+    write(*,*)'The timestep in the two files should be the same...'
+    STOP
+  end if
+  
+  if (function_of_time(1)%time(1).ne.function_of_time(2)%time(1)) then
+    write(*,*)'Error in correlation_function_time'
+    write(*,*)'The time origin in the two files should be the same...'
+    STOP
+  end if
+  
+  dt=dt1
+  
+  write(*,*)'Do you want to assume a periodic extension of the two input functions? (y/n)'
+  read(*,'(A)')ch
+  write(record_user_inputs_unit,'(A)')ch  
+  CALL convert_to_lower_case(ch,1)
+  periodic_extension=.FALSE.
+  if (ch.eq.'y') then
+    periodic_extension=.TRUE.
+  end if
+
+  write(*,*)'Enter the minimum time lag for the correlation function, (zero for min value)'
+  read(*,*)min_lag
+  write(record_user_inputs_unit,*)min_lag,' :minimum time lag for the correlation function, (zero for min value)'
+
+  write(*,*)'Enter the maximum time lag for the correlation function, (zero for max value)'
+  read(*,*)max_lag
+  write(record_user_inputs_unit,*)max_lag,' :maximum time lag for the correlation function, (zero for max value)'
+  
+  if (min_lag.eq.0d0) then
+    if (.NOT.periodic_extension) then
+      min_lag=-function_of_time(1)%time(n_samples1)
+    else
+      min_lag=0d0
+    end if
+  end if
+  
+  if (max_lag.eq.0d0) then
+    if (.NOT.periodic_extension) then
+      max_lag=function_of_time(1)%time(n_samples1)
+    else
+      max_lag=function_of_time(1)%time(n_samples1)
+    end if
+  end if
+  
+  sample_min=NINT(min_lag/dt)
+  sample_max=NINT(max_lag/dt)
+  write(*,*)'Minimum lag time=',min_lag,' sample number',sample_min
+  write(*,*)'Maximum lag time=',max_lag,' sample number',sample_max
+
+  n_timesteps=(sample_max-sample_min)+1
+  write(*,*)'Number of time domain samples in time domain correlation file=',n_timesteps
+
+  write(*,*)'Enter the minimum integration time for the correlation function, (zero for min value)'
+  read(*,*)min_tint
+  write(record_user_inputs_unit,*)min_tint,' :minimum integration time for the correlation function, (zero for min value)'
+
+  write(*,*)'Enter the maximum integration time for the correlation function, (zero for max value)'
+  read(*,*)max_tint
+  write(record_user_inputs_unit,*)max_tint,' :maximum integration time for the correlation function, (zero for max value)'
+  
+  if (min_tint.eq.0d0) then
+    min_tint=function_of_time(1)%time(1)
+  end if
+  
+  if (max_tint.eq.0d0) then
+    max_tint=function_of_time(1)%time(n_samples1)
+  end if
+
+! work out the integration range  
+  sample_tint_min=1
+  sample_tint_max=n_samples1
+  
+  do sample=1,n_samples1-1
+  
+    t1=function_of_time(1)%time(sample)
+    t2=function_of_time(1)%time(sample+1)
+    
+    if ( (t1.LE.min_tint).AND.(t2.GT.min_tint) ) sample_tint_min=sample
+    if ( (t1.LT.max_tint).AND.(t2.GE.max_tint) ) sample_tint_max=sample+1
+    
+  end do
+  
+  n_tint=sample_tint_max-sample_tint_min+1
+  
+  write(*,*)'Minimum integration time=',min_tint,' sample number',sample_tint_min
+  write(*,*)'Maximum integration time=',max_tint,' sample number',sample_tint_max
+  write(*,*)'Number of integration samples=',n_tint
+  
+  write(*,*)'Do you want to normalise the correlation function ( C=CXY/sqrt(CXX*CYY) )? (y/n)'
+  read(*,'(A)')ch
+  write(record_user_inputs_unit,'(A)')ch  
+  CALL convert_to_lower_case(ch,1)
+  normalise=.FALSE.
+  if (ch.eq.'y') then
+    normalise=.TRUE.
+  end if
+
+! allocate time domain output function  
+  
+  function_of_time(3)%n_timesteps=n_timesteps
+  ALLOCATE ( function_of_time(3)%time(1:n_timesteps) )
+  ALLOCATE ( function_of_time(3)%value(1:n_timesteps) )
+  
+! Calculate mean and variance of each of the functions over the integration range
+
+  mu1=0d0      
+  do sample=sample_tint_min,sample_tint_max
+    mu1=mu1+function_of_time(1)%value(sample)
+  end do
+  mu1=mu1/n_tint
+  CXX=0d0
+  do sample=sample_tint_min,sample_tint_max
+    CXX=CXX+(function_of_time(1)%value(sample)-mu1)*(function_of_time(1)%value(sample)-mu1)*dt
+  end do
+!  CXX=CXX/(n_tint*dt)
+  
+  write(*,*)'Function 1: mean,',mu1,' variance',CXX
+  
+  mu2=0d0      
+  do sample=sample_tint_min,sample_tint_max
+    mu2=mu2+function_of_time(2)%value(sample)
+  end do
+  mu2=mu2/n_tint
+  CYY=0d0
+  do sample=sample_tint_min,sample_tint_max
+    CYY=CYY+(function_of_time(2)%value(sample)-mu2)*(function_of_time(2)%value(sample)-mu2)*dt
+  end do
+!  CYY=CYY/(n_tint*dt)
+  
+  write(*,*)'Function 2: mean,',mu2,' variance',CYY
+  
+! Calculate the correlation function
+
+  sample_count=0
+
+  do i=sample_min,sample_max  ! time lag loop
+  
+    sample_count=sample_count+1
+    function_of_time(3)%time(sample_count)=(sample_min+sample_count-1)*dt
+    
+    CXY=0d0
+    
+    if (periodic_extension) then
+    
+      do j=1,n_tint  ! time integration loop
+          
+        f1=0d0
+        f2=0d0
+	
+        sample1=mod(j-1,n_tint)
+        if (sample1.lt.0) sample1=n_tint+sample1
+        sample1=sample1+sample_tint_min
+
+        sample2=mod(j-i-1,n_tint)
+        if (sample2.lt.0) sample2=n_tint+sample2
+        sample2=sample2+sample_tint_min
+      
+        if ((sample1.GE.sample_tint_min).AND.(sample1.LE.sample_tint_max)) then
+	  f1=function_of_time(1)%value(sample1)-mu1
+	else
+	  write(*,*)'Error: sample1=',sample1,' range:',sample_tint_min,sample_tint_max
+	end if
+        if ((sample2.GE.sample_tint_min).AND.(sample2.LE.sample_tint_max)) then
+	  f2=function_of_time(2)%value(sample2)-mu2
+	else
+	  write(*,*)'Error: sample2=',sample2,' range:',sample_tint_min,sample_tint_max
+	end if
+      
+        CXY=CXY+f1*f2*dt
+      
+      end do  ! next point in time integration
+      
+!      CXY=CXY/(n_tint*dt)
+ 
+    else
+! no periodic extension, assume the value is zero outside the specified range 
+    
+      do j=sample_tint_min,sample_tint_max  ! time integration loop
+          
+        f1=0d0
+        f2=0d0
+        sample1=j
+        sample2=j-i
+        if ((sample1.GE.sample_tint_min).AND.(sample1.LE.sample_tint_max)) f1=function_of_time(1)%value(sample1)-mu1
+        if ((sample2.GE.sample_tint_min).AND.(sample2.LE.sample_tint_max)) f2=function_of_time(2)%value(sample2)-mu2
+      
+        CXY=CXY+f1*f2*dt
+       
+      end do  ! next point in time integration
+      
+!      CXY=CXY/(n_tint*dt)
+         
+    end if  ! periodic extension
+    
+    if (normalise) then
+    
+      if ( (CXX.NE.0d0).AND.(CYY.NE.0d0) ) then
+        function_of_time(3)%value(sample_count)=CXY/sqrt(CXX*CYY)
+      else
+        function_of_time(3)%value(sample_count)=0d0
+      end if
+    else
+    
+      function_of_time(3)%value(sample_count)=CXY
+    
+    end if ! noralise
+    
+  end do  ! next correlation time lag
+  
+! Write the correlation data set to file
+  
+  CALL write_time_domain_data(3)
+  
+  CALL Deallocate_post_data()
+
+  RETURN
+  
+END SUBROUTINE correlation_function_time
+!
+! NAME
+!    correlation_function_frequency
+!
+! DESCRIPTION
+!     
+!     
+! COMMENTS
+!     
+!
+! HISTORY
+!
+!     started 7/01/2014 CJS
+!
+!
+SUBROUTINE correlation_function_frequency
+
+USE post_process
+USE file_information
+
+IMPLICIT NONE
+
+! local variables
+
+  character(len=256)	:: filename
+
+  integer		:: function_number
+    
+  integer 		:: i,j
+  
+  integer 		:: n_samples1,n_samples2,n_samples3,sample
+  real*8		:: df1,df2,df,f1,f2
+  
+  integer 		:: n_frequencies
+  
+  real*8		:: min_lag,max_lag
+  integer		:: sample_min,sample_max,sample_count
+  
+  real*8		:: min_fint,max_fint
+  integer		:: sample_fint_min,sample_fint_max,n_fint
+  
+  character 		:: ch
+  logical 		:: periodic_extension
+  logical 		:: normalise
+  
+  integer		:: sample1,sample2
+  complex*16		:: mu1,mu2,value1,value2,CYY,CXX,CXY
+
+! START
+  
+  n_functions_of_time=0 ! two input functions and one output function
+
+  n_functions_of_frequency=3 ! two input functions and one output function
+  
+  CALL Allocate_post_data()
+  
+  do function_number=1,2
+  
+    CALL read_Frequency_Domain_Data(function_number) ! read functions of frequency
+  
+  end do
+  
+  n_samples1=function_of_frequency(1)%n_frequencies
+  n_samples2=function_of_frequency(2)%n_frequencies
+  df1=function_of_frequency(1)%frequency(2)-function_of_frequency(1)%frequency(1)
+  df2=function_of_frequency(2)%frequency(2)-function_of_frequency(2)%frequency(1)
+  
+  write(*,*)'Number of frequency domain samples in file 1=',n_samples1
+  write(*,*)'Frequency step for data in  file 1           =',df1
+  write(*,*)'Minimum frequency for data in  file 1       =',function_of_frequency(1)%frequency(1)
+  write(*,*)'Maximum frequency for data in  file 1       =',function_of_frequency(1)%frequency(n_samples1)
+  write(*,*)'Number of frequency domain samples in file 2=',n_samples2
+  write(*,*)'Frequency step for data in  file 2           =',df2
+  write(*,*)'Minimum frequency for data in  file 2       =',function_of_frequency(2)%frequency(1)
+  write(*,*)'Maximum frequency for data in  file 2       =',function_of_frequency(2)%frequency(n_samples1)
+
+  if (n_samples1.ne.n_samples2) then
+    write(*,*)'Error in correlation_function_frequency'
+    write(*,*)'The number of frequency steps in the two files should be the same at the moment...'
+    STOP
+  end if
+  
+  if (df1.ne.df2) then
+    write(*,*)'Error in correlation_function_frequency'
+    write(*,*)'The frequency step in the two files should be the same...'
+    STOP
+  end if
+  
+  if (function_of_frequency(1)%frequency(1).ne.function_of_frequency(2)%frequency(1)) then
+    write(*,*)'Error in correlation_function_frequency'
+    write(*,*)'The frequency origin in the two files should be the same...'
+    STOP
+  end if
+  
+  df=df1
+  
+  write(*,*)'Do you want to assume a periodic extension of the two input functions? (y/n)'
+  read(*,'(A)')ch
+  write(record_user_inputs_unit,'(A)')ch  
+  CALL convert_to_lower_case(ch,1)
+  periodic_extension=.FALSE.
+  if (ch.eq.'y') then
+    periodic_extension=.TRUE.
+  end if
+
+  write(*,*)'Enter the minimum frequency lag for the correlation function, (zero for min value)'
+  read(*,*)min_lag
+  write(record_user_inputs_unit,*)min_lag,' :minimum frequency lag for the correlation function, (zero for min value)'
+
+  write(*,*)'Enter the maximum frequency lag for the correlation function, (zero for max value)'
+  read(*,*)max_lag
+  write(record_user_inputs_unit,*)max_lag,' :maximum frequency lag for the correlation function, (zero for max value)'
+
+  if (min_lag.eq.0d0) then
+    min_lag=function_of_frequency(1)%frequency(1)
+  end if
+  
+  if (max_lag.eq.0d0) then
+    max_lag=function_of_frequency(1)%frequency(n_samples1)
+  end if
+  
+  sample_min=NINT(min_lag/df)
+  sample_max=NINT(max_lag/df)
+  write(*,*)'Minimum lag frequency=',min_lag,' sample number',sample_min
+  write(*,*)'Maximum lag frequency=',max_lag,' sample number',sample_max
+
+  n_frequencies=(sample_max-sample_min)+1
+  write(*,*)'Number of frequency domain samples in frequency domain correlation file=',n_frequencies
+
+  write(*,*)'Enter the minimum integration frequency for the correlation function, (zero for min value)'
+  read(*,*)min_fint
+  write(record_user_inputs_unit,*)min_fint,' :minimum integration frequency for the correlation function, (zero for min value)'
+
+  write(*,*)'Enter the maximum integration frequency for the correlation function, (zero for max value)'
+  read(*,*)max_fint
+  write(record_user_inputs_unit,*)max_fint,' :maximum integration frequency for the correlation function, (zero for max value)'
+  
+  if (min_fint.eq.0d0) then
+    min_fint=function_of_frequency(1)%frequency(1)
+  end if
+  
+  if (max_fint.eq.0d0) then
+    max_fint=function_of_frequency(1)%frequency(n_samples1)
+  end if
+
+! work out the integration range  
+  sample_fint_min=1
+  sample_fint_max=n_samples1
+  
+  do sample=1,n_samples1-1
+  
+    f1=function_of_frequency(1)%frequency(sample)
+    f2=function_of_frequency(1)%frequency(sample+1)
+    
+    if ( (f1.LE.min_fint).AND.(f2.GT.min_fint) ) sample_fint_min=sample
+    if ( (f1.LT.max_fint).AND.(f2.GE.max_fint) ) sample_fint_max=sample+1
+    
+  end do
+  
+  n_fint=sample_fint_max-sample_fint_min+1
+  
+  write(*,*)'Minimum integration frequency=',min_fint,' sample number',sample_fint_min
+  write(*,*)'Maximum integration frequency=',max_fint,' sample number',sample_fint_max
+  write(*,*)'Number of integration samples=',n_fint
+  
+  write(*,*)'Do you want to normalise the correlation function ( C=CXY/sqrt(CXX*CYY) )? (y/n)'
+  read(*,'(A)')ch
+  write(record_user_inputs_unit,'(A)')ch  
+  CALL convert_to_lower_case(ch,1)
+  normalise=.FALSE.
+  if (ch.eq.'y') then
+    normalise=.TRUE.
+  end if
+
+! allocate frequency domain output function  
+  
+  function_of_frequency(3)%n_frequencies=n_frequencies
+  ALLOCATE ( function_of_frequency(3)%frequency(1:n_frequencies) )
+  ALLOCATE ( function_of_frequency(3)%value(1:n_frequencies) )
+  ALLOCATE ( function_of_frequency(3)%magnitude(1:n_frequencies) )
+  ALLOCATE ( function_of_frequency(3)%phase(1:n_frequencies) )
+  ALLOCATE ( function_of_frequency(3)%dB(1:n_frequencies) )
+  
+  function_of_frequency(3)%frequency(1:n_frequencies)=0d0
+  function_of_frequency(3)%value(1:n_frequencies)=(0d0,0d0)
+  function_of_frequency(3)%magnitude(1:n_frequencies)=0d0
+  function_of_frequency(3)%phase(1:n_frequencies)=0d0
+  function_of_frequency(3)%dB(1:n_frequencies)=0d0
+  
+! Calculate mean and variance of each of the functions over the integration range
+
+  mu1=0d0      
+  do sample=sample_fint_min,sample_fint_max
+    mu1=mu1+function_of_frequency(1)%value(sample)
+  end do
+  mu1=mu1/n_fint
+  CXX=0d0
+  do sample=sample_fint_min,sample_fint_max
+    CXX=CXX+(function_of_frequency(1)%value(sample)-mu1)*(function_of_frequency(1)%value(sample)-mu1)
+  end do
+  CXX=CXX/n_fint
+  
+  write(*,*)'Function 1: mean    :',mu1
+  write(*,*)'Function 1: variance:',CXX
+  
+  mu2=0d0      
+  do sample=sample_fint_min,sample_fint_max
+    mu2=mu2+function_of_frequency(2)%value(sample)
+  end do
+  mu2=mu2/n_fint
+  CYY=0d0
+  do sample=sample_fint_min,sample_fint_max
+    CYY=CYY+(function_of_frequency(2)%value(sample)-mu2)*(function_of_frequency(2)%value(sample)-mu2)
+  end do
+  CYY=CYY/n_fint
+  
+  write(*,*)'Function 2: mean    :',mu2
+  write(*,*)'Function 2: variance:',CYY
+  
+! Calculate the correlation function
+
+  sample_count=0
+
+  do i=sample_min,sample_max  ! frequency lag loop
+  
+    sample_count=sample_count+1
+    function_of_frequency(3)%frequency(sample_count)=(sample_min+sample_count-1)*df
+    
+    CXY=0d0
+    
+    if (periodic_extension) then
+    
+      do j=1,n_fint  ! frequency integration loop
+          
+        value1=0d0
+        value2=0d0
+	
+        sample1=mod(j-1,n_fint)
+        if (sample1.lt.0) sample1=n_fint+sample1
+        sample1=sample1+sample_fint_min
+
+        sample2=mod(j-i-1,n_fint)
+        if (sample2.lt.0) sample2=n_fint+sample2
+        sample2=sample2+sample_fint_min
+      
+        if ((sample1.GE.sample_fint_min).AND.(sample1.LE.sample_fint_max)) then
+	  value1=function_of_frequency(1)%value(sample1)-mu1
+	else
+	  write(*,*)'Error: sample1=',sample1,' range:',sample_fint_min,sample_fint_max
+	end if
+        if ((sample2.GE.sample_fint_min).AND.(sample2.LE.sample_fint_max)) then
+	  value2=function_of_frequency(2)%value(sample2)-mu2
+	else
+	  write(*,*)'Error: sample2=',sample2,' range:',sample_fint_min,sample_fint_max
+	end if
+      
+        CXY=CXY+value1*value2
+      
+      end do  ! next point in frequency integration
+      
+      CXY=CXY/n_fint
+ 
+    else
+! no periodic extension, assume the value is zero outside the specified range 
+    
+      do j=sample_fint_min,sample_fint_max  ! frequency integration loop
+          
+        value1=0d0
+        value2=0d0
+        sample1=j
+        sample2=j-i
+        if ((sample1.GE.sample_fint_min).AND.(sample1.LE.sample_fint_max)) value1=function_of_frequency(1)%value(sample1)-mu1
+        if ((sample2.GE.sample_fint_min).AND.(sample2.LE.sample_fint_max)) value2=function_of_frequency(2)%value(sample2)-mu2
+      
+        CXY=CXY+value1*value2
+       
+      end do  ! next point in frequency integration
+      
+      CXY=CXY/n_fint
+         
+    end if  ! periodic extension
+    
+    if (normalise) then
+    
+      if ( (CXX.NE.0d0).AND.(CYY.NE.0d0) ) then
+        function_of_frequency(3)%value(sample_count)=CXY/sqrt(CXX*CYY)
+      else
+        function_of_frequency(3)%value(sample_count)=0d0
+      end if
+    else
+    
+      function_of_frequency(3)%value(sample_count)=CXY
+    
+    end if ! noralise
+    
+    function_of_frequency(3)%magnitude(sample_count)=	&
+                    abs(function_of_frequency(3)%value(sample_count))
+    function_of_frequency(3)%phase(sample_count)=	&
+                    atan2( imag(function_of_frequency(3)%value(sample_count)), &
+                           dble(function_of_frequency(3)%value(sample_count))   )
+    function_of_frequency(3)%dB(sample_count)=	&
+                    20d0*log10(function_of_frequency(3)%magnitude(sample_count))
+    
+  end do  ! next correlation frequency lag
+  
+! Write the correlation data set to file
+  
+  CALL write_frequency_domain_data(3)
+  
+  CALL Deallocate_post_data()
+
+  RETURN
+  
+END SUBROUTINE correlation_function_frequency

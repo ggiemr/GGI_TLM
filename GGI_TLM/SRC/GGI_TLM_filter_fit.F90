@@ -77,11 +77,19 @@ IMPLICIT NONE
   CALL write_line('GGI_TLM_filter_fit',0,output_to_screen_flag)
   
   CALL write_license()
+
+! Write a message to the error file to indicate that the process is running.
+! This is overwriten with the final error value when completed
+  open(UNIT=local_file_unit,FILE='Filter_fit_error.dat')
+      write(local_file_unit,8000)'GGI_TLM_filter_fit not run to completion'
+8000 format(A20,I5,A19,F12.4,A10)
+  close(UNIT=local_file_unit)
        
 ! read problem name, data and options associated with this filter fit      
   CALL read_filter_fit_information()
-
+  
 ! sort out any stability issues with the input data      
+  stability_test_small=1D-5
   CALL stabilise_FF_input_data()
        
 ! Write the stabilised input data to file. This is the data to which the model will be fitted
@@ -110,6 +118,7 @@ IMPLICIT NONE
   end if
   
 ! test the stability of the optimised filter
+  stability_test_small=test_very_small
   write_error_to_file=.TRUE.
   CALL test_stability(write_error_to_file)
   
@@ -118,6 +127,9 @@ IMPLICIT NONE
   
 ! write the filter frequency response to file
   CALL write_filter_frequency_response()
+  
+! write a gnuplot file to plot the data 
+  CALL write_filter_fit_gnuplot_file()
   
   CALL deallocate_filter_fit_memory()
 

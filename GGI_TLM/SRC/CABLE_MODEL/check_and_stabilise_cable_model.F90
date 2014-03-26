@@ -55,7 +55,7 @@ IMPLICIT NONE
        logical symmetric_matrix
        
 ! START       
-       CALL write_line('CALLED: LC_checks',0,output_to_screen_flag)
+!       CALL write_line('CALLED: LC_checks',0,output_to_screen_flag)
 
        write(cable_info_file_unit,*)'C:'
        do i=1,nwires
@@ -144,7 +144,7 @@ IMPLICIT NONE
        end do
        write(cable_info_file_unit,*)' '
        
-       CALL write_line('FINISHED: LC_checks',0,output_to_screen_flag)
+!       CALL write_line('FINISHED: LC_checks',0,output_to_screen_flag)
        
        return
        

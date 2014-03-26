@@ -537,7 +537,7 @@ IMPLICIT NONE
 ! Calculate Zfilter
 !        Zfilter1=s_to_z(cable_junction_list(junction)%Sfilter(impedance_filter),dt) 
         Zfilter1=s_to_z_warp(cable_junction_list(junction)%Sfilter(impedance_filter),dt,bicubic_warp_flag,frequency_scale) 
-        CALL Z_fast_slow_docomposition( Zfilter1 ,Z_f  , Zfilter2 )
+        CALL Z_fast_slow_decomposition( Zfilter1 ,Z_f  , Zfilter2 )
 	
 	cell_centre_junction_list(cable_cell)%Zfilter(first_external+impedance_filter-1)=Zfilter2
 	cell_centre_junction_list(cable_cell)%Z_f(first_external+impedance_filter-1)=Z_f
@@ -715,7 +715,7 @@ IMPLICIT NONE
 ! Calculate Z domain susceptibility admittance filter coefficients by bilinear transformation
 !        Zfilter1=s_to_z(cable_junction_list(junction)%Sfilter(impedance_filter),dt) 
         Zfilter1=s_to_z_warp(cable_junction_list(junction)%Sfilter(impedance_filter),dt,bicubic_warp_flag,frequency_scale) 
-        CALL Z_fast_slow_docomposition( Zfilter1 ,Z_f  , Zfilter2 )
+        CALL Z_fast_slow_decomposition( Zfilter1 ,Z_f  , Zfilter2 )
 	
 	cell_centre_junction_list(cable_cell)%Zfilter(first_external+impedance_filter-1)=Zfilter2
 	cell_centre_junction_list(cable_cell)%Z_f(first_external+impedance_filter-1)=Z_f

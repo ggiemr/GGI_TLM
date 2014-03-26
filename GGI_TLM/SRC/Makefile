@@ -48,7 +48,7 @@ export EXECUTABLE_DIR
 
 #_____________________________________________________________
 
-VERSION_NUMBER= 1.0.0
+VERSION_NUMBER= 1.0.1
 
 MODEL_BUILDER_NAME=GGI_TLM_model_builder
 
@@ -77,7 +77,8 @@ MATHS_OBJS=  \
 MATHS/dmatrix.o \
 MATHS/cmatrix.o \
 MATHS/Legendre.o \
-MATHS/bessel.o 
+MATHS/bessel.o \
+MATHS/set_random_seed.o
 
 EISPACK_OBJS=  \
 EISPACK/eispack.o 
@@ -106,7 +107,7 @@ TLM_MODULES/Geometry_Modules.o \
 TLM_MODULES/pul_LC_Modules.o \
 TLM_MODULES/Filter_fit_modules.o \
 TLM_MODULES/File_information.o \
-TLM_MODULES/post_process_modules.o 
+TLM_MODULES/post_process_modules.o
 
 # make MODULE_OBJS available to all Makefiles 
 export MODULE_OBJS
@@ -163,7 +164,8 @@ PROCESS_INPUT_FILE/read_output_mode_list.o \
 PROCESS_INPUT_FILE/read_mode_stir_surface_list.o \
 PROCESS_INPUT_FILE/read_frequency_warp_flag.o \
 PROCESS_INPUT_FILE/read_frequency_scale_flag.o  \
-PROCESS_INPUT_FILE/read_wrapping_boundary_conditions.o
+PROCESS_INPUT_FILE/read_wrapping_boundary_conditions.o \
+PROCESS_INPUT_FILE/read_random_number_seed.o
 
 F90_GENERAL_OBJS=  \
 F90_GENERAL/convert_case.o \
@@ -183,6 +185,7 @@ GEOMETRY/build_line_geometry.o \
 GEOMETRY/build_point_geometry.o \
 GEOMETRY/get_point.o \
 GEOMETRY/build_surface_sphere.o \
+GEOMETRY/build_surface_hemisphere.o \
 GEOMETRY/build_surface_rectangular_block.o  \
 GEOMETRY/build_surface_rectangular_block2.o \
 GEOMETRY/build_surface_circle.o \
@@ -299,6 +302,7 @@ FILTER_FIT/test_stability.o \
 FILTER_FIT/write_FF_input_data.o \
 FILTER_FIT/write_filter_frequency_response.o \
 FILTER_FIT/write_filter.o \
+FILTER_FIT/write_filter_fit_gnuplot_file.o \
 FILTER_FIT/calculate_mean_square_error.o
 
 MATERIAL_OBJS= \
@@ -335,6 +339,7 @@ TLM_SOLVER/set_TLM_solver_parameters.o\
 TLM_SOLVER/allocate_mesh.o \
 TLM_SOLVER/set_update_codes.o \
 TLM_SOLVER/run_TLM.o \
+TLM_SOLVER/run_TLM_periodic_BC.o \
 TLM_SOLVER/scatter.o \
 TLM_SOLVER/connect.o \
 TLM_SOLVER/TLM_parallel_pass_data.o \
@@ -374,7 +379,16 @@ POST_PROCESSOR/fourier_transform_warp.o \
 POST_PROCESSOR/generate_random_time_sequence.o \
 POST_PROCESSOR/frequency_domain_filter.o \
 POST_PROCESSOR/time_domain_filter.o \
-POST_PROCESSOR/PDF_CDF.o
+POST_PROCESSOR/PDF_CDF.o \
+POST_PROCESSOR/create_time_domain_vector_animation.o
+
+OPTIMISATION_OBJS=  \
+OPTIMISATION/opt_module.o \
+OPTIMISATION/optimise.o \
+OPTIMISATION/opt_calc_error.o \
+OPTIMISATION/opt_bisect.o \
+OPTIMISATION/opt_simplex.o \
+OPTIMISATION/map.o
 
 OBJS= \
 $(CONSTANTS_OBJS) \
@@ -419,7 +433,8 @@ MAKE_materials \
 MAKE_excitation \
 MAKE_output \
 MAKE_tlm_solver \
-MAKE_post_processor 
+MAKE_post_processor \
+MAKE_optimisation \
 $(SOLVER_NAME) 
 
 else
@@ -448,6 +463,7 @@ MAKE_excitation \
 MAKE_output \
 MAKE_tlm_solver \
 MAKE_post_processor \
+MAKE_optimisation \
 MAKE_analytic \
 $(MODEL_BUILDER_NAME) \
 $(CABLE_MODEL_BUILDER_NAME) \
@@ -615,6 +631,11 @@ MAKE_tlm_solver:
 MAKE_post_processor:
 	( cd POST_PROCESSOR ; $(MAKE) )
 	
+# make OPTIMISATION
+MAKE_optimisation:
+	( cd OPTIMISATION ; $(MAKE) )
+	ar rv $(GGI_LIB_DIR)/lib_GGI_optimisation.a $(OPTIMISATION_OBJS)
+	
 # make ANALYTIC
 MAKE_analytic:
 	( cd ANALYTIC ; $(MAKE) )
@@ -644,6 +665,7 @@ clean:
 	( cd OUTPUT ; make clean )
 	( cd TLM_SOLVER ; make clean )
 	( cd POST_PROCESSOR ; make clean )
+	( cd OPTIMISATION ; make clean )
 	( cd ANALYTIC ; make clean )
 
 clean_all:

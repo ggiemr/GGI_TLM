@@ -51,7 +51,7 @@ IMPLICIT NONE
   type(Zfilter) 		:: Zfilter1
   type(Zfilter_response) 	:: Zfilter_data1
 
-  integer				:: timestep,n_timesteps
+  integer			:: timestep,n_timesteps
   real*8			:: f_input
 
 ! START
@@ -69,6 +69,7 @@ IMPLICIT NONE
 ! Allocate and read the filter function to apply
 
   read(*,'(A)')filter_file_name
+  write(record_user_inputs_unit,'(A)')trim(filter_file_name)
 
   open(UNIT=local_file_unit, 					&
        FILE=trim(filter_file_name),	    			&

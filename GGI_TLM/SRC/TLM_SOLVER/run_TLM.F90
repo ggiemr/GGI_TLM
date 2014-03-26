@@ -79,7 +79,7 @@ IMPLICIT NONE
     write(info_file_unit,*)'Number of timesteps=',n_timesteps
     write(info_file_unit,*)'____________________________________________________'
     write(info_file_unit,*)'' 
-    write(info_file_unit,*)'Timesteps=',dt
+    write(info_file_unit,*)'Timestep=',dt
     write(info_file_unit,*)'____________________________________________________'
     write(info_file_unit,*)''
     write(info_file_unit,*)'Number of processes= ',np
@@ -90,7 +90,7 @@ IMPLICIT NONE
     write(info_file_unit,*)'frequency_scale= ',frequency_scale
     write(info_file_unit,*)'____________________________________________________'
     write(info_file_unit,*)''
-    write(info_file_unit,*)'TLM solution Started:'
+    write(info_file_unit,*)'GGI_TLM solution Started:'
     call write_date_and_time(info_file_unit)
     write(info_file_unit,*)'' 
     write(*,*)'Problem name:',trim(problem_name)

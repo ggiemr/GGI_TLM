@@ -109,7 +109,7 @@ IMPLICIT NONE
   
 ! START
 
-  CALL write_line('CALLED: create_bundle_LCRG_matrices',0,output_to_screen_flag)
+!  CALL write_line('CALLED: create_bundle_LCRG_matrices',0,output_to_screen_flag)
   
   write(cable_info_file_unit,*)
   write(cable_info_file_unit,*)'create_bundle_LCRG_matrices'
@@ -277,8 +277,8 @@ IMPLICIT NONE
     
     write(cable_info_file_unit,*)''
     write(cable_info_file_unit,*)' cable       cable        cable         cable    '
-    write(cable_info_file_unit,*)' number     radius	     xc	           yc	   '
-    do row=1,n_LC_conductors+1
+    write(cable_info_file_unit,*)' number   radius+offset     xc	    yc	   '
+    do row=1,n_LC_conductors
       write(cable_info_file_unit,8000)row,cable_radius(row),cable_xc(row),cable_yc(row)
     end do
      
@@ -686,7 +686,7 @@ IMPLICIT NONE
 
   DEALLOCATE( segment_conductor_count )
   
-  CALL write_line('FINISHED: create_bundle_LCRG_matrices',0,output_to_screen_flag)
+!  CALL write_line('FINISHED: create_bundle_LCRG_matrices',0,output_to_screen_flag)
     
   RETURN
   

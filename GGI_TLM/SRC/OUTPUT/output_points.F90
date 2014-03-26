@@ -261,7 +261,7 @@ IMPLICIT NONE
   integer 	:: face
   integer 	:: cz
   integer	:: side
-   real*8	:: value
+  real*8	:: value
   
   logical	:: output_flag
 

@@ -8,6 +8,14 @@ Mesh_dimensions_in_cells
 Outer_boundary_reflection_coefficient
 0.0 0.0 0.0 0.0 0.0 0.0
 
+Volume_list
+1   Number of volumes 
+1       VOLUME_NUMBER 
+rectangular_block
+2.0 2.0 0.1       volume parameters 
+0.0 0.0 0.0
+0.0 0.0 0.05
+
 Surface_list
 4   Number of surfaces 
 1       SURFACE_NUMBER 
@@ -197,6 +205,30 @@ output_timestep_information
 4                 surface number
 -1		! side of surface for output (+1 or -1)
 Emagnitude
+output_timestep_information
+0	! first output timestep
+120	! last output timestep
+4	! output timestep interval
+
+Output_volume_list
+3    		! number of output volumes
+1		! OUTPUT VOLUME NUMBER
+1                 volume number
+Hx
+output_timestep_information
+0	! first output timestep
+120	! last output timestep
+4	! output timestep interval
+2		! OUTPUT VOLUME NUMBER
+1                 volume number
+Hy
+output_timestep_information
+0	! first output timestep
+120	! last output timestep
+4	! output timestep interval
+3		! OUTPUT VOLUME NUMBER
+1                 volume number
+Hz
 output_timestep_information
 0	! first output timestep
 120	! last output timestep

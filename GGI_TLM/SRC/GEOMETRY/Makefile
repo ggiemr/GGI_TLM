@@ -9,6 +9,7 @@ build_line_geometry.o \
 build_point_geometry.o \
 get_point.o \
 build_surface_sphere.o \
+build_surface_hemisphere.o \
 build_surface_rectangular_block.o  \
 build_surface_rectangular_block2.o \
 build_surface_circle.o \

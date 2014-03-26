@@ -95,8 +95,10 @@ integer	:: volume_number
 
   end do ! next volume number
   
-  CALL plot_tet_volumes()
-
+  if (write_geometry_vtk_files) then
+    CALL plot_tet_volumes()
+  end if
+  
   CALL write_line('FINISHED: Build_volume_geometry',0,output_to_screen_flag)
   
   RETURN

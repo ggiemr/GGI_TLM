@@ -78,6 +78,16 @@ IMPLICIT NONE
     read(input_file_unit,*,err=9000)frequency_output_volume(i)%frequency
       	
     CALL read_field_component(input_file_unit,frequency_output_volume(i)%field_component)
+    
+    CALL read_output_time_information(input_file_unit,	&
+                                      frequency_output_volume(i)%specified_timestep_information,	&
+                                      frequency_output_volume(i)%first_timestep,	&
+                                      frequency_output_volume(i)%last_timestep,	&
+                                      frequency_output_volume(i)%timestep_interval,	&
+                                      frequency_output_volume(i)%specified_time_information,	&
+                                      frequency_output_volume(i)%first_time,	&				      
+                                      frequency_output_volume(i)%last_time,	&			      
+                                      frequency_output_volume(i)%time_interval )
      
   end do ! next frequency output volume    
   

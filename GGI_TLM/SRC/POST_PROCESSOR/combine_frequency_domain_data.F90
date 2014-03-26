@@ -182,6 +182,9 @@ IMPLICIT NONE
   integer	:: n_frequencies
   integer	:: frequency_loop
   
+  character 		:: ch
+  logical 		:: conjugate_flag
+  
 ! START
 
 !  write(*,*)'Combine Frequency domain data'
@@ -226,6 +229,18 @@ IMPLICIT NONE
     end if
   
   end do
+  
+  write(*,*)'Do you want to use the complex conjugate of f2 i.e. result=F1(f)(F2(f))*? (y/n)'
+  read(*,'(A)')ch
+  write(record_user_inputs_unit,'(A)')ch
+  CALL convert_to_lower_case(ch,1)
+  if (ch.eq.'y') then
+    conjugate_flag=.TRUE.
+  else if (ch.eq.'n') then
+    conjugate_flag=.FALSE.
+  else
+    write(*,*)"Error in combine_frequency_domain_data_2, response should be 'y' or 'n'"
+  end if
 
 ! Allocate memory for result
 
@@ -248,7 +263,11 @@ IMPLICIT NONE
     f1=function_of_frequency(1)%value(frequency_loop)
     f2=function_of_frequency(2)%value(frequency_loop)
     
-    result=f1*f2
+    if (conjugate_flag) then
+      result=f1*conjg(f2)
+    else
+      result=f1*f2
+    end if
     
     function_of_frequency(function_number)%value(frequency_loop)=result
     

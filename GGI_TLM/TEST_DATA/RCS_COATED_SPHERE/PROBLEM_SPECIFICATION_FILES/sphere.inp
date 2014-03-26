@@ -22,10 +22,15 @@ sphere
 0.0 0.0 0.0
 
 Surface_list
-1   Number of surfaces (integer)
+2   Number of surfaces (integer)
 1       SURFACE_NUMBER (integer)
 rectangular_block
-3.2 3.2 3.2       surface parameters (n*real)
+3.4 3.4 3.4       surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       SURFACE_NUMBER (integer)
+rectangular_block
+3.8 3.8 3.8       surface parameters (n*real)
 0.0 0.0 0.0
 0.0 0.0 0.0
 
@@ -48,14 +53,14 @@ gaussian
 1.0 1e-9 3e-9
 
 Huygens_surface
-0     surface number
+1     surface number
 1     side of surface for excitation
 1     excitation function number
 0.0 0.0  wave vector Theta and Phi 
 1.0 0.0  Polarisation theta and Phi
 
 RCS_surface
-1     surface number
+2     surface number
 1     Side of surface for RCS output
 0.1e8 3e8 0.01e8 frequency range for far field calculation
 180.0  Theta 

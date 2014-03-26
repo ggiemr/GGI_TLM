@@ -40,6 +40,7 @@
 !     11/09/2012 - define local_surface_material on min faces taking
 !                  proper account of non-symmetric materials and surface normals
 !     frequency warping included 12/02/2013 CJS
+!    2/12/2013 		CJS: Implement anisotropic impedance boundary conditions
 !
 !
 SUBROUTINE set_surface_material_mesh
@@ -188,6 +189,8 @@ END SUBROUTINE set_surface_material_mesh
 ! History
 !
 !     started 04/09/12 CJS
+!    2/12/2013 		CJS: Implement anisotropic impedance boundary conditions
+!
 !
 
 SUBROUTINE calculate_surface_material_filter_coefficients()
@@ -209,6 +212,8 @@ IMPLICIT NONE
   
   type(Zfilter) :: Zfilter_temp
 
+  integer	:: i
+
 ! function_types
 
 ! START
@@ -219,31 +224,34 @@ IMPLICIT NONE
    
 ! Z transform of Z parameter filter	
     
-    if (surface_material_list(material_number)%type.EQ.surface_material_type_DISPERSIVE) then
+    if ((surface_material_list(material_number)%type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE).OR.	&
+        (surface_material_list(material_number)%type.EQ.surface_material_type_DISPERSIVE) ) then
 
-!      Zfilter_temp=s_to_z(surface_material_list(material_number)%Z11_S,dt)     
-      Zfilter_temp=s_to_z_warp(surface_material_list(material_number)%Z11_S,dt,bicubic_warp_flag,frequency_scale)     
-      call Z_fast_slow_docomposition( Zfilter_temp, 		&
-                     surface_material_list(material_number)%Z11_f, 	&
-                     surface_material_list(material_number)%Z11_Z    )
+! LOOP OVER X, Y and Z POLARISATION FILTERS
+
+      do i=1,3
+      
+        Zfilter_temp=s_to_z_warp(surface_material_list(material_number)%Z11_S(i),dt,bicubic_warp_flag,frequency_scale)     
+        call Z_fast_slow_decomposition( Zfilter_temp, 		&
+                       surface_material_list(material_number)%Z11_f(i), 	&
+                       surface_material_list(material_number)%Z11_Z(i)    )
     
-!      Zfilter_temp=s_to_z(surface_material_list(material_number)%Z12_S,dt)     
-      Zfilter_temp=s_to_z_warp(surface_material_list(material_number)%Z12_S,dt,bicubic_warp_flag,frequency_scale)     
-      call Z_fast_slow_docomposition( Zfilter_temp, 		&
-                     surface_material_list(material_number)%Z12_f, 	&
-                     surface_material_list(material_number)%Z12_Z    )
+        Zfilter_temp=s_to_z_warp(surface_material_list(material_number)%Z12_S(i),dt,bicubic_warp_flag,frequency_scale)     
+        call Z_fast_slow_decomposition( Zfilter_temp, 		&
+                       surface_material_list(material_number)%Z12_f(i), 	&
+                       surface_material_list(material_number)%Z12_Z(i)    )
     
-!      Zfilter_temp=s_to_z(surface_material_list(material_number)%Z21_S,dt)     
-      Zfilter_temp=s_to_z_warp(surface_material_list(material_number)%Z21_S,dt,bicubic_warp_flag,frequency_scale)     
-      call Z_fast_slow_docomposition( Zfilter_temp, 		&
-                     surface_material_list(material_number)%Z21_f, 	&
-                     surface_material_list(material_number)%Z21_Z    )
+        Zfilter_temp=s_to_z_warp(surface_material_list(material_number)%Z21_S(i),dt,bicubic_warp_flag,frequency_scale)     
+        call Z_fast_slow_decomposition( Zfilter_temp, 		&
+                       surface_material_list(material_number)%Z21_f(i), 	&
+                       surface_material_list(material_number)%Z21_Z(i)    )
      
-!      Zfilter_temp=s_to_z(surface_material_list(material_number)%Z22_S,dt)     
-      Zfilter_temp=s_to_z_warp(surface_material_list(material_number)%Z22_S,dt,bicubic_warp_flag,frequency_scale)     
-      call Z_fast_slow_docomposition( Zfilter_temp, 		&
-                     surface_material_list(material_number)%Z22_f, 	&
-                     surface_material_list(material_number)%Z22_Z    )
+        Zfilter_temp=s_to_z_warp(surface_material_list(material_number)%Z22_S(i),dt,bicubic_warp_flag,frequency_scale)     
+        call Z_fast_slow_decomposition( Zfilter_temp, 		&
+                       surface_material_list(material_number)%Z22_f(i), 	&
+                       surface_material_list(material_number)%Z22_Z(i)    )
+
+      end do ! next polarisation
 		     
     end if ! material type is dispersive
     
@@ -266,6 +274,8 @@ END SUBROUTINE calculate_surface_material_filter_coefficients
 ! HISTORY
 !
 !     started 4/09/2012 CJS
+!    2/12/2013 		CJS: Implement anisotropic impedance boundary conditions
+!
 !
 !
 SUBROUTINE allocate_surface_material_filter_data
@@ -282,12 +292,21 @@ IMPLICIT NONE
 ! local variables
   
   integer	:: material_number
-  integer	:: face
+  integer	:: face_loop
   integer	:: surface_filter_number
-  integer       :: z11aorder,z11border
-  integer       :: z12aorder,z12border
-  integer       :: z21aorder,z21border
-  integer       :: z22aorder,z22border
+
+  integer       :: z11aorder_pol1,z11border_pol1
+  integer       :: z12aorder_pol1,z12border_pol1
+  integer       :: z21aorder_pol1,z21border_pol1
+  integer       :: z22aorder_pol1,z22border_pol1
+
+  integer       :: z11aorder_pol2,z11border_pol2
+  integer       :: z12aorder_pol2,z12border_pol2
+  integer       :: z21aorder_pol2,z21border_pol2
+  integer       :: z22aorder_pol2,z22border_pol2
+  
+  integer	:: face
+  integer	:: pol1,pol2
 
 ! START
   
@@ -297,18 +316,19 @@ IMPLICIT NONE
   surface_material_storage=0
 
 ! loop over special faces
-  DO face=1,n_special_faces
+  DO face_loop=1,n_special_faces
   
-    if (face_update_code_to_material_data(face,1).ne.0) then
+    if (face_update_code_to_material_data(face_loop,1).ne.0) then
 ! this is a material face add to the memory allocation list if required
 
-      material_number=abs(face_update_code_to_material_data(face,1))
+      material_number=abs(face_update_code_to_material_data(face_loop,1))
       
-      if ( (surface_material_list(material_number)%type.eq.surface_material_type_DISPERSIVE) ) then
+      if ( (surface_material_list(material_number)%type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE).OR.	&
+           (surface_material_list(material_number)%type.EQ.surface_material_type_DISPERSIVE) ) then
 	  	      
         n_surface_material_faces=n_surface_material_faces+1
 
-        face_update_code_to_material_data(face,2)=surface_material_storage+1
+        face_update_code_to_material_data(face_loop,2)=surface_material_storage+1
         surface_material_storage=surface_material_storage+2   ! note 2 filters per face	    
 
       end if ! surface material at this cell face
@@ -329,42 +349,74 @@ IMPLICIT NONE
  
 
 ! loop over special faces
-  DO face=1,n_special_faces
+  DO face_loop=1,n_special_faces
   
-    if (face_update_code_to_material_data(face,1).ne.0) then
+    if (face_update_code_to_material_data(face_loop,1).ne.0) then
 ! this is a material face add to the memory allocation list if required
 
-      material_number=abs(face_update_code_to_material_data(face,1))
+      material_number=abs(face_update_code_to_material_data(face_loop,1))
+      face=face_update_code_to_material_data(face_loop,3)
       
-      if ( (surface_material_list(material_number)%type.eq.surface_material_type_DISPERSIVE) ) then
-	  	      
-	z11aorder=surface_material_list(material_number)%Z11_Z%a%order
-	z11border=surface_material_list(material_number)%Z11_Z%b%order
+      if ( (surface_material_list(material_number)%type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE).OR.	&
+           (surface_material_list(material_number)%type.EQ.surface_material_type_DISPERSIVE) ) then
 
-	z12aorder=surface_material_list(material_number)%Z12_Z%a%order
-	z12border=surface_material_list(material_number)%Z12_Z%b%order
-
-	z21aorder=surface_material_list(material_number)%Z21_Z%a%order
-	z21border=surface_material_list(material_number)%Z21_Z%b%order
-
-	z22aorder=surface_material_list(material_number)%Z22_Z%a%order
-	z22border=surface_material_list(material_number)%Z22_Z%b%order
-
-! first polarisation 
-        surface_filter_number=face_update_code_to_material_data(face,2)
+! These polarisations should be consistent with the calling order in connect.F90	  	      
+        if (face.EQ.face_xmin) then	
+	
+	  pol1=2
+	  pol2=3	      
 	  
-        surface_material_Z11_filter_data(surface_filter_number)=allocate_Zfilter_response(z11aorder,z11border)	
-        surface_material_Z12_filter_data(surface_filter_number)=allocate_Zfilter_response(z12aorder,z12border)	
-        surface_material_Z21_filter_data(surface_filter_number)=allocate_Zfilter_response(z21aorder,z21border)	
-        surface_material_Z22_filter_data(surface_filter_number)=allocate_Zfilter_response(z22aorder,z22border)
+	else if (face.EQ.face_ymin) then		      
+	
+	  pol1=1
+	  pol2=3	      		      
+
+	else if (face.EQ.face_zmin) then		      
+	
+	  pol1=1
+	  pol2=2	      		      		      
+
+        else
+	
+	  write(*,*)'ERROR in allocate_surface_material_filter_data'
+	  write(*,*)'Face not found for impedance boundary surface, face=',face
+	  STOP
+	  
+	end if
+		      
+	z11aorder_pol1=surface_material_list(material_number)%Z11_Z(pol1)%a%order
+	z11border_pol1=surface_material_list(material_number)%Z11_Z(pol1)%b%order
+	z12aorder_pol1=surface_material_list(material_number)%Z12_Z(pol1)%a%order
+	z12border_pol1=surface_material_list(material_number)%Z12_Z(pol1)%b%order
+	z21aorder_pol1=surface_material_list(material_number)%Z21_Z(pol1)%a%order
+	z21border_pol1=surface_material_list(material_number)%Z21_Z(pol1)%b%order
+	z22aorder_pol1=surface_material_list(material_number)%Z22_Z(pol1)%a%order
+	z22border_pol1=surface_material_list(material_number)%Z22_Z(pol1)%b%order
+	            
+	z11aorder_pol2=surface_material_list(material_number)%Z11_Z(pol2)%a%order
+	z11border_pol2=surface_material_list(material_number)%Z11_Z(pol2)%b%order
+	z12aorder_pol2=surface_material_list(material_number)%Z12_Z(pol2)%a%order
+	z12border_pol2=surface_material_list(material_number)%Z12_Z(pol2)%b%order
+	z21aorder_pol2=surface_material_list(material_number)%Z21_Z(pol2)%a%order
+	z21border_pol2=surface_material_list(material_number)%Z21_Z(pol2)%b%order
+	z22aorder_pol2=surface_material_list(material_number)%Z22_Z(pol2)%a%order
+	z22border_pol2=surface_material_list(material_number)%Z22_Z(pol2)%b%order
+	
+! first polarisation 
+        surface_filter_number=face_update_code_to_material_data(face_loop,2)
+	  
+        surface_material_Z11_filter_data(surface_filter_number)=allocate_Zfilter_response(z11aorder_pol1,z11border_pol1)	
+        surface_material_Z12_filter_data(surface_filter_number)=allocate_Zfilter_response(z12aorder_pol1,z12border_pol1)	
+        surface_material_Z21_filter_data(surface_filter_number)=allocate_Zfilter_response(z21aorder_pol1,z21border_pol1)	
+        surface_material_Z22_filter_data(surface_filter_number)=allocate_Zfilter_response(z22aorder_pol1,z22border_pol1)
 
 ! second polarisation 
-        surface_filter_number=face_update_code_to_material_data(face,2)+1
+        surface_filter_number=face_update_code_to_material_data(face_loop,2)+1
 	  
-        surface_material_Z11_filter_data(surface_filter_number)=allocate_Zfilter_response(z11aorder,z11border)	
-        surface_material_Z12_filter_data(surface_filter_number)=allocate_Zfilter_response(z12aorder,z12border)	
-        surface_material_Z21_filter_data(surface_filter_number)=allocate_Zfilter_response(z21aorder,z21border)	
-        surface_material_Z22_filter_data(surface_filter_number)=allocate_Zfilter_response(z22aorder,z22border)
+        surface_material_Z11_filter_data(surface_filter_number)=allocate_Zfilter_response(z11aorder_pol2,z11border_pol2)	
+        surface_material_Z12_filter_data(surface_filter_number)=allocate_Zfilter_response(z12aorder_pol2,z12border_pol2)	
+        surface_material_Z21_filter_data(surface_filter_number)=allocate_Zfilter_response(z21aorder_pol2,z21border_pol2)	
+        surface_material_Z22_filter_data(surface_filter_number)=allocate_Zfilter_response(z22aorder_pol2,z22border_pol2)
 
       end if ! surface material at this cell face
 
@@ -397,9 +449,11 @@ END SUBROUTINE allocate_surface_material_filter_data
 ! History
 !
 !     started 5/09/12 CJS
+!    2/12/2013 		CJS: Implement anisotropic impedance boundary conditions
+!
 !
 
-SUBROUTINE surface_material_update(Vli,Zl,Vri,Zr,Vl,Vr,material_number,reverse_material,surface_filter_number)
+SUBROUTINE surface_material_update(Vli,Zl,Vri,Zr,Vl,Vr,material_number,pol,reverse_material,surface_filter_number)
 
 USE TLM_general
 USE TLM_excitation
@@ -417,6 +471,7 @@ IMPLICIT NONE
 
   real*8 	:: Vli,Zl,Vri,Zr,Vl,Vr
   integer	:: material_number
+  integer	:: pol
   logical	:: reverse_material
   integer	:: surface_filter_number
 
@@ -435,31 +490,31 @@ IMPLICIT NONE
 
 ! START
  
-   Z11f=surface_material_list(material_number)%Z11_f
-   Z12f=surface_material_list(material_number)%Z12_f
-   Z21f=surface_material_list(material_number)%Z21_f
-   Z22f=surface_material_list(material_number)%Z22_f
+   Z11f=surface_material_list(material_number)%Z11_f(pol)
+   Z12f=surface_material_list(material_number)%Z12_f(pol)
+   Z21f=surface_material_list(material_number)%Z21_f(pol)
+   Z22f=surface_material_list(material_number)%Z22_f(pol)
 
 ! Z11 slow response
-   call evaluate_Zfilter(surface_material_list(material_number)%Z11_Z,		&
+   call evaluate_Zfilter(surface_material_list(material_number)%Z11_Z(pol),		&
 	                 surface_material_Z11_filter_data(surface_filter_number),	&
 		         0d0)
    Z11_i1s=surface_material_Z11_filter_data(surface_filter_number)%f
 
 ! Z12 slow response
-   call evaluate_Zfilter(surface_material_list(material_number)%Z12_Z,		&
+   call evaluate_Zfilter(surface_material_list(material_number)%Z12_Z(pol),		&
 	                 surface_material_Z12_filter_data(surface_filter_number),	&
 		         0d0)
    Z12_i2s=surface_material_Z12_filter_data(surface_filter_number)%f
 
 ! Z21 slow response
-   call evaluate_Zfilter(surface_material_list(material_number)%Z21_Z,		&
+   call evaluate_Zfilter(surface_material_list(material_number)%Z21_Z(pol),		&
 	                 surface_material_Z21_filter_data(surface_filter_number),	&
 		         0d0)
    Z21_i1s=surface_material_Z21_filter_data(surface_filter_number)%f
 
 ! Z22 slow response
-   call evaluate_Zfilter(surface_material_list(material_number)%Z22_Z,		&
+   call evaluate_Zfilter(surface_material_list(material_number)%Z22_Z(pol),		&
 	                 surface_material_Z22_filter_data(surface_filter_number),	&
 		         0d0)
    Z22_i2s=surface_material_Z22_filter_data(surface_filter_number)%f
@@ -512,16 +567,16 @@ IMPLICIT NONE
      V2=2d0*v2i-i2*Z2
 
 ! update filter data for next timestep     
-     call evaluate_Zfilter(surface_material_list(material_number)%Z11_Z,		&
+     call evaluate_Zfilter(surface_material_list(material_number)%Z11_Z(pol),		&
 	                   surface_material_Z11_filter_data(surface_filter_number),	&
 	  	           i1)
-     call evaluate_Zfilter(surface_material_list(material_number)%Z12_Z,		&
+     call evaluate_Zfilter(surface_material_list(material_number)%Z12_Z(pol),		&
 	                   surface_material_Z12_filter_data(surface_filter_number),	&
 		           i2)
-     call evaluate_Zfilter(surface_material_list(material_number)%Z21_Z,		&
+     call evaluate_Zfilter(surface_material_list(material_number)%Z21_Z(pol),		&
 	                   surface_material_Z21_filter_data(surface_filter_number),	&
 		           i1)
-     call evaluate_Zfilter(surface_material_list(material_number)%Z22_Z,		&
+     call evaluate_Zfilter(surface_material_list(material_number)%Z22_Z(pol),		&
 	                   surface_material_Z22_filter_data(surface_filter_number),	&
 		           i2)
    

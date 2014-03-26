@@ -16,6 +16,7 @@ test_stability.o \
 write_FF_input_data.o \
 write_filter_frequency_response.o \
 write_filter.o \
+write_filter_fit_gnuplot_file.o \
 calculate_mean_square_error.o
 
 default: $(FILTER_FIT_OBJS)

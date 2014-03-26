@@ -357,6 +357,8 @@ IMPLICIT NONE
       OPEN(unit=rcs_output_unit,file=trim(problem_name)//rcs_output_extn)
 
     end if ! rank 0 process
+    
+    rcs_output_warning=.FALSE.
 
   end if ! n_rcs_surfaces.ne.0
 
@@ -530,9 +532,17 @@ IMPLICIT NONE
           rcs_surface%Hphi(point)  =rcs_surface%Hphi(point)  +Hphi
 	
         else
-      
-          write(*,*)'Trying to put far field point outside array',point,rcs_surface%n_far_field_points
-
+          
+	  if (.NOT.rcs_output_warning) then
+	    write(*,*)
+            write(*,*)'Trying to put far field point outside array',point,rcs_surface%n_far_field_points
+            rcs_output_warning=.TRUE.
+	    number_of_warnings=number_of_warnings+1
+	    write(warning_file_unit,*)' '
+	    write(warning_file_unit,*)'RCS output warning: Trying to put far field point outside array'
+	    write(warning_file_unit,*)' '
+	  end if
+	  
         end if
 	 
       end if ! in this processor's mesh
@@ -732,6 +742,8 @@ IMPLICIT NONE
         end if
 
         write(rcs_output_unit,8040)frequency,abs(Etheta),abs(Ephi),abs(Einc),RCS
+!        write(*,*)'***** WRITING TEMP RCS DATA FORMAT FOR A SPECIAL JOB ******'
+!        write(rcs_output_unit,8040)frequency,real(Etheta),imag(Etheta),abs(Einc),RCS
 8040    format(5E14.6)
 	
       end do ! next frequency

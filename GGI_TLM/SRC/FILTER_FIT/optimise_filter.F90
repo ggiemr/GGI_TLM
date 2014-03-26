@@ -53,6 +53,10 @@ IMPLICIT NONE
   
   integer		:: function_loop
   
+  logical		:: write_error_to_file
+  
+  integer		:: filter_format
+  
 ! START
 
 ! setup the optimisation
@@ -62,6 +66,14 @@ IMPLICIT NONE
   do function_loop=1,n_functions
     filter_S_PZ(function_loop)=Convert_filter_S_to_S_PZ( filter_S(function_loop) )
   end do ! next function
+  
+  CALL calculate_error_Sfilter_PZ()
+  CALL test_stability_PZ()
+  if (stable_filter) then
+    CALL write_line_real('Final Sfilter_PZ: STABLE, Mean square error=',Mean_square_error,0,ff_output_to_screen)
+  else
+    CALL write_line_real('Final Sfilter_PZ: UNSTABLE, Mean square error=',Mean_square_error,0,ff_output_to_screen)  
+  end if
 
 ! number of optimisation parameters
 
@@ -75,9 +87,10 @@ IMPLICIT NONE
   else if (fit_type.eq.thin_layer) then  
     
     opt_dim=3*(order*2+1)  ! 3*(2*order+1) filter coefficients (note 3* as Z12=Z21)
+
     ALLOCATE( params(1:opt_dim) )
     CALL thin_layer_S_PZ_filter_to_opt_param_list(opt_dim,params)
-    
+
   else if (fit_type.eq.impedance) then  
     
     opt_dim=order*2+1  ! 2*order+1 filter coefficients 
@@ -95,7 +108,8 @@ IMPLICIT NONE
   end if
 
 ! CALL the optimisation routine...  
-  CALL bisection(opt_dim,params)
+  filter_format=1	! format 1 is pole-zero format
+  CALL bisection(opt_dim,params,filter_format)
 
   if ( (fit_type.eq.dielectric_material).OR.(fit_type.eq.magnetic_material) ) then 
   
@@ -116,6 +130,14 @@ IMPLICIT NONE
   end if
   
   DEALLOCATE( params )
+  
+  CALL calculate_error_Sfilter_PZ()
+  CALL test_stability_PZ()
+  if (stable_filter) then
+    CALL write_line_real('Optimised Sfilter_PZ: STABLE, Mean square error=',Mean_square_error,0,ff_output_to_screen)
+  else
+    CALL write_line_real('Optimised Sfilter_PZ: UNSTABLE, Mean square error=',Mean_square_error,0,ff_output_to_screen)  
+  end if
 
 ! Transform the filter back into Rational function format  
 
@@ -123,11 +145,14 @@ IMPLICIT NONE
     filter_S(function_loop)=Convert_filter_S_PZ_to_S( filter_S_PZ(function_loop) )
   end do ! next function
   
-! Calculate the mean square error of the Pole-Residue format filter as a check on the transformation
- 
   CALL calculate_error_Sfilter()
-  CALL write_line_real('Final Stabilised Sfilter.    Mean square error=',Mean_square_error,0,ff_output_to_screen)
-       
+  CALL test_stability(.FALSE.)
+  if (stable_filter) then
+    CALL write_line_real('Optimised Sfilter: STABLE, Mean square error=',Mean_square_error,0,ff_output_to_screen)
+  else
+    CALL write_line_real('Optimised Sfilter: UNSTABLE, Mean square error=',Mean_square_error,0,ff_output_to_screen)  
+  end if
+  
 END SUBROUTINE optimise_filter
 !
 ! NAME
@@ -144,7 +169,7 @@ END SUBROUTINE optimise_filter
 !     started 7/1/2013 CJS
 !
 !
-SUBROUTINE bisection(opt_dim,params)
+SUBROUTINE bisection(opt_dim,params,filter_format)
 
 USE FF_parameters
 USE FF_general
@@ -158,6 +183,8 @@ IMPLICIT NONE
   integer		:: opt_dim
 
   real*8		:: params(1:opt_dim) 
+  
+  integer		:: filter_format
  
 ! local variables
   
@@ -189,10 +216,10 @@ IMPLICIT NONE
   ALLOCATE( error(n_calc_points) )
   ALLOCATE( stable_system(n_calc_points) )
   
-  delta(opt_dim)=0d0
-  point_set(opt_dim,n_calc_points) =0d0
-  error(n_calc_points)=0d0
-  stable_system(n_calc_points)=.FALSE.
+  delta(:)=0d0
+  point_set(:,:) =0d0
+  error(:)=0d0
+  stable_system(:)=.FALSE.
   
 ! get initial offsets for optimisation       
   do p=1,opt_dim
@@ -231,7 +258,7 @@ IMPLICIT NONE
 
 ! calculate RMS error for each of the points       
     do p=1,n_calc_points
-      CALL calc_error(point_set,error,stable_system,opt_dim,n_calc_points,p)
+      CALL calc_error(point_set,error,stable_system,opt_dim,n_calc_points,p,filter_format)
     end do
     
     if (iteration.eq.1) then
@@ -241,8 +268,8 @@ IMPLICIT NONE
       write(*,'(A10,I14,A7,F16.6)',advance='no')'Iteration ',iteration,' error=',error(1)  !,' cvg=',cvg
     end if
 	 
-! at lest the origin point should give a stable model...
-    if (.NOT.stable_system(1)) then
+! After the firt iteration, at lest the origin point should give a stable model...
+    if ( (iteration.gt.1).AND.(.NOT.stable_system(1)) ) then
 
       write(*,*)'Unstable model at the origin of simplex'
       write(*,*)'Iteration=',iteration,error(1),stable_system(1)
@@ -328,7 +355,7 @@ IMPLICIT NONE
 ! putting the optimum solution for the zeros into the c array plus the
 ! conductivity term if it is a material optimisation       	
   p=1 
-  CALL calc_error(point_set,error,stable_system,opt_dim,n_calc_points,p)
+  CALL calc_error(point_set,error,stable_system,opt_dim,n_calc_points,p,filter_format)
        
 ! optimum point is at the centre of the point set.
   do p=1,opt_dim
@@ -357,7 +384,7 @@ END SUBROUTINE bisection
 !     started 7/1/2013 CJS
 !
 !
-SUBROUTINE calc_error(point_set,error,stable_system,opt_dim,n_calc_points,p)
+SUBROUTINE calc_error(point_set,error,stable_system,opt_dim,n_calc_points,p,filter_format)
 
 USE FF_parameters
 USE FF_general
@@ -374,6 +401,8 @@ IMPLICIT NONE
   real*8		:: error(1:n_calc_points)
   logical		:: stable_system(1:n_calc_points)
   
+  integer		:: filter_format
+  
 ! local variables
 
   real*8,allocatable	:: params(:) 
@@ -385,30 +414,35 @@ IMPLICIT NONE
 
   params(1:opt_dim)=point_set(1:opt_dim,p)
   
-  if ( (fit_type.eq.dielectric_material).OR.(fit_type.eq.magnetic_material) ) then 
+  if (filter_format.eq.1) then
+! Pole-zero format filter
   
-    CALL opt_param_list_to_dielectric_magnetic_S_PZ_filter(opt_dim,params)
+    if ( (fit_type.eq.dielectric_material).OR.(fit_type.eq.magnetic_material) ) then 
+  
+      CALL opt_param_list_to_dielectric_magnetic_S_PZ_filter(opt_dim,params)
        
-  else if (fit_type.eq.thin_layer) then  
+    else if (fit_type.eq.thin_layer) then  
     
-    CALL opt_param_list_to_thin_layer_S_PZ_filter(opt_dim,params)
+      CALL opt_param_list_to_thin_layer_S_PZ_filter(opt_dim,params)
     
-  else if (fit_type.eq.impedance) then  
+    else if (fit_type.eq.impedance) then  
     
-    CALL opt_param_list_to_impedance_S_PZ_filter(opt_dim,params)
+      CALL opt_param_list_to_impedance_S_PZ_filter(opt_dim,params)
     
-  else if (fit_type.eq.general) then  ! use the same process as for impedance functions
+    else if (fit_type.eq.general) then  ! use the same process as for impedance functions
     
-    CALL opt_param_list_to_impedance_S_PZ_filter(opt_dim,params)
+      CALL opt_param_list_to_impedance_S_PZ_filter(opt_dim,params)
+    
+    end if
+
+    CALL calculate_error_Sfilter_PZ()
+    error(p)=Mean_square_error
+  
+    CALL test_stability_PZ()
+    stable_system(p)=stable_filter
     
   end if
-
-  CALL calculate_error_Sfilter_PZ()
-  error(p)=Mean_square_error
   
-  CALL test_stability_PZ()
-  stable_system(p)=stable_filter
-
   DEALLOCATE( params )
        
 END SUBROUTINE calc_error

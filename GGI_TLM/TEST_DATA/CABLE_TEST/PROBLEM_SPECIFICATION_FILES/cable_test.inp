@@ -68,7 +68,7 @@ Point_list
 Cable_geometry_list
 1  number of cable geometries
 1  cable geometry number, Cable geometry type (file name) follows:
-/CABLE_DIRECTORY/1mm_single_wire                                       
+CABLE_DIRECTORY/1mm_single_wire                                       
 
 Cable_list
 5  number of cables

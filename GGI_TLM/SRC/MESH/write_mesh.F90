@@ -24,13 +24,21 @@
 !     write_mesh:
 !
 !     write volume, surface, line and point meshes to file
+!
+!     Include mesh copying required by the periodic boundary condition implementation 
+!     using the method of Lee and Smith, 
+!     "An alternative approach for implementing periodic boundary conditions in the FDTD method using multiple unit cells,"
+!     IEEE trans AP vol 54, no2, 2006 pp 698-705
+! 
 !     
 ! COMMENTS
-!     
+!     We only copy the surface and volume meshes for the periodic boundary stuff as wires are not yet included 
+!     and output (i.e. on points) is only required in one of the four cells
 !
 ! HISTORY
 !
 !     started 12/08/2012 CJS
+!     periodic boundary mesh copy 5/03/2014 CJS
 !
 !
 SUBROUTINE write_mesh()
@@ -56,6 +64,8 @@ integer	:: segment,number_of_cell_segments
 
 integer	:: point_number
 
+integer :: nx2,ny2
+
 ! START
 
   CALL write_line('CALLED: write_mesh',0,output_to_screen_flag)
@@ -65,6 +75,18 @@ integer	:: point_number
   CALL open_file(mesh_file_unit,mesh_file_extension)
 
 ! Write general mesh parameters
+
+!  write(mesh_file_unit,*)periodic_boundary,' periodic_boundary'
+
+  if (periodic_boundary) then
+! double the mesh size in the x and y directions
+    nx2=nx
+    ny2=ny
+    nx=nx*2
+    ny=ny*2
+    mesh_xmax=mesh_xmin+nx*dl
+    mesh_ymax=mesh_ymin+ny*dl
+  end if
 
   write(mesh_file_unit,*)dl,' dl'
   write(mesh_file_unit,*)nx,ny,nz,' nx ny nz'
@@ -78,14 +100,56 @@ integer	:: point_number
 
     number_of_cells=problem_volumes(volume_number)%number_of_cells
     
-    write(mesh_file_unit,*)number_of_cells,' number_of_cells in volume=',volume_number
+    if (.NOT.periodic_boundary) then
     
-    do cell=1,number_of_cells
-      write(mesh_file_unit,*)	problem_volumes(volume_number)%cell_list(cell)%cell%i,     &
+      write(mesh_file_unit,*)number_of_cells,' number_of_cells in volume=',volume_number
+    
+      do cell=1,number_of_cells
+     
+        write(mesh_file_unit,*)	problem_volumes(volume_number)%cell_list(cell)%cell%i,     &
 				problem_volumes(volume_number)%cell_list(cell)%cell%j,     &
 				problem_volumes(volume_number)%cell_list(cell)%cell%k,     &
 				problem_volumes(volume_number)%cell_list(cell)%point
-   end do ! next cell
+				
+      end do ! next cell
+     
+    else ! each volume cell gets copied so we have 4 cells in the final model
+    
+      write(mesh_file_unit,*)number_of_cells*4,' number_of_cells in volume=',volume_number
+
+! original cell    
+      do cell=1,number_of_cells     
+        write(mesh_file_unit,*)	problem_volumes(volume_number)%cell_list(cell)%cell%i,     &
+				problem_volumes(volume_number)%cell_list(cell)%cell%j,     &
+				problem_volumes(volume_number)%cell_list(cell)%cell%k,     &
+				problem_volumes(volume_number)%cell_list(cell)%point				
+      end do ! next cell
+
+! cell +nx2
+      do cell=1,number_of_cells     
+        write(mesh_file_unit,*)	problem_volumes(volume_number)%cell_list(cell)%cell%i+nx2,     &
+				problem_volumes(volume_number)%cell_list(cell)%cell%j,     &
+				problem_volumes(volume_number)%cell_list(cell)%cell%k,     &
+				problem_volumes(volume_number)%cell_list(cell)%point				
+      end do ! next cell
+
+! cell +ny2
+      do cell=1,number_of_cells     
+        write(mesh_file_unit,*)	problem_volumes(volume_number)%cell_list(cell)%cell%i,     &
+				problem_volumes(volume_number)%cell_list(cell)%cell%j+ny2,     &
+				problem_volumes(volume_number)%cell_list(cell)%cell%k,     &
+				problem_volumes(volume_number)%cell_list(cell)%point				
+      end do ! next cell
+   
+! cell +nx2+ny2
+      do cell=1,number_of_cells     
+        write(mesh_file_unit,*)	problem_volumes(volume_number)%cell_list(cell)%cell%i+nx2,     &
+				problem_volumes(volume_number)%cell_list(cell)%cell%j+ny2,     &
+				problem_volumes(volume_number)%cell_list(cell)%cell%k,     &
+				problem_volumes(volume_number)%cell_list(cell)%point				
+      end do ! next cell
+   
+    end if  ! periodic boundary
     
   end do ! next volume number
   
@@ -95,28 +159,78 @@ integer	:: point_number
 
     number_of_faces=problem_surfaces(surface_number)%number_of_faces
     
-    write(mesh_file_unit,*)number_of_faces,' number_of_faces in surface=',surface_number
-
-    write(mesh_file_unit,*)problem_surfaces(surface_number)%mesh_xmin,	&
-                           problem_surfaces(surface_number)%mesh_xmax,' mesh_xmin,mesh_xmax'
-    write(mesh_file_unit,*)problem_surfaces(surface_number)%mesh_ymin,	&
-                           problem_surfaces(surface_number)%mesh_ymax,' mesh_ymin,mesh_ymax'
-    write(mesh_file_unit,*)problem_surfaces(surface_number)%mesh_zmin,	&
-                           problem_surfaces(surface_number)%mesh_zmax,' mesh_zmin,mesh_zmax'
-
-    write(mesh_file_unit,*)problem_surfaces(surface_number)%mesh_cell_xmin,	&
-                           problem_surfaces(surface_number)%mesh_cell_xmax,' mesh_cell_xmin,mesh_cell_xmax'
-    write(mesh_file_unit,*)problem_surfaces(surface_number)%mesh_cell_ymin,	&
-                           problem_surfaces(surface_number)%mesh_cell_ymax,' mesh_cell_ymin,mesh_cell_ymax'
-    write(mesh_file_unit,*)problem_surfaces(surface_number)%mesh_cell_zmin,	&
-                           problem_surfaces(surface_number)%mesh_cell_zmax,' mesh_cell_zmin,mesh_cell_zmax'
+    if (.NOT.periodic_boundary) then
+      write(mesh_file_unit,*)number_of_faces,' number_of_faces in surface=',surface_number
+    else
+      write(mesh_file_unit,*)number_of_faces*4,' number_of_faces in surface=',surface_number
+    end if
     
-    do face=1,number_of_faces
-      write(mesh_file_unit,*)	problem_surfaces(surface_number)%face_list(face)%cell%i,	&
+    if (periodic_boundary) then
+! the extent of the surface mesh is extended by the additional unit cells added
+      problem_surfaces(surface_number)%mesh_xmax=problem_surfaces(surface_number)%mesh_xmax+nx2*dl
+      problem_surfaces(surface_number)%mesh_ymax=problem_surfaces(surface_number)%mesh_ymax+ny2*dl
+      problem_surfaces(surface_number)%mesh_cell_xmax=problem_surfaces(surface_number)%mesh_cell_xmax+nx2
+      problem_surfaces(surface_number)%mesh_cell_ymax=problem_surfaces(surface_number)%mesh_cell_ymax+ny2
+    end if
+
+    write(mesh_file_unit,*)problem_surfaces(surface_number)%mesh_xmin,        &
+    			   problem_surfaces(surface_number)%mesh_xmax,' mesh_xmin,mesh_xmax'
+    write(mesh_file_unit,*)problem_surfaces(surface_number)%mesh_ymin,        &
+    			   problem_surfaces(surface_number)%mesh_ymax,' mesh_ymin,mesh_ymax'
+    write(mesh_file_unit,*)problem_surfaces(surface_number)%mesh_zmin,        &
+    			   problem_surfaces(surface_number)%mesh_zmax,' mesh_zmin,mesh_zmax'
+
+    write(mesh_file_unit,*)problem_surfaces(surface_number)%mesh_cell_xmin,   &
+    			   problem_surfaces(surface_number)%mesh_cell_xmax,' mesh_cell_xmin,mesh_cell_xmax'
+    write(mesh_file_unit,*)problem_surfaces(surface_number)%mesh_cell_ymin,   &
+    			   problem_surfaces(surface_number)%mesh_cell_ymax,' mesh_cell_ymin,mesh_cell_ymax'
+    write(mesh_file_unit,*)problem_surfaces(surface_number)%mesh_cell_zmin,   &
+                           problem_surfaces(surface_number)%mesh_cell_zmax,' mesh_cell_zmin,mesh_cell_zmax'
+     
+    if (.NOT.periodic_boundary) then
+   
+      do face=1,number_of_faces
+        write(mesh_file_unit,*)	problem_surfaces(surface_number)%face_list(face)%cell%i,	&
 				problem_surfaces(surface_number)%face_list(face)%cell%j,	&
 				problem_surfaces(surface_number)%face_list(face)%cell%k,	&
 				problem_surfaces(surface_number)%face_list(face)%point
-    end do ! next face
+      end do ! next face
+    
+    else ! periodic boundary
+    
+! original cell    
+      do face=1,number_of_faces
+        write(mesh_file_unit,*)	problem_surfaces(surface_number)%face_list(face)%cell%i,	&
+				problem_surfaces(surface_number)%face_list(face)%cell%j,	&
+				problem_surfaces(surface_number)%face_list(face)%cell%k,	&
+				problem_surfaces(surface_number)%face_list(face)%point
+      end do ! next face
+    
+! cell +nx2
+      do face=1,number_of_faces
+        write(mesh_file_unit,*)	problem_surfaces(surface_number)%face_list(face)%cell%i+nx2,	&
+				problem_surfaces(surface_number)%face_list(face)%cell%j,	&
+				problem_surfaces(surface_number)%face_list(face)%cell%k,	&
+				problem_surfaces(surface_number)%face_list(face)%point
+      end do ! next face
+    
+! cell +ny2
+      do face=1,number_of_faces
+        write(mesh_file_unit,*)	problem_surfaces(surface_number)%face_list(face)%cell%i,	&
+				problem_surfaces(surface_number)%face_list(face)%cell%j+ny2,	&
+				problem_surfaces(surface_number)%face_list(face)%cell%k,	&
+				problem_surfaces(surface_number)%face_list(face)%point
+      end do ! next face
+    
+! cell +nx2 +ny2
+      do face=1,number_of_faces
+        write(mesh_file_unit,*)	problem_surfaces(surface_number)%face_list(face)%cell%i+nx2,	&
+				problem_surfaces(surface_number)%face_list(face)%cell%j+ny2,	&
+				problem_surfaces(surface_number)%face_list(face)%cell%k,	&
+				problem_surfaces(surface_number)%face_list(face)%point
+      end do ! next face
+    
+    end if  ! periodic boundary
     
   end do ! next surface number
   

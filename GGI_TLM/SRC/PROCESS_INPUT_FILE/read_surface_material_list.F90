@@ -45,7 +45,8 @@
 !
 ! HISTORY
 !
-!     started 14/08/2012 CJS
+!    started 14/08/2012 CJS
+!    2/12/2013 		CJS: Implement anisotropic impedance boundary conditions
 !
 !
 SUBROUTINE read_surface_material_list
@@ -121,7 +122,7 @@ logical	:: file_exists
       surface_material_list(surface_material_number)%type=surface_material_type_FREE_SPACE
       
     else if (material_name.eq.'dispersive') then 
-! dispersive thin layer, the following line of the input file should be the name of a surface material file
+! DISPERSIVE THIN LAYER, the following line of the input file should be the name of a surface material file
     
 ! read thin layer material file name   
       read(input_file_unit,'(A)',end=9010)input_line
@@ -147,22 +148,116 @@ logical	:: file_exists
 ! read frequency range of validity
       read(surface_material_file_unit,*)surface_material_list(surface_material_number)%fmin,	&
                                 surface_material_list(surface_material_number)%fmax
-
+! READ X POLARISATION FILTER
       read(surface_material_file_unit,*)    ! read comment line
       call read_Sfilter(filter_in,surface_material_file_unit) ! read Z11 filter
-      surface_material_list(surface_material_number)%Z11_S=filter_in
+      surface_material_list(surface_material_number)%Z11_S(1)=filter_in
 
       read(surface_material_file_unit,*)    ! read comment line
       call read_Sfilter(filter_in,surface_material_file_unit) ! read Z12 filter
-      surface_material_list(surface_material_number)%Z12_S=filter_in
+      surface_material_list(surface_material_number)%Z12_S(1)=filter_in
 
       read(surface_material_file_unit,*)    ! read comment line
       call read_Sfilter(filter_in,surface_material_file_unit) ! read Z21 filter
-      surface_material_list(surface_material_number)%Z21_S=filter_in
+      surface_material_list(surface_material_number)%Z21_S(1)=filter_in
 
       read(surface_material_file_unit,*)    ! read comment line
       call read_Sfilter(filter_in,surface_material_file_unit) ! read Z22 filter
-      surface_material_list(surface_material_number)%Z22_S=filter_in
+      surface_material_list(surface_material_number)%Z22_S(1)=filter_in
+
+! COPY X POLARISATION FILTER TO Y AND Z POLARISATIONS
+
+      surface_material_list(surface_material_number)%Z11_S(2)=surface_material_list(surface_material_number)%Z11_S(1)
+      surface_material_list(surface_material_number)%Z12_S(2)=surface_material_list(surface_material_number)%Z12_S(1)
+      surface_material_list(surface_material_number)%Z21_S(2)=surface_material_list(surface_material_number)%Z21_S(1)
+      surface_material_list(surface_material_number)%Z22_S(2)=surface_material_list(surface_material_number)%Z22_S(1)
+
+      surface_material_list(surface_material_number)%Z11_S(3)=surface_material_list(surface_material_number)%Z11_S(1)
+      surface_material_list(surface_material_number)%Z12_S(3)=surface_material_list(surface_material_number)%Z12_S(1)
+      surface_material_list(surface_material_number)%Z21_S(3)=surface_material_list(surface_material_number)%Z21_S(1)
+      surface_material_list(surface_material_number)%Z22_S(3)=surface_material_list(surface_material_number)%Z22_S(1)
+     
+      close(UNIT=surface_material_file_unit)
+      
+      
+    else if (material_name.eq.'anisotropic_dispersive') then 
+! ANISOTROPIC_DISPERSIVE THIN LAYER, the following line of the input file should be the name of a surface material file
+    
+! read thin layer material file name   
+      read(input_file_unit,'(A)',end=9010)input_line
+      surface_material_list(surface_material_number)%name=strip_path(input_line,256)
+      material_file_name=trim(input_line)//surface_material_file_extn
+  
+! read thin layer material file   
+      CALL write_line('Surface material file name=',0,output_to_screen_flag)
+      CALL write_line(trim(material_file_name),0,output_to_screen_flag)
+
+      open(UNIT=surface_material_file_unit,						&
+           FILE=trim(material_file_name),	&
+           STATUS='old',							&
+           ERR=9020)
+
+      surface_material_list(surface_material_number)%type=surface_material_type_ANISOTROPIC_DISPERSIVE
+      
+      read(surface_material_file_unit,'(A)')material_label    ! read material label
+      
+! check material label for anisotropic material
+      call convert_to_lower_case(material_label,256)
+
+! read frequency range of validity
+      read(surface_material_file_unit,*)surface_material_list(surface_material_number)%fmin,	&
+                                surface_material_list(surface_material_number)%fmax
+
+! READ X POLARISATION FILTER
+      read(surface_material_file_unit,*)    ! read comment line
+      call read_Sfilter(filter_in,surface_material_file_unit) ! read Z11 filter
+      surface_material_list(surface_material_number)%Z11_S(1)=filter_in
+
+      read(surface_material_file_unit,*)    ! read comment line
+      call read_Sfilter(filter_in,surface_material_file_unit) ! read Z12 filter
+      surface_material_list(surface_material_number)%Z12_S(1)=filter_in
+
+      read(surface_material_file_unit,*)    ! read comment line
+      call read_Sfilter(filter_in,surface_material_file_unit) ! read Z21 filter
+      surface_material_list(surface_material_number)%Z21_S(1)=filter_in
+
+      read(surface_material_file_unit,*)    ! read comment line
+      call read_Sfilter(filter_in,surface_material_file_unit) ! read Z22 filter
+      surface_material_list(surface_material_number)%Z22_S(1)=filter_in
+
+! READ Y POLARISATION FILTER
+      read(surface_material_file_unit,*)    ! read comment line
+      call read_Sfilter(filter_in,surface_material_file_unit) ! read Z11 filter
+      surface_material_list(surface_material_number)%Z11_S(2)=filter_in
+
+      read(surface_material_file_unit,*)    ! read comment line
+      call read_Sfilter(filter_in,surface_material_file_unit) ! read Z12 filter
+      surface_material_list(surface_material_number)%Z12_S(2)=filter_in
+
+      read(surface_material_file_unit,*)    ! read comment line
+      call read_Sfilter(filter_in,surface_material_file_unit) ! read Z21 filter
+      surface_material_list(surface_material_number)%Z21_S(2)=filter_in
+
+      read(surface_material_file_unit,*)    ! read comment line
+      call read_Sfilter(filter_in,surface_material_file_unit) ! read Z22 filter
+      surface_material_list(surface_material_number)%Z22_S(2)=filter_in
+
+! READ Z POLARISATION FILTER
+      read(surface_material_file_unit,*)    ! read comment line
+      call read_Sfilter(filter_in,surface_material_file_unit) ! read Z11 filter
+      surface_material_list(surface_material_number)%Z11_S(3)=filter_in
+
+      read(surface_material_file_unit,*)    ! read comment line
+      call read_Sfilter(filter_in,surface_material_file_unit) ! read Z12 filter
+      surface_material_list(surface_material_number)%Z12_S(3)=filter_in
+
+      read(surface_material_file_unit,*)    ! read comment line
+      call read_Sfilter(filter_in,surface_material_file_unit) ! read Z21 filter
+      surface_material_list(surface_material_number)%Z21_S(3)=filter_in
+
+      read(surface_material_file_unit,*)    ! read comment line
+      call read_Sfilter(filter_in,surface_material_file_unit) ! read Z22 filter
+      surface_material_list(surface_material_number)%Z22_S(3)=filter_in
       
       close(UNIT=surface_material_file_unit)
       

@@ -15,6 +15,7 @@ MATERIAL_DIRECTORY="${MATERIAL_DIRECTORY_STRING//\//\/}"
 CABLE_DIRECTORY_STRING="${TEST_DATA_DIRECTORY}/CABLE_DATA"
 CABLE_DIRECTORY="${CABLE_DIRECTORY_STRING//\//\/}"
 
+echo " "
 echo "Automatic testing of GGI_TLM"
 echo " "
 
@@ -37,6 +38,7 @@ GGI_TLM_memory_usage.txt \
 *.fd_* \
 *.jpg \
 *.msh \
+*.avi \
 IELF_value.out \
 fort.* \
 "
@@ -279,7 +281,7 @@ else
       
 fi
 
-exit 0
+#exit 0  ! this messes up the PARAMETERISED_FSS test case and isn't really needed anyway I don't think CJS 21/2/2014
 
 # we have some arguments to run_automatic_test
 

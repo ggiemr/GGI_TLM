@@ -172,14 +172,16 @@ integer	:: i,j
   if (allocated( surface_material_list )) then 
     do i=1,n_surface_materials
     
-      CALL deallocate_Sfilter( surface_material_list(i)%Z11_S )
-      CALL deallocate_Zfilter( surface_material_list(i)%Z11_Z )
-      CALL deallocate_Sfilter( surface_material_list(i)%Z12_S )
-      CALL deallocate_Zfilter( surface_material_list(i)%Z12_Z )
-      CALL deallocate_Sfilter( surface_material_list(i)%Z21_S )
-      CALL deallocate_Zfilter( surface_material_list(i)%Z21_Z )
-      CALL deallocate_Sfilter( surface_material_list(i)%Z22_S )
-      CALL deallocate_Zfilter( surface_material_list(i)%Z22_Z )
+      do j=1,3
+        CALL deallocate_Sfilter( surface_material_list(i)%Z11_S(j) )
+        CALL deallocate_Zfilter( surface_material_list(i)%Z11_Z(j) )
+        CALL deallocate_Sfilter( surface_material_list(i)%Z12_S(j) )
+        CALL deallocate_Zfilter( surface_material_list(i)%Z12_Z(j) )
+        CALL deallocate_Sfilter( surface_material_list(i)%Z21_S(j) )
+        CALL deallocate_Zfilter( surface_material_list(i)%Z21_Z(j) )
+        CALL deallocate_Sfilter( surface_material_list(i)%Z22_S(j) )
+        CALL deallocate_Zfilter( surface_material_list(i)%Z22_Z(j) )
+      end do
       
       if ( allocated(surface_material_list(i)%surface_list) ) then
 	DEALLOCATE( surface_material_list(i)%surface_list )
@@ -622,8 +624,16 @@ IMPLICIT NONE
     DEALLOCATE( face_excitation_field )
   end if
   
+  if (allocated( face_excitation_field )) then
+    DEALLOCATE( face_excitation_type )
+  end if
+  
   if (allocated( cell_excitation_field )) then
     DEALLOCATE( cell_excitation_field )
+  end if
+  
+  if (allocated( cell_excitation_field )) then
+    DEALLOCATE( cell_excitation_type )
   end if
   
   if (allocated( huygens_surface%offset )) DEALLOCATE( huygens_surface%offset )
@@ -836,7 +846,7 @@ integer	:: volume
   
   if (allocated(output_volume_averages)) then
   
-    do volume=1,n_output_volumes
+    do volume=1,n_output_volume_averages
     
       if (allocated(output_volume_averages(volume)%cell_list)) then
         DEALLOCATE( output_volume_averages(volume)%cell_list )

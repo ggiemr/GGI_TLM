@@ -254,16 +254,20 @@ output point is 'inside' the PEC/PMC and sees no field.
 
 71. Need to update COAX_COUPLING test case documentation - error found in the problem setup - cables were not 
     connected to the PEC end plates.  
+    STARTED_CHECKING...
     
 72. Need to automate calculation of the number of Fourier terms in PUL_LC_tlm_interface to make things robust...
     20 terms causes overflow/ underflow errors in matrix element calculation for the MTL_crosstalk test case. 	
 
 73. There are solution parameters which are set hard in the source code. Maybe it should be possible to change these 
     parameters from the input file - see point 72 for example...
+    DONE
     
 74. Need to document gaussian_step_sinusoid excitation function.
+    DONE
     
 75. Need to document pyramid and pyramid_ram volume geometry types.
+    DONE
 
 76. Cable terminations may snap to any surface - even an output surface which may cause problems. I think we need
     to test whether a surface has a material specified...
@@ -291,6 +295,7 @@ output point is 'inside' the PEC/PMC and sees no field.
     
 91. The new packets to set the flags LC_correction_type_subtract_cell_inductance and LC_correction_type_geometry_scale
     are not yet documented
+    DONE
     
 92. Perhaps it is worth thinking about a proper format for S parameter data...
 
@@ -300,7 +305,7 @@ output point is 'inside' the PEC/PMC and sees no field.
 
 94. Need to document test case EXCITATION_FUNCTION_TEST
 
-95. Need to document to specification of the number of iterations in GGI_TLM_filter_fit
+95. Need to document the specification of the number of iterations in GGI_TLM_filter_fit
 
 96. Problem with GGI_TLM_PROJECTS/VALIDATION_BOXES/NESTED_BOXES/ when using the FD_RG58 cable model. 
     Problem loading the cable model into GGI_TLM
@@ -309,5 +314,37 @@ output point is 'inside' the PEC/PMC and sees no field.
 97. New mesh generation fails for type rectangular_block2 - some tets are missing... 
     Need to fix this and check all geometry types.
     DONE
+    
+98. Need to document anisotropic_dispersive thin layer material type
+    DONE
 
+99. Need to tidy up the code for the time domain vector volume animation post process
+
+100. Need to document the packet: random_number_seed
+     DONE
+
+101. Need to document the no_geometry_vtk_files packet
+     DONE
+
+102. There may be unpredictable behaviour when hard and soft sources coincide...
+
+103. Need to include notes about hard and soft sources in the documentation
+     STARTED - must still include any warnings - see 104
+
+104. Not sure how the hard source works for H field excitaion on faces - needs to be checked out thoroughly.
+
+105. Need some documentation and an example of running a parameteriseg geometry
+     DONE
+
+106. Need some documentation and an example of optimisation
+     DONE
+
+107. Errors in Monopole (test case 9) documentation. Check for references to dipole (copy errors) and 
+     direction of monopole in the figure(s)- should be z. 
+     DONE
+
+108. Anisotropic thin layer test cases don't always work in parallel - some have only one cell in z which causes an error.
+     DONE: increase the extent of the transverse mesh to 11 cells.
+
+109. Some of the test cases give different answers when GGI_TLM uses different machines and compilers. This is due to the mesh generation in some of the test cases. Some of the test cases are sensitive to the way in which dimensions are rounded and subsequent decision of which cell a point belongs to. This problem could be removed by ensuring that no points lie on cell boundaries.
 

@@ -78,8 +78,8 @@ IMPLICIT NONE
   
           local_cell_excitation(cx,cy,cz)=1
     
-          write(*,*)'Setting cell centre excitation point',excitation_point
-          write(*,*)'Coordinates:',cx,cy,cz
+!          write(*,*)'Setting cell centre excitation point',excitation_point
+!          write(*,*)'Coordinates:',cx,cy,cz
   
         end if ! output point belongs to this processor
   
@@ -225,6 +225,7 @@ END SUBROUTINE initialise_excitation_points
 !
 !     started 14/08/2012 CJS
 !     allow superposition of point sources 26/9/3013
+!     allow hard and soft sources 12/2/2014 CJS
 !
 !
 SUBROUTINE Point_excitation
@@ -274,6 +275,11 @@ IMPLICIT NONE
 	  
           cell_excitation_field(excitation_array_point,field_component)=	&
 	       cell_excitation_field(excitation_array_point,field_component)+value
+	       
+! Set hard or soft excitation type	       
+          if (field_component.le.6) then
+            cell_excitation_type(excitation_array_point,field_component)=excitation_points(excitation_point)%source_type
+	  end if
 	  
 	end if ! excitation point in this processor's mesh
 
@@ -303,11 +309,17 @@ IMPLICIT NONE
           value=excitation_functions(function_number)%value_face(timestep)
 	
 !          face_excitation_field(excitation_array_point,side,field_component)=value
+
           face_excitation_field(excitation_array_point,1,field_component)=	&
 	    face_excitation_field(excitation_array_point,1,field_component)+value
           face_excitation_field(excitation_array_point,2,field_component)=	&
 	    face_excitation_field(excitation_array_point,2,field_component)+value
-	
+	       
+! Set hard or soft excitation type	       
+          if (field_component.le.6) then
+            face_excitation_type(excitation_array_point,1,field_component)=excitation_points(excitation_point)%source_type
+            face_excitation_type(excitation_array_point,2,field_component)=excitation_points(excitation_point)%source_type
+	  end if
         end if ! excitation point in this processor's mesh
 	
       end if ! centre or face excitation

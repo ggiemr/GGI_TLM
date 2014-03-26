@@ -46,7 +46,7 @@ IMPLICIT NONE
 
 ! local variables
 
-  integer,parameter	:: number_of_options=30
+  integer,parameter	:: number_of_options=35
   integer	:: option
 
   character(len=256)	:: command
@@ -84,9 +84,9 @@ IMPLICIT NONE
   write(*,*)'16. Discrete Time Fourier Transform with frequency warping (Time Domain to Frequency Domain)'
   write(*,*)'17. Create vector field Animation of Frequency Domain Surface Field Output'
   write(*,*)'18. Create vector field Animation of Frequency Domain Volume Field Output'
-  write(*,*)'19. S parameter to Z parameter transformation for symmetric structures'
-  write(*,*)'20. Calculate correlation of time domain data'
-  write(*,*)'21. Calculate correlation of frequency domain data'
+  write(*,*)'19. S parameter to Z parameter transformation'
+  write(*,*)'20. Calculate correlation matrix from time domain data'
+  write(*,*)'21. Calculate correlation matrix from frequency domain data'
   write(*,*)'22. Calculate complex antenna factor from (S21) measurement for two identical antennas'
   write(*,*)'23. Calculate complex antenna factor from antenna coupling (S21) measurement with one unknown antenna'
   write(*,*)'24. Fast Fourier Transform (Time Domain to Frequency Domain)'
@@ -96,6 +96,11 @@ IMPLICIT NONE
   write(*,*)'28. Calculate the frequency domain transfer function of a filter function'
   write(*,*)'29. Combine Frequency Domain Data: S(f)=f1(f) f2(f)'
   write(*,*)'30. Calculate PDF and CDF from a data set'
+  write(*,*)'31. Calculate correlation function from time domain data'
+  write(*,*)'32. Calculate correlation function from frequency domain data'
+  write(*,*)'33. Create Vector Animation of Time Domain Volume Field Output'
+  write(*,*)'34. Create time domain near field scan'
+  write(*,*)'35. Set random_number_seed'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -246,21 +251,21 @@ IMPLICIT NONE
   
     write(*,*)'S parameter to Z parameter transformation for symmetric structures'
     write(record_user_inputs_unit,*)option,	&
-    ' POST PROCESSING OPTION: S PARAMETER TO Z PARAMETER TRANSFORMATION FOR SYMMETRIC STRUCTURES'
-    CALL S_to_Z_symmetric()
+    ' POST PROCESSING OPTION: S PARAMETER TO Z PARAMETER TRANSFORMATION '
+    CALL S_to_Z()
     
   else if (option.EQ.20) then
   
     write(*,*)'Calculate correlation of time domain data'
     write(record_user_inputs_unit,*)option,	&
-    ' POST PROCESSING OPTION: CALCULATE CORRELATION OF TIME DOMAIN DATA'
+    ' POST PROCESSING OPTION: CALCULATE CORRELATION MATRIX OF TIME DOMAIN DATA'
     CALL correlation_time()
     
   else if (option.EQ.21) then
   
     write(*,*)'Calculate correlation of frequency domain data'
     write(record_user_inputs_unit,*)option,	&
-    ' POST PROCESSING OPTION: CALCULATE CORRELATION OF FREQUENCY DOMAIN DATA'
+    ' POST PROCESSING OPTION: CALCULATE CORRELATION MATRIX OF FREQUENCY DOMAIN DATA'
     CALL correlation_frequency()
     
   else if (option.EQ.22) then
@@ -325,7 +330,39 @@ IMPLICIT NONE
     write(record_user_inputs_unit,*)option,	&
     ' POST PROCESSING OPTION: CALCULATE PDF AND CDF FROM A DATA SET'
     CALL PDF_CDF()
+    
+  else if (option.EQ.31) then
   
+    write(*,*)'Calculate correlation of time domain data'
+    write(record_user_inputs_unit,*)option,	&
+    ' POST PROCESSING OPTION: CALCULATE CORRELATION FUNCTION OF TIME DOMAIN DATA'
+    CALL correlation_function_time()
+      
+  else if (option.EQ.32) then
+  
+    write(*,*)'Calculate correlation of frequency domain data'
+    write(record_user_inputs_unit,*)option,	&
+    ' POST PROCESSING OPTION: CALCULATE CORRELATION FUNCTION OF FREQUENCY DOMAIN DATA'
+    CALL correlation_function_frequency()
+    
+  else if (option.EQ.33) then
+  
+    write(*,*)'Create Vector Animation of Time Domain Volume Field Output'
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: CREATE TIME DOMAIN VECTOR VOLUME ANIMATION'
+    CALL create_time_domain_vector_animation()
+    
+  else if (option.EQ.34) then
+  
+    write(*,*)'Create time domain near field scan'
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: CREATE_TIME_DOMAIN_NEAR_FIELD_SCAN'
+    CALL create_time_domain_near_field_scan()
+    
+  else if (option.EQ.35) then
+  
+    write(*,*)'Set random number seed'
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: SET RANDOM NUMBER SEED'
+    CALL set_random_seed()
+     
   else
    
     write(*,*)'Unknown option',option

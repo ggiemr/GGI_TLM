@@ -4,6 +4,7 @@ set_TLM_solver_parameters.o \
 allocate_mesh.o \
 set_update_codes.o \
 run_TLM.o \
+run_TLM_periodic_BC.o \
 scatter.o \
 connect.o \
 Cable_parallel_pass_data.o \

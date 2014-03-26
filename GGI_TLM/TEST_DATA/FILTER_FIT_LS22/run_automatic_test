@@ -14,6 +14,7 @@ sed_command \
 *.jpeg \
 *.fd_* \
 *.fdmat \
+*.dat \
 ls22* \
 fort.* \
 "

@@ -92,8 +92,6 @@ character*256	:: input_line
       timestep_interval=1
       backspace(file_unit)
       
-!      GOTO 9010
-      
     end if
 
     

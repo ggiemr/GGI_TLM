@@ -69,8 +69,8 @@ IMPLICIT NONE
     
       local_cell_cable(cx,cy,cz)=cell_junction
     
-      write(*,*)'Setting cell centre junction',cell_junction
-      write(*,*)'Coordinates:',cx,cy,cz
+!      write(*,*)'Setting cell centre junction',cell_junction
+!      write(*,*)'Coordinates:',cx,cy,cz
     end if
     
   end do ! next cell_centre_junction

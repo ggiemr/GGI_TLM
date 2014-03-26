@@ -43,6 +43,7 @@
 !     revised excitation process 18/08/2012 CJS
 !     parallel 23/11/2012 CJS
 !     add current source to nodes 26/9/2013 CJS
+!     allow hard and soft sources 12/2/2014 CJS
 !
 !
 SUBROUTINE scatter
@@ -105,7 +106,7 @@ IMPLICIT NONE
 ! Cable parameters  
   integer	:: cable_cell_junction_number
   
-  integer	:: hard_source_factor
+  integer	:: hard_source_factor(6)
   
   logical :: op_flag
 
@@ -301,6 +302,7 @@ IMPLICIT NONE
 	  
 	    excitation_cell_number=excitation_cell_number+1
 	    field(1:6)=cell_excitation_field(excitation_cell_number,1:6)
+	    hard_source_factor(1:6)=cell_excitation_type(excitation_cell_number,1:6)
 
 ! work out the current source as the integral of the current density over the cell area	    
 	    Isx=cell_excitation_field(excitation_cell_number,7)*dl*dl
@@ -308,13 +310,12 @@ IMPLICIT NONE
 	    Isz=cell_excitation_field(excitation_cell_number,9)*dl*dl
 
 ! note: soft source only at the moment...
-            hard_source_factor=1	    
-	    Vx=hard_source_factor*Vx-field(Ex)*dl/2d0+Isx/Yx
-	    Vy=hard_source_factor*Vy-field(Ey)*dl/2d0+Isy/Yy
-	    Vz=hard_source_factor*Vz-field(Ez)*dl/2d0+Isz/Yz
-	    Ix=hard_source_factor*Ix+field(Hx)*dl/2d0
-	    Iy=hard_source_factor*Iy+field(Hy)*dl/2d0
-	    Iz=hard_source_factor*Iz+field(Hz)*dl/2d0
+	    Vx=hard_source_factor(1)*Vx-field(Ex)*dl/2d0+Isx/Yx
+	    Vy=hard_source_factor(2)*Vy-field(Ey)*dl/2d0+Isy/Yy
+	    Vz=hard_source_factor(3)*Vz-field(Ez)*dl/2d0+Isz/Yz
+	    Ix=hard_source_factor(4)*Ix+field(Hx)*dl/2d0
+	    Iy=hard_source_factor(5)*Iy+field(Hy)*dl/2d0
+	    Iz=hard_source_factor(6)*Iz+field(Hz)*dl/2d0
 	    
 !	    write(*,*)'finished excitation'
 	    

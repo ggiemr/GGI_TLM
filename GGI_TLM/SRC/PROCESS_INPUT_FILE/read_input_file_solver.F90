@@ -55,7 +55,11 @@ character*256	:: input_line
 ! convert text to lower case
     CALL convert_to_lower_case(input_line,256)
 
-    if (input_line.EQ.'simulation_time') then
+    if (input_line.EQ.'periodic_boundary') then
+    
+      periodic_boundary=.TRUE.
+      
+    else if (input_line.EQ.'simulation_time') then
     
       CALL read_simulation_time()
      
@@ -150,6 +154,10 @@ character*256	:: input_line
     else if (input_line.EQ.'wrapping_boundary_conditions') then
     
       CALL read_wrapping_boundary_conditions()
+            
+    else if (input_line.EQ.'random_number_seed') then
+    
+      CALL read_random_number_seed()
       
     end if
     

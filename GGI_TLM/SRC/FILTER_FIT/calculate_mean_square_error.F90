@@ -51,12 +51,14 @@ IMPLICIT NONE
   integer	:: freq_loop
   
   complex*16    :: fit_value
+  real*8	:: value_norm
   
 ! START
 
 !  CALL write_line('CALLED: calculate_error_Sfilter',0,ff_output_to_screen)
 
   Mean_square_error=0d0
+  value_norm=0d0
   
   do freq_loop=1,n_values
   
@@ -73,12 +75,13 @@ IMPLICIT NONE
       end if   
     
       Mean_square_error=Mean_square_error+abs( fit_value-value(function_loop,freq_loop) )**2
+      value_norm=value_norm+abs( value(function_loop,freq_loop) )**2
     
     end do ! next function
          
   end do ! next freq_loop
     
-  Mean_square_error=Mean_square_error/n_values
+  Mean_square_error=Mean_square_error/value_norm
 
 !  CALL write_line('FINISHED: calculate_error_Sfilter',0,ff_output_to_screen)
 
@@ -118,12 +121,14 @@ IMPLICIT NONE
   integer	:: freq_loop
   
   complex*16    :: fit_value
+  real*8	:: value_norm
   
 ! START
 
 !  CALL write_line('CALLED: calculate_error_Sfilter_PR',0,ff_output_to_screen)
 
   Mean_square_error=0d0
+  value_norm=0d0
   
   do freq_loop=1,n_values
   
@@ -140,12 +145,13 @@ IMPLICIT NONE
       end if   
     
       Mean_square_error=Mean_square_error+abs( fit_value-value(function_loop,freq_loop) )**2
+      value_norm=value_norm+abs( value(function_loop,freq_loop) )**2
     
     end do ! next function
          
   end do ! next freq_loop
     
-  Mean_square_error=Mean_square_error/n_values
+  Mean_square_error=Mean_square_error/value_norm
 
 !  CALL write_line('FINISHED: calculate_error_Sfilter_PR',0,ff_output_to_screen)
 
@@ -185,12 +191,14 @@ IMPLICIT NONE
   integer	:: freq_loop
   
   complex*16    :: fit_value
+  real*8	:: value_norm
   
 ! START
 
 !  CALL write_line('CALLED: calculate_error_Sfilter_PZ',0,ff_output_to_screen)
 
   Mean_square_error=0d0
+  value_norm=0d0
   
   do freq_loop=1,n_values
   
@@ -207,12 +215,13 @@ IMPLICIT NONE
       end if   
     
       Mean_square_error=Mean_square_error+abs( fit_value-value(function_loop,freq_loop) )**2
+      value_norm=value_norm+abs( value(function_loop,freq_loop) )**2
     
     end do ! next function
          
   end do ! next freq_loop
     
-  Mean_square_error=Mean_square_error/n_values
+  Mean_square_error=Mean_square_error/value_norm
 
 !  CALL write_line('FINISHED: calculate_error_Sfilter_PZ',0,ff_output_to_screen)
 

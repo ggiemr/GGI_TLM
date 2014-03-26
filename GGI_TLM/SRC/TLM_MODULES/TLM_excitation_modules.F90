@@ -142,15 +142,16 @@ END TYPE excitation_mode_type
   integer,parameter	:: excitation_function_type_noise=10
   integer,parameter	:: excitation_function_type_file=11
   
-  integer,parameter	:: source_type_hard=1
-  
-  integer,parameter	:: source_type_soft=2
+  integer,parameter	:: source_type_hard=0
+  integer,parameter	:: source_type_soft=1
 
   integer		:: total_number_excitation_cells
   real*8,allocatable	:: cell_excitation_field(:,:)
+  integer,allocatable	:: cell_excitation_type(:,:)
 
   integer		:: total_number_excitation_faces
   real*8,allocatable	:: face_excitation_field(:,:,:)
+  integer,allocatable	:: face_excitation_type(:,:,:)
   
   integer				     	:: n_excitation_functions
   type(excitation_function_type),allocatable 	:: excitation_functions(:)

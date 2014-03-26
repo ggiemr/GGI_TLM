@@ -266,11 +266,11 @@ character	:: ch
      STOP
 
 9020 CALL write_line('Error reading cable_junction_list packet data',0,.TRUE.)
-     CALL write_line_integer('Error in cable line list, cable junction:',cable_junction_number,0,.TRUE.)
+     CALL write_line_integer('Error in cable list, cable junction:',cable_junction_number,0,.TRUE.)
      STOP
 
 9030 CALL write_line('Error reading cable_junction_list packet data',0,.TRUE.)
-     CALL write_line_integer('Error in cable line end list, cable junction:',cable_junction_number,0,.TRUE.)
+     CALL write_line_integer('Error in cable end list, cable junction:',cable_junction_number,0,.TRUE.)
      STOP
 
 9040 CALL write_line('Error reading cable_junction_list packet data',0,.TRUE.)

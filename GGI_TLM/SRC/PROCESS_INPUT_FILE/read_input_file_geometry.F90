@@ -55,7 +55,11 @@ character*256	:: input_line
 ! convert text to lower case
     CALL convert_to_lower_case(input_line,256)
 
-    if (input_line.EQ.'mesh_outer_boundary_dimension') then
+    if (input_line.EQ.'periodic_boundary') then
+    
+      periodic_boundary=.TRUE.
+
+    else if (input_line.EQ.'mesh_outer_boundary_dimension') then
     
       CALL read_mesh_outer_boundary_dimension()
      
@@ -86,6 +90,10 @@ character*256	:: input_line
     else if (input_line.EQ.'new_mesh_generation') then
     
       new_mesh_generation=.TRUE.
+ 
+    else if (input_line.EQ.'no_geometry_vtk_files') then
+    
+      write_geometry_vtk_files=.FALSE.
       
     end if
     

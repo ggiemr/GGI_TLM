@@ -179,6 +179,17 @@ IMPLICIT NONE
 	end if ! cell belongs to this process
 		  
       end do !next cell cell in this volume	  
+      
+! set output timestep information
+      CALL set_output_time_information(frequency_output_volume(output_volume)%specified_timestep_information,	&
+                                       frequency_output_volume(output_volume)%first_timestep,   &
+                                       frequency_output_volume(output_volume)%last_timestep,    &
+                                       frequency_output_volume(output_volume)%timestep_interval,	    &
+                                       frequency_output_volume(output_volume)%specified_time_information,	    &
+                                       frequency_output_volume(output_volume)%first_time,	    &		  
+                                       frequency_output_volume(output_volume)%last_time,	    &				  
+                                       frequency_output_volume(output_volume)%time_interval,	&
+                                       frequency_output_volume(output_volume)%number_of_output_timesteps )
   
     end do ! next output volume
 
@@ -246,6 +257,8 @@ IMPLICIT NONE
   
   real*8	:: frequency
   complex*16	:: ejwt
+  
+  logical	:: output_flag
 
 ! START
   
@@ -253,27 +266,36 @@ IMPLICIT NONE
 
   
   do output_volume=1,n_frequency_output_volumes
+  
+    CALL get_output_flag(output_flag,	&
+                         frequency_output_volume(output_volume)%first_timestep,	&
+                         frequency_output_volume(output_volume)%last_timestep,	&
+                         frequency_output_volume(output_volume)%timestep_interval )
+			 
+    if (output_flag) then
       
-    number_of_cells=frequency_output_volume(output_volume)%number_of_cells
-    frequency=frequency_output_volume(output_volume)%frequency
-    ejwt=exp(-j*2d0*pi*frequency*time)
+      number_of_cells=frequency_output_volume(output_volume)%number_of_cells
+      frequency=frequency_output_volume(output_volume)%frequency
+      ejwt=exp(-j*2d0*pi*frequency*time)
     
-    do output_cell=1,number_of_cells
+      do output_cell=1,number_of_cells
          
-      output_field_number=frequency_output_volume(output_volume)%cell_output_field_number_list(output_cell)
-      field_component=frequency_output_volume(output_volume)%field_component  
-      cz  =frequency_output_volume(output_volume)%cell_list(output_cell)%k
+        output_field_number=frequency_output_volume(output_volume)%cell_output_field_number_list(output_cell)
+        field_component=frequency_output_volume(output_volume)%field_component  
+        cz  =frequency_output_volume(output_volume)%cell_list(output_cell)%k
       
-      if (rank.eq.cell_rank(cz)) then
+        if (rank.eq.cell_rank(cz)) then
  
-	value=cell_output_field(output_field_number,field_component)
+	  value=cell_output_field(output_field_number,field_component)
 	
-	frequency_output_volume(output_volume)%value(output_cell)=	&
-	    frequency_output_volume(output_volume)%value(output_cell)+value*ejwt   !*dt
+	  frequency_output_volume(output_volume)%value(output_cell)=	&
+	      frequency_output_volume(output_volume)%value(output_cell)+value*ejwt   !*dt
 
-      end if ! output cell belongs to this process
+        end if ! output cell belongs to this process
           
-    end do !next cell cell in this volume	  
+      end do !next cell cell in this volume	  
+
+    end if ! this timestep should contribute to the output
   
   end do ! next frequency_output_volume
 

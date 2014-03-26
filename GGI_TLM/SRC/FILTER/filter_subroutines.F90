@@ -29,7 +29,7 @@
 !  SUBROUTINE bilinear_s_to_z( filter_s_in , dt , filter_z )
 !  SUBROUTINE bilinear_z_to_s( filter_z  , filter_s )
 !  SUBROUTINE reciprocal_Sfilter(a,res) 
-!  SUBROUTINE Z_fast_slow_docomposition( Z_in, f_fast  , Z_slow )
+!  SUBROUTINE Z_fast_slow_decomposition( Z_in, f_fast  , Z_slow )
 !  SUBROUTINE copy_Zfilter_response(ft1,ft2)
 !  SUBROUTINE subtract_1_Sfilter(a,res) 
 !  SUBROUTINE calculate_magnetic_susceptibility_impedance_Sfilter(a,K,res) 
@@ -1124,7 +1124,7 @@ END SUBROUTINE reciprocal_Sfilter
 
 !
 ! NAME
-!       Z_fast_slow_docomposition
+!       Z_fast_slow_decomposition
 !
 ! DESCRIPTION
 !       decompose a Z domain filter into an instantaneous (fast) and
@@ -1142,7 +1142,7 @@ END SUBROUTINE reciprocal_Sfilter
 !     makes use of operator overloading for polynomial types     
 !
 
-SUBROUTINE Z_fast_slow_docomposition( Z_in, f_fast  , Z_slow )
+SUBROUTINE Z_fast_slow_decomposition( Z_in, f_fast  , Z_slow )
   
   ! Modules used
   
@@ -1171,13 +1171,13 @@ SUBROUTINE Z_fast_slow_docomposition( Z_in, f_fast  , Z_slow )
     
 ! START
 
-!  print*,'Z_fast_slow_docomposition'
+!  print*,'Z_fast_slow_decomposition'
 
   aorder=Z_in%a%order
   border=Z_in%b%order
 
   if (aorder.ne.border) then
-    write(*,*)'Error in Z_fast_slow_docomposition'
+    write(*,*)'Error in Z_fast_slow_decomposition'
     write(*,*)'aorder.ne.border'
     write(*,*)aorder,border
     stop

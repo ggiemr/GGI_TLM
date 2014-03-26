@@ -168,7 +168,7 @@ IMPLICIT NONE
     pul_wire_spec(wire)%rw=conductor_radius(wire)
     pul_wire_spec(wire)%ri=dielectric_radius(wire)
     
-    write(*,*)'wire',wire,' xc=',conductor_xc(wire),' yc=',conductor_yc(wire)
+!    write(*,*)'wire',wire,' xc=',conductor_xc(wire),' yc=',conductor_yc(wire)
         	
   end do ! next wire      
 

@@ -52,6 +52,9 @@
 !     Add output on faces 13/09/2012 CJS
 !     Start to include excitations on surfaces 18/09/2012 CJS
 !     parallel 23/11/2012 CJS
+!    2/12/2013 		CJS: Implement anisotropic impedance boundary conditions
+!     allow hard and soft sources 12/2/2014 CJS
+!
 !
 !
 SUBROUTINE connect
@@ -80,6 +83,7 @@ IMPLICIT NONE
   real*8 Ix_max,Iy_max,Iz_max
   
   integer	:: first_nz,last_nz
+  integer	:: pol
    
 ! Material update parameters  
   integer material_type
@@ -127,6 +131,9 @@ IMPLICIT NONE
   
   real*8	:: Is_min(3)
   real*8	:: Is_max(3)
+  
+  integer	:: hard_source_factor_min(6)
+  integer	:: hard_source_factor_max(6)
   
   logical min_face_excitation
   
@@ -226,17 +233,19 @@ IMPLICIT NONE
               Vz_min=V(Vz_xmin,cx,cy,cz)  +  V(Vz_xmax,cx-1,cy,cz)
 	      Vz_max=Vz_min
 	  
-	    else if (material_type.EQ.surface_material_type_DISPERSIVE) then
+	    else if ( (material_type.EQ.surface_material_type_DISPERSIVE).OR.			&
+	              (material_type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE) ) then
 	    
 ! Vy polarisation 	      
 	      surface_filter_number=face_update_code_to_material_data(face_update_code(face_number),2)
-	      
+	      pol=2
               call surface_material_update(V(Vy_xmax,cx-1,cy,cz),Z0,V(Vy_xmin,cx,cy,cz),Z0,	&
-	                                   Vy_max,Vy_min,material_number,reverse_material,surface_filter_number)	
+	                                   Vy_max,Vy_min,material_number,pol,reverse_material,surface_filter_number)	
 	      
 ! Vz polarisation 	      
+	      pol=3
               call surface_material_update(V(Vz_xmax,cx-1,cy,cz),Z0,V(Vz_xmin,cx,cy,cz),Z0,	&
-	                                   Vz_max,Vz_min,material_number,reverse_material,surface_filter_number+1)	
+	                                   Vz_max,Vz_min,material_number,pol,reverse_material,surface_filter_number+1)	
 	    
 	    end if	  
 	    
@@ -249,16 +258,19 @@ IMPLICIT NONE
 	    field_min(1:6)=face_excitation_field(excitation_face_number,1,1:6)
 	    field_max(1:6)=face_excitation_field(excitation_face_number,2,1:6)
 	    
+	    hard_source_factor_min(1:6)=face_excitation_type(excitation_face_number,1,1:6)
+	    hard_source_factor_max(1:6)=face_excitation_type(excitation_face_number,1,1:6)
+	    
 	    Js_min(1:3)=face_excitation_field(excitation_face_number,1,7:9)
 	    Js_max(1:3)=face_excitation_field(excitation_face_number,2,7:9)
 	    Ms_min(1:3)=face_excitation_field(excitation_face_number,1,10:12)
 	    Ms_max(1:3)=face_excitation_field(excitation_face_number,2,10:12)
 	    
-            Vy_min=Vy_min-field_min(Ey)*dl-field_min(Hz)*Z0*dl+Js_min(2)*dl*Z0/2d0+Ms_min(3)*dl/2d0
-	    Vy_max=Vy_max-field_max(Ey)*dl+field_max(Hz)*Z0*dl+Js_max(2)*dl*Z0/2d0-Ms_max(3)*dl/2d0
+            Vy_min=Vy_min*hard_source_factor_min(Ey)-field_min(Ey)*dl-field_min(Hz)*Z0*dl+Js_min(2)*dl*Z0/2d0+Ms_min(3)*dl/2d0
+	    Vy_max=Vy_max*hard_source_factor_max(Ey)-field_max(Ey)*dl+field_max(Hz)*Z0*dl+Js_max(2)*dl*Z0/2d0-Ms_max(3)*dl/2d0
 	    
-            Vz_min=Vz_min-field_min(Ez)*dl+field_min(Hy)*Z0*dl+Js_min(3)*dl*Z0/2d0-Ms_min(2)*dl/2d0
-	    Vz_max=Vz_max-field_max(Ez)*dl-field_max(Hy)*Z0*dl+Js_max(3)*dl*Z0/2d0+Ms_max(2)*dl/2d0
+            Vz_min=Vz_min*hard_source_factor_min(Ez)-field_min(Ez)*dl+field_min(Hy)*Z0*dl+Js_min(3)*dl*Z0/2d0-Ms_min(2)*dl/2d0
+	    Vz_max=Vz_max*hard_source_factor_max(Ez)-field_max(Ez)*dl-field_max(Hy)*Z0*dl+Js_max(3)*dl*Z0/2d0+Ms_max(2)*dl/2d0
 	    
 	  end if
 
@@ -403,17 +415,20 @@ IMPLICIT NONE
               Vz_min=V(Vz_ymin,cx,cy,cz)+V(Vz_ymax,cx,cy-1,cz)
 	      Vz_max=Vz_min
 	  
-	    else if (material_type.EQ.surface_material_type_DISPERSIVE) then
+	    else if ( (material_type.EQ.surface_material_type_DISPERSIVE).OR.			&
+	              (material_type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE) ) then
 	    
 	      surface_filter_number=face_update_code_to_material_data(face_update_code(face_number),2)
 	      
 ! Vx polarisation 	      
+              pol=1
               call surface_material_update(V(Vx_ymax,cx,cy-1,cz),Z0,V(Vx_ymin,cx,cy,cz),Z0,	&
-	                                   Vx_max,Vx_min,material_number,reverse_material,surface_filter_number)	
+	                                   Vx_max,Vx_min,material_number,pol,reverse_material,surface_filter_number)	
 	      	      
 ! Vz polarisation 	      
+              pol=3
               call surface_material_update(V(Vz_ymax,cx,cy-1,cz),Z0,V(Vz_ymin,cx,cy,cz),Z0,	&
-	                                   Vz_max,Vz_min,material_number,reverse_material,surface_filter_number+1)	
+	                                   Vz_max,Vz_min,material_number,pol,reverse_material,surface_filter_number+1)	
 					       	  
 	    end if
 	    
@@ -425,17 +440,20 @@ IMPLICIT NONE
 	    excitation_face_number=excitation_face_number+1
 	    field_min(1:6)=face_excitation_field(excitation_face_number,1,1:6)
 	    field_max(1:6)=face_excitation_field(excitation_face_number,2,1:6)
+	    
+	    hard_source_factor_min(1:6)=face_excitation_type(excitation_face_number,1,1:6)
+	    hard_source_factor_max(1:6)=face_excitation_type(excitation_face_number,1,1:6)
 	
 	    Js_min(1:3)=face_excitation_field(excitation_face_number,1,7:9)
 	    Js_max(1:3)=face_excitation_field(excitation_face_number,2,7:9)
 	    Ms_min(1:3)=face_excitation_field(excitation_face_number,1,10:12)
 	    Ms_max(1:3)=face_excitation_field(excitation_face_number,2,10:12)
 	    
-            Vx_min=Vx_min-field_min(Ex)*dl+field_min(Hz)*Z0*dl+Js_min(1)*dl*Z0/2d0-Ms_min(3)*dl/2d0
-	    Vx_max=Vx_max-field_max(Ex)*dl-field_max(Hz)*Z0*dl+Js_max(1)*dl*Z0/2d0+Ms_max(3)*dl/2d0
+            Vx_min=Vx_min*hard_source_factor_min(Ex)-field_min(Ex)*dl+field_min(Hz)*Z0*dl+Js_min(1)*dl*Z0/2d0-Ms_min(3)*dl/2d0
+	    Vx_max=Vx_max*hard_source_factor_max(Ex)-field_max(Ex)*dl-field_max(Hz)*Z0*dl+Js_max(1)*dl*Z0/2d0+Ms_max(3)*dl/2d0
 	    
-            Vz_min=Vz_min-field_min(Ez)*dl-field_min(Hx)*Z0*dl+Js_min(3)*dl*Z0/2d0+Ms_min(1)*dl/2d0
-	    Vz_max=Vz_max-field_max(Ez)*dl+field_max(Hx)*Z0*dl+Js_max(3)*dl*Z0/2d0-Ms_max(1)*dl/2d0
+            Vz_min=Vz_min*hard_source_factor_min(Ez)-field_min(Ez)*dl-field_min(Hx)*Z0*dl+Js_min(3)*dl*Z0/2d0+Ms_min(1)*dl/2d0
+	    Vz_max=Vz_max*hard_source_factor_max(Ez)-field_max(Ez)*dl+field_max(Hx)*Z0*dl+Js_max(3)*dl*Z0/2d0-Ms_max(1)*dl/2d0
 	  
 	  end if
 	  					       
@@ -590,17 +608,20 @@ IMPLICIT NONE
 	      Vy_min=V(Vy_zmin,cx,cy,cz)+V(Vy_zmax,cx,cy,cz-1)
 	      Vy_max=Vy_min
 	     
-	    else if (material_type.EQ.surface_material_type_DISPERSIVE) then
+	    else if ( (material_type.EQ.surface_material_type_DISPERSIVE).OR.			&
+	              (material_type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE) ) then
 	    
 	      surface_filter_number=face_update_code_to_material_data(face_update_code(face_number),2)
 
 ! Vx polarisation 	      
+              pol=1
               call surface_material_update(V(Vx_zmax,cx,cy,cz-1),Z0,V(Vx_zmin,cx,cy,cz),Z0,	&
-	                                   Vx_max,Vx_min,material_number,reverse_material,surface_filter_number)	
+	                                   Vx_max,Vx_min,material_number,pol,reverse_material,surface_filter_number)	
 	      	      
 ! Vy polarisation 	      
+              pol=2
               call surface_material_update(V(Vy_zmax,cx,cy,cz-1),Z0,V(Vy_zmin,cx,cy,cz),Z0,	&
-	                                   Vy_max,Vy_min,material_number,reverse_material,surface_filter_number+1)	
+	                                   Vy_max,Vy_min,material_number,pol,reverse_material,surface_filter_number+1)	
 	  
 	    end if
 	    
@@ -612,17 +633,20 @@ IMPLICIT NONE
 	    excitation_face_number=excitation_face_number+1
 	    field_min(1:6)=face_excitation_field(excitation_face_number,1,1:6)
 	    field_max(1:6)=face_excitation_field(excitation_face_number,2,1:6)
+	    
+	    hard_source_factor_min(1:6)=face_excitation_type(excitation_face_number,1,1:6)
+	    hard_source_factor_max(1:6)=face_excitation_type(excitation_face_number,1,1:6)
 
 	    Js_min(1:3)=face_excitation_field(excitation_face_number,1,7:9)
 	    Js_max(1:3)=face_excitation_field(excitation_face_number,2,7:9)
 	    Ms_min(1:3)=face_excitation_field(excitation_face_number,1,10:12)
 	    Ms_max(1:3)=face_excitation_field(excitation_face_number,2,10:12)
 	    
-            Vx_min=Vx_min-field_min(Ex)*dl-field_min(Hy)*Z0*dl+Js_min(1)*dl*Z0/2d0+Ms_min(2)*dl/2d0
-	    Vx_max=Vx_max-field_max(Ex)*dl+field_max(Hy)*Z0*dl+Js_max(1)*dl*Z0/2d0-Ms_max(2)*dl/2d0
+            Vx_min=Vx_min*hard_source_factor_min(Ex)-field_min(Ex)*dl-field_min(Hy)*Z0*dl+Js_min(1)*dl*Z0/2d0+Ms_min(2)*dl/2d0
+	    Vx_max=Vx_max*hard_source_factor_max(Ex)-field_max(Ex)*dl+field_max(Hy)*Z0*dl+Js_max(1)*dl*Z0/2d0-Ms_max(2)*dl/2d0
 	    
-            Vy_min=Vy_min-field_min(Ey)*dl+field_min(Hx)*Z0*dl+Js_min(2)*dl*Z0/2d0-Ms_min(1)*dl/2d0
-	    Vy_max=Vy_max-field_max(Ey)*dl-field_max(Hx)*Z0*dl+Js_max(2)*dl*Z0/2d0+Ms_max(1)*dl/2d0
+            Vy_min=Vy_min*hard_source_factor_min(Ey)-field_min(Ey)*dl+field_min(Hx)*Z0*dl+Js_min(2)*dl*Z0/2d0-Ms_min(1)*dl/2d0
+	    Vy_max=Vy_max*hard_source_factor_max(Ey)-field_max(Ey)*dl-field_max(Hx)*Z0*dl+Js_max(2)*dl*Z0/2d0+Ms_max(1)*dl/2d0
 	  
 	  end if
 					       

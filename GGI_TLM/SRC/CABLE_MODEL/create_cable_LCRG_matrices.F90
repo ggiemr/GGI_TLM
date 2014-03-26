@@ -94,7 +94,7 @@ IMPLICIT NONE
     
 ! Calculate fast impedance and slow impedance filter
 
-        CALL Z_fast_slow_docomposition( Zfilter1 ,Z_f  , Zfilter2 )
+        CALL Z_fast_slow_decomposition( Zfilter1 ,Z_f  , Zfilter2 )
           
         write(*,*)'Zs_eps_f',Z_f
         write(*,*)'Zfilter2'

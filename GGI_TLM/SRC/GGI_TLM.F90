@@ -137,8 +137,12 @@ IMPLICIT NONE
   
   CALL initialise_wrap_outer_boundary()
 
-  CALL run_TLM()
-  
+  if (.not.periodic_boundary) then  
+    CALL run_TLM()    
+  else  
+    CALL run_TLM_periodic_BC()    
+  end if
+   
   CALL write_frequency_domain_outputs()
 
   CALL finish_outputs()

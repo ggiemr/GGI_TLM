@@ -49,6 +49,11 @@ IMPLICIT NONE
   
   integer,parameter	:: max_opt_iterations=1000
   real*8,parameter 	:: opt_accuracy=1D-8
+
+  real*8,parameter	:: test_small=1e-8
+  real*8,parameter	:: test_very_small=1e-10
+  
+  real*8		:: stability_test_small
   
   integer,parameter 	:: dielectric_material =1	    
   integer,parameter	:: magnetic_material   =2	    

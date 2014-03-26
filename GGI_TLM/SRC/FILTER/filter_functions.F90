@@ -582,7 +582,7 @@ USE constants
     w=2d0*pi*f/s1%wnorm
     jw=j*w
     
-    value=cmplx(s1%G)
+    value=dcmplx(s1%G)
 
     do n=1,s1%order
       

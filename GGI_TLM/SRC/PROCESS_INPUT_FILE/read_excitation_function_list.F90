@@ -35,6 +35,9 @@
 !1.0 1e-9 3e-9
 !3       ! EXCITATION NUMBER
 !filename
+!2   # number of header lines in file
+!1   # column for time data
+!2   # column for value data
 !1.0 1e-9
 !
 ! COMMENTS
@@ -63,6 +66,7 @@ integer	:: n_params
 integer	:: i
 
 character*256	:: input_line
+character*256	:: saved_input_line
 
 integer	:: loop,sample,n_samples
 real*8	:: t_in,ft_in
@@ -97,6 +101,8 @@ real*8,allocatable	  :: read_data(:)
     read(input_file_unit,'(A)',end=9010)input_line
    
     CALL write_line( '...Reading excitation_function_type:'//trim(input_line),0,.TRUE. )
+! save the original input line before converting to lower case - may be needed if it is a file name
+    saved_input_line=input_line
     
 ! convert text to lower case
     CALL convert_to_lower_case(input_line,256)
@@ -157,8 +163,8 @@ real*8,allocatable	  :: read_data(:)
 
 ! go back to the original input line read from the input file and check whether this is a function in a file
 
-      excitation_functions(excitation_number)%filename=input_line
-      
+      excitation_functions(excitation_number)%filename=saved_input_line
+
       write(*,*)'Excitation function file name='
       write(*,*)trim(excitation_functions(excitation_number)%filename)
       write(*,*)'Opening file:',trim(excitation_functions(excitation_number)%filename)

@@ -14,7 +14,7 @@ Surface_list
 1   Number of surfaces (integer)
 1       surface_number (integer)
 rectangle
-18.0 18.0   surface parameters (n*real) ! normal to z, Top
+19.0 19.0   surface parameters (n*real) ! normal to z, Top
 0.0 0.0 0.0    
 0.0 0.0 0.0
 

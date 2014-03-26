@@ -407,6 +407,7 @@ IMPLICIT NONE
   
 9000 CALL write_line('Error in create_cable_meshes:',0,.TRUE.)
      CALL write_line('Line cell segment list is not continuous',0,.TRUE.)
+     write(*,*)'Cable=',cable
      write(*,*)'Line=',line
      write(*,*)'Last cell point:',last_cell_point
      write(*,*)'Line end point1:',line_end_cell_point1
@@ -415,6 +416,7 @@ IMPLICIT NONE
   
 9010 CALL write_line('Error in create_cable_meshes:',0,.TRUE.)
      CALL write_line('Line cell segment list is not continuous',0,.TRUE.)
+     write(*,*)'Cable=',cable
      write(*,*)'Line=',line
      write(*,*)'Last cell point:',last_cell_point
      write(*,*)'Line end point1:',cell_point1
@@ -652,10 +654,10 @@ IMPLICIT NONE
 ! coordinates of the point  
   xyz_point=problem_points(point)%point
   
-  write(*,*)'CALLED:get_closest_mesh_face'
-  write(*,*)'point=',point
-  write(*,*)'Coordinates',xyz_point%x,xyz_point%y,xyz_point%z
-  write(*,*)'Cell ',cell_face_point%cell%i,cell_face_point%cell%j,cell_face_point%cell%k
+!  write(*,*)'CALLED:get_closest_mesh_face'
+!  write(*,*)'point=',point
+!  write(*,*)'Coordinates',xyz_point%x,xyz_point%y,xyz_point%z
+!  write(*,*)'Cell ',cell_face_point%cell%i,cell_face_point%cell%j,cell_face_point%cell%k
   
   min_dist=1d30
   min_face=0

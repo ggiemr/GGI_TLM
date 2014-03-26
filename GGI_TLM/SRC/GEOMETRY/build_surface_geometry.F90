@@ -59,6 +59,10 @@ integer	:: surface_number
       
       CALL build_surface_sphere(surface_number)
       
+    else if (problem_surfaces(surface_number)%surface_type.EQ.surface_type_hemisphere) then
+      
+      CALL build_surface_hemisphere(surface_number)
+      
     else if (problem_surfaces(surface_number)%surface_type.EQ.surface_type_rectangular_block) then
       
       CALL build_surface_rectangular_block(surface_number)
@@ -114,8 +118,10 @@ integer	:: surface_number
     end if ! surface_type
 
   end do ! next surface number
-  
-  CALL plot_triangulated_surfaces()
+    
+  if (write_geometry_vtk_files) then
+    CALL plot_triangulated_surfaces()
+  end if
 
   CALL write_line('FINISHED: Build_surface_geometry',0,output_to_screen_flag)
   

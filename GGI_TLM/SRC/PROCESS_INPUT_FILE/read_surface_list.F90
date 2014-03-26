@@ -117,6 +117,10 @@ logical	:: file_exists
     else if (input_line.eq.'sphere') then
       n_params=1
       problem_surfaces(surface_number)%surface_type=surface_type_sphere
+
+    else if (input_line.eq.'hemisphere') then
+      n_params=1
+      problem_surfaces(surface_number)%surface_type=surface_type_hemisphere
       
     else if (input_line.eq.'rectangle') then    
       n_params=2

@@ -152,6 +152,9 @@ IMPLICIT NONE
   
   if (total_number_excitation_cells.GT.0) then
     ALLOCATE( cell_excitation_field(1:total_number_excitation_cells,1:9) )
+    cell_excitation_field(1:total_number_excitation_cells,1:9)=0d0
+    ALLOCATE( cell_excitation_type(1:total_number_excitation_cells,1:6) )
+    cell_excitation_type(1:total_number_excitation_cells,1:6)=source_type_soft
   end if
   
   if (total_number_output_cells.GT.0) then
@@ -266,6 +269,7 @@ END SUBROUTINE set_cell_update_codes
 ! HISTORY
 !
 !     started 15/08/2012 CJS
+!    2/12/2013 		CJS: Implement anisotropic impedance boundary conditions
 !
 !
 SUBROUTINE set_face_update_codes
@@ -475,8 +479,8 @@ IMPLICIT NONE
     RETURN 
   end if
   
-  ALLOCATE ( face_update_code_to_material_data(1:special_face_count,1:2) )
-  face_update_code_to_material_data(1:special_face_count,1:2)=0
+  ALLOCATE ( face_update_code_to_material_data(1:special_face_count,1:3) )
+  face_update_code_to_material_data(1:special_face_count,1:3)=0
   
   ALLOCATE ( face_update_code_to_cable_number(1:special_face_count) )
   face_update_code_to_cable_number(1:special_face_count)=0
@@ -492,6 +496,8 @@ IMPLICIT NONE
     write(*,*)'Allocating ',total_number_excitation_faces,' face excitation fields'
     ALLOCATE( face_excitation_field(1:total_number_excitation_faces,1:2,1:12) )
     face_excitation_field(1:total_number_excitation_faces,1:2,1:12)=0d0
+    ALLOCATE( face_excitation_type(1:total_number_excitation_faces,1:2,1:6) )
+    face_excitation_type(1:total_number_excitation_faces,1:2,1:6)=source_type_soft
   end if
     
   if (total_number_output_faces.GT.0) then
@@ -528,6 +534,7 @@ IMPLICIT NONE
 	if (local_surface_material(cx,cy,cz,face_xmin).NE.0) then
 	
 	  face_update_code_to_material_data(special_face_count,1)=local_surface_material(cx,cy,cz,face_xmin)
+	  face_update_code_to_material_data(special_face_count,3)=face_xmin
 	  
 	end if
 	
@@ -579,6 +586,7 @@ IMPLICIT NONE
 	if (local_surface_material(cx,cy,cz,face_ymin).NE.0) then
 	
 	  face_update_code_to_material_data(special_face_count,1)=local_surface_material(cx,cy,cz,face_ymin)
+	  face_update_code_to_material_data(special_face_count,3)=face_ymin
 	  
 	end if
 	
@@ -645,6 +653,7 @@ IMPLICIT NONE
 	if (local_surface_material(cx,cy,cz,face_zmin).NE.0) then
 	
 	  face_update_code_to_material_data(special_face_count,1)=local_surface_material(cx,cy,cz,face_zmin)
+	  face_update_code_to_material_data(special_face_count,3)=face_zmin
   
 	end if
 	

@@ -15,6 +15,7 @@ CFC* \
 *.jpeg \
 *.fd_* \
 *.jpg \
+*.dat \
 fort.* \
 "
 
