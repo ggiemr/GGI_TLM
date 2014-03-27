@@ -17,7 +17,6 @@ set autoscale x
 set autoscale y
 set xlabel "Time (s)"
 set ylabel "V/m"
-plot "PROBLEM_SPECIFICATION_FILES/cable_test_fieldsolve_TLM.field.tout" u 1:3 title "E field: Fieldsolve Reference " w p,\
-     "PROBLEM_SPECIFICATION_FILES/Reference_field.reference" u 1:3 title "E field: GGI_TLM Reference" w p ,\
+plot "PROBLEM_SPECIFICATION_FILES/Reference_field.reference" u 1:3 title "E field: GGI_TLM Reference" w p ,\
      "cable_test.field.tout" u 1:3 title "E field: GGI_TLM" w l
 #PAUSE pause -1

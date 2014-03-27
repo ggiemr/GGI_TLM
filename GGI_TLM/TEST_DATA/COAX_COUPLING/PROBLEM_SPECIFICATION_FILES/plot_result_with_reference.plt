@@ -4,6 +4,6 @@
 
 set xlabel "Frequency (Hz)"
 set ylabel "Crosstalk"
-plot "PROBLEM_SPECIFICATION_FILES/crosstalk.fout_ref" u 1:7 title "Coax field: Fieldsolve Reference " w p,\
+plot "PROBLEM_SPECIFICATION_FILES/crosstalk.fout_ref" u 1:7 title "Coax field: GGI_TLM Reference " w p,\
      "crosstalk.fout" u 1:7 w l
 #PAUSE pause -1

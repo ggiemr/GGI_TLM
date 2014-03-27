@@ -69,29 +69,29 @@ Line_list
 4   Number of lines 
 1       LINE_NUMBER   port C monopole
 straight_line2
-0.375 0.185 0.300   0.375 0.185 0.258  line parameters 
+0.375 0.185 0.305   0.375 0.185 0.258  line parameters 
 0.0 0.0 0.0
 0.0 0.0 0.0
 2       LINE_NUMBER   port A
 straight_line2
-0.165 0.250 0.300   0.165 0.250 0.278  line parameters 
+0.165 0.255 0.305   0.165 0.255 0.278  line parameters 
 0.0 0.0 0.0
 0.0 0.0 0.0
 3       LINE_NUMBER 
 straight_line2
-0.165 0.250 0.278   0.500 0.250 0.278  line parameters 
+0.165 0.255 0.278   0.505 0.255 0.278  line parameters 
 0.0 0.0 0.0
 0.0 0.0 0.0
 4       LINE_NUMBER   port B
 straight_line2
-0.500 0.250 0.278   0.500 0.250 0.300   line parameters
+0.505 0.255 0.278   0.505 0.255 0.305   line parameters
 0.0 0.0 0.0
 0.0 0.0 0.0
 
 Point_list 
 4   Number of points 
 1       POINT_NUMBER 
-0.375 0.185 0.300    point coordinates 
+0.375 0.185 0.305    point coordinates 
 0.0 0.0 0.0
 0.0 0.0 0.0
 2       POINT_NUMBER 
@@ -99,11 +99,11 @@ Point_list
 0.0 0.0 0.0
 0.0 0.0 0.0
 3       POINT_NUMBER
-0.165 0.250 0.300    point coordinates 
+0.165 0.255 0.305    point coordinates 
 0.0 0.0 0.0
 0.0 0.0 0.0
 4       POINT_NUMBER 
-0.500 0.250 0.300    point coordinates 
+0.505 0.255 0.305    point coordinates 
 0.0 0.0 0.0
 0.0 0.0 0.0
 

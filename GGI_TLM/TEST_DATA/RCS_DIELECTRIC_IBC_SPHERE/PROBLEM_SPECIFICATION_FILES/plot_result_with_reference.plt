@@ -5,8 +5,9 @@ set autoscale x
 set autoscale y
 set xlabel "Time (s)"
 set ylabel "Normalised far field"
-plot "sphere.rcs.tout" u 2:3 title "GGI_TLM" w l,\
-     "PROBLEM_SPECIFICATION_FILES/sphere.rcs.tout_ref" u 2:3 title "GGI_TLM reference" w p 
+plot      "PROBLEM_SPECIFICATION_FILES/sphere.rcs.tout_ref" u 2:3 title "GGI_TLM reference" w p ,\
+"sphere.rcs.tout" u 2:3 title "GGI_TLM" w l
+
 #PAUSE pause -1
 
 
@@ -15,7 +16,8 @@ set autoscale x
 set autoscale y
 set xlabel "Frequency (Hz)"
 set ylabel "RCS (dBsm)"
-plot "sphere.rcs.fout" u 1:5 title "GGI_TLM" w l,\
-     "PROBLEM_SPECIFICATION_FILES/sphere.rcs.fout_ref" u 1:5 title "GGI_TLM reference" w p ,\
-     "PROBLEM_SPECIFICATION_FILES/dielectric_ibc.rcs_ref" u 1:4 title "Analytic result" w p
+plot      "PROBLEM_SPECIFICATION_FILES/sphere.rcs.fout_ref" u 1:5 title "GGI_TLM reference" w p ,\
+"sphere.rcs.fout" u 1:5 title "GGI_TLM" w l,\
+"PROBLEM_SPECIFICATION_FILES/dielectric_ibc.rcs_ref" u 1:4 title "Analytic result" w p
+
 #PAUSE pause -1

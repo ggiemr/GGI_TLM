@@ -5,8 +5,8 @@
 set xlabel "Frequency (Hz)"
 set ylabel "V/m"
 
-plot "cylinder.fout" u 1:5 title "Cavity E field: GGI_TLM" w l,\
-"PROBLEM_SPECIFICATION_FILES/cylinder.fout_ref" u 1:5 title "Cavity E field: GGI_TLM reference" w p
+plot "PROBLEM_SPECIFICATION_FILES/cylinder.fout_ref" u 1:5 title "Cavity E field: GGI_TLM reference" w p,\
+"cylinder.fout" u 1:5 title "Cavity E field: GGI_TLM" w l
 
 #PAUSE pause -1
 

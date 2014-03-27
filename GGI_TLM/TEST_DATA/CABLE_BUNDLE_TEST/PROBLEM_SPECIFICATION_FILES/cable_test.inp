@@ -18,7 +18,7 @@ Line_list
 1   Number of lines (integer)
 1   LINE_NUMBER (integer)
 straight_line2
-0 0 -0.5   0 0 0.5    line parameters (n*real)
+0 0 -0.55   0 0 0.45    line parameters (n*real)
 0.0 0.0 0.0
 0.0 0.0 0.0
 
@@ -26,11 +26,11 @@ straight_line2
 Point_list 
 2   Number of points (integer)
 1       POINT_NUMBER (integer)
-0.0 0.0 -0.5    point coordinates (n*real)
+0.0 0.0 -0.55    point coordinates (n*real)
 0.0 0.0 0.0
 0.0 0.0 0.0
 2       POINT_NUMBER (integer)
-0.0 0.0 0.5  point coordinates (n*real)
+0.0 0.0 0.45  point coordinates (n*real)
 0.0 0.0 0.0
 0.0 0.0 0.0
 

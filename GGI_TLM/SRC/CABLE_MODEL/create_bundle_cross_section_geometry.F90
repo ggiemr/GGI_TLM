@@ -131,16 +131,17 @@ real*8 radius,max_radius,min_radius,dielectric_radius_factor,rmax,rmax_required,
 	  r2=ri(conductor2)+delta/2d0
 	
 	  do side=1,2
-!	    write(*,*)conductor1,conductor2,side
+	  
 	    call calculate_cable_centre_coordinates(x1,y1,r1,x2,y2,r2,x0,y0,r0,side)	
 	  
             call check_cable_intersection (n_conductors,conductor-1,	&
 	                                   xc,yc,ri,delta,		&
-	                                   x0,y0,r0,		&
+	                                   x0,y0,r0,			&
 	                                   cable_intersection)
 				       	
 	    d0=sqrt(x0**2+y0**2)
-	    if ( (.NOT.cable_intersection).AND.(d0.lt.dmin) ) then
+	    	    
+	    if ( (.NOT.cable_intersection).AND.(d0.LE.dmin) ) then
 	      xmin=x0
 	      ymin=y0
 	      dmin=d0
@@ -165,7 +166,6 @@ real*8 radius,max_radius,min_radius,dielectric_radius_factor,rmax,rmax_required,
     conductor=conductor+1
     
     if (conductor.le.n_conductors) goto 10
-!  end do
 
 ! TLM return conductor
   conductor=n_conductors+1

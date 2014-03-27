@@ -5,7 +5,8 @@ set autoscale x
 set autoscale y
 set xlabel "Time (s)"
 set ylabel "E field"
-plot "head.field.tout" u 1:3 title "GGI_TLM" w l,\
-     "PROBLEM_SPECIFICATION_FILES/head.field.tout_ref" u 1:3 title "GGI_TLM reference" w p 
+plot  "PROBLEM_SPECIFICATION_FILES/head.field.tout_ref" u 1:3 title "GGI_TLM reference" w p ,\
+"head.field.tout" u 1:3 title "GGI_TLM" w l
+
 #PAUSE pause -1
 

@@ -19,7 +19,7 @@ rectangular_block
 Point_list
 1   Number of points (integer)
 1       point_number (integer)
-0.0 0.0 0.0    point coordinates (n*real)
+0.05 0.05 0.05    point coordinates (n*real)
 0.0 0.0 0.0
 0.0 0.0 0.0
 
