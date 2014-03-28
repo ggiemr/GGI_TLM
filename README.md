@@ -16,7 +16,9 @@ Sequential and parallel (mpi) implementation
 Over 50 example test cases
 
 This is a new project and is still undergoing development, testing and documenting.
+
 A work log is kept in GGI_TLM/SOFTWARE_NOTES/work_log.txt
+
 Known problems are noted in GGI_TLM/SOFTWARE_NOTES/known_problems.txt
 
 Current release is Version 1.0.1 after update on 26/3/2014
