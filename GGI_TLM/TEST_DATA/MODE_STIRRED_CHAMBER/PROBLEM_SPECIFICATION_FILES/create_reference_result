@@ -1,2 +1,2 @@
-cp mode_stir.field.fout PROBLEM_SPECIFICATION_FILES/mode_stir.field.fout_ref
+cp mode_stir1.field.fout PROBLEM_SPECIFICATION_FILES/mode_stir1.field.fout_ref
 
