@@ -16,11 +16,18 @@ Sequential and parallel (mpi) implementation
 Over 50 example test cases
 
 This is a new project and is still undergoing development, testing and documenting.
-Please report any issues which you have with the code, test cases or documentation and we will
-do our best to help...
 
 A work log is kept in GGI_TLM/SOFTWARE_NOTES/work_log.txt
+
 Known problems are noted in GGI_TLM/SOFTWARE_NOTES/known_problems.txt
 
-
 Current release is Version 1.0.1 after update on 26/3/2014
+
+Please report any issues which you have with the code, test cases or documentation 
+and we will do our best to help. 
+
+e-mail:
+
+ggiemr@nottingham.ac.uk
+
+
