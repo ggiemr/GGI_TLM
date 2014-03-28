@@ -347,4 +347,7 @@ output point is 'inside' the PEC/PMC and sees no field.
      DONE: increase the extent of the transverse mesh to 11 cells.
 
 109. Some of the test cases give different answers when GGI_TLM uses different machines and compilers. This is due to the mesh generation in some of the test cases. Some of the test cases are sensitive to the way in which dimensions are rounded and subsequent decision of which cell a point belongs to. This problem could be removed by ensuring that no points lie on cell boundaries.
+     STARTED to make the test cases unambiguous. Most Differences due to geometry have been resolved
+
+110. Similar to 109. Cable bunble geometry may be machine dependent due to tolerances in the calculations in create_bundle_cross_section_geometry.F90
 

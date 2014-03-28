@@ -18,6 +18,6 @@ set xlabel "Frequency (Hz)"
 set ylabel "RCS (dBsm)"
 plot      "PROBLEM_SPECIFICATION_FILES/sphere.rcs.fout_ref" u 1:5 title "GGI_TLM reference" w p ,\
 "sphere.rcs.fout" u 1:5 title "GGI_TLM" w l,\
-"PROBLEM_SPECIFICATION_FILES/dielectric_ibc.rcs_ref" u 1:4 title "Analytic result" w p
+"PROBLEM_SPECIFICATION_FILES/dielectric_ibc.rcs_ref" u 1:4 title "Analytic result" w l
 
 #PAUSE pause -1

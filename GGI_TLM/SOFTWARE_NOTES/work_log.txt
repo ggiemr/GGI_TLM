@@ -504,6 +504,10 @@
 			approach has led to a tolerance problem in the aircraft_direct_currect_injection test case on 
 			one particular machine.
 			
+27/3/2014	CJS	Check the test cases and make the plotting of reference results consistent
+
+28/3/2014	CJS	Complete testing and update onto github.
+			
 						
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE
