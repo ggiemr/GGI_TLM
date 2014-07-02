@@ -13,20 +13,24 @@ plot "PROBLEM_SPECIFICATION_FILES/dipole.field.tout_ref" u 1:3 title "Dipole fie
      
 #PAUSE pause -1
 
-set autoscale x
-set autoscale y
+#
+# FAR FIELD PLOT NOW DONE IN VTK FORMAT WITH PARAVIEW
+#
 
-set xlabel "Angle (degrees)"
-set ylabel "Normalised Far field"
-
-#OUTPUT_TO_FILE set output "Test_case_8_dipole_far_field_ref.jpg"
-
-plot  "PROBLEM_SPECIFICATION_FILES/dipole.far_field.fout_ref" u 1:3 title "Dipole Etheta: GGI_TLM Reference" w p ,\
-      "PROBLEM_SPECIFICATION_FILES/dipole.far_field.fout_ref" u 1:4 title "Dipole Ephi: GGI_TLM Reference" w p ,\
-      "dipole.far_field.fout" u 1:3 title "Etheta: GGI_TLM" w l,\
-      "dipole.far_field.fout" u 1:4 title "Ephi: GGI_TLM" w l
-     
-#PAUSE pause -1
+#set autoscale x
+s#et autoscale y
+#
+#set xlabel "Angle (degrees)"
+#set ylabel "Normalised Far field"
+#
+##OUTPUT_TO_FILE set output "Test_case_8_dipole_far_field_ref.jpg"
+#
+#plot  "PROBLEM_SPECIFICATION_FILES/dipole.far_field.fout_ref" u 1:3 title "Dipole Etheta: GGI_TLM Reference" w p ,\
+#      "PROBLEM_SPECIFICATION_FILES/dipole.far_field.fout_ref" u 1:4 title "Dipole Ephi: GGI_TLM Reference" w p ,\
+#      "dipole.far_field.fout" u 1:3 title "Etheta: GGI_TLM" w l,\
+#      "dipole.far_field.fout" u 1:4 title "Ephi: GGI_TLM" w l
+#     
+##PAUSE pause -1
 
 set xlabel "Time (s)"
 set ylabel "A"

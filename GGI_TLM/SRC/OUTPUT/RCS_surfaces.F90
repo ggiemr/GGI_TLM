@@ -742,8 +742,6 @@ IMPLICIT NONE
         end if
 
         write(rcs_output_unit,8040)frequency,abs(Etheta),abs(Ephi),abs(Einc),RCS
-!        write(*,*)'***** WRITING TEMP RCS DATA FORMAT FOR A SPECIAL JOB ******'
-!        write(rcs_output_unit,8040)frequency,real(Etheta),imag(Etheta),abs(Einc),RCS
 8040    format(5E14.6)
 	
       end do ! next frequency

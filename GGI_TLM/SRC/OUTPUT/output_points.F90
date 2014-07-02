@@ -35,6 +35,7 @@
 !     started 14/08/2012 CJS
 !     Parallel 23/11/2012 CJS
 !     separate output types 5/12/2012 CJS
+!     shift output points into the appropriate sub-cell copy for periodic boundary application
 !
 !
 SUBROUTINE set_output_points_in_mesh
@@ -57,6 +58,18 @@ IMPLICIT NONE
 ! START
   
   CALL write_line('CALLED: set_output_points_in_mesh',0,output_to_screen_flag)
+      
+  if (periodic_boundary) then
+
+! move point into the +x+y sub cell  
+    do output_point=1,n_output_points
+  
+      output_points(output_point)%cell_point%cell%i=output_points(output_point)%cell_point%cell%i+nx/2
+      output_points(output_point)%cell_point%cell%j=output_points(output_point)%cell_point%cell%j+ny/2
+      
+    end do
+    
+  end if
   
   if (n_output_points.GT.0) then
 

@@ -14,18 +14,23 @@ plot "dipole.field.tout" u 1:3 title "Dipole field: GGI_TLM" w l
 
 #___________________________________________________________________#
 
-set autoscale x
-set autoscale y
 
-set xlabel "Angle (degrees)"
-set ylabel "Normalised Far field"
+#
+# FAR FIELD PLOT NOW DONE IN VTK FORMAT WITH PARAVIEW
+#
 
-#OUTPUT_TO_FILE set output "Test_case_8_dipole_far_field.jpg"
-
-plot  "dipole.far_field.fout" u 1:3 title "Etheta: GGI_TLM" w l,\
-      "dipole.far_field.fout" u 1:4 title "Ephi: GGI_TLM" w l
-     
-#PAUSE pause -1
+#set autoscale x
+#set autoscale y
+#
+#set xlabel "Angle (degrees)"
+#set ylabel "Normalised Far field"
+#
+##OUTPUT_TO_FILE set output "Test_case_8_dipole_far_field.jpg"
+#
+#plot  "dipole.far_field.fout" u 1:3 title "Etheta: GGI_TLM" w l,\
+#      "dipole.far_field.fout" u 1:4 title "Ephi: GGI_TLM" w l
+#    
+##PAUSE pause -1
 
 #___________________________________________________________________#
 

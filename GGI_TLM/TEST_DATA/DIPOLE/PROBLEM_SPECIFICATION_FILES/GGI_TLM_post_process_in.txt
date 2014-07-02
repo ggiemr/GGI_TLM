@@ -23,6 +23,16 @@ dipole.cable_current.fout
    1.0000000000000000       constant, B
   -50.000000000000000       constant, C
 dipole.impedance.fout
+          36  POST PROCESSING OPTION: GENERATE FAR FIELD PLOT DATA
+dipole.far_field.fout.1
+3    ! 1=Etheta, 2=Ephi, 3=Etot
+lin
+y
+   0.0000000000000000     
+   0.0000000000000000     
+0.0 0.0 0.0   ! cx, cy, cz
+20.0       !  rmax
+dipole_far_field
           17  POST PROCESSING OPTION: CREATE VECTOR FREQUENCY DOMAIN ANIMATION
 dipole.frequency_output_surface.fout
            1  Output surface component number           1

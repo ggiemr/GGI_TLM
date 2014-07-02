@@ -28,7 +28,8 @@ generate_random_time_sequence.o \
 frequency_domain_filter.o \
 PDF_CDF.o \
 time_domain_filter.o \
-create_time_domain_vector_animation.o
+create_time_domain_vector_animation.o \
+generate_far_field_plot.o
 
 default: $(POST_PROCESSOR_OBJS)
 

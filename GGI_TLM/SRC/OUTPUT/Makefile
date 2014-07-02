@@ -10,6 +10,7 @@ frequency_output_surfaces.o \
 frequency_output_volumes.o \
 frequency_domain_power_surfaces.o \
 far_field_surfaces.o \
+periodic_boundary_far_field_surfaces.o \
 RCS_surfaces.o \
 SAR_volumes.o \
 cable_outputs.o

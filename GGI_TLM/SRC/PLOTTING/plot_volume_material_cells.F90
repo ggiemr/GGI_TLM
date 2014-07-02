@@ -48,7 +48,7 @@ IMPLICIT NONE
 
 ! local variables
 
-integer :: volume_material_number
+integer :: volume_material_number,volume_material_number_min,volume_material_number_max
 integer	:: number_of_volumes,volume_number
 integer	:: total_number_of_volumes
 integer	:: total_number_of_cells
@@ -64,67 +64,87 @@ integer :: cx,cy,cz
 
 ! read the volume material number to view  
   write(*,*)
-  write(*,*)'Enter the volume material number to view'
+  write(*,*)'Number of volume materials=',n_volume_materials
+  write(*,*)
+  write(*,*)'Enter the volume material number to view or 0 to view all of them'
   read(*,*)volume_material_number
   
-  if ( (volume_material_number.le.0).OR.(volume_material_number.gt.n_volume_materials) ) then
+  if (volume_material_number.eq.0) then
+  
+    volume_material_number_min=1
+    volume_material_number_max=n_volume_materials
+    
+  else if ( (volume_material_number.gt.0).AND.(volume_material_number.le.n_volume_materials) ) then
+  
+    volume_material_number_min=volume_material_number
+    volume_material_number_max=volume_material_number
+    
+  else 
+  
     write(*,*)'volume_material_number is outside the available range'
     write(*,*)'Number of volume materials=',n_volume_materials
     RETURN
+    
   end if
+
+! loop over the volume materials to output
+
+  do volume_material_number=volume_material_number_min,volume_material_number_max
   
 ! work out the number of cells to write by looping over the volume list
   
-  number_of_volumes=volume_material_list(volume_material_number)%n_volumes
+    number_of_volumes=volume_material_list(volume_material_number)%n_volumes
   
-  total_number_of_cells=0
+    total_number_of_cells=0
   
-  do cx=1,nx
-    do cy=1,ny
-      do cz=1,nz
-	if (abs(local_cell_material(cx,cy,cz)).EQ.volume_material_number) then
-	  total_number_of_cells=total_number_of_cells+1
-	end if
+    do cx=1,nx
+      do cy=1,ny
+        do cz=1,nz
+	  if (abs(local_cell_material(cx,cy,cz)).EQ.volume_material_number) then
+	    total_number_of_cells=total_number_of_cells+1
+  	  end if
+        end do
       end do
     end do
-  end do
   
-  if (total_number_of_cells.EQ.0) then
-    write(*,*)'Total number of cells of this material is 0'
-    RETURN
-  end if
+    if (total_number_of_cells.EQ.0) then
+      write(*,*)'Total number of cells of this material is 0'
+      RETURN
+    end if
   
 ! Allocate data to construct a local_cell_list
 
-  ALLOCATE( local_cell_list(1:total_number_of_cells ) )
+    ALLOCATE( local_cell_list(1:total_number_of_cells ) )
   
 ! fill the local_cell_list  
   
-  count=0
-  do cx=1,nx
-    do cy=1,ny
-      do cz=1,nz
-	if (abs(local_cell_material(cx,cy,cz)).EQ.volume_material_number) then
-	  count=count+1
-	  local_cell_list(count)%cell%i=cx
-	  local_cell_list(count)%cell%j=cy
-	  local_cell_list(count)%cell%k=cz
-	  local_cell_list(count)%point=centre
-	end if
+    count=0
+    do cx=1,nx
+      do cy=1,ny
+        do cz=1,nz
+	  if (abs(local_cell_material(cx,cy,cz)).EQ.volume_material_number) then
+	    count=count+1
+	    local_cell_list(count)%cell%i=cx
+	    local_cell_list(count)%cell%j=cy
+	    local_cell_list(count)%cell%k=cz
+	    local_cell_list(count)%point=centre
+	  end if
+        end do
       end do
     end do
-  end do
       
 ! open and write volume mesh to vtk format file
-  CALL open_vtk_file(volume_material_cells_file_unit,volume_material_cells_file_extension,volume_material_number) 
+    CALL open_vtk_file(volume_material_cells_file_unit,volume_material_cells_file_extension,volume_material_number) 
       
-  CALL write_volume_mesh_list_vtk(volume_material_cells_file_unit,	&
-                                  total_number_of_cells,local_cell_list)
+    CALL write_volume_mesh_list_vtk(volume_material_cells_file_unit,	&
+                                    total_number_of_cells,local_cell_list)
       
-  CALL close_vtk_file(volume_material_cells_file_unit) 
+    CALL close_vtk_file(volume_material_cells_file_unit) 
 
   
-  DEALLOCATE( local_cell_list )
+    DEALLOCATE( local_cell_list )
+
+  end do ! next material to output
 
   CALL write_line('FINISHED: plot_volume_material_cells',0,output_to_screen_flag)
   

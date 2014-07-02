@@ -25,19 +25,32 @@
 !
 ! Example packet:
 !
-!Far_field_surface
-!1     surface number
+!Far_field_surface_list
+!2     number of far field surfaces
+!1     FAR FIELD SURFACE NUMBER
+!4     surface number
 !1		! side of surface for output (+1 or -1)
-!1.3E7 frequency for far field calculation
+!300E6 frequency for far field calculation
 !0.0 180.0 1.0  Theta_min  Theta_max Theta_step
 !0.0 90.0 90.0    Phi_min  Phi_max Phi_step
+!2     FAR FIELD SURFACE NUMBER
+!4     surface number
+!1		! side of surface for output (+1 or -1)
+!400E6 frequency for far field calculation
+!0.0 180.0 1.0  Theta_min  Theta_max Theta_step
+!0.0 90.0 90.0    Phi_min  Phi_max Phi_step
+!
+!Optional request for 2D far field transform includes 2D and a line with the 'z' axis direction
+!2D
+!z
 !
 ! COMMENTS
 !     
 !
 ! HISTORY
 !
-!     started 5/12/2012 CJS
+!       started 5/12/2012 CJS
+!	allow multiple far field surfaces 23/5/2014
 !
 !
 SUBROUTINE read_far_field_surface
@@ -52,54 +65,128 @@ IMPLICIT NONE
 ! local variables
 
   integer	:: side_of_surface_for_output
+  integer 	:: read_number
+  integer 	:: surface
+  character	:: ch
+  character*2	:: ch2
 
 ! START  
 
   CALL write_line('CALLED: read_far_field_surface',0,output_to_screen_flag)
   
-  n_far_field_surfaces=1
+  if (n_far_field_surfaces.NE.0) GOTO 9000
   
-  read(input_file_unit,*,err=9000)far_field_surface%surface_number
+  read(input_file_unit,*,err=9005)n_far_field_surfaces
+  
+  ALLOCATE( far_field_surface(1:n_far_field_surfaces) )
+  
+  do surface=1,n_far_field_surfaces
+  
+    CALL write_line_integer('Reading far field surface number',surface,0,output_to_screen_flag)
     
-  read(input_file_unit,*,err=9000)side_of_surface_for_output
+    read(input_file_unit,*,err=9005)read_number
+    if (read_number.ne.surface) goto 9007
+  
+    read(input_file_unit,*,err=9005)far_field_surface(surface)%surface_number
     
-  if (side_of_surface_for_output.eq.1) then
-    far_field_surface%output_on_outward_normal=.TRUE.
-  else if (side_of_surface_for_output.eq.-1) then
-    far_field_surface%output_on_outward_normal=.FALSE.
-  else 
-    GOTO 9010
-  end if
+    read(input_file_unit,*,err=9005)side_of_surface_for_output
     
-  read(input_file_unit,*,err=9000)far_field_surface%frequency
+    if (side_of_surface_for_output.eq.1) then
+      far_field_surface(surface)%output_on_outward_normal=.TRUE.
+    else if (side_of_surface_for_output.eq.-1) then
+      far_field_surface(surface)%output_on_outward_normal=.FALSE.
+    else 
+      GOTO 9010
+    end if
+    
+    read(input_file_unit,*,err=9000)far_field_surface(surface)%frequency
       
-  read(input_file_unit,*,err=9000)far_field_surface%theta_min,        &
-  				  far_field_surface%theta_max,        &
-  				  far_field_surface%theta_step
+    read(input_file_unit,*,err=9000)far_field_surface(surface)%theta_min,        &
+  				    far_field_surface(surface)%theta_max,        &
+  				    far_field_surface(surface)%theta_step
       
-  read(input_file_unit,*,err=9000)far_field_surface%phi_min,  &
-  				  far_field_surface%phi_max,  &
-                                    far_field_surface%phi_step
+    read(input_file_unit,*,err=9000)far_field_surface(surface)%phi_min,  &
+  				    far_field_surface(surface)%phi_max,  &
+                                    far_field_surface(surface)%phi_step
     
 ! convert angles to radians
-  far_field_surface%theta_min =(pi/180d0)*far_field_surface%theta_min 
-  far_field_surface%theta_max =(pi/180d0)*far_field_surface%theta_max 
-  far_field_surface%theta_step=(pi/180d0)*far_field_surface%theta_step
+    far_field_surface(surface)%theta_min =(pi/180d0)*far_field_surface(surface)%theta_min 
+    far_field_surface(surface)%theta_max =(pi/180d0)*far_field_surface(surface)%theta_max 
+    far_field_surface(surface)%theta_step=(pi/180d0)*far_field_surface(surface)%theta_step
 
-  far_field_surface%phi_min =(pi/180d0)*far_field_surface%phi_min  
-  far_field_surface%phi_max =(pi/180d0)*far_field_surface%phi_max  
-  far_field_surface%phi_step=(pi/180d0)*far_field_surface%phi_step  
+    far_field_surface(surface)%phi_min =(pi/180d0)*far_field_surface(surface)%phi_min  
+    far_field_surface(surface)%phi_max =(pi/180d0)*far_field_surface(surface)%phi_max  
+    far_field_surface(surface)%phi_step=(pi/180d0)*far_field_surface(surface)%phi_step  
+
+! assume 3D transformation is used unless specified otherwise  
+    far_field_surface(surface)%dim=3
+    far_field_surface(surface)%direction=3
+  
+! check for 2D transformation request
+    
+    read(input_file_unit,'(A2)',err=1000)ch2
+    
+    if ( (ch2.eq.'2D').OR.(ch2.eq.'2d') ) then
+    
+      far_field_surface(surface)%dim=2
+      
+      read(input_file_unit,'(A)',err=9020)ch
+      
+      if ( (ch.eq.'x').OR.(ch.eq.'X') ) then
+        far_field_surface(surface)%direction=1
+      else if ( (ch.eq.'y').OR.(ch.eq.'Y') ) then
+        far_field_surface(surface)%direction=2
+      else if ( (ch.eq.'z').OR.(ch.eq.'Z') ) then
+        far_field_surface(surface)%direction=3
+      else 
+        goto 9020
+      end if
+      
+      if (far_field_surface(surface)%direction.NE.3) then
+        write(*,*)'ERROR in read_far_field_surface'
+	write(*,*)'Cannot have the 2d axis direction anything other than z at the moment'
+	STOP
+      end if
+
+! for the 2D transform  we only step in the phi direction
+      far_field_surface(surface)%theta_min =pi/2d0
+      far_field_surface(surface)%theta_max =pi/2d0
+      far_field_surface(surface)%theta_step=1d0
+        
+    else
+! no 2D transform has been requested so step back in the input file. 
+  
+      backspace(unit=input_file_unit)
+  
+    end if
+    
+1000 CONTINUE
+
+  end do ! next surface 
   
   CALL write_line('FINISHED: read_far_field_surface',0,output_to_screen_flag)
   
   RETURN
     
-9000 CALL write_line('Error reading far_field_surface packet data from input file:',0,.TRUE.)
+9000 CALL write_line('Error: far_field_surface_list data already set',0,.TRUE.)
+     STOP
+    
+9005 CALL write_line('Error reading far_field_surface_list packet data from input file:',0,.TRUE.)
+     CALL write_error_line(input_file_unit)
+     STOP
+     
+9007 CALL write_line('Error reading far_field_surface_list list packet',0,.TRUE.)
+     CALL write_line('Far field surfaces should be numbered in order',0,.TRUE.)
+     CALL write_error_line(input_file_unit)
+     STOP
+        
+9010 CALL write_line('Error reading far_field_surface_list packet',0,.TRUE.)
+     CALL write_line("Side of surface for output should be +1 or -1",0,.TRUE.)
      CALL write_error_line(input_file_unit)
      STOP
        
-9010 CALL write_line('Error reading far_field_surface packet',0,.TRUE.)
-     CALL write_line("Side of surface for output should be +1 or -1",0,.TRUE.)
+9020 CALL write_line('Error reading far_field_surface_list packet',0,.TRUE.)
+     CALL write_line("Problem with 2D far field transformation specification",0,.TRUE.)
      CALL write_error_line(input_file_unit)
      STOP
 

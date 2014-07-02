@@ -351,3 +351,12 @@ output point is 'inside' the PEC/PMC and sees no field.
 
 110. Similar to 109. Cable bunble geometry may be machine dependent due to tolerances in the calculations in create_bundle_cross_section_geometry.F90
 
+111. Equation 3.1.18 should have a CdV /dt term not just C V in cable model theory document.
+
+112. Need to check periodic boundary far field surface output calculation - do we need a jw term in the calculation? Actually we should
+     check and document all near to far field transform outputs and their derivation.
+     
+113. Initialisation of the PBC process is not called in the correct place - it should be before the Huygens surface initialisation and
+     the pbc_faf_field_output initialisation
+     
+114. Make transmission and reflection coefficients in periodic structures complex...

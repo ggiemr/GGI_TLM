@@ -1,0 +1,3 @@
+cp patch.cable_current.tout PROBLEM_SPECIFICATION_FILES/patch.cable_current.tout_ref
+cp patch.field.tout PROBLEM_SPECIFICATION_FILES/patch.field.tout_ref
+cp patch.S11.fout PROBLEM_SPECIFICATION_FILES/patch.S11.fout_ref

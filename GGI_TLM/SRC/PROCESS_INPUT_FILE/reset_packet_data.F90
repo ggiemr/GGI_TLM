@@ -70,6 +70,7 @@ IMPLICIT NONE
   n_frequency_output_surfaces=0
   n_frequency_output_volumes=0
   n_frequency_domain_power_surfaces=0
+  n_far_field_surfaces=0
   n_output_volumes=0
   n_output_volume_averages=0
   

@@ -111,9 +111,13 @@ character*256	:: input_line
     
       CALL read_sar_volume_list()
      
-    else if (input_line.EQ.'far_field_surface') then
+    else if (input_line.EQ.'far_field_surface_list') then
     
       CALL read_far_field_surface()
+     
+    else if (input_line.EQ.'periodic_boundary_far_field_surface') then
+    
+      CALL read_periodic_boundary_far_field_surface()
      
     else if (input_line.EQ.'frequency_output_surface_list') then
     

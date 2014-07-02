@@ -46,7 +46,7 @@ IMPLICIT NONE
 
 ! local variables
 
-  integer,parameter	:: number_of_options=35
+  integer,parameter	:: number_of_options=36
   integer	:: option
 
   character(len=256)	:: command
@@ -101,6 +101,7 @@ IMPLICIT NONE
   write(*,*)'33. Create Vector Animation of Time Domain Volume Field Output'
   write(*,*)'34. Create time domain near field scan'
   write(*,*)'35. Set random_number_seed'
+  write(*,*)'36. Generate Far field plot data'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -362,6 +363,12 @@ IMPLICIT NONE
     write(*,*)'Set random number seed'
     write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: SET RANDOM NUMBER SEED'
     CALL set_random_seed()
+    
+  else if (option.EQ.36) then
+  
+    write(*,*)'Generate Far field plot data'
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: GENERATE FAR FIELD PLOT DATA'
+    CALL generate_far_field_plot()
      
   else
    

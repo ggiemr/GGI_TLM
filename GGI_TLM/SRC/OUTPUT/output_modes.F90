@@ -29,6 +29,7 @@
 ! HISTORY
 !
 !     started 11/1/2013 CJS
+!     periodic boundary error trap 29/4/2014 CJS
 !
 !
 SUBROUTINE set_mode_outputs_in_mesh
@@ -86,7 +87,12 @@ IMPLICIT NONE
   CALL write_line('CALLED: set_mode_outputs_in_mesh',0,output_to_screen_flag)
   
   if (n_output_modes.GT.0) then
-  
+      
+    if (periodic_boundary) then
+      write(*,*)'ERROR: no mode outputs with periodic boundaries at the moment'
+      STOP
+    end if
+    
     do output_mode=1,n_output_modes
     
 ! get the coordinate range of the specified surface

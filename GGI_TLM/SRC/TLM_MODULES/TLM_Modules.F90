@@ -221,12 +221,20 @@ IMPLICIT NONE
   integer ntdx,ntdy
 
   integer pbc_xface,pbc_yface
+  
+  integer psox,psoy,psoz
+  
+  integer n_xbc_point,n_ybc_point
+  
+  integer xbc_write_point_ymin,xbc_write_point_ymax
+  integer ybc_write_point_xmin,ybc_write_point_xmax
+  
+  integer xbc_write_point_save_ymin,xbc_write_point_save_ymax 
+  integer ybc_write_point_save_xmin,ybc_write_point_save_xmax
 
 ! perodic boundary transfer data  
 
   real*8,allocatable  :: V_pbc_save(:,:,:,:)
-  real*8,allocatable  :: Jsource_save(:,:,:,:)
-  real*8,allocatable  :: Msource_save(:,:,:,:)
   real*8,allocatable  :: V_pbc_x(:,:,:,:)
   real*8,allocatable  :: V_pbc_y(:,:,:,:)
   real*8,allocatable  :: V_pbc_x_save(:,:,:,:)

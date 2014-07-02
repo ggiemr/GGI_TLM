@@ -140,6 +140,7 @@ PROCESS_INPUT_FILE/read_excitation_point_list.o \
 PROCESS_INPUT_FILE/read_excitation_surface_list.o \
 PROCESS_INPUT_FILE/read_huygens_surface.o \
 PROCESS_INPUT_FILE/read_far_field_surface.o \
+PROCESS_INPUT_FILE/read_periodic_boundary_far_field_surface.o \
 PROCESS_INPUT_FILE/read_rcs_surface.o \
 PROCESS_INPUT_FILE/read_frequency_output_surface.o \
 PROCESS_INPUT_FILE/read_frequency_output_volume.o \
@@ -330,6 +331,7 @@ OUTPUT/frequency_output_surfaces.o \
 OUTPUT/frequency_output_volumes.o \
 OUTPUT/frequency_domain_power_surfaces.o \
 OUTPUT/far_field_surfaces.o \
+OUTPUT/periodic_boundary_far_field_surfaces.o \
 OUTPUT/RCS_surfaces.o \
 OUTPUT/SAR_volumes.o \
 OUTPUT/cable_outputs.o
@@ -380,7 +382,8 @@ POST_PROCESSOR/generate_random_time_sequence.o \
 POST_PROCESSOR/frequency_domain_filter.o \
 POST_PROCESSOR/time_domain_filter.o \
 POST_PROCESSOR/PDF_CDF.o \
-POST_PROCESSOR/create_time_domain_vector_animation.o
+POST_PROCESSOR/create_time_domain_vector_animation.o \
+POST_PROCESSOR/generate_far_field_plot.o
 
 OPTIMISATION_OBJS=  \
 OPTIMISATION/opt_module.o \

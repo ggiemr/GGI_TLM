@@ -49,7 +49,7 @@ IMPLICIT NONE
 
 ! local variables
 
-integer :: surface_material_number
+integer :: surface_material_number,surface_material_number_min,surface_material_number_max
 integer	:: number_of_surfaces,surface_number
 integer	:: total_number_of_surfaces
 integer	:: total_number_of_faces
@@ -65,75 +65,95 @@ integer :: cx,cy,cz
 
 ! read the surface material number to view  
   write(*,*)
-  write(*,*)'Enter the surface material number to view'
+  write(*,*)'Number of surface materials=',n_surface_materials
+  write(*,*)
+  write(*,*)'Enter the surface material number to view or 0 to view all of them'
   read(*,*)surface_material_number
   
-  if ( (surface_material_number.le.0).OR.(surface_material_number.gt.n_surface_materials) ) then
+  if (surface_material_number.eq.0) then
+  
+    surface_material_number_min=1
+    surface_material_number_max=n_surface_materials
+    
+  else if ( (surface_material_number.gt.0).AND.(surface_material_number.le.n_surface_materials) ) then
+  
+    surface_material_number_min=surface_material_number
+    surface_material_number_max=surface_material_number
+    
+  else 
+  
     write(*,*)'surface_material_number is outside the available range'
     write(*,*)'Number of surface materials=',n_surface_materials
     RETURN
+    
   end if
+
+! loop over the surface materials to output
+
+  do surface_material_number=surface_material_number_min,surface_material_number_max
   
 ! work out the number of faces to write by looping over the surface list
   
-  number_of_surfaces=surface_material_list(surface_material_number)%n_surfaces
+    number_of_surfaces=surface_material_list(surface_material_number)%n_surfaces
   
-  total_number_of_faces=0
+    total_number_of_faces=0
   
-  do cx=1,nx
-    do cy=1,ny
-      do cz=1,nz
-        do face=1,3
-	  if (abs(local_surface_material(cx,cy,cz,face)).EQ.surface_material_number) then
-	    total_number_of_faces=total_number_of_faces+1
-	  end if
-	end do
+    do cx=1,nx
+      do cy=1,ny
+        do cz=1,nz
+          do face=1,3
+	    if (abs(local_surface_material(cx,cy,cz,face)).EQ.surface_material_number) then
+	      total_number_of_faces=total_number_of_faces+1
+	    end if
+	  end do
+        end do
       end do
     end do
-  end do
   
     
-  if (total_number_of_faces.EQ.0) then
-    write(*,*)'Total number of faces of this material is 0'
-    RETURN
-  else
-    write(*,*)'Total number of faces of this material is :',total_number_of_faces
-  end if
+    if (total_number_of_faces.EQ.0) then
+      write(*,*)'Total number of faces of this material is 0'
+      RETURN
+    else
+      write(*,*)'Total number of faces of this material is :',total_number_of_faces
+    end if
   
 ! Allocate data to construct a local_face_list
 
-  ALLOCATE( local_face_list(1:total_number_of_faces ) )
+    ALLOCATE( local_face_list(1:total_number_of_faces ) )
   
 ! fill the local_face_list  
-  count=0
-  do cx=1,nx
-    do cy=1,ny
-      do cz=1,nz
-        do face=1,3
+    count=0
+    do cx=1,nx
+      do cy=1,ny
+        do cz=1,nz
+          do face=1,3
 	
-	  if (abs(local_surface_material(cx,cy,cz,face)).EQ.surface_material_number) then
-            count=count+1
-            local_face_list(count)%cell%i=cx
-            local_face_list(count)%cell%j=cy
-            local_face_list(count)%cell%k=cz
-            local_face_list(count)%point=face
-	  end if
+	    if (abs(local_surface_material(cx,cy,cz,face)).EQ.surface_material_number) then
+              count=count+1
+              local_face_list(count)%cell%i=cx
+              local_face_list(count)%cell%j=cy
+              local_face_list(count)%cell%k=cz
+              local_face_list(count)%point=face
+	    end if
 	  
-	end do
+	  end do
+        end do
       end do
     end do
-  end do
       
 ! open and write surface mesh to vtk format file
-  CALL open_vtk_file(surface_material_faces_file_unit,surface_material_faces_file_extension,surface_material_number) 
+    CALL open_vtk_file(surface_material_faces_file_unit,surface_material_faces_file_extension,surface_material_number) 
       
-  CALL write_surface_mesh_list_vtk(surface_material_faces_file_unit,	&
-                                  total_number_of_faces,local_face_list)
+    CALL write_surface_mesh_list_vtk(surface_material_faces_file_unit,	&
+                                    total_number_of_faces,local_face_list)
       
-  CALL close_vtk_file(surface_material_faces_file_unit) 
+    CALL close_vtk_file(surface_material_faces_file_unit) 
 
   
-  DEALLOCATE( local_face_list )
+    DEALLOCATE( local_face_list )
+
+  end do ! next material to output
 
   CALL write_line('FINISHED: plot_surface_material_faces',0,output_to_screen_flag)
   

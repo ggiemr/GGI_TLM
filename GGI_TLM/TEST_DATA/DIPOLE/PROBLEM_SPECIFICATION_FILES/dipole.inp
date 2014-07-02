@@ -136,12 +136,14 @@ output_timestep_information
 2000    ! last output timestep
 1     ! output timestep interval
 
-Far_field_surface
+Far_field_surface_list
+1     Number of far field surfaces
+1     FAR FIELD SURFACE NUMBER
 1     surface number
 1		! side of surface for output (+1 or -1)
 1.3E7 frequency for far field calculation
-0.0 180.0 1.0  Theta_min  Theta_max Theta_step
-0.0 90.0 90.0    Phi_min  Phi_max Phi_step
+0.0 180.0 5.0  Theta_min  Theta_max Theta_step
+0.0 360.0 5.0  Phi_min  Phi_max Phi_step
 
 Frequency_output_surface_list
 2    		! number of Frequency output surfaces

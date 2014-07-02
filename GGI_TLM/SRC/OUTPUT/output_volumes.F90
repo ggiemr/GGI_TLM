@@ -31,6 +31,7 @@
 ! HISTORY
 !
 !     started 11/02/2013 CJS
+!     periodic boundary volume filter implemented 29/4/2014 CJS
 !
 !
 SUBROUTINE set_output_volumes_in_mesh
@@ -50,49 +51,107 @@ IMPLICIT NONE
   integer	:: volume_number
   integer	:: number_of_cells
   integer	:: cx,cy,cz
-  integer	:: output_cell
+  integer	:: output_cell,output_cell_count
 
 ! START
   
   CALL write_line('CALLED: set_output_volumes_in_mesh',0,output_to_screen_flag)
     
   if (n_output_volumes.gt.0) then
-
-! OUTPUT volumeS
-    do output_volume=1,n_output_volumes
+      
+    if (periodic_boundary) then
     
-      volume_number=output_volumes(output_volume)%volume_number
-      number_of_cells=problem_volumes(volume_number)%number_of_cells
-      output_volumes(output_volume)%number_of_cells=number_of_cells
+! OUTPUT VOLUMES FILTERED TO A SINGLE SUB-CELL WHEN PERIODIC BOUNDARY CONDITIONS ARE APPLIED
+
+      do output_volume=1,n_output_volumes
+    
+        volume_number=output_volumes(output_volume)%volume_number
+
+! only use one quarter of the specified cells as we output in one sub-cell only
+        number_of_cells=problem_volumes(volume_number)%number_of_cells/4
+        output_volumes(output_volume)%number_of_cells=number_of_cells
       
 ! allocate cell list for the output volume      
-      ALLOCATE( output_volumes(output_volume)%cell_list(1:number_of_cells) )
+        ALLOCATE( output_volumes(output_volume)%cell_list(1:number_of_cells) )
 
 ! allocate values      
-      ALLOCATE( output_volumes(output_volume)%value(1:number_of_cells) )
+        ALLOCATE( output_volumes(output_volume)%value(1:number_of_cells) )
       
-      do output_cell=1,number_of_cells
+        output_cell_count=0
+        do output_cell=1,problem_volumes(volume_number)%number_of_cells
       
 ! copy the cells from the geometry structure to the local
 ! output_volume structure
 	
-        cx=problem_volumes(volume_number)%cell_list(output_cell)%cell%i
-        cy=problem_volumes(volume_number)%cell_list(output_cell)%cell%j
-        cz=problem_volumes(volume_number)%cell_list(output_cell)%cell%k
+          cx=problem_volumes(volume_number)%cell_list(output_cell)%cell%i
+          cy=problem_volumes(volume_number)%cell_list(output_cell)%cell%j
+          cz=problem_volumes(volume_number)%cell_list(output_cell)%cell%k
  
-        if (rank.eq.cell_rank(cz)) then
+	  if ((cx.gt.nx/2).AND.(cy.gt.ny/2)) then
+! we are in the appropriate sub-cell for output so add this cell to the output list
+
+            if (rank.eq.cell_rank(cz)) then
 ! output point belongs to this processor
 	  
-          local_cell_output(cx,cy,cz)=1 
+              local_cell_output(cx,cy,cz)=1 
   
-        end if ! output point belongs to this processor
+            end if ! output point belongs to this processor
 	
-        output_volumes(output_volume)%cell_list(output_cell)=	&
-	       problem_volumes(volume_number)%cell_list(output_cell)%cell
+	    output_cell_count=output_cell_count+1
+            output_volumes(output_volume)%cell_list(output_cell_count)=	&
+	           problem_volumes(volume_number)%cell_list(output_cell)%cell
                  
-      end do !next cell in this volume	  
+          end if ! we are in the appropriate sub-cell for output
+		 		 
+        end do !next cell in this volume	  
+	
+	if (output_cell_count.NE.number_of_cells) then
+	  write(*,*)'Error counting the number of output volume cells in a periodic structure problem'
+	  STOP
+	end if
   
-    end do ! next output volume
+      end do ! next output volume
+
+    else
+    
+! OUTPUT VOLUMES WITH NO PERIODIC BOUNDARY CONDITION
+
+      do output_volume=1,n_output_volumes
+    
+        volume_number=output_volumes(output_volume)%volume_number
+        number_of_cells=problem_volumes(volume_number)%number_of_cells
+        output_volumes(output_volume)%number_of_cells=number_of_cells
+      
+! allocate cell list for the output volume      
+        ALLOCATE( output_volumes(output_volume)%cell_list(1:number_of_cells) )
+
+! allocate values      
+        ALLOCATE( output_volumes(output_volume)%value(1:number_of_cells) )
+      
+        do output_cell=1,number_of_cells
+      
+! copy the cells from the geometry structure to the local
+! output_volume structure
+	
+          cx=problem_volumes(volume_number)%cell_list(output_cell)%cell%i
+          cy=problem_volumes(volume_number)%cell_list(output_cell)%cell%j
+          cz=problem_volumes(volume_number)%cell_list(output_cell)%cell%k
+ 
+          if (rank.eq.cell_rank(cz)) then
+! output point belongs to this processor
+	  
+            local_cell_output(cx,cy,cz)=1 
+  
+          end if ! output point belongs to this processor
+	
+          output_volumes(output_volume)%cell_list(output_cell)=	&
+	         problem_volumes(volume_number)%cell_list(output_cell)%cell
+                 
+        end do !next cell in this volume	  
+  
+      end do ! next output volume
+    
+    end if
 
   end if ! n_output_volumes.GT.0
 

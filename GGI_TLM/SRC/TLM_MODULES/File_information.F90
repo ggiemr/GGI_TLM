@@ -174,6 +174,12 @@ IMPLICIT NONE
 
   integer,parameter 	:: animation_output_unit=70
   
+  character(len=18)	:: PB_far_field_output_extn='.PB_far_field.fout'
+  integer,parameter 	:: PB_far_field_output_unit=71
+  
+  character(len=18)	:: PB_far_field_time_output_extn='.PB_far_field.tout'
+  integer,parameter 	:: PB_far_field_time_output_unit=72
+  
   character(len=7)	:: record_user_inputs_extn='_in.txt'
   integer,parameter 	:: record_user_inputs_unit=80
   

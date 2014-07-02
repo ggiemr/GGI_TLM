@@ -48,6 +48,7 @@ IMPLICIT NONE
 
 ! local variables
 
+  integer	:: ff_surface
   integer	:: i,j,k
   integer	:: volume
   integer	:: surface
@@ -180,9 +181,10 @@ IMPLICIT NONE
   end if ! n_huygens_surfaces.ne.0
   
 ! Check Far field surface  
-  if (n_far_field_surfaces.ne.0) then
   
-    surface=far_field_surface%surface_number
+  do ff_surface=1,n_far_field_surfaces
+  
+    surface=far_field_surface(ff_surface)%surface_number
     if ( (surface.gt.n_surfaces).OR.(surface.lt.0) )then
     
       CALL write_line('ERROR in Far Field_surface: surface does not exist',0,.TRUE.)
@@ -192,7 +194,7 @@ IMPLICIT NONE
 
     end if
  
-  end if ! n_far_field_surfaces.ne.0
+  end do ! next far_field_surface
   
 ! Check RCS surface  
   if (n_rcs_surfaces.ne.0) then

@@ -79,6 +79,8 @@ IMPLICIT NONE
   
   CALL set_far_field_surfaces_in_mesh()
   
+  CALL set_periodic_boundary_far_field_surfaces_in_mesh()
+  
   CALL set_RCS_surfaces_in_mesh()
   
   CALL set_SAR_volumes_in_mesh()
@@ -140,6 +142,8 @@ IMPLICIT NONE
   CALL initialise_frequency_domain_power_surfaces()
   
   CALL initialise_far_field_surfaces()
+  
+  CALL initialise_periodic_boundary_far_field_surfaces()
   
   CALL initialise_RCS_surfaces()
   
@@ -248,6 +252,8 @@ IMPLICIT NONE
   
   CALL face_output_far_field()
   
+  CALL face_output_periodic_boundary_far_field()
+  
   CALL face_output_RCS()
 
   CALL write_line('FINISHED: face_output',0,timestepping_output_to_screen_flag)
@@ -297,6 +303,8 @@ IMPLICIT NONE
   CALL write_frequency_domain_power_surfaces()
   
   CALL write_far_field_surfaces()
+  
+  CALL write_periodic_boundary_far_field_surfaces()
   
   CALL write_RCS_surfaces()
   
@@ -369,9 +377,9 @@ IMPLICIT NONE
     
   end if
   
-  if (n_far_field_surfaces.gt.0) then
+  if (n_PB_far_field_surfaces.gt.0) then
   
-    CLOSE(unit=far_field_output_unit)
+    CLOSE(unit=PB_far_field_output_unit)
     
   end if
   

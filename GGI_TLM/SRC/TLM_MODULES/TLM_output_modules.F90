@@ -144,6 +144,9 @@ TYPE::far_field_surface_type
   real*8  			:: frequency
   real*8  			:: theta_min,theta_max,theta_step
   real*8  			:: phi_min,phi_max,phi_step
+  
+  integer			:: dim
+  integer			:: direction
 
   integer 			:: number_of_faces
   type(cell_point),allocatable	:: face_list(:)
@@ -152,6 +155,31 @@ TYPE::far_field_surface_type
   complex*16,allocatable	:: J(:,:),M(:,:)
    
 END TYPE far_field_surface_type
+
+TYPE::peridic_boundary_far_field_surface_type
+
+  INTEGER	    	:: surface_number
+  logical 		:: output_on_outward_normal
+  integer		:: m,n
+  character		:: r_t_option
+  REAL*8		:: fmin,fmax,fstep
+  REAL*8		:: theta
+  REAL*8		:: phi
+  integer 			:: number_of_faces
+  type(cell_point),allocatable	:: face_list(:)
+  integer,allocatable		:: face_output_field_number_list(:)
+
+  INTEGER   		:: n_far_field_points
+  INTEGER   		:: far_field_point_offset
+  REAL*8  		:: Kmrcs(3)
+  REAL*8  		:: Vtheta(3)
+  REAL*8  		:: Vphi(3)
+  REAL*8, allocatable   :: Etheta(:)
+  REAL*8, allocatable   :: Ephi(:)  
+  REAL*8, allocatable   :: Htheta(:)
+  REAL*8, allocatable   :: Hphi(:)  
+     
+END TYPE peridic_boundary_far_field_surface_type
 
 TYPE::frequency_output_surface_type
 
@@ -303,8 +331,12 @@ real*8,allocatable	:: cell_output_field(:,:)
 integer			:: total_number_output_faces
 real*8,allocatable	:: face_output_field(:,:,:)
  
-integer					:: n_far_field_surfaces
-type(far_field_surface_type)    	:: far_field_surface
+integer						:: n_far_field_surfaces
+type(far_field_surface_type),allocatable    	:: far_field_surface(:)
+
+integer								:: n_PB_far_field_surfaces
+type(peridic_boundary_far_field_surface_type),allocatable    	:: PB_far_field_surface(:)
+logical								:: PB_far_field_output_warning
  
 integer							:: n_frequency_output_surfaces
 type(frequency_output_surface_type),allocatable    	:: frequency_output_surface(:)

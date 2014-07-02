@@ -76,6 +76,12 @@ IMPLICIT NONE
     write(info_file_unit,*)'Total number of cells=',nx*ny*nz
     write(info_file_unit,*)'____________________________________________________'
     write(info_file_unit,*)'' 
+    write(info_file_unit,*)'Outer boundary reflection coefficients'
+    write(info_file_unit,*)'R_xmin=',R_xmin,' R_xmax=',R_xmax
+    write(info_file_unit,*)'R_ymin=',R_ymin,' R_ymax=',R_ymax
+    write(info_file_unit,*)'R_zmin=',R_zmin,' R_zmax=',R_zmax
+    write(info_file_unit,*)'____________________________________________________'
+    write(info_file_unit,*)'' 
     write(info_file_unit,*)'Number of timesteps=',n_timesteps
     write(info_file_unit,*)'____________________________________________________'
     write(info_file_unit,*)'' 

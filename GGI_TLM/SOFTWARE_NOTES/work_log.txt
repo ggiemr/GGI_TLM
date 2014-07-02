@@ -507,6 +507,16 @@
 27/3/2014	CJS	Check the test cases and make the plotting of reference results consistent
 
 28/3/2014	CJS	Complete testing and update onto github.
+
+29/4/2014	CJS	Continue implementation of periodic boundaries
+
+1/5/2014	CJS	Continue implementation of periodic boundaries - compiles and runs but lots of checking to do... see known problems 112, 113
+
+2/5/2014	CJS	Continue implementation of periodic boundaries - compiles and runs OK. Tested on simple resistive sheets so far.
+
+6/5/2014	CJS	Implement Process to generate 3D far field plots 
+
+7/5/2014	CJS	Allow all surface material cells and volume material cells to be selelcted with option 0 in GGI_TLM_material_model_checks
 			
 						
 Next stages:  	

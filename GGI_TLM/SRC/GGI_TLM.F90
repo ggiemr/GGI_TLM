@@ -107,6 +107,12 @@ IMPLICIT NONE
   
   CALL initialise_mode_stir_surfaces()
   
+  if (periodic_boundary) then  
+! set up the periodic boundary condition stuff if required - this can
+! modify the Huygens surface specification (angles) so must be called here.
+    CALL setup_periodic_bc()
+  end if
+  
   CALL set_huygens_surface_data()
   
   CALL set_excitations_in_mesh() ! flags the excitations in local_cell_excitation or local_surface_excitation

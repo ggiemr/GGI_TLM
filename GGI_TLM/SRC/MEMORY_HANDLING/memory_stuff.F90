@@ -872,13 +872,21 @@ integer	:: volume
 
   if (n_far_field_surfaces.ne.0) then
   
-    if (allocated( far_field_surface%face_list ))   	&
-       DEALLOCATE( far_field_surface%face_list )
-    if (allocated( far_field_surface%face_output_field_number_list ))   	&
-       DEALLOCATE( far_field_surface%face_output_field_number_list )
-    if (allocated( far_field_surface%J ))    DEALLOCATE( far_field_surface%J )
-    if (allocated( far_field_surface%M ))    DEALLOCATE( far_field_surface%M )
+    do surface=1,n_far_field_surfaces
   
+      if (allocated( far_field_surface(surface)%face_list ) )   	&
+         DEALLOCATE( far_field_surface(surface)%face_list )
+      if (allocated( far_field_surface(surface)%face_output_field_number_list ) )   	&
+         DEALLOCATE( far_field_surface(surface)%face_output_field_number_list )
+      if (allocated( far_field_surface(surface)%J ) )    &
+         DEALLOCATE( far_field_surface(surface)%J )
+      if (allocated( far_field_surface(surface)%M ) )    &
+         DEALLOCATE( far_field_surface(surface)%M )
+  
+    end do ! next far field surface
+    
+    DEALLOCATE( far_field_surface )
+    
   end if
 
   if (n_rcs_surfaces.ne.0) then
@@ -979,6 +987,39 @@ integer	:: volume
     DEALLOCATE( output_mode_list )
   end if
   
+  if (n_PB_far_field_surfaces.GT.0) then
+  
+    if (allocated( PB_far_field_surface )) then
+    
+      do surface=1,n_PB_far_field_surfaces
+      
+        if (allocated( PB_far_field_surface(surface)%face_list )) then
+	  DEALLOCATE ( PB_far_field_surface(surface)%face_list )
+	end if
+        if (allocated( PB_far_field_surface(surface)%face_output_field_number_list )) then
+	  DEALLOCATE ( PB_far_field_surface(surface)%face_output_field_number_list )
+	end if
+        if (allocated( PB_far_field_surface(surface)%Etheta )) then
+	  DEALLOCATE ( PB_far_field_surface(surface)%Etheta )
+	end if
+        if (allocated( PB_far_field_surface(surface)%Ephi )) then
+	  DEALLOCATE ( PB_far_field_surface(surface)%Ephi )
+	end if
+        if (allocated( PB_far_field_surface(surface)%Htheta )) then
+	  DEALLOCATE ( PB_far_field_surface(surface)%Htheta )
+	end if
+        if (allocated( PB_far_field_surface(surface)%Hphi )) then
+	  DEALLOCATE ( PB_far_field_surface(surface)%Hphi )
+	end if
+	
+      end do
+      
+      DEALLOCATE( PB_far_field_surface )
+      
+    end if
+  
+  end if
+  
   CALL write_line('FINISHED: deallocate_outputs',0,output_to_screen_flag)
 
   RETURN
@@ -1002,6 +1043,7 @@ END SUBROUTINE deallocate_outputs
 SUBROUTINE deallocate_mesh
 
 USE TLM_general
+USE TLM_periodic
 USE mesh
 USE TLM_excitation
 
@@ -1047,6 +1089,12 @@ IMPLICIT NONE
   if (allocated( Vy_wrap_zmin_rcv )) DEALLOCATE (Vy_wrap_zmin_rcv)
   if (allocated( Vx_wrap_zmax_rcv )) DEALLOCATE (Vx_wrap_zmax_rcv)
   if (allocated( Vy_wrap_zmax_rcv )) DEALLOCATE (Vy_wrap_zmax_rcv)
+  
+  if (allocated( V_pbc_save )) DEALLOCATE (V_pbc_save)
+  if (allocated( V_pbc_x )) DEALLOCATE (V_pbc_x)
+  if (allocated( V_pbc_y )) DEALLOCATE (V_pbc_y)
+  if (allocated( V_pbc_x_save )) DEALLOCATE (V_pbc_x_save)
+  if (allocated( V_pbc_y_save )) DEALLOCATE (V_pbc_y_save)
   
   CALL write_line('FINISHED: deallocate_mesh',0,output_to_screen_flag)
 

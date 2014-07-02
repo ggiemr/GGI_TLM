@@ -28,12 +28,15 @@
 !     as required
 !     
 ! COMMENTS
+!     May cause a problem with surface output on a boundary with periodic structures...
+!     Not sure what will happen in this case but it shouldn't occur for a well specified problem. 
 !
 ! HISTORY
 !
 !     started 14/08/2012 CJS
 !     Parallel 23/11/2012 CJS
 !     separate output types 5/12/2012 CJS
+!     periodic boundary surface filter implemented 29/4/2014 CJS
 !
 !
 SUBROUTINE set_output_surfaces_in_mesh
@@ -52,7 +55,7 @@ IMPLICIT NONE
   integer	:: output_surface
   integer	:: surface_number
   integer	:: number_of_faces
-  integer	:: output_face
+  integer	:: output_face,output_face_count
   integer	:: cx,cy,cz,face
   type(cell_point)	:: output_face1
   type(cell_point)	:: output_face2
@@ -62,92 +65,194 @@ IMPLICIT NONE
   CALL write_line('CALLED: set_output_surfaces_in_mesh',0,output_to_screen_flag)
     
   if (n_output_surfaces.gt.0) then
+      
+    if (periodic_boundary) then
 
-! OUTPUT SURFACES
-    do output_surface=1,n_output_surfaces
+! OUTPUT SURFACES FILTERED TO A SINGLE SUB-CELL WHEN PERIODIC BOUNDARY CONDITIONS ARE APPLIED
+      do output_surface=1,n_output_surfaces
     
-      surface_number=output_surfaces(output_surface)%surface_number
-      number_of_faces=problem_surfaces(surface_number)%number_of_faces
-      output_surfaces(output_surface)%number_of_faces=number_of_faces
+        surface_number=output_surfaces(output_surface)%surface_number
+
+! only use one quarter of the specified faces as we output in one sub-cell only
+        number_of_faces=problem_surfaces(surface_number)%number_of_faces/4 
+	
+        output_surfaces(output_surface)%number_of_faces=number_of_faces
       
 ! allocate face list for the output surface      
-      ALLOCATE( output_surfaces(output_surface)%face_list(1:number_of_faces) )
+        ALLOCATE( output_surfaces(output_surface)%face_list(1:number_of_faces) )
 
 ! allocate face for the values      
-      ALLOCATE( output_surfaces(output_surface)%value(1:number_of_faces) )
+        ALLOCATE( output_surfaces(output_surface)%value(1:number_of_faces) )
       
-      do output_face=1,number_of_faces
+        output_face_count=0
+        do output_face=1,problem_surfaces(surface_number)%number_of_faces
       
 ! copy the faces from the geometry structure to the local
 ! output_surface structure
 	
-        cx=problem_surfaces(surface_number)%face_list(output_face)%cell%i
-        cy=problem_surfaces(surface_number)%face_list(output_face)%cell%j
-        cz=problem_surfaces(surface_number)%face_list(output_face)%cell%k
-        face=problem_surfaces(surface_number)%face_list(output_face)%point
+          cx=problem_surfaces(surface_number)%face_list(output_face)%cell%i
+          cy=problem_surfaces(surface_number)%face_list(output_face)%cell%j
+          cz=problem_surfaces(surface_number)%face_list(output_face)%cell%k
+          face=problem_surfaces(surface_number)%face_list(output_face)%point
  
 ! check the side of the surface on which we want output and change if required,
 	
-        if      (face.eq.face_xmin) then      
-	  if (.NOT.output_surfaces(output_surface)%output_on_outward_normal) then ! output on other side of face
-	    cx=cx-1
-	    face=face_xmax
-	  end if
-         else if (face.eq.face_xmax) then	 
-	  if (.NOT.output_surfaces(output_surface)%output_on_outward_normal) then ! output on other side of face
-	    cx=cx+1
-	    face=face_xmin
-	  end if
-        else if (face.eq.face_ymin) then	 
-	  if (.NOT.output_surfaces(output_surface)%output_on_outward_normal) then ! output on other side of face
-	    cy=cy-1
-	    face=face_ymax
-	  end if
-        else if (face.eq.face_ymax) then	 
-	  if (.NOT.output_surfaces(output_surface)%output_on_outward_normal) then ! output on other side of face
-	    cy=cy+1
-	    face=face_ymin
-	  end if
-        else if (face.eq.face_zmin) then	 
-	  if (.NOT.output_surfaces(output_surface)%output_on_outward_normal) then ! output on other side of face
-	    cz=cz-1
-	    face=face_zmax
-	  end if
-        else if (face.eq.face_zmax) then	 
-	  if (.NOT.output_surfaces(output_surface)%output_on_outward_normal) then ! output on other side of face
-	    cz=cz+1
-	    face=face_zmin
-	  end if
-        end if
+          if      (face.eq.face_xmin) then      
+	    if (.NOT.output_surfaces(output_surface)%output_on_outward_normal) then ! output on other side of face
+	      cx=cx-1
+	      face=face_xmax
+	    end if
+           else if (face.eq.face_xmax) then	 
+	    if (.NOT.output_surfaces(output_surface)%output_on_outward_normal) then ! output on other side of face
+	      cx=cx+1
+	      face=face_xmin
+	    end if
+          else if (face.eq.face_ymin) then	 
+	    if (.NOT.output_surfaces(output_surface)%output_on_outward_normal) then ! output on other side of face
+	      cy=cy-1
+	      face=face_ymax
+	    end if
+          else if (face.eq.face_ymax) then	 
+	    if (.NOT.output_surfaces(output_surface)%output_on_outward_normal) then ! output on other side of face
+	      cy=cy+1
+	      face=face_ymin
+	    end if
+          else if (face.eq.face_zmin) then	 
+	    if (.NOT.output_surfaces(output_surface)%output_on_outward_normal) then ! output on other side of face
+	      cz=cz-1
+	      face=face_zmax
+	    end if
+          else if (face.eq.face_zmax) then	 
+	    if (.NOT.output_surfaces(output_surface)%output_on_outward_normal) then ! output on other side of face
+	      cz=cz+1
+	      face=face_zmin
+	    end if
+          end if
+	  
+	  if ((cx.gt.nx/2).AND.(cy.gt.ny/2)) then  
+	  
+! we are in the appropriate sub-cell for output so add this cell to the output list  
   	     
 ! Set the output face in the local_surface_output array
 ! We must set the output point number on the min face 
 
-        output_face1%cell%i=cx
-        output_face1%cell%j=cy
-        output_face1%cell%k=cz
-        output_face1%point=face
+            output_face1%cell%i=cx
+            output_face1%cell%j=cy
+            output_face1%cell%k=cz
+            output_face1%point=face
 	
-        CALL get_min_face(output_face1,output_face2)
+            CALL get_min_face(output_face1,output_face2)
 	
-        cx=output_face2%cell%i
-        cy=output_face2%cell%j
-        cz=output_face2%cell%k
-	face=output_face2%point
+            cx=output_face2%cell%i
+            cy=output_face2%cell%j
+            cz=output_face2%cell%k
+	    face=output_face2%point
 
-        if (rank.eq.cell_face_rank(cz,face)) then
+            if (rank.eq.cell_face_rank(cz,face)) then
 ! output point belongs to this processor
 	  
-          local_surface_output(cx,cy,cz,face)=1 
+              local_surface_output(cx,cy,cz,face)=1 
   
-        end if ! output point belongs to this processor
+            end if ! output point belongs to this processor
 	
-        output_surfaces(output_surface)%face_list(output_face)=output_face1 ! note use original face here.
-                 
-      end do !next cell face in this surface	  
-  
-    end do ! next output surface
+            output_face_count=output_face_count+1
+            output_surfaces(output_surface)%face_list(output_face_count)=output_face1 ! note use original face here.
 
+          end if !we are in the appropriate sub-cell for output so add this face to the output list 
+	         
+        end do !next cell face in this surface	  
+  
+      end do ! next output surface
+ 
+    else
+    
+! OUTPUT SURFACES WITH NO PERIODIC BOUNDARY CONDITION
+      do output_surface=1,n_output_surfaces
+    
+        surface_number=output_surfaces(output_surface)%surface_number
+        number_of_faces=problem_surfaces(surface_number)%number_of_faces
+        output_surfaces(output_surface)%number_of_faces=number_of_faces
+      
+! allocate face list for the output surface      
+        ALLOCATE( output_surfaces(output_surface)%face_list(1:number_of_faces) )
+
+! allocate face for the values      
+        ALLOCATE( output_surfaces(output_surface)%value(1:number_of_faces) )
+      
+        do output_face=1,number_of_faces
+      
+! copy the faces from the geometry structure to the local
+! output_surface structure
+	
+          cx=problem_surfaces(surface_number)%face_list(output_face)%cell%i
+          cy=problem_surfaces(surface_number)%face_list(output_face)%cell%j
+          cz=problem_surfaces(surface_number)%face_list(output_face)%cell%k
+          face=problem_surfaces(surface_number)%face_list(output_face)%point
+ 
+! check the side of the surface on which we want output and change if required,
+	
+          if      (face.eq.face_xmin) then      
+	    if (.NOT.output_surfaces(output_surface)%output_on_outward_normal) then ! output on other side of face
+	      cx=cx-1
+	      face=face_xmax
+	    end if
+           else if (face.eq.face_xmax) then	 
+	    if (.NOT.output_surfaces(output_surface)%output_on_outward_normal) then ! output on other side of face
+	      cx=cx+1
+	      face=face_xmin
+	    end if
+          else if (face.eq.face_ymin) then	 
+	    if (.NOT.output_surfaces(output_surface)%output_on_outward_normal) then ! output on other side of face
+	      cy=cy-1
+	      face=face_ymax
+	    end if
+          else if (face.eq.face_ymax) then	 
+	    if (.NOT.output_surfaces(output_surface)%output_on_outward_normal) then ! output on other side of face
+	      cy=cy+1
+	      face=face_ymin
+	    end if
+          else if (face.eq.face_zmin) then	 
+	    if (.NOT.output_surfaces(output_surface)%output_on_outward_normal) then ! output on other side of face
+	      cz=cz-1
+	      face=face_zmax
+	    end if
+          else if (face.eq.face_zmax) then	 
+	    if (.NOT.output_surfaces(output_surface)%output_on_outward_normal) then ! output on other side of face
+	      cz=cz+1
+	      face=face_zmin
+	    end if
+          end if
+  	     
+! Set the output face in the local_surface_output array
+! We must set the output point number on the min face 
+
+          output_face1%cell%i=cx
+          output_face1%cell%j=cy
+          output_face1%cell%k=cz
+          output_face1%point=face
+	
+          CALL get_min_face(output_face1,output_face2)
+	
+          cx=output_face2%cell%i
+          cy=output_face2%cell%j
+          cz=output_face2%cell%k
+	  face=output_face2%point
+
+          if (rank.eq.cell_face_rank(cz,face)) then
+! output point belongs to this processor
+	  
+            local_surface_output(cx,cy,cz,face)=1 
+  
+          end if ! output point belongs to this processor
+	
+          output_surfaces(output_surface)%face_list(output_face)=output_face1 ! note use original face here.
+                 
+        end do !next cell face in this surface	  
+  
+      end do ! next output surface 
+    
+    end if ! periodic_boundary
+ 
   end if ! n_output_surfaces.GT.0
 
   

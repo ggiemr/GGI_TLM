@@ -1,0 +1,55 @@
+          36  POST PROCESSING OPTION: GENERATE FAR FIELD PLOT DATA
+patch.far_field.fout.1
+3    ! 1=Etheta, 2=Ephi, 3=Etot
+log
+y
+   0.0  
+  -40.0 
+0.0 0.0 0.0   ! cx, cy, cz
+0.06       !  rmax
+patch_far_field1
+          36  POST PROCESSING OPTION: GENERATE FAR FIELD PLOT DATA
+patch.far_field.fout.2
+3    ! 1=Etheta, 2=Ephi, 3=Etot
+log
+y
+   0.0  
+  -40.0 
+0.0 0.0 0.0   ! cx, cy, cz
+0.06       !  rmax
+patch_far_field2
+           3  Post processing option: Fourier Transform
+patch.excitation.tout
+           1
+lin
+   0.1000000E+05 fmin
+   3e9 fmax
+             1000 n_frequencies
+patch.excitation.fout
+           3  Post processing option: Fourier Transform
+patch.cable_current.tout
+           1
+lin
+   0.1000000E+05 fmin
+   3E9 fmax
+             1000 n_frequencies
+patch.cable_current.fout
+           6  Post processing option: Combine Frequency Domain Data
+patch.excitation.fout
+           1
+patch.cable_current.fout
+           1
+   1.0000000000000000       constant, A
+   1.0000000000000000       constant, B
+   -50.000000000000000       constant, C
+patch.impedance.fout
+           6  Post processing option: Combine Frequency Domain Data
+patch.cable_current.fout
+           1
+patch.excitation.fout
+           1
+   -50.0000000000000000       constant, A
+   0.5000000000000000        constant, B
+   1.0000000000000000       constant, C
+patch.S11.fout
+           0  Post processing option: Quit
