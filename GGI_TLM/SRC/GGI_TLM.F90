@@ -63,6 +63,10 @@ IMPLICIT NONE
   CALL MPI_COMM_SIZE(MPI_COMM_WORLD,np,ierr)
   
 #endif
+
+#include "../version_information"
+
+#include "compilation_date.inc"
   
   write(*,*)'Rank',rank,' number of processes= ',np
 

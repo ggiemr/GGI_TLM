@@ -43,6 +43,8 @@ ________________________________________________________________________________
 
 MAKING GGI_TLM
 
+The source code is in the SRC directory and should be made from there
+
 GGI_TLM can be made in two configurations, a sequential solver and a parallel solver (mpi). 
 The two versions of the solver are made with the commands
 
@@ -137,7 +139,8 @@ the particular output produced.
 
 _______________________________________________________________________________________________________
 
-An executable file has been provided which cleans all the files which are not required in the repository (object files, executable files, all files related to the running of test cases). The cleaning is achieved with the command:
+An executable file has been provided which cleans all the files which are not required in the repository (object files, executable files, all files related to the running of test cases), it also updates the version information in the README.md file.
+The cleaning is achieved with the command:
 
 clean_before_repository_update
 

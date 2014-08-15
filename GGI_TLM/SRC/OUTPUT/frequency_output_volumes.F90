@@ -72,7 +72,7 @@ IMPLICIT NONE
       frequency_output_volume(output_volume)%number_of_cells=number_of_cells
       
       if (rank.eq.0) then
-        write(info_file_unit,*)'Frequency Output volume number',output_volume,' Number of cell_cells=',number_of_cells
+        write(info_file_unit,*)'Frequency Output volume number',output_volume,' Number of cells=',number_of_cells
       end if
       
 ! allocate cell list for the output volume      
@@ -102,6 +102,11 @@ IMPLICIT NONE
       end do !next cell cell in this volume	  
   
     end do ! next frequency_output volume
+    
+    if (rank.eq.0) then
+      write(info_file_unit,*)'__________________________________________________________________'
+      write(info_file_unit,*)' '
+    end if
 
   end if ! n_frequency_output_volume.GT.0 
   
@@ -289,7 +294,7 @@ IMPLICIT NONE
 	  value=cell_output_field(output_field_number,field_component)
 	
 	  frequency_output_volume(output_volume)%value(output_cell)=	&
-	      frequency_output_volume(output_volume)%value(output_cell)+value*ejwt   !*dt
+	      frequency_output_volume(output_volume)%value(output_cell)+value*ejwt ! *dt : Note dt factor removed
 
         end if ! output cell belongs to this process
           

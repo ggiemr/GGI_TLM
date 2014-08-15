@@ -1,4 +1,8 @@
+
 Time Domain Electromagnetic Field Simulation using the Transmission Line Modelling (TLM) method
+
+Version number: 1.0.2
+Date: 15th August 2014
 
 Features:
 
@@ -21,7 +25,6 @@ A work log is kept in GGI_TLM/SOFTWARE_NOTES/work_log.txt
 
 Known problems are noted in GGI_TLM/SOFTWARE_NOTES/known_problems.txt
 
-Current release is Version 1.0.1 after update on 26/3/2014
 
 Please report any issues which you have with the code, test cases or documentation 
 and we will do our best to help. 

@@ -29,7 +29,9 @@ frequency_domain_filter.o \
 PDF_CDF.o \
 time_domain_filter.o \
 create_time_domain_vector_animation.o \
-generate_far_field_plot.o
+generate_far_field_plot.o \
+re_format_data_file.o \
+Vis_nD.o
 
 default: $(POST_PROCESSOR_OBJS)
 

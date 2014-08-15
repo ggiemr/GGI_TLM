@@ -46,7 +46,7 @@ IMPLICIT NONE
 
 ! local variables
 
-  integer,parameter	:: number_of_options=36
+  integer,parameter	:: number_of_options=38
   integer	:: option
 
   character(len=256)	:: command
@@ -102,6 +102,8 @@ IMPLICIT NONE
   write(*,*)'34. Create time domain near field scan'
   write(*,*)'35. Set random_number_seed'
   write(*,*)'36. Generate Far field plot data'
+  write(*,*)'37. Re-format data file'
+  write(*,*)'38. Visualise multi-dimensional data sets (up to 4D)'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -369,6 +371,18 @@ IMPLICIT NONE
     write(*,*)'Generate Far field plot data'
     write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: GENERATE FAR FIELD PLOT DATA'
     CALL generate_far_field_plot()
+    
+  else if (option.EQ.37) then
+  
+    write(*,*)'Re-format data file'
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: RE-FORMAT DATA FILE'
+    CALL re_format_data_file()
+    
+  else if (option.EQ.38) then
+  
+    write(*,*)'Visualise multi-dimensional data'
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: VISUALISE MULTI-DIMENSIONAL DATA'
+    CALL Vis_nD()
      
   else
    

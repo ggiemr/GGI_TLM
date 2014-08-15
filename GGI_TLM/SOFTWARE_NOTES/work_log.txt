@@ -517,8 +517,17 @@
 6/5/2014	CJS	Implement Process to generate 3D far field plots 
 
 7/5/2014	CJS	Allow all surface material cells and volume material cells to be selelcted with option 0 in GGI_TLM_material_model_checks
-			
+
+15/7/2014	CJS	Improve the PDF and CDF calculation - add a CDF calculation based on sorting the samples of the input data. The sorting
+			algorithm is based on heapsort. Tested on a mode_stirred chamber test case in which we examine the statistics of the 
+			complex Electric field throughout a volume of space			
 						
+8/8/2014	CJS	Implement post processing for the re-formatting of data files. 
+			Attempt to introduce version information
+						
+14/8/2014	CJS	Implement post processing for the visualisation of multi-dimensional data
+			with paraview. 
+
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE
 		- Start to implement and document all the Fieldsolve test cases : STARTED
@@ -540,7 +549,7 @@ Missing Packets...
 		- mode_output_surface: DONE
 		- mode_stirred boundary: DONE
 		- frequency_domain_power_plane: DONE
-		- Periodic structures
+		- Periodic structures: STARTED
 		- mesh_energy_monitor
 		- save_restart_data
 

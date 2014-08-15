@@ -24,12 +24,12 @@
 !     
 !     
 ! COMMENTS
-!     
+!     Insertion sorting algorithm now replaced by heapsort which is much faster for large data sets
 !
 ! HISTORY
 !
 !     started 8/08/2012 CJS
-!
+!     CDF calculation based on sorting the sample data 15/7/2014
 !
 SUBROUTINE PDF_CDF(function_number)
 
@@ -69,6 +69,8 @@ integer	:: function_number
   
   integer 		:: loop,i
   
+  character		:: ch
+  integer		:: conversion_type,max_conversion_type
 ! START
 
 ! get the filename for the data
@@ -93,6 +95,31 @@ integer	:: function_number
   write(*,*)'Enter the column number for function data'
   read(*,*)n_function
   write(record_user_inputs_unit,*)n_function,' column for function data'
+  
+  conversion_type=0
+  
+  write(*,*)'Is data conversion required? (y/n)'
+  read(*,'(A)')ch
+  write(record_user_inputs_unit,'(A,A)')ch,' ! Is data conversion required?'
+  
+  if ( (ch.EQ.'y').OR.(ch.EQ.'Y') ) then
+    
+    write(*,*)'Enter the conversion type:'
+    write(*,*)'0: No conversion'
+    write(*,*)'1: Convert from dB to field amplitude'
+    write(*,*)'2: Convert from field amplitude to dB'
+    
+    max_conversion_type=2
+
+    read(*,*)conversion_type
+    if ( (conversion_type.LT.0).OR.(conversion_type.GT.max_conversion_type) ) then 
+      write(*,*)'Conversion type should be in the range 1:',max_conversion_type
+      STOP
+    end if
+
+    write(record_user_inputs_unit,*)conversion_type,' data conversion type'
+
+  end if
     
   ALLOCATE( read_data(1:n_function) )
        
@@ -110,7 +137,21 @@ integer	:: function_number
       read(local_file_unit,*,end=1000,ERR=9000)(read_data(i),i=1,n_function)
       sample=sample+1
       if (loop.eq.2) then  
-    	f(sample)=read_data(n_function)
+      
+        if (conversion_type.eq.0) then
+! No data conversion required	
+    	  f(sample)=read_data(n_function)
+	 
+	else if (conversion_type.eq.1) then
+! Convert from 	dB to field amplitude
+    	  f(sample)=10d0**(read_data(n_function)/20d0)
+	  
+	else if (conversion_type.eq.2) then
+! Convert from field amplitude to dB	 
+          f(sample)=20d0*log10(abs(read_data(n_function)))
+	  
+        end if
+	
       end if
      
     goto 10  ! read next sample
@@ -161,7 +202,7 @@ integer	:: function_number
   end do
   variance=variance/n_samples
   write(*,2010),'variance f= ',variance
-  write(*,2010),'sigma f   = ',sqrt(variance)
+  write(*,2010),'standard deviation f = ',sqrt(variance)
 
 ! get the number of bins for the distribution data
 
@@ -179,7 +220,7 @@ integer	:: function_number
   
   OPEN(unit=local_file_unit,file=filename)
   
-! calculate the PDF and the CDF  
+! calculate the PDF and the CDF  og binned data
   
   ALLOCATE ( x(1:nbins) )
   ALLOCATE ( binx1(1:nbins) )
@@ -219,7 +260,7 @@ integer	:: function_number
   write(local_file_unit,2000)nbins,fmax,0d0,1d0
 2000   format(I6,3E16.8)	 
 
-  close(unit=12)
+  close(unit=local_file_unit)
 
   write(*,*)' '
   write(*,*)'integral pdf(x)dx=',sum   
@@ -230,7 +271,7 @@ integer	:: function_number
     mean=mean+pdfx(i)*x(i)*dx
   end do
   write(*,2010),'mean f=     ',mean
-2010 format(A10,E14.6)
+2010 format(A,E14.6)
 
 ! calculate variance       
   variance=0.0       
@@ -240,10 +281,36 @@ integer	:: function_number
   write(*,2010),'variance f= ',variance
   write(*,2010),'sigma f   = ',sqrt(variance)
        
-  DEALLOCATE ( f )	 
   DEALLOCATE ( x )
   DEALLOCATE ( binx1 )
   DEALLOCATE ( pdfx )
+  
+! NEW PROCESS TO GIVE HIGHER RESOLUTION RESULTS FOR PDF
+
+  nbins=n_samples
+
+! open a file for the distribution data
+  
+  write(*,*)'Enter the filename for the distribution data'
+  read(*,'(A256)')filename
+  write(record_user_inputs_unit,'(A)')trim(filename)
+  
+! open the file to write
+  
+  OPEN(unit=local_file_unit,file=filename)
+  
+! calculate the PDF by sorting of the sample data
+
+!  CALL sample_sort_insertion(f,n_samples)
+  CALL sample_sort_heapsort(f,n_samples)
+  
+  do sample=1,n_samples       
+    
+    write(local_file_unit,*)f(sample),real(sample)/real(n_samples),1d0-real(sample)/real(n_samples)
+
+  end do
+  
+  close(unit=local_file_unit)
 
   RETURN
      
@@ -253,3 +320,240 @@ integer	:: function_number
      STOP 
   
 END SUBROUTINE PDF_CDF
+!
+! ___________________________________________________________________________
+!
+!
+ SUBROUTINE sample_sort_insertion(f,n)
+ 
+IMPLICIT NONE 
+ 
+  integer n
+  real*8 f(1:n)
+  real*8 fj
+ 
+  integer i,j
+ 
+! START
+ 
+  do j=2,n
+  
+    fj=f(j)
+    i=j-1
+    
+    do while ( (i.GT.0).AND.(f(i).GT.fj) )
+    
+      f(i+1)=f(i)
+      i=i-1 
+      
+    end do
+  
+    f(i+1)=fj
+    
+  end do
+ 
+  RETURN
+ 
+ END SUBROUTINE sample_sort_insertion
+ 
+!
+! ___________________________________________________________________________
+!
+!
+  SUBROUTINE sample_sort_heapsort(f,n)
+ 
+  IMPLICIT NONE 
+ 
+  integer n
+  real*8 f(1:n)
+ 
+  integer i,end
+  
+  integer j
+ 
+! START
+
+  CALL build_heap(f,n)
+    
+  end=n
+  
+!   write(*,*)'START'
+!  CALL check_heap(f,n,end)
+  
+  do i=1,n-1
+   
+! the maximum value is at the head of the heap. 
+! Swap this with the end value in the heap and 
+! reduce the size of the heap by 1
+
+    CALL swap(f,n,1,end)
+    
+    end=end-1
+
+! the new value at the top of the heap now needs to be filtered down to it's correct level
+! this process ensures that the heap property is maintained
+    CALL sift_down(f,n,end,1)
+  
+!    write(*,*)'STAGE',i
+!    CALL check_heap(f,n,end)
+     
+  end do
+ 
+  RETURN
+ 
+  END SUBROUTINE sample_sort_heapsort
+!
+! ___________________________________________________________________________
+!
+!
+  SUBROUTINE check_heap(f,n,end)
+ 
+  IMPLICIT NONE 
+ 
+  integer n,end
+  real*8 f(1:n)
+  
+  integer i,j,parent
+ 
+! START
+
+  do i=2,end
+  
+    parent=i/2
+  
+    if (f(parent).LT.f(i)) then
+      write(*,*)'Heap failed, i=',i,' i/2=',i/2
+      write(*,*)'f(i/2)=',f(i/2)
+      write(*,*)'f(i)=',f(i)
+      
+      write(*,*)
+ 
+      do j=1,n
+  
+         write(*,*)j,f(j),j/2
+
+      end do
+      
+      STOP
+    end if
+  
+  end do
+ 
+  RETURN
+ 
+  END SUBROUTINE check_heap
+!
+! ___________________________________________________________________________
+!
+!
+  SUBROUTINE build_heap(f,n)
+ 
+  IMPLICIT NONE 
+ 
+  integer n
+  real*8 f(1:n)
+  
+  integer i
+ 
+! START
+
+  do i=2,n
+  
+    CALL sift_up(f,n,i)
+  
+  end do
+ 
+  RETURN
+ 
+  END SUBROUTINE build_heap
+!
+! ___________________________________________________________________________
+!
+!
+  RECURSIVE SUBROUTINE sift_up(f,n,i)
+ 
+IMPLICIT NONE 
+ 
+  integer n,i
+  real*8 f(1:n)
+  
+  integer parent
+ 
+! START
+
+  if (i.eq.1) RETURN
+  
+  parent=i/2
+  
+  if (f(i).GT.f(parent)) then
+    CALL swap(f,n,i,parent)
+    CALL sift_up(f,n,parent)
+  else
+    RETURN
+  end if
+ 
+  END SUBROUTINE sift_up
+!
+! ___________________________________________________________________________
+!
+!
+  RECURSIVE SUBROUTINE sift_down(f,n,end,parent)
+ 
+  IMPLICIT NONE 
+ 
+  integer n,end,parent
+  real*8 f(1:n)
+  
+  integer child1,child2,cmax
+  real*8 fcmax
+ 
+! START
+
+!  if (parent.GE.end) RETURN   ! Check not now required due to checks on the existance of children
+  
+  child1=parent*2
+  
+  if (child1.GT.end) RETURN  ! no children in the heap
+  
+  child2=child1+1
+  
+! work out the maximum child value which exists in the heap
+  cmax=child1
+  fcmax=f(child1)
+  if ( (child2.LE.end).AND.(f(child2).GT.fcmax) ) then
+    cmax=child2
+    fcmax=f(child2)
+  end if
+  
+! check whether the parent value is larger than the maximum child value and of so continue to sift_down
+  if (fcmax.GT.f(parent)) then
+  
+    CALL swap(f,n,cmax,parent)
+    CALL sift_down(f,n,end,cmax)
+    
+  end if
+  
+  END SUBROUTINE sift_down
+!
+! ___________________________________________________________________________
+!
+!
+  SUBROUTINE swap(f,n,i,j)
+ 
+  IMPLICIT NONE 
+ 
+  integer n,i,j
+  real*8 f(1:n)
+    
+  real*8 fswap
+ 
+! START
+    
+  fswap=f(i)
+  f(i)=f(j)
+  f(j)=fswap
+ 
+  RETURN
+ 
+  END SUBROUTINE swap
+

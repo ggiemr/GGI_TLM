@@ -46,10 +46,12 @@ IMPLICIT NONE
 
   character(len=256)	:: problem_name
   
-  character(len=256)	:: solver_version
+  character(len=256)	:: GGI_TLM_version
   
-  character(len=256)	:: solver_date
-  
+  character(len=256)	:: GGI_TLM_date
+    
+  character(len=256)	:: GGI_TLM_compilation_date
+ 
   logical	:: bicubic_warp_flag
   logical	:: frequency_scale_flag
   real*8	:: frequency_scale

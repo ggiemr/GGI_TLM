@@ -109,6 +109,11 @@ IMPLICIT NONE
   if (rank.eq.0) then
     write(info_file_unit,*)'____________________________________________________'
     write(info_file_unit,*)''
+    write(info_file_unit,*)'GGI_TLM version:',trim(GGI_TLM_version)
+    write(info_file_unit,*)'GGI_TLM date   :',trim(GGI_TLM_date)
+    write(info_file_unit,*)'GGI_TLM compilation date:',trim(GGI_TLM_compilation_date)
+    write(info_file_unit,*)'____________________________________________________'
+    write(info_file_unit,*)''
     write(info_file_unit,*)'Mesh'
     write(info_file_unit,*)''
     write(info_file_unit,*)'Nx=',nx 

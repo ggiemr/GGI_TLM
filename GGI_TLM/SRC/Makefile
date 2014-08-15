@@ -48,7 +48,11 @@ export EXECUTABLE_DIR
 
 #_____________________________________________________________
 
-VERSION_NUMBER= 1.0.1
+# get the compilation date
+
+COMPILATION_DATE:= $(shell date)
+
+include ../version_information
 
 MODEL_BUILDER_NAME=GGI_TLM_model_builder
 
@@ -383,7 +387,9 @@ POST_PROCESSOR/frequency_domain_filter.o \
 POST_PROCESSOR/time_domain_filter.o \
 POST_PROCESSOR/PDF_CDF.o \
 POST_PROCESSOR/create_time_domain_vector_animation.o \
-POST_PROCESSOR/generate_far_field_plot.o
+POST_PROCESSOR/generate_far_field_plot.o \
+POST_PROCESSOR/re_format_data_file.o \
+POST_PROCESSOR/Vis_nD.o
 
 OPTIMISATION_OBJS=  \
 OPTIMISATION/opt_module.o \
@@ -535,6 +541,7 @@ $(FILTER_FORMAT_CONVERT_NAME): $(FILTER_FORMAT_CONVERT_NAME).F90 $(OBJS)
 	mv $(FILTER_FORMAT_CONVERT_NAME) $(EXECUTABLE_DIR)	
 # 
 $(SOLVER_NAME): $(SOLVER_NAME).F90 $(OBJS)
+	echo "GGI_TLM_compilation_date='$(COMPILATION_DATE)' " > compilation_date.inc 
 	$(FC) $(FLAGS)  -o $(SOLVER_NAME) $(SOLVER_NAME).F90 $(OBJS) $(LIBS)
 	mv $(SOLVER_NAME) $(EXECUTABLE_DIR)/$(SOLVER_NAME)_$(MODE)
 # 
