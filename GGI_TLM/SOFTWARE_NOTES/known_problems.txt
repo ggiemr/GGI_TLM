@@ -360,3 +360,13 @@ output point is 'inside' the PEC/PMC and sees no field.
      the pbc_faf_field_output initialisation
      
 114. Make transmission and reflection coefficients in periodic structures complex...
+     
+115. Diode model needs to be fully validated - at the moment the rectification effect has been observed but the additional 
+     model refinements (series resistance, junction capacitance) have not been tested properly.
+     
+116. Diode model needs to be documented
+     
+117. Do we need to implement a lumped element surface material model i.e. generalise the diode model to
+     other lumped elements - perhaps using the existing frequency dependent impedance model for wires? 
+     It may be useful for modelling high frequency surface mount devices maybe..
+     It could also be a link to SPICE (ngspice?) models...

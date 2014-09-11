@@ -493,11 +493,14 @@ IMPLICIT NONE
 
 ! Allocate memory for all face excitations and outputs 
   if (total_number_excitation_faces.GT.0) then
+  
     write(*,*)'Allocating ',total_number_excitation_faces,' face excitation fields'
     ALLOCATE( face_excitation_field(1:total_number_excitation_faces,1:2,1:12) )
     face_excitation_field(1:total_number_excitation_faces,1:2,1:12)=0d0
+    
     ALLOCATE( face_excitation_type(1:total_number_excitation_faces,1:2,1:6) )
     face_excitation_type(1:total_number_excitation_faces,1:2,1:6)=source_type_soft
+    
   end if
     
   if (total_number_output_faces.GT.0) then

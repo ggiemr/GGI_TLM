@@ -30,6 +30,7 @@
 ! History
 !
 !     started 07/11/2012 CJS
+!    3/09/2014		CJS: Implement simple diode impedance boundary conditions
 !
 
 SUBROUTINE surface_material_frequency_response()
@@ -89,6 +90,11 @@ IMPLICIT NONE
   else if (surface_material_list(material_number)%type.EQ.surface_material_type_PMC) then
   
     write(*,*)'Material number',material_number,' is PMC'
+    RETURN
+  
+  else if (surface_material_list(material_number)%type.EQ.surface_material_type_DIODE) then
+  
+    write(*,*)'Material number',material_number,' is DIODE'
     RETURN
   
   else if ( (surface_material_list(material_number)%type.EQ.surface_material_type_DISPERSIVE).OR. 	&

@@ -5,7 +5,7 @@ lin
    1e6 fmin
    3000e6 fmax
              1000 n_frequencies
-Ex1.fout
+Ey1.fout
            3  Post processing option: Fourier Transform
 single_cell.volume_average_field.tout
            2
@@ -13,7 +13,7 @@ lin
    1e6 fmin
    3000e6 fmax
              1000 n_frequencies
-Hy1.fout
+Hx1.fout
            3  Post processing option: Fourier Transform
 single_cell.volume_average_field.tout
            3
@@ -21,7 +21,7 @@ lin
    1e6 fmin
    3000e6 fmax
              1000 n_frequencies
-Ex2.fout
+Ey2.fout
            3  Post processing option: Fourier Transform
 single_cell.volume_average_field.tout
            4
@@ -29,7 +29,7 @@ lin
    1e6 fmin
    3000e6 fmax
              1000 n_frequencies
-Hy2.fout
+Hx2.fout
            3  Post processing option: Fourier Transform
 single_cell.volume_average_field.tout
            5
@@ -37,7 +37,7 @@ lin
    1e6 fmin
    3000e6 fmax
              1000 n_frequencies
-Ex3.fout
+Ey3.fout
            3  Post processing option: Fourier Transform
 single_cell.volume_average_field.tout
            6
@@ -45,7 +45,7 @@ lin
    1e6 fmin
    3000e6 fmax
              1000 n_frequencies
-Hy3.fout
+Hx3.fout
            3  Post processing option: Fourier Transform
 single_cell.volume_average_field.tout
            7
@@ -53,7 +53,7 @@ lin
    1e6 fmin
    3000e6 fmax
              1000 n_frequencies
-Ex4.fout
+Ey4.fout
            3  Post processing option: Fourier Transform
 single_cell.volume_average_field.tout
            8
@@ -61,28 +61,28 @@ lin
    1e6 fmin
    3000e6 fmax
              1000 n_frequencies
-Hy4.fout
+Hx4.fout
            10  Post processing option: Twoport analysis
-Ex1.fout
+Ey1.fout
            1
-Ex2.fout
+Ey2.fout
            1
-Hy1.fout
+Hx1.fout
            1
-Hy2.fout
+Hx2.fout
            1
-Ex4.fout
+Ey4.fout
            1
-Ex3.fout
+Ey3.fout
            1
-Hy4.fout
+Hx4.fout
            1
-Hy3.fout
+Hx3.fout
            1
   0.5e-3  port separation (m)
   5e-3  port midpoint to interface distamce (m)
   0.5e-3  port separation (m)
   5e-3  port midpoint to interface distamce (m)
-1    ! excitation port number
+1    ! Eycitation port number
 S21.fout
            0  Post processing option: Quit

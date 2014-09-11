@@ -27,7 +27,7 @@
 !
 !
 !Surface_material_list
-!1   Number of surface materials (integer)
+!3   Number of surface materials (integer)
 !1   SURFACE NUMBER 1
 !PEC
 !3       number of surfaces
@@ -39,6 +39,13 @@
 !1       number of surfaces
 !2       surface list
 !-1      surface orientation list
+!3       SURFACE MATERIAL NUMBER 
+!DIODE
+!1e-12  0.026   Diode Is and nVt values
+!+x              Diode forward direction, infinite imedance in the orthogonal direction
+!1       number of surfaces
+!7       surface list
+!1       surface orientation list
 !
 ! COMMENTS
 !     
@@ -47,6 +54,7 @@
 !
 !    started 14/08/2012 CJS
 !    2/12/2013 		CJS: Implement anisotropic impedance boundary conditions
+!    3/09/2014		CJS: Implement simple diode impedance boundary conditions
 !
 !
 SUBROUTINE read_surface_material_list
@@ -260,11 +268,41 @@ logical	:: file_exists
       surface_material_list(surface_material_number)%Z22_S(3)=filter_in
       
       close(UNIT=surface_material_file_unit)
+   
+    else if (material_name.eq.'diode') then
+    
+      surface_material_list(surface_material_number)%type=surface_material_type_DIODE
+
+! read diode parameters      
+     read(input_file_unit,*,err=9005)surface_material_list(surface_material_number)%Diode_Is,	&
+                                     surface_material_list(surface_material_number)%Diode_nVt,	&
+                                     surface_material_list(surface_material_number)%Diode_Rs,	&
+				     surface_material_list(surface_material_number)%Diode_Cj
+				     
+     read(input_file_unit,'(A2)',err=9005)surface_material_list(surface_material_number)%Diode_direction
+     
+! check direction is OK
+     if ( (surface_material_list(surface_material_number)%Diode_direction.NE.'-x').AND.	&
+          (surface_material_list(surface_material_number)%Diode_direction.NE.'+x').AND. &
+          (surface_material_list(surface_material_number)%Diode_direction.NE.'-y').AND.	&
+          (surface_material_list(surface_material_number)%Diode_direction.NE.'+y').AND. &
+          (surface_material_list(surface_material_number)%Diode_direction.NE.'-z').AND.	&
+          (surface_material_list(surface_material_number)%Diode_direction.NE.'+z') ) then
+	  
+	write(*,*)'Diode direction shoule be -x, +x, -y, +y, -z or +z'
+	STOP
+	  
+      end if
       
-      else
+      surface_material_list(surface_material_number)%Diode_sign=1
+      if (surface_material_list(surface_material_number)%Diode_direction(1:1).EQ.'-') then
+        surface_material_list(surface_material_number)%Diode_sign=-1
+      end if  
+            
+    else
 ! not a recognised material type so an error
 
-        GOTO 9040
+      GOTO 9040
 	
     end if
     

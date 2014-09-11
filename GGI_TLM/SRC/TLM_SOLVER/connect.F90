@@ -54,7 +54,7 @@
 !     parallel 23/11/2012 CJS
 !    2/12/2013 		CJS: Implement anisotropic impedance boundary conditions
 !     allow hard and soft sources 12/2/2014 CJS
-!
+!     3/12/2014 Implement a lumped element diode model 
 !
 !
 SUBROUTINE connect
@@ -84,6 +84,10 @@ IMPLICIT NONE
   
   integer	:: first_nz,last_nz
   integer	:: pol
+
+! diode update variables  
+  real*8	:: Is,nVt,Rs,Vd,Id,Zc,Vc,Ic
+  integer	:: sign,diode_filter_number
    
 ! Material update parameters  
   integer material_type
@@ -232,6 +236,69 @@ IMPLICIT NONE
 	    
               Vz_min=V(Vz_xmin,cx,cy,cz)  +  V(Vz_xmax,cx-1,cy,cz)
 	      Vz_max=Vz_min
+	  
+	    else if (material_type.EQ.surface_material_type_DIODE) then	 
+	    
+	      Is =surface_material_list(material_number)%Diode_Is
+	      nVt=surface_material_list(material_number)%Diode_nVt
+	      Rs=surface_material_list(material_number)%Diode_Rs
+              sign=surface_material_list(material_number)%Diode_sign  
+	      
+	      if ((surface_material_list(material_number)%Diode_direction.EQ.'-y').OR.	&
+	          (surface_material_list(material_number)%Diode_direction.EQ.'+y') ) then
+
+! diode junction capacitance TLM model update	    
+                diode_filter_number=face_update_code_to_material_data(face_update_code(face_number),2)
+                CALL timeshift_Zfilter(Diode_Cj_filter_data(diode_filter_number))
+                CALL evaluate_Zfilter (surface_material_list(material_number)%Diode_Cj_Z,	 &
+	        		       Diode_Cj_filter_data(diode_filter_number),	 &
+			  	       0d0)
+
+                Zc=surface_material_list(material_number)%Diode_Cj_f
+		Vc=Diode_Cj_filter_data(diode_filter_number)%f
+  
+	        CALL diode_calc(V(Vy_xmin,cx,cy,cz) + V(Vy_xmax,cx-1,cy,cz),Z0/2d0,Is,nVt,Rs,Zc,Vc,Vd,Id,Ic,sign)
+		Vy_min=Vd
+		Vy_max=Vd
+		
+                CALL evaluate_Zfilter (surface_material_list(material_number)%Diode_Cj_Z,	 &
+	        		       Diode_Cj_filter_data(diode_filter_number),	 &
+			  	       Ic)
+	      
+	      else ! diode is not is this direction so do free space update for y polarisation
+	      
+                Vy_min=V(Vy_xmin,cx,cy,cz)  + V(Vy_xmax,cx-1,cy,cz)
+	        Vy_max=Vy_min
+       
+              end if	      
+	      
+	      if ((surface_material_list(material_number)%Diode_direction.EQ.'-z').OR.	&
+	          (surface_material_list(material_number)%Diode_direction.EQ.'+z') ) then
+
+! diode junction capacitance TLM model update	    
+                diode_filter_number=face_update_code_to_material_data(face_update_code(face_number),2)
+                CALL timeshift_Zfilter(Diode_Cj_filter_data(diode_filter_number))
+                CALL evaluate_Zfilter (surface_material_list(material_number)%Diode_Cj_Z,	 &
+	        		       Diode_Cj_filter_data(diode_filter_number),	 &
+			  	       0d0)
+
+                Zc=surface_material_list(material_number)%Diode_Cj_f
+		Vc=Diode_Cj_filter_data(diode_filter_number)%f
+	      
+	        CALL diode_calc(V(Vz_xmin,cx,cy,cz)  +  V(Vz_xmax,cx-1,cy,cz),Z0/2d0,Is,nVt,Rs,Zc,Vc,Vd,Id,Ic,sign)
+		Vz_min=Vd
+		Vz_max=Vd
+		
+                CALL evaluate_Zfilter (surface_material_list(material_number)%Diode_Cj_Z,	 &
+	        		       Diode_Cj_filter_data(diode_filter_number),	 &
+			  	       Ic)
+	      
+	      else ! diode is not is this direction so do free space update for z polarisation
+	      
+                Vz_min=V(Vz_xmin,cx,cy,cz)  +  V(Vz_xmax,cx-1,cy,cz)
+	        Vz_max=Vz_min
+       
+              end if
 	  
 	    else if ( (material_type.EQ.surface_material_type_DISPERSIVE).OR.			&
 	              (material_type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE) ) then
@@ -414,6 +481,70 @@ IMPLICIT NONE
 	
               Vz_min=V(Vz_ymin,cx,cy,cz)+V(Vz_ymax,cx,cy-1,cz)
 	      Vz_max=Vz_min
+	  
+	    else if (material_type.EQ.surface_material_type_DIODE) then	 
+	    
+	      Is =surface_material_list(material_number)%Diode_Is
+	      nVt=surface_material_list(material_number)%Diode_nVt
+	      Rs=surface_material_list(material_number)%Diode_Rs
+              sign=surface_material_list(material_number)%Diode_sign  
+ 
+	      
+	      if ((surface_material_list(material_number)%Diode_direction.EQ.'-x').OR.	&
+	          (surface_material_list(material_number)%Diode_direction.EQ.'+x') ) then
+
+! diode junction capacitance TLM model update	    
+                diode_filter_number=face_update_code_to_material_data(face_update_code(face_number),2)
+                CALL timeshift_Zfilter(Diode_Cj_filter_data(diode_filter_number))
+                CALL evaluate_Zfilter (surface_material_list(material_number)%Diode_Cj_Z,	 &
+	        		       Diode_Cj_filter_data(diode_filter_number),	 &
+			  	       0d0)
+
+                Zc=surface_material_list(material_number)%Diode_Cj_f
+		Vc=Diode_Cj_filter_data(diode_filter_number)%f
+  	      
+	        CALL diode_calc(V(Vx_ymin,cx,cy,cz)+V(Vx_ymax,cx,cy-1,cz),Z0/2d0,Is,nVt,Rs,Zc,Vc,Vd,Id,Ic,sign)
+		Vx_min=Vd
+		Vx_max=Vd
+		
+                CALL evaluate_Zfilter (surface_material_list(material_number)%Diode_Cj_Z,	 &
+	        		       Diode_Cj_filter_data(diode_filter_number),	 &
+			  	       Ic)
+	      
+	      else ! diode is not is this direction so do free space update for x polarisation
+	      
+                Vx_min=V(Vx_ymin,cx,cy,cz)+V(Vx_ymax,cx,cy-1,cz)
+	        Vx_max=Vx_min
+       
+              end if
+	      
+	      if ((surface_material_list(material_number)%Diode_direction.EQ.'-z').OR.	&
+	          (surface_material_list(material_number)%Diode_direction.EQ.'+z') ) then
+
+! diode junction capacitance TLM model update	    
+                diode_filter_number=face_update_code_to_material_data(face_update_code(face_number),2)
+                CALL timeshift_Zfilter(Diode_Cj_filter_data(diode_filter_number))
+                CALL evaluate_Zfilter (surface_material_list(material_number)%Diode_Cj_Z,	 &
+	        		       Diode_Cj_filter_data(diode_filter_number),	 &
+			  	       0d0)
+
+                Zc=surface_material_list(material_number)%Diode_Cj_f
+		Vc=Diode_Cj_filter_data(diode_filter_number)%f
+	      
+	        CALL diode_calc(V(Vz_ymin,cx,cy,cz)+V(Vz_ymax,cx,cy-1,cz),Z0/2d0,Is,nVt,Rs,Zc,Vc,Vd,Id,Ic,sign)
+		Vz_min=Vd
+		Vz_max=Vd
+		
+                CALL evaluate_Zfilter (surface_material_list(material_number)%Diode_Cj_Z,	 &
+	        		       Diode_Cj_filter_data(diode_filter_number),	 &
+			  	       Ic)
+	      
+	      else ! diode is not is this direction so do free space update for z polarisation
+	      
+                Vz_min=V(Vz_ymin,cx,cy,cz)+V(Vz_ymax,cx,cy-1,cz)
+	        Vz_max=Vz_min
+       
+              end if
 	  
 	    else if ( (material_type.EQ.surface_material_type_DISPERSIVE).OR.			&
 	              (material_type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE) ) then
@@ -607,6 +738,69 @@ IMPLICIT NONE
        
 	      Vy_min=V(Vy_zmin,cx,cy,cz)+V(Vy_zmax,cx,cy,cz-1)
 	      Vy_max=Vy_min
+	  
+	    else if (material_type.EQ.surface_material_type_DIODE) then	 
+	    
+	      Is =surface_material_list(material_number)%Diode_Is
+	      nVt=surface_material_list(material_number)%Diode_nVt
+	      Rs=surface_material_list(material_number)%Diode_Rs
+              sign=surface_material_list(material_number)%Diode_sign  
+	      
+	      if ((surface_material_list(material_number)%Diode_direction.EQ.'-x').OR.	&
+	          (surface_material_list(material_number)%Diode_direction.EQ.'+x') ) then
+
+! diode junction capacitance TLM model update	    
+                diode_filter_number=face_update_code_to_material_data(face_update_code(face_number),2)
+                CALL timeshift_Zfilter(Diode_Cj_filter_data(diode_filter_number))
+                CALL evaluate_Zfilter (surface_material_list(material_number)%Diode_Cj_Z,	 &
+	        		       Diode_Cj_filter_data(diode_filter_number),	 &
+			  	       0d0)
+
+                Zc=surface_material_list(material_number)%Diode_Cj_f
+		Vc=Diode_Cj_filter_data(diode_filter_number)%f
+	      
+	        CALL diode_calc(V(Vx_zmin,cx,cy,cz)+V(Vx_zmax,cx,cy,cz-1),Z0/2d0,Is,nVt,Rs,Zc,Vc,Vd,Id,Ic,sign)
+		Vx_min=Vd
+		Vx_max=Vd
+		
+                CALL evaluate_Zfilter (surface_material_list(material_number)%Diode_Cj_Z,	 &
+	        		       Diode_Cj_filter_data(diode_filter_number),	 &
+			  	       Ic)
+	      
+	      else ! diode is not is this direction so do free space update for x polarisation
+	      
+	        Vx_min=V(Vx_zmin,cx,cy,cz)+V(Vx_zmax,cx,cy,cz-1)
+	        Vx_max=Vx_min
+       
+              end if
+	      
+	      if ((surface_material_list(material_number)%Diode_direction.EQ.'-y').OR.	&
+	          (surface_material_list(material_number)%Diode_direction.EQ.'+y') ) then
+
+! diode junction capacitance TLM model update	    
+                diode_filter_number=face_update_code_to_material_data(face_update_code(face_number),2)
+                CALL timeshift_Zfilter(Diode_Cj_filter_data(diode_filter_number))
+                CALL evaluate_Zfilter (surface_material_list(material_number)%Diode_Cj_Z,	 &
+	        		       Diode_Cj_filter_data(diode_filter_number),	 &
+			  	       0d0)
+
+                Zc=surface_material_list(material_number)%Diode_Cj_f
+		Vc=Diode_Cj_filter_data(diode_filter_number)%f
+	      
+	        CALL diode_calc(V(Vy_zmin,cx,cy,cz)+V(Vy_zmax,cx,cy,cz-1),Z0/2d0,Is,nVt,Rs,Vd,Id,1)
+		Vy_min=Vd
+		Vy_max=Vd
+		
+                CALL evaluate_Zfilter (surface_material_list(material_number)%Diode_Cj_Z,	 &
+	        		       Diode_Cj_filter_data(diode_filter_number),	 &
+			  	       Ic)
+	      	      
+	      else ! diode is not is this direction so do free space update for y polarisation
+	      
+	        Vy_min=V(Vy_zmin,cx,cy,cz)+V(Vy_zmax,cx,cy,cz-1)
+	        Vy_max=Vy_min
+       
+              end if	      
 	     
 	    else if ( (material_type.EQ.surface_material_type_DISPERSIVE).OR.			&
 	              (material_type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE) ) then

@@ -232,6 +232,10 @@ IMPLICIT NONE
   ans%wnorm=1d0
   ans%T=0d0
   ans%a%order=aorder
+  
+  if (allocated(ans%a%coeff)) deallocate(ans%a%coeff)
+  if (allocated(ans%b%coeff)) deallocate(ans%b%coeff)
+  
   allocate (ans%a%coeff(0:ans%a%order))
   ans%b%order=border
   allocate (ans%b%coeff(0:ans%b%order))

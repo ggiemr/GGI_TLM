@@ -527,6 +527,19 @@
 						
 14/8/2014	CJS	Implement post processing for the visualisation of multi-dimensional data
 			with paraview. 
+						
+15/8/2014	CJS	Put version 1.0.2 on github.
+						
+19/8/2014	CJS	Testing of version 1.0.2 OK for both parallel and sequential versions. 
+
+3/9/2014	CJS	Implement a non-linear surface impedance to represent a diode.
+
+8/9/2014	CJS	Include junction capacitance and series resistance in the diode model.
+
+10/9/2014	CJS	Reconfigure the makefile so that it remembers the active compiled version (MPI or SEQ)
+			so as to make using the makefile simpler.
+			Document the DIODE surface material model
+			Document the DIODE test case
 
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE

@@ -3,6 +3,7 @@ source version_information
 
 cd SRC
 make clean_all
+rm compilation_date.inc
 cd ..
 cd TEST_DATA
 run_automatic_test clean

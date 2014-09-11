@@ -121,6 +121,17 @@ TYPE::surface_material_type
   REAL*8 		:: Z11_f(3),Z12_f(3),Z21_f(3),Z22_f(3)
   TYPE(Sfilter)		:: Z11_S(3),Z12_S(3),Z21_S(3),Z22_S(3)
   TYPE(Zfilter)		:: Z11_Z(3),Z12_Z(3),Z21_Z(3),Z22_Z(3)
+  
+  real*8		:: Diode_Is
+  real*8		:: Diode_nVt
+  real*8		:: Diode_Rs
+  real*8		:: Diode_Cj
+  character*2		:: Diode_direction
+  integer		:: diode_sign
+  
+  REAL*8 		:: Diode_Cj_f
+  TYPE(Sfilter)		:: Diode_Cj_S
+  TYPE(Zfilter)		:: Diode_Cj_Z
    
 END TYPE surface_material_type
 
@@ -133,6 +144,8 @@ END TYPE surface_material_type
   integer,parameter	:: surface_material_type_FREE_SPACE=4
 
   integer,parameter	:: surface_material_type_ANISOTROPIC_DISPERSIVE=5
+  
+  integer,parameter	:: surface_material_type_DIODE=6
 
   integer				  :: n_surface_materials
   type(surface_material_type),allocatable :: surface_material_list(:)
@@ -144,5 +157,9 @@ END TYPE surface_material_type
   type(Zfilter_response),allocatable	:: surface_material_Z12_filter_data(:) 
   type(Zfilter_response),allocatable	:: surface_material_Z21_filter_data(:) 
   type(Zfilter_response),allocatable	:: surface_material_Z22_filter_data(:) 
+  
+  integer 	:: n_diode_faces
+  integer 	:: surface_diode_storage
+  type(Zfilter_response),allocatable	:: Diode_Cj_filter_data(:) 
 
 END MODULE TLM_surface_materials

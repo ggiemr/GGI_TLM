@@ -1,0 +1,171 @@
+Mesh_outer_boundary_dimension
+-0.12 0.12    -0.055 0.055    -0.01 0.10  
+
+Mesh_cell_dimension
+0.010  
+
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+Surface_list
+4   Number of surfaces 
+1       surface_number ! ground plane
+zplane
+-0.11 -0.045 0.0     0.11 0.045 0.0    surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       surface_number ! main microstrip
+zplane
+-0.10 -0.005 0.02     0.08 0.005 0.02   surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+3       surface_number ! diode
+zplane
+0.08 -0.005 0.02     0.09 0.005 0.02   surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+4       surface_number ! xmax wire connection 
+zplane
+0.09 -0.005 0.02     0.10 0.005 0.02   surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Line_list 
+2   Number of lines 
+1       LINE_NUMBER 
+straight_line2
+-0.095 0.0  0.0     -0.095 0.0  0.02  line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       LINE_NUMBER 
+straight_line2
+ 0.095 0.0  0.0      0.095 0.0  0.02  line parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Point_list 
+4   Number of points 
+1       POINT_NUMBER 
+-0.095 0.0  0.0     point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       POINT_NUMBER 
+-0.095 0.0  0.02    point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+3       POINT_NUMBER 
+ 0.095 0.0  0.0    point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+4       POINT_NUMBER 
+0.095 0.0  0.02    point coordinates 
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+
+Surface_material_list
+2   Number of surface materials 
+1       SURFACE MATERIAL NUMBER 
+PEC
+3       number of surfaces
+1 2 4       surface list
+1 1 1       surface orientation list
+2       SURFACE MATERIAL NUMBER 
+DIODE
+1e-12  0.026   6.0 0.18e-12 Diode Is and nVt values
++x              Diode forward direction, infinite imedance in the orthogonal direction
+1       number of surfaces
+3       surface list
+1       surface orientation list
+
+
+Cable_geometry_list
+1  number of cable geometries
+1  cable geometry number, Cable geometry type (file name) follows:
+CABLE_DIRECTORY/0.1mm_single_wire                           
+
+Cable_list
+2  number of cables
+1  	CABLE NUMBER
+1 	cable geometry number
+1 	number of lines on cable route
+1 	cable line list
+1  	end 1 junction number
+2  	end 2 junction number
+2  	CABLE NUMBER~/TEMP/TRANSFER_FOR_DOCUMENTATION
+1 	cable geometry number
+1 	number of lines on cable route
+2 	cable line list
+3  	end 1 junction number
+4  	end 2 junction number
+
+Cable_output_list
+1  number of cable_outputs
+1  CABLE OUTPUT NUMBER
+1  cable number
+4  closest point number
+
+Cable_junction_list
+4    number of junctions
+1    JUNCTION NUMBER
+1    junction point 
+1    number of internal connection nodes (n_int)
+1    number of cables
+1    cable list
+1    corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1   	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+1   	Cable 1 voltage source function list
+50.0 	Cable 1 impedance list
+0	Number of internal impedances
+FACE
+-1
+2   JUNCTION NUMBER
+2    junction point  
+1   number of internal connection nodes (n_int)
+1   number of cables
+1   cable list
+2   corresponding cable end number list
+1   	Cable 2 number of external conductors (n_ext)
+1   	Cable 2 P matrix: matrix (n_int rows* n_ext columns)
+0   	Cable 2 voltage source function list
+0.0 	Cable 2 impedance list
+0	Number of internal impedances
+FACE
+-1
+3    JUNCTION NUMBER
+3    junction point 
+1    number of internal connection nodes (n_int)
+1    number of cables
+2    cable list
+1    corresponding cable end number list
+1   	Cable 1 number of external conductors (n_ext)
+1   	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0   	Cable 1 voltage source function list
+50.0 	Cable 1 impedance list
+0	Number of internal impedances
+FACE
+-1
+4   JUNCTION NUMBER
+4    junction point  
+1   number of internal connection nodes (n_int)
+1   number of cables
+2   cable list
+2   corresponding cable end number list
+1   	Cable 2 number of external conductors (n_ext)
+1   	Cable 2 P matrix: matrix (n_int rows* n_ext columns)
+0   	Cable 2 voltage source function list
+0.0 	Cable 2 impedance list
+0	Number of internal impedances
+FACE
+-1
+
+Excitation_function_list
+1            	! number of excitation functions
+1		! EXCITATION NUMBER
+sinusoid
+5.0 1e6 0.0
+
+Simulation_time
+5e-6
+

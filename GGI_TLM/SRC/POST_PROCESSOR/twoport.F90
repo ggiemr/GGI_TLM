@@ -29,6 +29,7 @@
 ! HISTORY
 !
 !     started 18/01/2013 CJS
+!     4/9/2014 CJS   Add an absorptance column to output data i.e. A=sqrt(S11**2-S21**2)
 !
 !
 SUBROUTINE twoport
@@ -64,6 +65,8 @@ IMPLICIT NONE
   complex*16	:: beta1,beta2,Z1,Z2,El1,Er1,El2,Er2
   
   complex*16	:: S11,S12,S21,S22
+  
+  real*8	:: Pr,Pt,Pa
     
   integer,parameter :: E11=1
   integer,parameter :: E12=2
@@ -209,10 +212,10 @@ IMPLICIT NONE
   
   if (excitation_port.eq.1) then
     write(local_file_unit,*)	&
-    '# f,dble(S11),dimag(S11),abs(S11),20.0*log10(abs(S11)),dble(S21),dimag(S21),abs(S21),20.0*log10(abs(S21))'
+    '# f,dble(S11),dimag(S11),abs(S11),20.0*log10(abs(S11)),dble(S21),dimag(S21),abs(S21),20.0*log10(abs(S21)), Pr, Pt, Pa'
   else if (excitation_port.eq.2) then  
     write(local_file_unit,*)	&
-    '# f,dble(S12),dimag(S12),abs(S12),20.0*log10(abs(S12)),dble(S22),dimag(S22),abs(S22),20.0*log10(abs(S22))'
+    '# f,dble(S12),dimag(S12),abs(S12),20.0*log10(abs(S12)),dble(S22),dimag(S22),abs(S22),20.0*log10(abs(S22)), Pr, Pt, Pa'
   end if
   
   n_frequencies=function_of_frequency(1)%n_frequencies
@@ -241,21 +244,27 @@ IMPLICIT NONE
     
       S11=El1*exp(j*beta1*l1)/( Er1*exp(-j*beta1*l1) )
       S21=Er2*exp(j*beta2*l2)/( Er1*exp(-j*beta1*l1) )
-    
+      Pr=abs(s11)**2
+      Pt=abs(s21)**2
+      Pa=1d0-Pr-Pt
+      
       write(local_file_unit,8000)frequency,dble(S11),dimag(S11),abs(S11),20.0*log10(abs(S11)),	&
-                                           dble(S21),dimag(S21),abs(S21),20.0*log10(abs(S21))
+                                           dble(S21),dimag(S21),abs(S21),20.0*log10(abs(S21)),Pr,Pt,Pa
       
     else if (excitation_port.eq.2) then
     
       S12=El1*exp(j*beta1*l1)/( El2*exp(-j*beta2*l2) )
       S22=Er2*exp(j*beta2*l2)/( El2*exp(-j*beta2*l2) )
+      Pr=abs(s22)**2
+      Pt=abs(s12)**2
+      Pa=1d0-Pr-Pt
       
       write(local_file_unit,8000)frequency,dble(S12),dimag(S12),abs(S12),20.0*log10(abs(S12)),	&
-                                           dble(S22),dimag(S22),abs(S22),20.0*log10(abs(S22))
+                                           dble(S22),dimag(S22),abs(S22),20.0*log10(abs(S22)),Pr,Pt,Pa
       
     end if
 
-8000     format(9E14.5)
+8000     format(12E14.5)
     
   end do ! next frequency value
   

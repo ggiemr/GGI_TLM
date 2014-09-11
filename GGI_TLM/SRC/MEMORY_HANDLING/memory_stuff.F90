@@ -138,6 +138,7 @@ integer	:: i,j
   CALL write_line('CALLED: deallocate_materials',0,output_to_screen_flag)
   
   if (allocated( volume_material_list )) then 
+    
     do i=1,n_volume_materials
     
       CALL deallocate_Sfilter( volume_material_list(i)%eps_S )
@@ -168,27 +169,40 @@ integer	:: i,j
     DEALLOCATE( volume_material_Zs_mu_filter_data )
   end if 
   
-  
   if (allocated( surface_material_list )) then 
+    
     do i=1,n_surface_materials
     
-      do j=1,3
-        CALL deallocate_Sfilter( surface_material_list(i)%Z11_S(j) )
-        CALL deallocate_Zfilter( surface_material_list(i)%Z11_Z(j) )
-        CALL deallocate_Sfilter( surface_material_list(i)%Z12_S(j) )
-        CALL deallocate_Zfilter( surface_material_list(i)%Z12_Z(j) )
-        CALL deallocate_Sfilter( surface_material_list(i)%Z21_S(j) )
-        CALL deallocate_Zfilter( surface_material_list(i)%Z21_Z(j) )
-        CALL deallocate_Sfilter( surface_material_list(i)%Z22_S(j) )
-        CALL deallocate_Zfilter( surface_material_list(i)%Z22_Z(j) )
-      end do
+      if ((surface_material_list(i)%type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE).OR.	&
+          (surface_material_list(i)%type.EQ.surface_material_type_DISPERSIVE) ) then
+    
+        do j=1,3
+          CALL deallocate_Sfilter( surface_material_list(i)%Z11_S(j) )
+          CALL deallocate_Zfilter( surface_material_list(i)%Z11_Z(j) )
+          CALL deallocate_Sfilter( surface_material_list(i)%Z12_S(j) )
+          CALL deallocate_Zfilter( surface_material_list(i)%Z12_Z(j) )
+          CALL deallocate_Sfilter( surface_material_list(i)%Z21_S(j) )
+          CALL deallocate_Zfilter( surface_material_list(i)%Z21_Z(j) )
+          CALL deallocate_Sfilter( surface_material_list(i)%Z22_S(j) )
+          CALL deallocate_Zfilter( surface_material_list(i)%Z22_Z(j) )
+        end do
       
+      else if (surface_material_list(i)%type.EQ.surface_material_type_DIODE) then
+      
+        if ( allocated(surface_material_list(i)%Diode_Cj_S%a%coeff) ) then
+          CALL deallocate_Sfilter( surface_material_list(i)%Diode_Cj_S )
+          CALL deallocate_Zfilter( surface_material_list(i)%Diode_Cj_Z )
+        end if
+	
+      end if ! material type
+	  
       if ( allocated(surface_material_list(i)%surface_list) ) then
-	DEALLOCATE( surface_material_list(i)%surface_list )
+        DEALLOCATE( surface_material_list(i)%surface_list )
 	DEALLOCATE( surface_material_list(i)%surface_orientation_list )
       end if
       
     end do ! next material in list
+    
   end if 
   
   if (allocated( surface_material_Z11_filter_data )) then 
@@ -218,7 +232,11 @@ integer	:: i,j
     end do 
     DEALLOCATE( surface_material_Z22_filter_data )
   end if 
-  
+        
+  if (allocated( Diode_Cj_filter_data )) then 
+    CALL deallocate_Zfilter_data( Diode_Cj_filter_data )     
+  end if 
+
   CALL write_line('FINISHED: deallocate_materials',0,output_to_screen_flag)
 
   RETURN

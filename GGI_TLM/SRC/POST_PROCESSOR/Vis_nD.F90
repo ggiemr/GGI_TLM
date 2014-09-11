@@ -32,6 +32,7 @@
 ! HISTORY
 !
 !     started 14/08/2014 CJS
+!     28/08/2014 CJS: add 1D plot and also make plots 3D
 !     
 !
 SUBROUTINE Vis_nD(function_number)
@@ -74,7 +75,10 @@ integer	:: function_number
   real*8,allocatable	:: data(:,:)
   real*8,allocatable	:: max_data(:)
   real*8,allocatable	:: min_data(:)
- 
+  
+  real*8		:: min_value,value_range,zrange
+  integer		:: izrange
+  
   real*8		:: value(4)
   real*8		:: new_value(4)
   integer		:: step(0:4)
@@ -184,9 +188,9 @@ integer	:: function_number
   end do
   
 ! organise the data into a sensible format
-  write(*,*)'Enter the number of dimensions to plot (between 2 and 4)'
+  write(*,*)'Enter the number of dimensions to plot (between 1 and 4)'
   read(*,*)nDim
-  write(record_user_inputs_unit,*)nDim,' Number of dimensions to plot (between 2 and 4)'
+  write(record_user_inputs_unit,*)nDim,' Number of dimensions to plot (between 1 and 4)'
       
   ALLOCATE( column_list(1:nDim+1) )
   
@@ -203,7 +207,10 @@ integer	:: function_number
   write(*,'(A,A,A)')'Which Column should the plot value data come from? '
   read(*,*)column_list(data_column)
   write(record_user_inputs_unit,*)column_list(data_column),' Column for the plot value data '
-    
+  
+  min_value=min_data(column_list(data_column))
+  value_range=(max_data(column_list(data_column))-min_data(column_list(data_column)))
+   
 ! work out the size of each dimension in the file
 
   step(:)=0
@@ -258,6 +265,9 @@ integer	:: function_number
 ! get the plotting dimensions
   nx=n(1)*n(3)
   ny=n(2)*n(4)
+  
+! ny=1 for 1D plots, we must increase this in order to generate a surface to plot
+  if (ndim.eq.1) ny=2
   
 !  write(*,*)'nx=',nx
 !  write(*,*)'ny=',ny
@@ -329,13 +339,25 @@ integer	:: function_number
       end do   
     end do    
   end do
+  
+! again a special case for 1 dimensional data, artificially add another coulmn of y data
+  if (ndim.eq.1) then
+    plot_data(1:nx,2)=plot_data(1:nx,1)
+  end if
  
   write(*,*)'Enter the filename visualisation data (without vtk extension)'
   read(*,'(A)')filename
   write(record_user_inputs_unit,'(A)')trim(filename)
   
+  izrange=max(n(1),n(2),1)
+  zrange=real(izrange)
+  
+  write(*,*)'minimum data value=',min_value
+  write(*,*)'value_range       =',value_range
+  write(*,*)'z_range           =',zrange
+
   filename2=trim(filename)//".vtk"
-  CALL write_4D_vtk_data(nx,ny,x_values,y_values,plot_data,filename2)    
+  CALL write_4D_vtk_data(nx,ny,x_values,y_values,plot_data,min_value,value_range,zrange,filename2)    
   
   DEALLOCATE( x_values )
   DEALLOCATE( y_values )
@@ -350,20 +372,37 @@ integer	:: function_number
   ALLOCATE( y_values(1:ny) )
   ALLOCATE( plot_data(1:nx,1:ny) )
   
-  x_values(1)=-0.5 
+  if (ndim.ne.1) then
+  
+    x_values(1)=-0.5 
+    do i=2,nx
+      x_values(i)=x_values(i-1)+n(1)
+    end do
+
+    y_values(1)=-0.5 
+    do i=2,ny
+      y_values(i)=y_values(i-1)+n(2)
+    end do
+  
+  else if (ndim.eq.1) then
+! Special case for 1 dimensional data
+     
+  x_values(1)=-0.5
   do i=2,nx
     x_values(i)=x_values(i-1)+n(1)
   end do
 
-  y_values(1)=-0.5 
-  do i=2,ny
-    y_values(i)=y_values(i-1)+n(2)
-  end do
+  y_values(1)=-0.5
+  y_values(2)=1.5
+   
+  end if
   
   plot_data(1:nx,1:ny)=0d0
-  
+  min_value=0d0
+  value_range=1d0
+  zrange=1d0
   filename2=trim(filename)//".map.vtk"
-  CALL write_4D_vtk_data(nx,ny,x_values,y_values,plot_data,filename2)    
+  CALL write_4D_vtk_data(nx,ny,x_values,y_values,plot_data,min_value,value_range,zrange,filename2)    
    
   DEALLOCATE ( data )
   DEALLOCATE ( max_data )
@@ -385,7 +424,7 @@ END SUBROUTINE Vis_nD
 ! _______________________________________________________________
 !
 !    
-SUBROUTINE write_4D_vtk_data(nx,ny,x_values,y_values,data,filename)    
+SUBROUTINE write_4D_vtk_data(nx,ny,x_values,y_values,data,min_value,value_range,zrange,filename)    
 
   integer	::  nx,ny
   
@@ -393,6 +432,8 @@ SUBROUTINE write_4D_vtk_data(nx,ny,x_values,y_values,data,filename)
   real*8	:: y_values(1:ny)
   
   real*8	:: data(1:nx,1:ny)
+  
+  real*8	:: min_value,value_range,zrange
   
   character*256 :: filename
 
@@ -433,7 +474,7 @@ SUBROUTINE write_4D_vtk_data(nx,ny,x_values,y_values,data,filename)
   do ix=1,nx
     do iy=1,ny
       
-      write(20,8000)x_values(ix),y_values(iy),0d0      
+      write(20,8000)x_values(ix),y_values(iy),(data(ix,iy)-min_value)*zrange/value_range
 8000  format(3E14.5)
       count=count+1
       

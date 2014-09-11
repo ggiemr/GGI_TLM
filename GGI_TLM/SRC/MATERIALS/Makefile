@@ -4,7 +4,8 @@ TLM_volume_materials.o \
 TLM_surface_materials.o \
 output_material_frequency_response.o \
 Surface_material_frequency_response.o \
-Volume_material_frequency_response.o
+Volume_material_frequency_response.o \
+Surface_lumped_element_update.o
 
 default: $(MATERIAL_OBJS)
 

@@ -190,6 +190,7 @@ END SUBROUTINE set_surface_material_mesh
 !
 !     started 04/09/12 CJS
 !    2/12/2013 		CJS: Implement anisotropic impedance boundary conditions
+!    8/9/2014 		CJS: Implement diode junction capacitance model
 !
 !
 
@@ -252,6 +253,39 @@ IMPLICIT NONE
                        surface_material_list(material_number)%Z22_Z(i)    )
 
       end do ! next polarisation
+      
+    else if (surface_material_list(material_number)%type.EQ.surface_material_type_DIODE) then
+
+! set the S filter to represent the junction capacitance    
+
+      surface_material_list(material_number)%Diode_Cj_S%wnorm=1d0
+  
+      surface_material_list(material_number)%Diode_Cj_S%a%order=0
+      allocate( surface_material_list(material_number)%Diode_Cj_S%a%coeff(0:0) ) ! zero order numerator
+      surface_material_list(material_number)%Diode_Cj_S%a%coeff(0)=1d0
+  
+      surface_material_list(material_number)%Diode_Cj_S%b%order=1
+      allocate( surface_material_list(material_number)%Diode_Cj_S%b%coeff(0:1) ) ! first order denominator
+      surface_material_list(material_number)%Diode_Cj_S%b%coeff(0)=0d0
+      surface_material_list(material_number)%Diode_Cj_S%b%coeff(1)=surface_material_list(material_number)%Diode_Cj
+		     
+      Zfilter_temp=s_to_z_warp(surface_material_list(material_number)%Diode_Cj_S,dt,bicubic_warp_flag,frequency_scale)     
+      call Z_fast_slow_decomposition( Zfilter_temp, 		&
+                     surface_material_list(material_number)%Diode_Cj_f, 	&
+                     surface_material_list(material_number)%Diode_Cj_Z    )
+		     
+!      write(*,*)'Diode capacitance filter'
+!      write(*,*)'Sfilter'
+!      write(*,*)'a0=',surface_material_list(material_number)%Diode_Cj_S%a%coeff(0)   
+!      write(*,*)'b0=',surface_material_list(material_number)%Diode_Cj_S%b%coeff(0)   
+!      write(*,*)'b1=',surface_material_list(material_number)%Diode_Cj_S%b%coeff(1)   
+!      
+!      write(*,*)'Zfilter'
+!      write(*,*)'Zf=',surface_material_list(material_number)%Diode_Cj_f   
+!      write(*,*)'a0=',surface_material_list(material_number)%Diode_Cj_Z%a%coeff(0)   
+!      write(*,*)'a1=',surface_material_list(material_number)%Diode_Cj_Z%a%coeff(1)   
+!      write(*,*)'b0=',surface_material_list(material_number)%Diode_Cj_Z%b%coeff(0)   
+!      write(*,*)'b1=',surface_material_list(material_number)%Diode_Cj_Z%b%coeff(1)   
 		     
     end if ! material type is dispersive
     
@@ -275,6 +309,7 @@ END SUBROUTINE calculate_surface_material_filter_coefficients
 !
 !     started 4/09/2012 CJS
 !    2/12/2013 		CJS: Implement anisotropic impedance boundary conditions
+!    8/9/2014 		CJS: Implement diode junction capacitance
 !
 !
 !
@@ -294,6 +329,7 @@ IMPLICIT NONE
   integer	:: material_number
   integer	:: face_loop
   integer	:: surface_filter_number
+  integer	:: diode_filter_number
 
   integer       :: z11aorder_pol1,z11border_pol1
   integer       :: z12aorder_pol1,z12border_pol1
@@ -314,6 +350,9 @@ IMPLICIT NONE
   
   n_surface_material_faces=0
   surface_material_storage=0
+  
+  n_diode_faces=0
+  surface_diode_storage=0
 
 ! loop over special faces
   DO face_loop=1,n_special_faces
@@ -329,8 +368,14 @@ IMPLICIT NONE
         n_surface_material_faces=n_surface_material_faces+1
 
         face_update_code_to_material_data(face_loop,2)=surface_material_storage+1
-        surface_material_storage=surface_material_storage+2   ! note 2 filters per face	    
+        surface_material_storage=surface_material_storage+2   ! note 2 filters per face	  
+	  
+      else if (surface_material_list(material_number)%type.EQ.surface_material_type_DIODE) then
 
+        n_diode_faces=n_diode_faces+1
+        surface_diode_storage=surface_diode_storage+1
+        face_update_code_to_material_data(face_loop,2)=surface_diode_storage
+	
       end if ! surface material at this cell face
 
     end if ! is this a material face? 
@@ -344,9 +389,13 @@ IMPLICIT NONE
     allocate (surface_material_Z21_filter_data(1:surface_material_storage)) 
     allocate (surface_material_Z22_filter_data(1:surface_material_storage)) 
   end if
+  
+!  write(*,*)'Allocate surface diode storage',surface_diode_storage ! **************
+  if (surface_diode_storage.ne.0) then
+    allocate ( Diode_Cj_filter_data(1:surface_diode_storage)) 
+  end if
  
 ! loop over filters allocating memory for the particular material order
- 
 
 ! loop over special faces
   DO face_loop=1,n_special_faces
@@ -417,7 +466,13 @@ IMPLICIT NONE
         surface_material_Z12_filter_data(surface_filter_number)=allocate_Zfilter_response(z12aorder_pol2,z12border_pol2)	
         surface_material_Z21_filter_data(surface_filter_number)=allocate_Zfilter_response(z21aorder_pol2,z21border_pol2)	
         surface_material_Z22_filter_data(surface_filter_number)=allocate_Zfilter_response(z22aorder_pol2,z22border_pol2)
+	  
+      else if (surface_material_list(material_number)%type.EQ.surface_material_type_DIODE) then
 
+        diode_filter_number=face_update_code_to_material_data(face_loop,2)
+!        write(*,*)'Allocate first order filter response',diode_filter_number  ! *****************************
+	Diode_Cj_filter_data(diode_filter_number)=allocate_Zfilter_response(1,1) ! Always a first order filter for diode capacitance
+	
       end if ! surface material at this cell face
 
     end if ! is this a material face? 
