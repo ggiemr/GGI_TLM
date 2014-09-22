@@ -6,7 +6,7 @@ set autoscale y
 set xlabel "Time (s)"
 set ylabel "V/m"
 plot \
-"PROBLEM_SPECIFICATION_FILES/excitation.tout_ref" u 1:3 title "GGI_TLM reference" w p,\
+"PROBLEM_SPECIFICATION_FILES/excitation_test.field.tout_ref" u 1:3 title "GGI_TLM reference" w p,\
 "excitation_test.field.tout" u 1:3 title "GGI_TLM" w l
 #PAUSE pause -1
 

@@ -239,7 +239,26 @@ IMPLICIT NONE
     
   end if ! n_frequency_output_surfaces.ne.0
   
-! Check Frequency output surface  
+! Check Frequency output volume  
+  if (n_frequency_output_volumes.ne.0) then
+  
+    do i=1,n_frequency_output_volumes
+    
+      volume=frequency_output_volume(i)%volume_number
+      if ( (volume.gt.n_volumes).OR.(volume.lt.0) )then
+    
+        CALL write_line('ERROR in : frequency_output_volume does not exist',0,.TRUE.)
+        CALL write_line_integer('volume number:',volume,0,.TRUE.)
+        CALL write_line_integer('Number of volumes=',n_volumes,0,.TRUE.)
+        STOP
+
+      end if
+      
+    end do ! next frequency_output_volume
+    
+  end if ! n_frequency_output_volumes.ne.0
+  
+! Check Frequency_domain_power_surfaces
   if (n_frequency_domain_power_surfaces.ne.0) then
   
     do i=1,n_frequency_domain_power_surfaces

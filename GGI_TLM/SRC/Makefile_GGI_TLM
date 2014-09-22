@@ -688,10 +688,10 @@ MAKE_analytic:
 	( cd ANALYTIC ; $(MAKE) )
 
 WRITE_SEQ_VERSION:
-	echo "LAST_MAKE=SEQ" > most_recently_made_version
-	echo "made SEQ version"
+	@echo "LAST_MAKE=SEQ" > most_recently_made_version
+	@echo "made SEQ version"
 
 WRITE_MPI_VERSION:
-	echo "LAST_MAKE=MPI" > most_recently_made_version
-	echo "made MPI version"
+	@echo "LAST_MAKE=MPI" > most_recently_made_version
+	@echo "made MPI version"
 

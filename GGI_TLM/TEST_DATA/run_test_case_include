@@ -60,6 +60,7 @@ if [ "$#" = "0" ] ; then
   echo "action=plot_ref NAME      : plot the results against reference results to screen"
   echo "action=plot_ref_jpg NAME  : plot the results against reference results to jpeg file"
   echo "action=reference  NAME    : update the reference results with the current set of results"
+  echo "action=check_reference  NAME    : Check the reference results against the current set of results to see whether they are the same"
   echo " "
   echo "NAME can be one of the existing test cases or leave blank to run the whole set"
   echo " "
@@ -271,6 +272,78 @@ else
        
        echo "FINISHED: $TEST_CASE: reference" > ./progress
       
+     elif [ "$ACTION" = "check_reference" ] ; then
+     
+
+# find all the files in the  PROBLEM_SPECIFICATION_FILES  directory ending in _ref. These are the reference files to check
+
+      FILE_LIST=$( find ./PROBLEM_SPECIFICATION_FILES/ -name "*_ref" )
+
+      echo $FILE_LIST
+  
+      FILE_NUMBER=0
+# Check tests whether ANY of the files differ
+      CHECK="OK"
+# Check2 tests whether ANY of the files are the same
+      CHECK2="FAILED"
+
+# loop over the list of reference files  
+      for REFERENCE_FILE in $FILE_LIST
+      do
+   
+        NEW_FILE=$( basename $REFERENCE_FILE _ref )
+ 
+# check that the file exists - some test cases re-name files when copying reference results...
+        if [ -s $NEW_FILE ]; then
+
+          FILE_NUMBER=$((FILE_NUMBER+1))
+
+# Strip the directory name and _ref from the reference filename to give the current filename 
+          echo "checking files:
+          $REFERENCE_FILE
+	  $NEW_FILE "
+  
+          cmp "$REFERENCE_FILE" "$NEW_FILE"
+  
+          RETURN_CODE=$?
+  
+          if [[ $RETURN_CODE == 0 ]] 
+          then
+            echo "PASSED CHECK"   
+            CHECK2="OK"
+          else
+            echo "***FAILED CHECK***"
+            CHECK="FAILED"
+          fi   
+
+        fi
+
+      done
+      
+      if [ "$FILE_NUMBER" == "0"  ] ; then
+        echo "$TEST_CASE: Warning: no files checked " > ./progress
+        echo "$TEST_CASE: Warning: no files checked "
+      
+      else
+
+# check the reference file against the file in the run directory with the same name (minus _ref) 
+
+        if [ "$CHECK" == "OK"  ] ; then
+          echo "$TEST_CASE: Checked $FILE_NUMBER files: ALL RESULTS ARE EQUAL TO REFERENCE" > ./progress
+          echo "$TEST_CASE: Checked $FILE_NUMBER files: ALL RESULTS ARE EQUAL TO REFERENCE"
+        else
+          if [ "$CHECK2" == "OK"  ] ; then
+            echo "$TEST_CASE: Checked $FILE_NUMBER files: AT LEAST ONE RESULT NOT EQUAL TO REFERENCE*" > ./progress
+            echo "$TEST_CASE: Checked $FILE_NUMBER files: AT LEAST ONE RESULT NOT EQUAL TO REFERENCE*"
+	  else
+            echo "******$TEST_CASE: Checked $FILE_NUMBER files: NO RESULTS ARE EQUAL TO REFERENCE******" > ./progress
+            echo "******$TEST_CASE: Checked $FILE_NUMBER files: NO RESULTS ARE EQUAL TO REFERENCE******"
+	  fi
+        fi
+	
+      fi
+
+             
      else 
      
        echo "Unknown action: $ACTION"      

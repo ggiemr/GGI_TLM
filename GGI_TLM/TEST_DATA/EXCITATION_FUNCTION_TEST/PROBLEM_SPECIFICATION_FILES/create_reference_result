@@ -1,3 +1,3 @@
-cp excitation_test.field.tout PROBLEM_SPECIFICATION_FILES/excitation.tout_ref
+cp excitation_test.field.tout PROBLEM_SPECIFICATION_FILES/excitation_test.field.tout_ref
 
 

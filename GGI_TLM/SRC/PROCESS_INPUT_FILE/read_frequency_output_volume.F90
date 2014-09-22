@@ -68,7 +68,7 @@ IMPLICIT NONE
   
   do i=1,n_frequency_output_volumes
   
-    CALL write_line_integer('Reading requency_output_volume number',i,0,output_to_screen_flag)
+    CALL write_line_integer('Reading frequency_output_volume number',i,0,output_to_screen_flag)
     
     read(input_file_unit,*,err=9000)read_number
     if (read_number.ne.i) GOTO 9020

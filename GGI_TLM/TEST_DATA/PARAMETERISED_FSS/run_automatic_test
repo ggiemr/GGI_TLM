@@ -125,6 +125,11 @@ elif [ "$ACTION" = "reference" ] ; then
 
 # RUN THE DEFAULT TEST CASE SEQUENCE
     source ../run_test_case_include
+      
+elif [ "$ACTION" = "check_reference" ] ; then
+
+# RUN THE DEFAULT TEST CASE SEQUENCE
+    source ../run_test_case_include
  
 elif [ "$ACTION" = "plot_ref" ] ; then
 

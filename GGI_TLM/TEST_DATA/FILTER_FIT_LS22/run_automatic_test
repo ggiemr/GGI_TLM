@@ -221,6 +221,11 @@ else
      
        PROBLEM_SPECIFICATION_FILES/create_reference_result       
       
+     elif [ "$ACTION" = "check_reference" ] ; then
+
+# RUN THE DEFAULT TEST CASE SEQUENCE
+       source ../run_test_case_include
+      
      else 
      
        echo "Unknown action: $ACTION"      

@@ -144,6 +144,7 @@ action=plot_jpg NAME      : plot the results to jpeg file
 action=plot_ref NAME      : plot the results against reference results to screen
 action=plot_ref_jpg NAME  : plot the results against reference results to jpeg file
 action=reference  NAME    : update the reference results with the current set of results
+action=check_reference  NAME    : Check the reference results against the current set of results to see whether they are the same
 
 NAME can be : One of the existing test cases ,
      	    : FULL_TEST_CASE_LIST to run all the test cases
@@ -278,6 +279,10 @@ else
       elif [ "$ACTION" = "reference" ] ; then
        
         ./run_automatic_test $ACTION $TEST_CASE
+      
+      elif [ "$ACTION" = "check_reference" ] ; then
+       
+        ./run_automatic_test $ACTION $TEST_CASE
             
       else 
      
@@ -290,7 +295,15 @@ else
       
       RETURN_CODE=$?
       
-      if [ "$ACTION" != "clean" ] ; then
+      if [ "$ACTION" = "check_reference" ] ; then
+      
+        read LINE < progress
+    
+        cd ..
+	
+        echo "$LINE " >> progress     
+      
+      elif [ "$ACTION" != "clean" ] ; then
       
         read LINE < progress
     

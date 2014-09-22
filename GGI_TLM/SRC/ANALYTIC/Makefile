@@ -4,7 +4,8 @@ mlayer \
 skin_depth \
 rcs_cylinder \
 rcs_sphere \
-cable_loss 
+cable_loss \
+transmission_line
 
 clean: \
 clean_cavity \
@@ -12,7 +13,8 @@ clean_mlayer \
 clean_skin_depth \
 clean_rcs_cylinder \
 clean_rcs_sphere \
-clean_cable_loss 
+clean_cable_loss \
+clean_transmission_line
 
 cavity:
 	( cd CAVITY ; $(MAKE) )
@@ -26,6 +28,8 @@ rcs_sphere:
 	( cd RCS_SPHERE ; $(MAKE) )
 cable_loss:
 	( cd CABLE_LOSS ; $(MAKE) )
+transmission_line:
+	( cd TRANSMISSION_LINE ; $(MAKE) )
 #
 clean_cavity:
 	( cd CAVITY ; make clean )
@@ -39,3 +43,5 @@ clean_rcs_sphere:
 	( cd RCS_SPHERE ; make clean )
 clean_cable_loss:
 	( cd CABLE_LOSS ; make clean )
+clean_transmission_line:
+	( cd TRANSMISSION_LINE ; make clean )

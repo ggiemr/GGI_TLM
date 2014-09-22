@@ -5,7 +5,7 @@
 set title "Cable Current"
 set xlabel "Time (s)"
 set ylabel "A"
-plot "PROBLEM_SPECIFICATION_FILES/Reference_current.reference" u 1:3 title "Cable current: GGI_TLM Reference" w p ,\
+plot "PROBLEM_SPECIFICATION_FILES/cable_test.cable_current.tout_ref" u 1:3 title "Cable current: GGI_TLM Reference" w p ,\
      "cable_test.cable_current.tout" u 1:3 title "Cable current: GGI_TLM" w l 
      
 #PAUSE pause -1
@@ -17,6 +17,6 @@ set autoscale x
 set autoscale y
 set xlabel "Time (s)"
 set ylabel "V/m"
-plot "PROBLEM_SPECIFICATION_FILES/Reference_field.reference" u 1:3 title "E field: GGI_TLM Reference" w p ,\
+plot "PROBLEM_SPECIFICATION_FILES/cable_test.field.tout_ref" u 1:3 title "E field: GGI_TLM Reference" w p ,\
      "cable_test.field.tout" u 1:3 title "E field: GGI_TLM" w l
 #PAUSE pause -1

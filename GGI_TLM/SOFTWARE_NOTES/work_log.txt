@@ -541,6 +541,12 @@
 			Document the DIODE surface material model
 			Document the DIODE test case
 
+12/9/2014	CJS	Include a process in run_automatic_test to check whether the current result is equal to the 
+			reference result without having to plot them. 
+
+22/9/2014	CJS	Add microstrip impedance calculator to ANALYTIC
+			Also make some changes to the documentation - add some useful references (based on HIRF-SE state of the art document references)
+
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE
 		- Start to implement and document all the Fieldsolve test cases : STARTED

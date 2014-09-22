@@ -1,2 +1,2 @@
-cp cable_test.cable_current.tout PROBLEM_SPECIFICATION_FILES/Reference_current.reference
+cp cable_test.cable_current.tout PROBLEM_SPECIFICATION_FILES/cable_test.cable_current.tout_ref
 
