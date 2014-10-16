@@ -29,6 +29,7 @@ GGI_TLM_memory_usage.txt \
 *vtk* \
 *.txt \
 *.jpeg \
+*.png \
 *.fout* \
 *.tout* \
 *.vmat \
@@ -41,6 +42,7 @@ GGI_TLM_memory_usage.txt \
 *.avi \
 IELF_value.out \
 fort.* \
+save_result \
 "
 
  
@@ -55,12 +57,15 @@ if [ "$#" = "0" ] ; then
   echo "action=run_mpi np NAME    : run GGI_TLM_MPI on the test case NAME using mpi on np processors then post process results"
   echo "action=post_process NAME  : post process results"
   echo "action=clean NAME         : remove all existing results"
+  echo "action=clean_all NAME     : remove all existing results and saved results"
   echo "action=plot NAME          : plot the results to screen"
   echo "action=plot_jpg NAME      : plot the results to jpeg file"
   echo "action=plot_ref NAME      : plot the results against reference results to screen"
   echo "action=plot_ref_jpg NAME  : plot the results against reference results to jpeg file"
   echo "action=reference  NAME    : update the reference results with the current set of results"
   echo "action=check_reference  NAME    : Check the reference results against the current set of results to see whether they are the same"
+  echo "action=document  NAME     : Create a document in rtf format with details of the problem i.e. geometry, materials, cables, mesh and results"
+  echo "action=save  NAME  TAG   : Create a directory RESULTS_TAG and save results, .inp file, .info file and any .rtf files into it."
   echo " "
   echo "NAME can be one of the existing test cases or leave blank to run the whole set"
   echo " "
@@ -89,7 +94,8 @@ else
       echo "run_automatic_test run_mpi  4 NAME"
       echo " "
 
-      exit
+      echo "Error, wanted a number of processors to run on" > ./progress
+      exit 1
   
     else
     # The grep found only 0-9, so it's an integer. 
@@ -128,7 +134,20 @@ else
 
 # get the run_name 
      cd PROBLEM_SPECIFICATION_FILES
+     
+     NUMBER_OF_INPUT_FILES=$(ls *.inp | wc -l)
+     
+     if [ $NUMBER_OF_INPUT_FILES != 1 ] ; then
+       echo " Error: More than one input file found:"
+       ls *.inp
+       echo ""
+       cd ..
+       echo " Error: More than one input file found" > ./progress
+       exit 1
+     fi
+     
      RUN_FILE_NAME=$(ls *.inp)
+     
      cd ..
      RUN_NAME=${RUN_FILE_NAME%\.*}
      echo "TEST_CASE:${TEST_CASE}  RUN_NAME:${RUN_NAME}"
@@ -149,6 +168,16 @@ else
 	      }" > sed_command
 
        sed -f sed_command PROBLEM_SPECIFICATION_FILES/$RUN_NAME.inp > ./$RUN_NAME.inp
+
+# copy input file and all material, cable and mode files to the run directory
+       
+       cp PROBLEM_SPECIFICATION_FILES/$RUN_NAME.inp ./$RUN_NAME.inp
+       cp PROBLEM_SPECIFICATION_FILES/*.vmat .
+       cp PROBLEM_SPECIFICATION_FILES/*.smat . 
+       cp PROBLEM_SPECIFICATION_FILES/*.cable .
+       cp PROBLEM_SPECIFICATION_FILES/*.mode .
+
+# copy any additional files required which may not be specified in a standard format
        
        $COPY_COMMAND
     
@@ -215,6 +244,15 @@ else
        rm -f $CLEANING_LIST
 # clean any existing output files     
        rm -f $RUN_NAME.*
+             
+     elif [ "$ACTION" = "clean_all" ] ; then
+
+# clean any existing problem specification files   
+       rm -f $CLEANING_LIST
+# clean any existing output files     
+       rm -f $RUN_NAME.*
+# remove the RESULTS_TAG directories i.e. any saved results
+       rm -rf RESULTS_*
     
      elif [ "$ACTION" = "plot" ] ; then
      
@@ -342,7 +380,45 @@ else
         fi
 	
       fi
+      
+     elif [ "$ACTION" = "document" ] ; then
 
+# Run python script to create the document
+     
+       pvpython ${SRC_DIR}/GGI_TLM_document.py
+       
+       echo "FINISHED: $TEST_CASE: document" > ./progress
+      
+     elif [ "$ACTION" = "save" ] ; then
+
+       TAG=$3
+       
+# check whether the RESULTS_$TAG directory exists and create it if it doesn't      
+       if [ ! -d "RESULTS_$TAG" ]; then
+  
+         mkdir RESULTS_$TAG
+  
+       fi
+ 
+# copy result files with tag to the RESUTLS directory
+# The results files to save are the same as those saved as reference results in the create_reference_result process
+
+# create a copy results process from the  PROBLEM_SPECIFICATION_FILES/create_reference_result  script
+     
+       echo "{
+              s/PROBLEM_SPECIFICATION_FILES/RESULTS_$TAG/g
+              s/_ref/ /g
+	      }" > sed_command
+
+       sed -f sed_command PROBLEM_SPECIFICATION_FILES/create_reference_result > save_result
+       
+       source save_result
+
+# copy additional results to the RESUTLS directory i.e. the .inp file, .info file and .rtf file (if it exists)
+
+       cp *.inp  RESULTS_$TAG
+       cp *.info RESULTS_$TAG
+       cp *.rtf  RESULTS_$TAG
              
      else 
      

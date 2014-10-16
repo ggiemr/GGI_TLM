@@ -547,6 +547,24 @@
 22/9/2014	CJS	Add microstrip impedance calculator to ANALYTIC
 			Also make some changes to the documentation - add some useful references (based on HIRF-SE state of the art document references)
 
+23/9/2014	CJS     Add a post processing procedure to calculate the impulse response of a digital filter derived from a laplace domain filter
+			for a specified timestep (or equivalently timestep for a specified TLM cell size)
+			Fix bug in GGI_TLM_material_model_checks - the surface material plotting option for all surfaces would fail if any material
+			had no faces associated with it. 
+
+1/10/2014	CJS     Add a post processing procedure to calculate VSWR from S11 data. Used to check horn antenna model against measured results.
+
+10/10/2014 	CJS	Start to implement automatic documentation process in python. 
+
+15/10/2014 	CJS	More work on automatic documentation process in python. 
+16/10/2014 	CJS	More work on automatic documentation process in python. Include the following processes 
+			in the run_automatic_test script(s):
+			document - create simulation document
+			save (with tag) - save input, info, rtf and results files to a directory RESULTS_tag
+			clean_all - as for clean but also removes any RESULTS_tag directories created with save
+			
+16/10/2014 	CJS	Update to version 1.0.4 
+
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE
 		- Start to implement and document all the Fieldsolve test cases : STARTED

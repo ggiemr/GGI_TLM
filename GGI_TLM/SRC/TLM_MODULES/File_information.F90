@@ -62,6 +62,8 @@ END MODULE File_general
 MODULE File_information
 
 IMPLICIT NONE
+
+  logical		:: open_inpfo_file
   
   character(len=4)	:: input_file_extension='.inp'
   integer,parameter	:: input_file_unit=10

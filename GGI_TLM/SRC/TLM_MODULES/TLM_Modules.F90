@@ -55,6 +55,8 @@ IMPLICIT NONE
   logical	:: bicubic_warp_flag
   logical	:: frequency_scale_flag
   real*8	:: frequency_scale
+
+  logical	:: write_info_file=.FALSE.
   
   logical	:: output_to_screen_flag=.TRUE.
   logical	:: timestepping_output_to_screen_flag=.FALSE.

@@ -39,6 +39,19 @@ The run_configuration_data file sets the following:
 Please see the make_configuration_data and run_configuration_data files for an example setup and change as required
 
 Note that it is useful to ensure that the EXECUTABLE_DIR and the current directory (.) is in your path 
+
+_______________________________________________________________________________________________________
+
+CYGWIN INSTALLATION NOTES
+
+The system will need to be set up as described in the SYSTEM CONFIGURATION note above. 
+
+The path can be set correctly by editing the .bash_profile file to include the line
+
+PATH=".:${HOME}/GGI_TLM/GGI_TLM/bin:${PATH}"
+
+where ${HOME}/GGI_TLM/GGI_TLM/bin should be replaced by the path to the GGI_TLM/bin directory on your system.
+
 _______________________________________________________________________________________________________
 
 MAKING GGI_TLM
@@ -48,8 +61,16 @@ The source code is in the SRC directory and should be made from there
 GGI_TLM can be made in two configurations, a sequential solver and a parallel solver (mpi). 
 The two versions of the solver are made with the commands
 
-Make PARALLEL_MODE=SEQ
-Make PARALLEL_MODE=MPI
+make PARALLEL_MODE=SEQ
+make PARALLEL_MODE=MPI
+
+make all      will make both sequential and parallel versions
+
+make          will re-make the most recent make type (seq or mpi)
+
+make clean    will clean the object files and module files
+
+make clean_all will clean the object files and module files plus the executables
 _______________________________________________________________________________________________________
 
 RUNNING GGI_TLM
@@ -110,7 +131,8 @@ model. The cable model may be checked using the code GGI_TLM_cable_model_checks.
 GGI_TLM_filter_fit generates frequency dependent material models from measured material 
 parameter
 
-GGI_TLM_filter_format_convert allows the conversion of the material filter formats between rational functions, pole-zero format and pole-residue format. This is only used if the 
+GGI_TLM_filter_format_convert allows the conversion of the material filter formats between r
+ational functions, pole-zero format and pole-residue format. This is only used if the 
 material models are to be used in other codes which use a different filter format 
 definition - it is not required to run GGI_TLM. 
 

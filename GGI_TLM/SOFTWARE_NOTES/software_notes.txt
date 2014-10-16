@@ -5,7 +5,9 @@ Instructions to include a new packet:
 
 1. Create a new module for the packet data
 
-2. in PROCESS_INPUT_FILE/read_input_file_geometry/cables/solver.F90 include a new packet check:
+2. in the files PROCESS_INPUT_FILE/read_input_file_geometry.F90 
+                PROCESS_INPUT_FILE/read_input_file_cables 
+		PROCESS_INPUT_FILE/read_input_file_solver.F90 include a new packet check:
 
     else if (input_line.EQ.'new_packet') then
     

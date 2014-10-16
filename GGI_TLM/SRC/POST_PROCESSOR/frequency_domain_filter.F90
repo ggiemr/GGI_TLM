@@ -216,6 +216,9 @@ IMPLICIT NONE
   character 	:: ch
   logical	:: Zfilter_flag
   real*8	:: dt
+  
+  logical,parameter :: warp_flag=.FALSE.
+  real*8,parameter  :: warp_scale=1d0
 
 ! START
 
@@ -227,7 +230,17 @@ IMPLICIT NONE
   
 ! Allocate and read the filter function to apply
 
+  write(*,*)'The filter specification should be in the form of the following example:'
+  write(*,*)'1.0E+08  # wnormalisation constant' 
+  write(*,*)'1        # a order' 
+  write(*,*)'4.0 0.75 # a coefficients' 
+  write(*,*)'1        # b order' 
+  write(*,*)'1.0 0.5  # b coefficients' 
+  write(*,*)'' 
+
+  write(*,*)'Enter the name of file containing the filter specification'
   read(*,'(A)')filter_file_name
+  write(record_user_inputs_unit,'(A)')trim(filter_file_name)
 
   open(UNIT=local_file_unit, 					    &
        FILE=trim(filter_file_name),	    &
@@ -259,7 +272,7 @@ IMPLICIT NONE
     write(*,*)'Enter the timestep'
     read(*,*)dt
     write(record_user_inputs_unit,*)dt,' timestep'
-    Zfilter1=s_to_z(Sfilter1,dt) 
+    Zfilter1=s_to_z_warp(Sfilter1,dt,warp_flag,warp_scale) 
   end if
   
 ! Apply the S or Z domain filter to the frequency domain data
@@ -371,3 +384,162 @@ IMPLICIT NONE
      STOP
   
 END SUBROUTINE Calculate_filter_frequency_response
+!
+! NAME
+!    Calculate_filter_time_response
+!
+! DESCRIPTION
+!    Take a filter function in the S plane, apply the bilinear transformation (with timestep or TLM cell size specified)
+!    The calculate the impulse response of the resulting Z plane filter
+!     
+! COMMENTS
+!     
+!
+! HISTORY
+!
+!     started 23/9/2014 CJS
+!
+!
+SUBROUTINE Calculate_filter_time_response
+
+USE post_process
+USE filter_types		        
+USE filter_functions		        
+USE file_information
+USE constants
+
+IMPLICIT NONE
+
+! local variables
+
+  integer			:: function_number
+
+! Filter stuff
+  character*256			:: filter_file_name
+  type(Sfilter) 		:: Sfilter1
+  type(Zfilter) 		:: Zfilter1
+  type(Zfilter_response) 	:: Zfilter_data1
+
+  integer			:: timestep,n_timesteps
+  real*8			:: f_input
+
+  real*8	:: dl,dt
+  
+  character	:: ch
+  
+  logical,parameter :: warp_flag=.FALSE.
+  real*8,parameter  :: warp_scale=1d0
+
+! START
+
+! Allocate and read the time domain input data
+  n_functions_of_time=1
+  n_functions_of_frequency=0
+  
+  CALL Allocate_post_data()
+  
+! Allocate and read the filter function to apply
+
+  write(*,*)'The filter specification should be in the form of the following example:'
+  write(*,*)'1.0E+08  # wnormalisation constant' 
+  write(*,*)'1        # a order' 
+  write(*,*)'4.0 0.75 # a coefficients' 
+  write(*,*)'1        # b order' 
+  write(*,*)'1.0 0.5  # b coefficients' 
+  write(*,*)'' 
+
+  write(*,*)'Enter the name of file containing the filter specification'
+  read(*,'(A)')filter_file_name
+  write(record_user_inputs_unit,'(A)')trim(filter_file_name)
+
+  open(UNIT=local_file_unit, 					    &
+       FILE=trim(filter_file_name),	    &
+       STATUS='old',							    &
+       ERR=9000)
+
+  call read_Sfilter(Sfilter1,local_file_unit) ! filter function
+
+  close(UNIT=local_file_unit)
+
+! we offer a choice to calculate the filter frequency response as 
+! specified or that of the digital filter obtained using the bilinear transformation  
+  write(*,*)"Enter 't' to set the timestep or "
+  write(*,*)"or 'l' to specify a TLM cell size and calculate the timestep appropriate for this"
+ 
+  read(*,'(A)')ch
+  
+  write(record_user_inputs_unit,'(A)')ch
+  
+  if ( (ch.eq.'t').OR.(ch.eq.'T') ) then
+  
+    write(*,*)'Enter the timestep'
+    read(*,*)dt
+    write(record_user_inputs_unit,*)dt,' timestep' 
+    
+  else if ( (ch.eq.'l').OR.(ch.eq.'L') ) then
+  
+    write(*,*)'Enter the TLM cell size'
+    read(*,*)dl
+    write(record_user_inputs_unit,*)dl,' TLM cell size' 
+    
+    dt=dl/(2d0*c0)
+
+  else
+    write(*,*)"Response should be 't' or 'l'"
+    STOP
+  end if
+
+! Calculate the Z domain filter
+  Zfilter1=s_to_z_warp(Sfilter1,dt,warp_flag,warp_scale) 
+
+  Zfilter_data1=allocate_Zfilter_response(Zfilter1%a%order,Zfilter1%b%order)
+
+! allocate memory for the time domain response function
+
+  write(*,*)'Enter the number of timesteps of the impulse response to calculate'
+  read(*,*)n_timesteps
+  write(record_user_inputs_unit,*)n_timesteps,' n_timesteps' 
+  
+  function_of_time(1)%n_timesteps=n_timesteps
+  ALLOCATE ( function_of_time(1)%time(1:n_timesteps) )
+  ALLOCATE ( function_of_time(1)%value(1:n_timesteps) )
+  
+! Apply the digital filter to the time domain data
+  
+  Zfilter_data1%w(:)=0d0
+  
+  do timestep=1,n_timesteps
+  
+    CALL timeshift_Zfilter(Zfilter_data1)
+    
+! create impulse driving function
+    f_input=0d0
+    if (timestep.eq.1) then
+      f_input=1d0
+    end if
+    
+    CALL evaluate_Zfilter(Zfilter1,Zfilter_data1,f_input)
+    
+    function_of_time(1)%time(timestep)=dble(timestep-1)*dt
+    function_of_time(1)%value(timestep)=Zfilter_data1%f  
+    
+  end do ! next sample
+  
+! Write the filtered data set to file
+  function_number=1
+  
+  CALL write_time_domain_data(function_number)
+
+! deallocate memory  
+  CALL Deallocate_post_data()
+  CALL deallocate_Sfilter( Sfilter1 )
+  CALL deallocate_Zfilter( Zfilter1 )
+  CALL deallocate_Zfilter_data( Zfilter_data1 )
+  
+  RETURN
+  
+9000 CALL write_line('Error reading filter function',0,.TRUE.)
+     CALL write_line('Problem opening filter file:'//trim(filter_file_name),0,.TRUE.)
+     STOP
+  
+END SUBROUTINE Calculate_filter_time_response

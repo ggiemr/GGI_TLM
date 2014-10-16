@@ -1,33 +1,46 @@
 #!/bin/bash
 
-## GGI_TLM_DIRECTORY must be set appropriately so that the executables are in
+## If you are running anywhere else then GGI_TLM_DIRECTORY must be set appropriately so that the executables are in
 ## ${GGI_TLM_DIRECTORY}/bin
-## EXAMPLE:GGI_TLM_DIRECTORY=/home/chris/GGI_TLM/GGI_TLM
+## EXAMPLE:
+#GGI_TLM_DIRECTORY=/home/chris/SOFTWARE/GGI_TLM/GGI_TLM
 
 GGI_TLM_DIRECTORY=/home/chris/GGI_TLM/GGI_TLM
+
+export GGI_TLM_DIRECTORY
 
 source ${GGI_TLM_DIRECTORY}/run_configuration_data
 
 EXECUTABLE_DIR="${GGI_TLM_DIRECTORY}/bin"
+SRC_DIR="${GGI_TLM_DIRECTORY}/SRC"
+TEST_DATA_DIRECTORY="${GGI_TLM_DIRECTORY}/TEST_DATA"
 
 MPI_SOLVER_NAME="GGI_TLM_MPI"
 
 SEQ_SOLVER_NAME="GGI_TLM_SEQ"
 
+echo " TEST_DATA_DIRECTORY : ${TEST_DATA_DIRECTORY} "
 echo " GGI_TLM_DIRECTORY   : ${GGI_TLM_DIRECTORY} "
 echo " EXECUTABLE_DIRECTORY: ${EXECUTABLE_DIR} "
 
+export GGI_TLM_DIRECTORY
 export EXECUTABLE_DIR
+export SRC_DIR
+export TEST_DATA_DIRECTORY
 export MPI_SOLVER_NAME
 export MPI_RUN_COMMAND
 export SEQ_SOLVER_NAME
 export SEQ_RUN_COMMAND
-export GGI_TLM_DIRECTORY
 
 echo "Automatic testing of GGI_TLM"
 echo " "
 
+
 FULL_TEST_CASE_LIST="
+TEMPLATE_PROBLEM
+"
+
+QUICK_TEST_CASE_LIST="
 TEMPLATE_PROBLEM
 "
 
@@ -41,11 +54,15 @@ action=run_seq NAME       : run GGI_TLM_SEQ on the test case NAME sequentially t
 action=run_mpi np NAME    : run GGI_TLM_MPI on the test case NAME using mpi on np processors then post process results
 action=post_process NAME  : post process results
 action=clean NAME         : remove all existing results
+action=clean_all NAME     : remove all existing results and saved results
 action=plot NAME          : plot the results to screen
 action=plot_jpg NAME      : plot the results to jpeg file
 action=plot_ref NAME      : plot the results against reference results to screen
 action=plot_ref_jpg NAME  : plot the results against reference results to jpeg file
 action=reference  NAME    : update the reference results with the current set of results
+action=check_reference  NAME    : Check the reference results against the current set of results to see whether they are the same
+action=document  NAME     : Create a document in rtf format with details of the problem i.e. geometry, materials, cables, mesh and results
+action=save  NAME  TAG   : Create a directory RESULTS_TAG and save results, .inp file, .info file and any .rtf files into it.
 
 NAME can be : One of the existing test cases ,
      	    : FULL_TEST_CASE_LIST to run all the test cases
@@ -54,7 +71,7 @@ Existing test cases are:
 
 $FULL_TEST_CASE_LIST
 "
- 
+
 if [ "$#" = "0" ] ; then
 
   echo "$ERROR_STRING"
@@ -104,7 +121,11 @@ else
   if [ "$NAME" = "FULL_TEST_CASE_LIST" ] ; then
   
     TEST_CASE_LIST=$FULL_TEST_CASE_LIST
-      
+  
+  elif [ "$NAME" = "QUICK_TEST_CASE_LIST" ] ; then
+  
+    TEST_CASE_LIST=$QUICK_TEST_CASE_LIST
+    
   elif [ "$NAME" ] ; then
   
     TEST_CASE_LIST=$NAME
@@ -113,6 +134,11 @@ else
   else 
   
     TEST_CASE_LIST=$FULL_TEST_CASE_LIST
+    
+#    echo "No test case(s) specified"
+#    echo " "
+#    echo "$ERROR_STRING"  
+#    exit 1
     
   fi
   
@@ -134,42 +160,60 @@ else
       echo "RUNNING TEST CASE: ${TEST_CASE}"
     
       cd $TEST_CASE
+      
      
       if [ "$ACTION" = "run_mpi" ] ; then
      
-        ./run_automatic_test $ACTION $NP $NAME
+        ./run_automatic_test $ACTION $NP $TEST_CASE
      
       elif [ "$ACTION" = "run_seq" ] ; then
      
-        ./run_automatic_test $ACTION $NAME
+        ./run_automatic_test $ACTION $TEST_CASE
               
       elif [ "$ACTION" = "post_process" ] ; then
        
-        ./run_automatic_test $ACTION $NAME
+        ./run_automatic_test $ACTION $TEST_CASE
              
       elif [ "$ACTION" = "clean" ] ; then
        
-        ./run_automatic_test $ACTION $NAME
+        ./run_automatic_test $ACTION $TEST_CASE
+             
+      elif [ "$ACTION" = "clean_all" ] ; then
+       
+        ./run_automatic_test $ACTION $TEST_CASE
     
       elif [ "$ACTION" = "plot" ] ; then
        
-        ./run_automatic_test $ACTION $NAME
+        ./run_automatic_test $ACTION $TEST_CASE
     
       elif [ "$ACTION" = "plot_jpg" ] ; then
        
-        ./run_automatic_test $ACTION $NAME
+        ./run_automatic_test $ACTION $TEST_CASE
        
       elif [ "$ACTION" = "plot_ref" ] ; then
        
-        ./run_automatic_test $ACTION $NAME
+        ./run_automatic_test $ACTION $TEST_CASE
        
       elif [ "$ACTION" = "plot_ref_jpg" ] ; then
        
-        ./run_automatic_test $ACTION $NAME
+        ./run_automatic_test $ACTION $TEST_CASE
       
       elif [ "$ACTION" = "reference" ] ; then
        
-        ./run_automatic_test $ACTION $NAME
+        ./run_automatic_test $ACTION $TEST_CASE
+      
+      elif [ "$ACTION" = "check_reference" ] ; then
+       
+        ./run_automatic_test $ACTION $TEST_CASE
+      
+      elif [ "$ACTION" = "document" ] ; then
+       
+        ./run_automatic_test $ACTION $TEST_CASE
+      
+      elif [ "$ACTION" = "save" ] ; then
+      
+        TAG=$3
+        ./run_automatic_test $ACTION $TEST_CASE $TAG
             
       else 
      
@@ -182,7 +226,15 @@ else
       
       RETURN_CODE=$?
       
-      if [ "$ACTION" != "clean" ] ; then
+      if [ "$ACTION" = "check_reference" ] ; then
+      
+        read LINE < progress
+    
+        cd ..
+	
+        echo "$LINE " >> progress     
+      
+      elif [ "$ACTION" != "clean" ] ; then
       
         read LINE < progress
     
@@ -228,4 +280,3 @@ else
 fi
 
 # we have some arguments to run_automatic_test
-

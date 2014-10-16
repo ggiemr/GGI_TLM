@@ -15,6 +15,7 @@ export GGI_TLM_DIRECTORY
 source ${GGI_TLM_DIRECTORY}/run_configuration_data
 
 EXECUTABLE_DIR="${GGI_TLM_DIRECTORY}/bin"
+SRC_DIR="${GGI_TLM_DIRECTORY}/SRC"
 
 MPI_SOLVER_NAME="GGI_TLM_MPI"
 
@@ -26,6 +27,7 @@ echo " EXECUTABLE_DIRECTORY: ${EXECUTABLE_DIR} "
 
 export GGI_TLM_DIRECTORY
 export EXECUTABLE_DIR
+export SRC_DIR
 export TEST_DATA_DIRECTORY
 export MPI_SOLVER_NAME
 export MPI_RUN_COMMAND
@@ -139,12 +141,15 @@ action=run_seq NAME       : run GGI_TLM_SEQ on the test case NAME sequentially t
 action=run_mpi np NAME    : run GGI_TLM_MPI on the test case NAME using mpi on np processors then post process results
 action=post_process NAME  : post process results
 action=clean NAME         : remove all existing results
+action=clean_all NAME     : remove all existing results and saved results
 action=plot NAME          : plot the results to screen
 action=plot_jpg NAME      : plot the results to jpeg file
 action=plot_ref NAME      : plot the results against reference results to screen
 action=plot_ref_jpg NAME  : plot the results against reference results to jpeg file
 action=reference  NAME    : update the reference results with the current set of results
 action=check_reference  NAME    : Check the reference results against the current set of results to see whether they are the same
+action=document  NAME     : Create a document in rtf format with details of the problem i.e. geometry, materials, cables, mesh and results
+action=save  NAME  TAG   : Create a directory RESULTS_TAG and save results, .inp file, .info file and any .rtf files into it.
 
 NAME can be : One of the existing test cases ,
      	    : FULL_TEST_CASE_LIST to run all the test cases
@@ -153,7 +158,7 @@ Existing test cases are:
 
 $FULL_TEST_CASE_LIST
 "
- 
+
 if [ "$#" = "0" ] ; then
 
   echo "$ERROR_STRING"
@@ -259,6 +264,10 @@ else
       elif [ "$ACTION" = "clean" ] ; then
        
         ./run_automatic_test $ACTION $TEST_CASE
+             
+      elif [ "$ACTION" = "clean_all" ] ; then
+       
+        ./run_automatic_test $ACTION $TEST_CASE
     
       elif [ "$ACTION" = "plot" ] ; then
        
@@ -283,6 +292,15 @@ else
       elif [ "$ACTION" = "check_reference" ] ; then
        
         ./run_automatic_test $ACTION $TEST_CASE
+      
+      elif [ "$ACTION" = "document" ] ; then
+       
+        ./run_automatic_test $ACTION $TEST_CASE
+      
+      elif [ "$ACTION" = "save" ] ; then
+      
+        TAG=$3
+        ./run_automatic_test $ACTION $TEST_CASE $TAG
             
       else 
      

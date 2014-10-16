@@ -13,6 +13,5 @@ set autoscale x
 set autoscale y
 set xlabel "Frequency (Hz)"
 set ylabel "RCS (dBsm)"
-plot "geometry.rcs.fout" u 1:5 title "GGI_TLM" w l,\
-     "PROBLEM_SPECIFICATION_FILES/pec.rcs_ref" u 1:4 title "Analytic RCS" w p
+plot "geometry.rcs.fout" u 1:5 title "GGI_TLM" w l
 #PAUSE pause -1

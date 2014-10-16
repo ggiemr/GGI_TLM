@@ -55,7 +55,11 @@ IMPLICIT NONE
   
   open(unit=input_file_unit,file=trim(problem_name)//input_file_extension,status='OLD',err=9000)
   
-  open(unit=info_file_unit,file=trim(problem_name)//info_file_extn)
+  if (write_info_file) then
+    open(unit=info_file_unit,file=trim(problem_name)//info_file_extn)
+  else
+    open(unit=info_file_unit,file='/dev/null')
+  end if
   
   open(unit=warning_file_unit,file=trim(problem_name)//warning_file_extension)
   

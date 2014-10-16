@@ -69,6 +69,8 @@ IMPLICIT NONE
 #include "compilation_date.inc"
   
   write(*,*)'Rank',rank,' number of processes= ',np
+  
+  write_info_file=.TRUE.
 
   CALL write_progress('STARTED: GGI_TLM')
   

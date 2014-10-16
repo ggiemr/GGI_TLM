@@ -85,7 +85,7 @@ IMPLICIT NONE
   dt=function_of_time(1)%time(2)-function_of_time(1)%time(1)
   Zfilter1=s_to_z(Sfilter1,dt) 
 
-  Zfilter_data1=allocate_Zfilter_response(Sfilter1%a%order,Sfilter1%b%order)
+  Zfilter_data1=allocate_Zfilter_response(Zfilter1%a%order,Zfilter1%b%order)
 
 ! allocate memory for the time domain response function
 

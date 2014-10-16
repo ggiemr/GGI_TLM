@@ -25,7 +25,8 @@ To make the sequential version:
 
 make PARALLEL_MODE=SEQ
 
-The default (if you just use 'make') is PARALLEL_MODE=SEQ
+The default (if you just use 'make') is to re-make the most recently made version or the SEQ version
+if the system has been cleaned.
 
 make clean : cleans everything except executables
 

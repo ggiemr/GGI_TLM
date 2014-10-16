@@ -80,14 +80,40 @@ IMPLICIT NONE
   
     write(info_file_unit,*)'____________________________________________________'
     write(info_file_unit,*)''
+    write(info_file_unit,*)'#START OF SURFACE MATERIAL DESCRIPTION'
+    write(info_file_unit,*)''
     write(info_file_unit,*)'Number of surface materials=',n_surface_materials
     write(info_file_unit,*)''
-    write(info_file_unit,*)'Material_number  Total_number_of_material_faces'
   
   end if
 
   do material_number=1,n_surface_materials
   
+    if (rank.eq.0) then 
+      write(info_file_unit,*)''
+      write(info_file_unit,*)'Surface material_number : ',material_number  
+
+      if (surface_material_list(material_number)%type.EQ.surface_material_type_PEC) then    
+        write(info_file_unit,*)'Material type: PEC'  
+      else if (surface_material_list(material_number)%type.EQ.surface_material_type_PMC) then 
+        write(info_file_unit,*)'Material type: PMC'
+      else if (surface_material_list(material_number)%type.EQ.surface_material_type_FREE_SPACE) then 
+        write(info_file_unit,*)'Material type: FREE_SPACE'
+      else if (surface_material_list(material_number)%type.EQ.surface_material_type_DIODE) then
+        write(info_file_unit,*)'Material type: DIODE'
+      else if (surface_material_list(material_number)%type.EQ.surface_material_type_DISPERSIVE) then
+        write(info_file_unit,*)'Material type: DISPERSIVE'
+        write(info_file_unit,*)'Material name: ',trim(surface_material_list(material_number)%name)
+      else if (surface_material_list(material_number)%type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE) then
+        write(info_file_unit,*)'Material_type : ANISOTROPIC_DISPERSIVE'
+        write(info_file_unit,*)'Material name: ',trim(surface_material_list(material_number)%name)
+      end if
+      
+      CALL write_line_integer('Number of geometric surfaces=',	&
+                             surface_material_list(material_number)%n_surfaces,info_file_unit,output_to_screen_flag)
+			     
+    end if
+    
     total_number_of_material_faces=0
     
     CALL write_line_integer('Surface material number=',material_number,0,output_to_screen_flag)
@@ -164,10 +190,15 @@ IMPLICIT NONE
     if (rank.eq.0) then
       CALL write_line_integer('Total number of material faces=',	&
                               total_number_of_material_faces_all_procsesses,0,output_to_screen_flag)
-      write(info_file_unit,'(2I14)')material_number,total_number_of_material_faces_all_procsesses
+      write(info_file_unit,'(A,I14)')'Total number of material faces=',total_number_of_material_faces_all_procsesses
     end if
 
   end do ! next surface material number
+  
+  if (rank.eq.0) then
+    write(info_file_unit,*)''
+    write(info_file_unit,*)'#END OF SURFACE MATERIAL DESCRIPTION'
+  end if
   
   CALL write_line('FINISHED: set_surface_material_mesh',0,output_to_screen_flag)
 

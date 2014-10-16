@@ -46,7 +46,7 @@ IMPLICIT NONE
 
 ! local variables
 
-  integer,parameter	:: number_of_options=38
+  integer,parameter	:: number_of_options=40
   integer	:: option
 
   character(len=256)	:: command
@@ -104,6 +104,8 @@ IMPLICIT NONE
   write(*,*)'36. Generate Far field plot data'
   write(*,*)'37. Re-format data file'
   write(*,*)'38. Visualise multi-dimensional data sets (up to 4D)'
+  write(*,*)'39. Calculate the impulse response of a filter function'
+  write(*,*)'40. S11 to VSWR'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -383,6 +385,20 @@ IMPLICIT NONE
     write(*,*)'Visualise multi-dimensional data'
     write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: VISUALISE MULTI-DIMENSIONAL DATA'
     CALL Vis_nD()
+    
+  else if (option.EQ.39) then
+  
+    write(*,*)'Calculate the impulse response of a filter function'
+    write(record_user_inputs_unit,*)option,	&
+    ' POST PROCESSING OPTION: CALCULATE THE IMPULSE RESPONSE OF A FILTER FUNCTION'
+    CALL Calculate_filter_time_response()
+    
+  else if (option.EQ.40) then
+  
+write(*,*)'40. S11 to VSWR'
+    write(record_user_inputs_unit,*)option,	&
+    ' POST PROCESSING OPTION: S11 to VSWR '
+    CALL S11_TO_VSWR()
      
   else
    

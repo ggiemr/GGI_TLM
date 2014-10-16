@@ -109,7 +109,6 @@ integer :: itloop
 
         Vd=Vd-(Vs-R*Is*(exp(Vd/nVt)-1d0)-Vd)/	&
               (-R*Is*exp(Vd/nVt)/nVt-1d0)
-!        Vd=Vs-Vs*Cvg_limit/10d0
 
       else
 
@@ -168,7 +167,6 @@ integer :: itloop
 
         Vd=Vd-(Vs-R*Is*(exp(Vd/nVt)-1d0)-Vd)/	&
               (-R*Is*exp(Vd/nVt)/nVt-1d0)
-!        Vd=Vs-Vs*Cvg_limit/10d0
 
       else
 

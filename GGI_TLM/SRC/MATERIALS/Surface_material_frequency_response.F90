@@ -50,7 +50,7 @@ IMPLICIT NONE
 
 ! local_variables
   
-  integer :: material_number
+  integer :: material_number,first_material,last_material
   character(LEN=filename_length)    :: z11_filename
   character(LEN=filename_length)    :: z12_filename
   character(LEN=filename_length)    :: z21_filename
@@ -68,194 +68,213 @@ IMPLICIT NONE
 ! START
 
   write(*,*)'CALLED: surface_material_frequency_response'
+  write(*,*)
+  write(*,*)'Number of surface materials=',n_surface_materials
+  
+  if (n_surface_materials.EQ.0) then
+    write(*,*)'No surface materials to view'
+    RETURN
+  end if
 
 ! read the material number to output
 
 ! read the surface material number to view  
   write(*,*)
-  write(*,*)'Enter the surface material number to view'
+  write(*,*)'Enter the surface material number to view or 0 to view all of them'
   read(*,*)material_number
   
-  if ( (material_number.le.0).OR.(material_number.gt.n_surface_materials) ) then
+  if ( (material_number.lt.0).OR.(material_number.gt.n_surface_materials) ) then
     write(*,*)'surface_material_number is outside the available range'
     write(*,*)'Number of surface materials=',n_surface_materials
     RETURN
   end if
+  
+  if (material_number.eq.0) then
+    first_material=1
+    last_material=n_surface_materials
+  else
+    first_material=material_number
+    last_material=material_number
+  end if
 
-  if (surface_material_list(material_number)%type.EQ.surface_material_type_PEC) then
-  
-    write(*,*)'Material number',material_number,' is PEC'
-    RETURN
-  
-  else if (surface_material_list(material_number)%type.EQ.surface_material_type_PMC) then
-  
-    write(*,*)'Material number',material_number,' is PMC'
-    RETURN
-  
-  else if (surface_material_list(material_number)%type.EQ.surface_material_type_DIODE) then
-  
-    write(*,*)'Material number',material_number,' is DIODE'
-    RETURN
-  
-  else if ( (surface_material_list(material_number)%type.EQ.surface_material_type_DISPERSIVE).OR. 	&
-            (surface_material_list(material_number)%type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE) )then
+  do material_number=first_material,last_material
+
+    if (surface_material_list(material_number)%type.EQ.surface_material_type_PEC) then
     
-    fmin=surface_material_list(material_number)%fmin
-    fmax=surface_material_list(material_number)%fmax
-    fstep=(fmax-fmin)/200d0
+      write(*,*)'Material number',material_number,' is PEC'
+      RETURN
+  
+    else if (surface_material_list(material_number)%type.EQ.surface_material_type_PMC) then
+  
+      write(*,*)'Material number',material_number,' is PMC'
+      RETURN
+  
+    else if (surface_material_list(material_number)%type.EQ.surface_material_type_DIODE) then
+  
+      write(*,*)'Material number',material_number,' is DIODE'
+      RETURN
+  
+    else if ( (surface_material_list(material_number)%type.EQ.surface_material_type_DISPERSIVE).OR. 	&
+              (surface_material_list(material_number)%type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE) )then
     
-    sigma=0d0
+      fmin=surface_material_list(material_number)%fmin
+      fmax=surface_material_list(material_number)%fmax
+      fstep=(fmax-fmin)/200d0
     
-    if (surface_material_list(material_number)%type.EQ.surface_material_type_DISPERSIVE) then
-      pol1=1
-      pol2=1
-      polstring(1)=''
-    else if (surface_material_list(material_number)%type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE) then
-      pol1=1
-      pol2=3   
-      polstring(1)=':X_polarisation'
-      polstring(2)=':Y_polarisation'
-      polstring(3)=':Z_polarisation'
-    end if 
+      sigma=0d0
     
-    do pol=pol1,pol2
+      if (surface_material_list(material_number)%type.EQ.surface_material_type_DISPERSIVE) then
+        pol1=1
+        pol2=1
+        polstring(1)=''
+      else if (surface_material_list(material_number)%type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE) then
+        pol1=1
+        pol2=3   
+        polstring(1)=':X_polarisation'
+        polstring(2)=':Y_polarisation'
+        polstring(3)=':Z_polarisation'
+      end if 
+    
+      do pol=pol1,pol2
 
 ! Write Z11 filter response
   
-      z11_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'.z11.fout'
+        z11_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'.z11.fout'
     
-      CALL output_material_frequency_response(surface_material_list(material_number)%Z11_S(pol),	&
+        CALL output_material_frequency_response(surface_material_list(material_number)%Z11_S(pol),	&
                                               sigma,fmin,fmax,fstep,local_file_unit,z11_filename)
       
 ! Write Z11 gnuplot file
 
-      gnuplot_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z11.plt'
-      OPEN(unit=local_file_unit,file=gnuplot_filename)
+        gnuplot_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z11.plt'
+        OPEN(unit=local_file_unit,file=gnuplot_filename)
   
-      write(local_file_unit,'(A)')'set xlabel "Frequency (Hz)"'
-      write(local_file_unit,'(A)')'set ylabel "Z11 (ohms)"'
-      write(local_file_unit,'(A,A,A,A)')'set title "',trim(surface_material_list(material_number)%name),trim(polstring(pol)),'"'
+        write(local_file_unit,'(A)')'set xlabel "Frequency (Hz)"'
+        write(local_file_unit,'(A)')'set ylabel "Z11 (ohms)"'
+        write(local_file_unit,'(A,A,A,A)')'set title "',trim(surface_material_list(material_number)%name),trim(polstring(pol)),'"'
 
-      write(local_file_unit,'(A)')'set term jpeg'
-      write(local_file_unit,'(A,A,A)')	&
-      'set output "',trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z11.jpeg','"'
-      write(local_file_unit,'(A,A,A)')'plot "',trim(z11_filename),'" u 1:2 title "Re{z11}" w lp,\'
-      write(local_file_unit,'(A,A,A)')'     "',trim(z11_filename),'" u 1:3 title "Im{z11}" w lp'
+        write(local_file_unit,'(A)')'set term jpeg'
+        write(local_file_unit,'(A,A,A)')	&
+        'set output "',trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z11.jpg','"'
+        write(local_file_unit,'(A,A,A)')'plot "',trim(z11_filename),'" u 1:2 title "Re{z11}" w lp,\'
+        write(local_file_unit,'(A,A,A)')'     "',trim(z11_filename),'" u 1:3 title "Im{z11}" w lp'
 
-      write(local_file_unit,'(A)')'set term wxt 0'
-      write(local_file_unit,'(A,A,A)')'plot "',trim(z11_filename),'" u 1:2 title "Re{z11}" w lp,\'
-      write(local_file_unit,'(A,A,A)')'     "',trim(z11_filename),'" u 1:3 title "Im{z11}" w lp'
-      write(local_file_unit,'(A)')'pause 100'
+        write(local_file_unit,'(A)')'set term wxt 0'
+        write(local_file_unit,'(A,A,A)')'plot "',trim(z11_filename),'" u 1:2 title "Re{z11}" w lp,\'
+        write(local_file_unit,'(A,A,A)')'     "',trim(z11_filename),'" u 1:3 title "Im{z11}" w lp'
+        write(local_file_unit,'(A)')'pause 100'
   
-      CLOSE(unit=local_file_unit)
+        CLOSE(unit=local_file_unit)
 
 ! plot Z11 response
 
-      command='gnuplot '//trim(gnuplot_filename)//' & '
-      CALL system(command)
+        command='gnuplot '//trim(gnuplot_filename)//' & '
+        CALL system(command)
 
 ! Write Z12 filter response
   
-      z12_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'.z12.fout'
+        z12_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'.z12.fout'
     
-      CALL output_material_frequency_response(surface_material_list(material_number)%Z12_S(pol),	&
+        CALL output_material_frequency_response(surface_material_list(material_number)%Z12_S(pol),	&
                                               sigma,fmin,fmax,fstep,local_file_unit,z12_filename)
 ! Write Z12 gnuplot file
 
-      gnuplot_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z12.plt'
-      OPEN(unit=local_file_unit,file=gnuplot_filename)
+        gnuplot_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z12.plt'
+        OPEN(unit=local_file_unit,file=gnuplot_filename)
   
-      write(local_file_unit,'(A)')'set xlabel "Frequency (Hz)"'
-      write(local_file_unit,'(A)')'set ylabel "z12 (ohms)"'
-      write(local_file_unit,'(A,A,A,A)')'set title "',trim(surface_material_list(material_number)%name),trim(polstring(pol)),'"'
+        write(local_file_unit,'(A)')'set xlabel "Frequency (Hz)"'
+        write(local_file_unit,'(A)')'set ylabel "z12 (ohms)"'
+        write(local_file_unit,'(A,A,A,A)')'set title "',trim(surface_material_list(material_number)%name),trim(polstring(pol)),'"'
 
-      write(local_file_unit,'(A)')'set term jpeg'
-      write(local_file_unit,'(A,A,A)')	&
-      'set output "',trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z12.jpeg','"'
-      write(local_file_unit,'(A,A,A)')'plot "',trim(z12_filename),'" u 1:2 title "Re{z12}" w lp,\'
-      write(local_file_unit,'(A,A,A)')'     "',trim(z12_filename),'" u 1:3 title "Im{z12}" w lp'
+        write(local_file_unit,'(A)')'set term jpeg'
+        write(local_file_unit,'(A,A,A)')	&
+        'set output "',trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z12.jpg','"'
+        write(local_file_unit,'(A,A,A)')'plot "',trim(z12_filename),'" u 1:2 title "Re{z12}" w lp,\'
+        write(local_file_unit,'(A,A,A)')'     "',trim(z12_filename),'" u 1:3 title "Im{z12}" w lp'
 
-      write(local_file_unit,'(A)')'set term wxt 0'
-      write(local_file_unit,'(A,A,A)')'plot "',trim(z12_filename),'" u 1:2 title "Re{z12}" w lp,\'
-      write(local_file_unit,'(A,A,A)')'     "',trim(z12_filename),'" u 1:3 title "Im{z12}" w lp'
-      write(local_file_unit,'(A)')'pause 100'
+        write(local_file_unit,'(A)')'set term wxt 0'
+        write(local_file_unit,'(A,A,A)')'plot "',trim(z12_filename),'" u 1:2 title "Re{z12}" w lp,\'
+        write(local_file_unit,'(A,A,A)')'     "',trim(z12_filename),'" u 1:3 title "Im{z12}" w lp'
+        write(local_file_unit,'(A)')'pause 100'
   
-      CLOSE(unit=local_file_unit)
+        CLOSE(unit=local_file_unit)
 
 ! plot Z12 response
 
-      command='gnuplot '//trim(gnuplot_filename)//' & '
-      CALL system(command)
+        command='gnuplot '//trim(gnuplot_filename)//' & '
+        CALL system(command)
       
 ! Write Z21 filter response  
   
-      z21_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'.z21.fout'
+        z21_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'.z21.fout'
     
-      CALL output_material_frequency_response(surface_material_list(material_number)%Z21_S(pol),	&
+        CALL output_material_frequency_response(surface_material_list(material_number)%Z21_S(pol),	&
                                               sigma,fmin,fmax,fstep,local_file_unit,z21_filename)
 ! Write Z21 gnuplot file
 
-      gnuplot_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z21.plt'
-      OPEN(unit=local_file_unit,file=gnuplot_filename)
+        gnuplot_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z21.plt'
+        OPEN(unit=local_file_unit,file=gnuplot_filename)
   
-      write(local_file_unit,'(A)')'set xlabel "Frequency (Hz)"'
-      write(local_file_unit,'(A)')'set ylabel "z21 (ohms)"'
-      write(local_file_unit,'(A,A,A,A)')'set title "',trim(surface_material_list(material_number)%name),trim(polstring(pol)),'"'
+        write(local_file_unit,'(A)')'set xlabel "Frequency (Hz)"'
+        write(local_file_unit,'(A)')'set ylabel "z21 (ohms)"'
+        write(local_file_unit,'(A,A,A,A)')'set title "',trim(surface_material_list(material_number)%name),trim(polstring(pol)),'"'
 
-      write(local_file_unit,'(A)')'set term jpeg'
-      write(local_file_unit,'(A,A,A)')	&
-      'set output "',trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z21.jpeg','"'
-      write(local_file_unit,'(A,A,A)')'plot "',trim(z21_filename),'" u 1:2 title "Re{z21}" w lp,\'
-      write(local_file_unit,'(A,A,A)')'     "',trim(z21_filename),'" u 1:3 title "Im{z21}" w lp'
+        write(local_file_unit,'(A)')'set term jpeg'
+        write(local_file_unit,'(A,A,A)')	&
+      'set output "',trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z21.jpg','"'
+        write(local_file_unit,'(A,A,A)')'plot "',trim(z21_filename),'" u 1:2 title "Re{z21}" w lp,\'
+        write(local_file_unit,'(A,A,A)')'     "',trim(z21_filename),'" u 1:3 title "Im{z21}" w lp'
 
-      write(local_file_unit,'(A)')'set term wxt 0'
-      write(local_file_unit,'(A,A,A)')'plot "',trim(z21_filename),'" u 1:2 title "Re{z21}" w lp,\'
-      write(local_file_unit,'(A,A,A)')'     "',trim(z21_filename),'" u 1:3 title "Im{z21}" w lp'
-      write(local_file_unit,'(A)')'pause 100'
+        write(local_file_unit,'(A)')'set term wxt 0'
+        write(local_file_unit,'(A,A,A)')'plot "',trim(z21_filename),'" u 1:2 title "Re{z21}" w lp,\'
+        write(local_file_unit,'(A,A,A)')'     "',trim(z21_filename),'" u 1:3 title "Im{z21}" w lp'
+        write(local_file_unit,'(A)')'pause 100'
   
-      CLOSE(unit=local_file_unit)
+        CLOSE(unit=local_file_unit)
 
 ! plot Z21 response
 
-      command='gnuplot '//trim(gnuplot_filename)//' & '
-      CALL system(command)
+        command='gnuplot '//trim(gnuplot_filename)//' & '
+        CALL system(command)
 
 ! Write Z22 filter response 
   
-      z22_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'.z22.fout'
+        z22_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'.z22.fout'
     
-      CALL output_material_frequency_response(surface_material_list(material_number)%Z22_S(pol),	&
+        CALL output_material_frequency_response(surface_material_list(material_number)%Z22_S(pol),	&
                                             sigma,fmin,fmax,fstep,local_file_unit,z22_filename)
 ! Write Z22 gnuplot file
 
-      gnuplot_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z22.plt'
-      OPEN(unit=local_file_unit,file=gnuplot_filename)
+        gnuplot_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z22.plt'
+        OPEN(unit=local_file_unit,file=gnuplot_filename)
   
-      write(local_file_unit,'(A)')'set xlabel "Frequency (Hz)"'
-      write(local_file_unit,'(A)')'set ylabel "z22 (ohms)"'
-      write(local_file_unit,'(A,A,A,A)')'set title "',trim(surface_material_list(material_number)%name),trim(polstring(pol)),'"'
+        write(local_file_unit,'(A)')'set xlabel "Frequency (Hz)"'
+        write(local_file_unit,'(A)')'set ylabel "z22 (ohms)"'
+        write(local_file_unit,'(A,A,A,A)')'set title "',trim(surface_material_list(material_number)%name),trim(polstring(pol)),'"'
 
-      write(local_file_unit,'(A)')'set term jpeg'
-      write(local_file_unit,'(A,A,A)')	&
-      'set output "',trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z22.jpeg','"'
-      write(local_file_unit,'(A,A,A)')'plot "',trim(z22_filename),'" u 1:2 title "Re{z22}" w lp,\'
-      write(local_file_unit,'(A,A,A)')'     "',trim(z22_filename),'" u 1:3 title "Im{z22}" w lp'
+        write(local_file_unit,'(A)')'set term jpeg'
+        write(local_file_unit,'(A,A,A)')	&
+        'set output "',trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z22.jpg','"'
+        write(local_file_unit,'(A,A,A)')'plot "',trim(z22_filename),'" u 1:2 title "Re{z22}" w lp,\'
+        write(local_file_unit,'(A,A,A)')'     "',trim(z22_filename),'" u 1:3 title "Im{z22}" w lp'
 
-      write(local_file_unit,'(A)')'set term wxt 0'
-      write(local_file_unit,'(A,A,A)')'plot "',trim(z22_filename),'" u 1:2 title "Re{z22}" w lp,\'
-      write(local_file_unit,'(A,A,A)')'     "',trim(z22_filename),'" u 1:3 title "Im{z22}" w lp'
-      write(local_file_unit,'(A)')'pause 100'
+        write(local_file_unit,'(A)')'set term wxt 0'
+        write(local_file_unit,'(A,A,A)')'plot "',trim(z22_filename),'" u 1:2 title "Re{z22}" w lp,\'
+        write(local_file_unit,'(A,A,A)')'     "',trim(z22_filename),'" u 1:3 title "Im{z22}" w lp'
+        write(local_file_unit,'(A)')'pause 100'
   
-      CLOSE(unit=local_file_unit)
+        CLOSE(unit=local_file_unit)
 
 ! plot Z22 response
 
-      command='gnuplot '//trim(gnuplot_filename)//' & '
-      CALL system(command)
+        command='gnuplot '//trim(gnuplot_filename)//' & '
+        CALL system(command)
       
-    end do ! next polarisation
+      end do ! next polarisation
     
-  end if
+    end if
+
+  end do ! next material
 
   write(*,*)'FINISHED: surface_material_frequency_response'
   

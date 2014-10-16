@@ -67,39 +67,41 @@ IMPLICIT NONE
   if (rank.eq.0) then
     write(info_file_unit,*)'____________________________________________________'
     write(info_file_unit,*)''
-    write(info_file_unit,*)'GGI_TLM version:',trim(GGI_TLM_version)
-    write(info_file_unit,*)'GGI_TLM date   :',trim(GGI_TLM_date)
-    write(info_file_unit,*)'GGI_TLM compilation date:',trim(GGI_TLM_compilation_date)
-    write(info_file_unit,*)'____________________________________________________'
+    write(info_file_unit,*)'#START OF MESH DESCRIPTION'
     write(info_file_unit,*)''
     write(info_file_unit,*)'Mesh'
+    write(info_file_unit,*)''
+    write(info_file_unit,*)'dl=',dl
     write(info_file_unit,*)''
     write(info_file_unit,*)'Nx=',nx 
     write(info_file_unit,*)'Ny=',ny 
     write(info_file_unit,*)'Nz=',nz 
     write(info_file_unit,*)'' 
     write(info_file_unit,*)'Total number of cells=',nx*ny*nz
-    write(info_file_unit,*)'____________________________________________________'
     write(info_file_unit,*)'' 
     write(info_file_unit,*)'Outer boundary reflection coefficients'
     write(info_file_unit,*)'R_xmin=',R_xmin,' R_xmax=',R_xmax
     write(info_file_unit,*)'R_ymin=',R_ymin,' R_ymax=',R_ymax
     write(info_file_unit,*)'R_zmin=',R_zmin,' R_zmax=',R_zmax
+    write(info_file_unit,*)''
+    write(info_file_unit,*)'#END OF MESH DESCRIPTION'
     write(info_file_unit,*)'____________________________________________________'
+    write(info_file_unit,*)'' 
+    write(info_file_unit,*)'#START OF RUN INFORMATION'
+    write(info_file_unit,*)''
+    write(info_file_unit,*)'GGI_TLM version:',trim(GGI_TLM_version)
+    write(info_file_unit,*)'GGI_TLM date   :',trim(GGI_TLM_date)
+    write(info_file_unit,*)'GGI_TLM compilation date:',trim(GGI_TLM_compilation_date)
+    write(info_file_unit,*)'' 
+    write(info_file_unit,*)'Timestep=',dt,' seconds'
     write(info_file_unit,*)'' 
     write(info_file_unit,*)'Number of timesteps=',n_timesteps
-    write(info_file_unit,*)'____________________________________________________'
-    write(info_file_unit,*)'' 
-    write(info_file_unit,*)'Timestep=',dt
-    write(info_file_unit,*)'____________________________________________________'
     write(info_file_unit,*)''
     write(info_file_unit,*)'Number of processes= ',np
-    write(info_file_unit,*)'____________________________________________________'
     write(info_file_unit,*)''
     write(info_file_unit,*)'bicubic_warp_flag= ',bicubic_warp_flag
     write(info_file_unit,*)'frequency_scale_flag= ',frequency_scale_flag
     write(info_file_unit,*)'frequency_scale= ',frequency_scale
-    write(info_file_unit,*)'____________________________________________________'
     write(info_file_unit,*)''
     write(info_file_unit,*)'GGI_TLM solution Started:'
     call write_date_and_time(info_file_unit)
@@ -118,12 +120,13 @@ IMPLICIT NONE
   if (rank.eq.0) then
   
 #if defined(SEQ)
-    call system("ps u -C GGI_TLM_SEQ > GGI_TLM_memory_usage.txt ")
+!    call system("ps -o pid,%cpu,%mem,rss,vsz,comm -C GGI_TLM_SEQ > GGI_TLM_memory_usage.txt ")
+    call system("ps -o pid,%cpu,%mem,rss,vsz,comm -C GGI_TLM_SEQ > GGI_TLM_memory_usage.txt ")
 #elif defined(MPI)
-    call system("ps u -C GGI_TLM_MPI > GGI_TLM_memory_usage.txt ")
+!    call system("ps u -C GGI_TLM_MPI > GGI_TLM_memory_usage.txt ")
+    call system("ps -o pid,%cpu,%mem,rss,vsz,comm -C GGI_TLM_MPI > GGI_TLM_memory_usage.txt ")
 #endif
     
-    write(info_file_unit,*)'____________________________________________________'
     write(info_file_unit,'(A)')""
     write(info_file_unit,'(A)')"Memory Usage:"
     write(info_file_unit,'(A)')""
@@ -142,14 +145,16 @@ IMPLICIT NONE
     GOTO 5
     
 6   CONTINUE
+    write(*,'(A)')""
+    write(*,'(A)')"Note that RSS (resident set size) and VSZ (virtual memory size) are in Kilobytes"
+    write(*,'(A)')""
 
     write(info_file_unit,'(A)')""
-    write(info_file_unit,'(A)')'____________________________________________________'
     write(info_file_unit,'(A)')""
     write(*,'(A)')""
     write(*,'(A)')'____________________________________________________'
     write(*,'(A)')""
-    
+    flush(info_file_unit)
   end if
     
   CALL system_clock(start_time_count,time_count_rate,time_count_max)
@@ -268,6 +273,8 @@ IMPLICIT NONE
     write(info_file_unit,8020)'Run time: ',time_to_finish_hrs,':',time_to_finish_min,':',time_to_finish_sec
     write(info_file_unit,*)'' 
     write(info_file_unit,8030)'Run time per timestep: ',runtime_per_timestep,' seconds'
+    write(info_file_unit,*)'' 
+    write(info_file_unit,*)'#END OF RUN INFORMATION'
     write(info_file_unit,*)'' 
     
     write(*,8020)'Run time: ',time_to_finish_hrs,':',time_to_finish_min,':',time_to_finish_sec

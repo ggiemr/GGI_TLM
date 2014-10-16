@@ -49,7 +49,7 @@ IMPLICIT NONE
 
 ! local_variables
   
-  integer :: material_number
+  integer :: material_number,first_material,last_material
   character(LEN=filename_length)    :: eps_filename
   character(LEN=filename_length)    :: mu_filename
   real*8  :: fmin,fmax,fstep
@@ -62,107 +62,126 @@ IMPLICIT NONE
 ! START
 
   write(*,*)'CALLED: Volume_material_frequency_response'
+  write(*,*)
+  write(*,*)'Number of volume materials=',n_volume_materials
+  
+  if (n_volume_materials.EQ.0) then
+    write(*,*)'No volume materials to view'
+    RETURN
+  end if
 
 ! read the material number to output
 
 ! read the volume material number to view  
   write(*,*)
-  write(*,*)'Enter the volume material number to view'
+  write(*,*)'Enter the volume material number to view or 0 to view all of them'
   read(*,*)material_number
   
-  if ( (material_number.le.0).OR.(material_number.gt.n_volume_materials) ) then
+  if ( (material_number.lt.0).OR.(material_number.gt.n_volume_materials) ) then
     write(*,*)'volume_material_number is outside the available range'
     write(*,*)'Number of volume materials=',n_volume_materials
     RETURN
   end if
+  
+  if (material_number.eq.0) then
+    first_material=1
+    last_material=n_volume_materials
+  else
+    first_material=material_number
+    last_material=material_number
+  end if
 
-  if (volume_material_list(material_number)%type.EQ.volume_material_type_PEC) then
+  do material_number=first_material,last_material
+
+    if (volume_material_list(material_number)%type.EQ.volume_material_type_PEC) then
   
-    write(*,*)'Material number',material_number,' is PEC'
-    RETURN
+      write(*,*)'Material number',material_number,' is PEC'
+      RETURN
   
-  else if (volume_material_list(material_number)%type.EQ.volume_material_type_PMC) then
+    else if (volume_material_list(material_number)%type.EQ.volume_material_type_PMC) then
   
-    write(*,*)'Material number',material_number,' is PMC'
-    RETURN
+      write(*,*)'Material number',material_number,' is PMC'
+      RETURN
   
-  else if (volume_material_list(material_number)%type.EQ.volume_material_type_DISPERSIVE) then
+    else if (volume_material_list(material_number)%type.EQ.volume_material_type_DISPERSIVE) then
     
-    fmin=volume_material_list(material_number)%fmin
-    fmax=volume_material_list(material_number)%fmax
-    fstep=(fmax-fmin)/200d0
+      fmin=volume_material_list(material_number)%fmin
+      fmax=volume_material_list(material_number)%fmax
+      fstep=(fmax-fmin)/200d0
 
 ! Write Dielectric filter response
   
-    eps_filename=trim(volume_material_list(material_number)%name)//'.eps.fout'
+      eps_filename=trim(volume_material_list(material_number)%name)//'.eps.fout'
     
-    sigma=volume_material_list(material_number)%sigma_e
+      sigma=volume_material_list(material_number)%sigma_e
     
-    CALL output_material_frequency_response(volume_material_list(material_number)%eps_S,	&
-                                            sigma,fmin,fmax,fstep,local_file_unit,eps_filename)
+      CALL output_material_frequency_response(volume_material_list(material_number)%eps_S,	&
+                                              sigma,fmin,fmax,fstep,local_file_unit,eps_filename)
       
 ! Write gnuplot file
 
-    gnuplot_filename=trim(volume_material_list(material_number)%name)//'_eps.plt'
-    OPEN(unit=local_file_unit,file=gnuplot_filename)
+      gnuplot_filename=trim(volume_material_list(material_number)%name)//'_eps.plt'
+      OPEN(unit=local_file_unit,file=gnuplot_filename)
   
-    write(local_file_unit,'(A)')'set xlabel "Frequency (Hz)"'
-    write(local_file_unit,'(A)')'set ylabel "Relative Permittivity"'
-    write(local_file_unit,'(A,A,A)')'set title "',trim(volume_material_list(material_number)%name),'"'
+      write(local_file_unit,'(A)')'set xlabel "Frequency (Hz)"'
+      write(local_file_unit,'(A)')'set ylabel "Relative Permittivity"'
+      write(local_file_unit,'(A,A,A)')'set title "',trim(volume_material_list(material_number)%name),'"'
 
-    write(local_file_unit,'(A)')'set term jpeg'
-    write(local_file_unit,'(A,A,A)')'set output "',trim(volume_material_list(material_number)%name)//'_eps.jpeg','"'
-    write(local_file_unit,'(A,A,A)')'plot "',trim(eps_filename),'" u 1:2 title "Re{epsr}" w lp,\'
-    write(local_file_unit,'(A,A,A)')'     "',trim(eps_filename),'" u 1:3 title "Im{epsr}" w lp'
+      write(local_file_unit,'(A)')'set term jpeg'
+      write(local_file_unit,'(A,A,A)')'set output "',trim(volume_material_list(material_number)%name)//'_eps.jpg','"'
+      write(local_file_unit,'(A,A,A)')'plot "',trim(eps_filename),'" u 1:2 title "Re{epsr}" w lp,\'
+      write(local_file_unit,'(A,A,A)')'     "',trim(eps_filename),'" u 1:3 title "Im{epsr}" w lp'
 
-    write(local_file_unit,'(A)')'set term wxt 0'
-    write(local_file_unit,'(A,A,A)')'plot "',trim(eps_filename),'" u 1:2 title "Re{epsr}" w lp,\'
-    write(local_file_unit,'(A,A,A)')'     "',trim(eps_filename),'" u 1:3 title "Im{epsr}" w lp'
-    write(local_file_unit,'(A)')'pause 100'
+      write(local_file_unit,'(A)')'set term wxt 0'
+      write(local_file_unit,'(A,A,A)')'plot "',trim(eps_filename),'" u 1:2 title "Re{epsr}" w lp,\'
+      write(local_file_unit,'(A,A,A)')'     "',trim(eps_filename),'" u 1:3 title "Im{epsr}" w lp'
+      write(local_file_unit,'(A)')'pause 100'
   
-    CLOSE(unit=local_file_unit)
+      CLOSE(unit=local_file_unit)
 
 ! plot permittivity response
 
-    command='gnuplot '//trim(gnuplot_filename)//' & '
-    CALL system(command)
+      command='gnuplot '//trim(gnuplot_filename)//' & '
+      CALL system(command)
       
 ! Write Magnetic filter response
   
-    mu_filename=trim(volume_material_list(material_number)%name)//'.mu.fout'
+      mu_filename=trim(volume_material_list(material_number)%name)//'.mu.fout'
     
-    sigma=volume_material_list(material_number)%sigma_e
+      sigma=volume_material_list(material_number)%sigma_e
     
-    CALL output_material_frequency_response(volume_material_list(material_number)%mu_S,	&
-                                            sigma,fmin,fmax,fstep,local_file_unit,mu_filename)
+      CALL output_material_frequency_response(volume_material_list(material_number)%mu_S,	&
+                                              sigma,fmin,fmax,fstep,local_file_unit,mu_filename)
 
 ! Write gnuplot file
 
-    gnuplot_filename=trim(volume_material_list(material_number)%name)//'_mu.plt'
-    OPEN(unit=local_file_unit,file=gnuplot_filename)
+      gnuplot_filename=trim(volume_material_list(material_number)%name)//'_mu.plt'
+      OPEN(unit=local_file_unit,file=gnuplot_filename)
   
-    write(local_file_unit,'(A)')'set xlabel "Frequency (Hz)"'
-    write(local_file_unit,'(A)')'set ylabel "Relative Permeability"'
-    write(local_file_unit,'(A,A,A)')'set title "',trim(volume_material_list(material_number)%name),'"'
+      write(local_file_unit,'(A)')'set xlabel "Frequency (Hz)"'
+      write(local_file_unit,'(A)')'set ylabel "Relative Permeability"'
+      write(local_file_unit,'(A,A,A)')'set title "',trim(volume_material_list(material_number)%name),'"'
 
-    write(local_file_unit,'(A)')'set term jpeg'
-    write(local_file_unit,'(A,A,A)')'set output "',trim(volume_material_list(material_number)%name)//'_mu.jpeg','"'
-    write(local_file_unit,'(A,A,A)')'plot "',trim(mu_filename),'" u 1:2 title "Re{mur}" w lp,\'
-    write(local_file_unit,'(A,A,A)')'     "',trim(mu_filename),'" u 1:3 title "Im{mur}" w lp'
+      write(local_file_unit,'(A)')'set term jpeg'
+      write(local_file_unit,'(A,A,A)')'set output "',trim(volume_material_list(material_number)%name)//'_mu.jpg','"'
+      write(local_file_unit,'(A,A,A)')'plot "',trim(mu_filename),'" u 1:2 title "Re{mur}" w lp,\'
+      write(local_file_unit,'(A,A,A)')'     "',trim(mu_filename),'" u 1:3 title "Im{mur}" w lp'
 
-    write(local_file_unit,'(A)')'set term wxt 0'
-    write(local_file_unit,'(A,A,A)')'plot "',trim(mu_filename),'" u 1:2 title "Re{mur}" w lp,\'
-    write(local_file_unit,'(A,A,A)')'     "',trim(mu_filename),'" u 1:3 title "Im{mur}" w lp'
-    write(local_file_unit,'(A)')'pause 100'
+      write(local_file_unit,'(A)')'set term wxt 0'
+      write(local_file_unit,'(A,A,A)')'plot "',trim(mu_filename),'" u 1:2 title "Re{mur}" w lp,\'
+      write(local_file_unit,'(A,A,A)')'     "',trim(mu_filename),'" u 1:3 title "Im{mur}" w lp'
+      write(local_file_unit,'(A)')'pause 100'
   
-    CLOSE(unit=local_file_unit)
+      CLOSE(unit=local_file_unit)
 
 ! plot permeability response
 
-    command='gnuplot '//trim(gnuplot_filename)//' & '
-    CALL system(command)
+      command='gnuplot '//trim(gnuplot_filename)//' & '
+      CALL system(command)
 
-  end if
+    end if
+  
+  end do ! next material to output
 
   write(*,*)'FINISHED: Volume_material_frequency_response'
   

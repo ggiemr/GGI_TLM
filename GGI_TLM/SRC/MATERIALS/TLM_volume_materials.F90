@@ -75,15 +75,34 @@ IMPLICIT NONE
   
     write(info_file_unit,*)'____________________________________________________'
     write(info_file_unit,*)''
+    write(info_file_unit,*)'#START OF VOLUME MATERIAL DESCRIPTION'
+    write(info_file_unit,*)''
     write(info_file_unit,*)'Number of volume materials=',n_volume_materials
     write(info_file_unit,*)''
-    write(info_file_unit,*)'Material_number  Total_number_of_material_cells'
   
   end if
 
   do material_number=1,n_volume_materials
   
     total_number_of_material_cells=0
+  
+    if (rank.eq.0) then 
+      write(info_file_unit,*)''
+      write(info_file_unit,*)'volume material_number : ',material_number  
+
+      if (volume_material_list(material_number)%type.EQ.volume_material_type_PEC) then    
+        write(info_file_unit,*)'Material type: PEC'  
+      else if (volume_material_list(material_number)%type.EQ.volume_material_type_PMC) then 
+        write(info_file_unit,*)'Material type: PMC'
+      else if (volume_material_list(material_number)%type.EQ.volume_material_type_DISPERSIVE) then
+        write(info_file_unit,*)'Material type: DISPERSIVE'
+        write(info_file_unit,*)'Material name: ',trim(volume_material_list(material_number)%name)
+      end if
+      
+      CALL write_line_integer('Number of geometric volumes=',	&
+                             volume_material_list(material_number)%n_volumes,info_file_unit,output_to_screen_flag)
+			     
+    end if
     
     CALL write_line_integer('volume material number=',material_number,0,output_to_screen_flag)
     CALL write_line_integer('Number of geometric volumes=',	&
@@ -135,10 +154,15 @@ IMPLICIT NONE
     if (rank.eq.0) then
       CALL write_line_integer('Total number of material cells=',	&
                               total_number_of_material_cells_all_procsesses,0,output_to_screen_flag)
-      write(info_file_unit,'(2I14)')material_number,total_number_of_material_cells_all_procsesses
+      write(info_file_unit,'(A,I14)')'Total number of material cells=',total_number_of_material_cells_all_procsesses
     end if
 
   end do ! next volume material number
+  
+  if (rank.eq.0) then
+    write(info_file_unit,*)''
+    write(info_file_unit,*)'#END OF VOLUME MATERIAL DESCRIPTION'
+  end if
   
   CALL write_line('FINISHED: set_volume_material_mesh',0,output_to_screen_flag)
 

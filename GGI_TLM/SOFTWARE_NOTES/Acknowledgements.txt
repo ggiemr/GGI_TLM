@@ -9,3 +9,8 @@ The seeding of the random number generator (read_random_number_seed.F90) is base
 fortran90 subroutine from the webpage:
 
 http://gcc.gnu.org/onlinedocs/gfortran/RANDOM_005fSEED.html
+
+The Python script used in the automatic creation of simulation documents uses the code 
+
+PyRTF (Version 0.45) by Simon Cusack, available under the gpl license
+License: http://www.gnu.org/licenses/gpl.html
