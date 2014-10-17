@@ -1,19 +1,3 @@
-###  THESE DIRECTORIES NEED TO BE SET FOR YOUR SYSTEM ###
-# note the MATERIAL_DIRECTORY and CABLE_DIRECTORY paths are used in the sed command and
-# require the usual '/' to be replaced by '\/' to avoid problems with sed 
-#
-# May 2013: SED COMMANDS NOW GENERATED AUTOMATICALLY...
-#
-#MATERIAL_DIRECTORY="\/home\/chris\/SOFTWARE\/GGI_TLM\/GGI_TLM\/TEST_DATA\/MATERIAL_DATA"
-#CABLE_DIRECTORY="\/home\/chris\/SOFTWARE\/GGI_TLM\/GGI_TLM\/TEST_DATA\/CABLE_DATA"
-#
-### NOTHING BELOW HERE SHOULD NEED TO BE CHANGED ###
-
-MATERIAL_DIRECTORY_STRING="${TEST_DATA_DIRECTORY}/MATERIAL_DATA"
-MATERIAL_DIRECTORY="${MATERIAL_DIRECTORY_STRING//\//\/}"
-
-CABLE_DIRECTORY_STRING="${TEST_DATA_DIRECTORY}/CABLE_DATA"
-CABLE_DIRECTORY="${CABLE_DIRECTORY_STRING//\//\/}"
 
 echo " "
 echo "Automatic testing of GGI_TLM"
@@ -161,13 +145,6 @@ else
 # clean any existing output files     
        rm -f $RUN_NAME.*
        
-       echo "$RUN_NAME" > run_name.txt
-       echo "{
-              s/MATERIAL_DIRECTORY/${MATERIAL_DIRECTORY}/g
-              s/CABLE_DIRECTORY/${CABLE_DIRECTORY}/g
-	      }" > sed_command
-
-       sed -f sed_command PROBLEM_SPECIFICATION_FILES/$RUN_NAME.inp > ./$RUN_NAME.inp
 
 # copy input file and all material, cable and mode files to the run directory
        
