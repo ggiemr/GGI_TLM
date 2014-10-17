@@ -171,7 +171,6 @@ else
 
 # copy input file and all material, cable and mode files to the run directory
        
-       cp PROBLEM_SPECIFICATION_FILES/$RUN_NAME.inp ./$RUN_NAME.inp
        cp PROBLEM_SPECIFICATION_FILES/*.vmat .
        cp PROBLEM_SPECIFICATION_FILES/*.smat . 
        cp PROBLEM_SPECIFICATION_FILES/*.cable .
