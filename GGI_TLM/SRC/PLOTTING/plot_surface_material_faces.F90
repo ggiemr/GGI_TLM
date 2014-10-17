@@ -35,8 +35,9 @@
 !                            Some may get overwritten by other materials
 !     23/9/2014	CJS - fix bug in the case where all material surface faces are to be plotted. The process would 
 ! 			drop out if any material had no faces associated with it. 
+!     17/10/2014 CJS - add write_all_material_info_to_file flag - eliminates the need for user input in this case
 !
-SUBROUTINE plot_surface_material_faces()
+SUBROUTINE plot_surface_material_faces(write_all_material_info_to_file)
 
 USE TLM_general
 USE mesh
@@ -47,6 +48,10 @@ USE file_information
 USE constants
 
 IMPLICIT NONE
+  
+! variables passed to subroutine
+  
+  logical :: write_all_material_info_to_file
 
 ! local variables
 
@@ -68,8 +73,15 @@ integer :: cx,cy,cz
   write(*,*)
   write(*,*)'Number of surface materials=',n_surface_materials
   write(*,*)
-  write(*,*)'Enter the surface material number to view or 0 to view all of them'
-  read(*,*)surface_material_number
+
+  if (write_all_material_info_to_file) then
+! set the material number to zero to indicate that all material data should be written
+    surface_material_number=0
+  else
+    write(*,*)
+    write(*,*)'Enter the surface material number to view or 0 to view all of them'
+    read(*,*)surface_material_number
+  end if
   
   if (surface_material_number.eq.0) then
   

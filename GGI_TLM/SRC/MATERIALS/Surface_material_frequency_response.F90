@@ -31,9 +31,10 @@
 !
 !     started 07/11/2012 CJS
 !    3/09/2014		CJS: Implement simple diode impedance boundary conditions
+!     17/10/2014 CJS - add write_all_material_info_to_file flag - eliminates the need for user input in this case
 !
 
-SUBROUTINE surface_material_frequency_response()
+SUBROUTINE surface_material_frequency_response(write_all_material_info_to_file)
 
 USE TLM_general
 USE TLM_surface_materials
@@ -47,6 +48,8 @@ USE constants
 IMPLICIT NONE
 
 ! variables passed to subroutine
+  
+  logical :: write_all_material_info_to_file
 
 ! local_variables
   
@@ -58,7 +61,9 @@ IMPLICIT NONE
   real*8  :: fmin,fmax,fstep
   real*8  :: sigma
   character(LEN=filename_length)    :: gnuplot_filename
-  character(LEN=line_length)	:: command
+  character(LEN=filename_length)    :: base_filename
+  character(LEN=filename_length)    :: jpeg_filename
+  character(LEN=line_length)	    :: command
 
   integer	:: pol,pol1,pol2
   character*15     :: polstring(3)
@@ -79,9 +84,14 @@ IMPLICIT NONE
 ! read the material number to output
 
 ! read the surface material number to view  
-  write(*,*)
-  write(*,*)'Enter the surface material number to view or 0 to view all of them'
-  read(*,*)material_number
+  if (write_all_material_info_to_file) then
+! set the material number to zero to indicate that all material data should be written
+    material_number=0
+  else
+    write(*,*)
+    write(*,*)'Enter the surface material number to view or 0 to view all of them'
+    read(*,*)material_number
+  end if
   
   if ( (material_number.lt.0).OR.(material_number.gt.n_surface_materials) ) then
     write(*,*)'surface_material_number is outside the available range'
@@ -140,6 +150,14 @@ IMPLICIT NONE
 ! Write Z11 filter response
   
         z11_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'.z11.fout'
+
+! get the jpg output filenames - if we are running automatically then tag with the material number
+        if (write_all_material_info_to_file) then
+          base_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z11.jpg'
+          CALL add_integer_to_filename(base_filename,material_number,jpeg_filename)
+        else
+          jpeg_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z11.jpg'
+        end if
     
         CALL output_material_frequency_response(surface_material_list(material_number)%Z11_S(pol),	&
                                               sigma,fmin,fmax,fstep,local_file_unit,z11_filename)
@@ -154,16 +172,18 @@ IMPLICIT NONE
         write(local_file_unit,'(A,A,A,A)')'set title "',trim(surface_material_list(material_number)%name),trim(polstring(pol)),'"'
 
         write(local_file_unit,'(A)')'set term jpeg'
-        write(local_file_unit,'(A,A,A)')	&
-        'set output "',trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z11.jpg','"'
+        write(local_file_unit,'(A,A,A)')'set output "',trim(jpeg_filename),'"'
         write(local_file_unit,'(A,A,A)')'plot "',trim(z11_filename),'" u 1:2 title "Re{z11}" w lp,\'
         write(local_file_unit,'(A,A,A)')'     "',trim(z11_filename),'" u 1:3 title "Im{z11}" w lp'
 
-        write(local_file_unit,'(A)')'set term wxt 0'
-        write(local_file_unit,'(A,A,A)')'plot "',trim(z11_filename),'" u 1:2 title "Re{z11}" w lp,\'
-        write(local_file_unit,'(A,A,A)')'     "',trim(z11_filename),'" u 1:3 title "Im{z11}" w lp'
-        write(local_file_unit,'(A)')'pause 100'
-  
+        if (.NOT.write_all_material_info_to_file) then
+! only plot to the screen if we are operating in the interactive mode
+          write(local_file_unit,'(A)')'set term wxt 0'
+          write(local_file_unit,'(A,A,A)')'plot "',trim(z11_filename),'" u 1:2 title "Re{z11}" w lp,\'
+          write(local_file_unit,'(A,A,A)')'     "',trim(z11_filename),'" u 1:3 title "Im{z11}" w lp'
+          write(local_file_unit,'(A)')'pause 100'
+        end if
+	
         CLOSE(unit=local_file_unit)
 
 ! plot Z11 response
@@ -174,6 +194,14 @@ IMPLICIT NONE
 ! Write Z12 filter response
   
         z12_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'.z12.fout'
+
+! get the jpg output filenames - if we are running automatically then tag with the material number
+        if (write_all_material_info_to_file) then
+          base_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z12.jpg'
+          CALL add_integer_to_filename(base_filename,material_number,jpeg_filename)
+        else
+          jpeg_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z12.jpg'
+        end if
     
         CALL output_material_frequency_response(surface_material_list(material_number)%Z12_S(pol),	&
                                               sigma,fmin,fmax,fstep,local_file_unit,z12_filename)
@@ -187,16 +215,18 @@ IMPLICIT NONE
         write(local_file_unit,'(A,A,A,A)')'set title "',trim(surface_material_list(material_number)%name),trim(polstring(pol)),'"'
 
         write(local_file_unit,'(A)')'set term jpeg'
-        write(local_file_unit,'(A,A,A)')	&
-        'set output "',trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z12.jpg','"'
+        write(local_file_unit,'(A,A,A)')'set output "',trim(jpeg_filename),'"'
         write(local_file_unit,'(A,A,A)')'plot "',trim(z12_filename),'" u 1:2 title "Re{z12}" w lp,\'
         write(local_file_unit,'(A,A,A)')'     "',trim(z12_filename),'" u 1:3 title "Im{z12}" w lp'
 
-        write(local_file_unit,'(A)')'set term wxt 0'
-        write(local_file_unit,'(A,A,A)')'plot "',trim(z12_filename),'" u 1:2 title "Re{z12}" w lp,\'
-        write(local_file_unit,'(A,A,A)')'     "',trim(z12_filename),'" u 1:3 title "Im{z12}" w lp'
-        write(local_file_unit,'(A)')'pause 100'
-  
+        if (.NOT.write_all_material_info_to_file) then
+! only plot to the screen if we are operating in the interactive mode
+          write(local_file_unit,'(A)')'set term wxt 0'
+          write(local_file_unit,'(A,A,A)')'plot "',trim(z12_filename),'" u 1:2 title "Re{z12}" w lp,\'
+          write(local_file_unit,'(A,A,A)')'     "',trim(z12_filename),'" u 1:3 title "Im{z12}" w lp'
+          write(local_file_unit,'(A)')'pause 100'
+        end if
+	
         CLOSE(unit=local_file_unit)
 
 ! plot Z12 response
@@ -207,6 +237,14 @@ IMPLICIT NONE
 ! Write Z21 filter response  
   
         z21_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'.z21.fout'
+
+! get the jpg output filenames - if we are running automatically then tag with the material number
+        if (write_all_material_info_to_file) then
+          base_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z21.jpg'
+          CALL add_integer_to_filename(base_filename,material_number,jpeg_filename)
+        else
+          jpeg_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z21.jpg'
+        end if
     
         CALL output_material_frequency_response(surface_material_list(material_number)%Z21_S(pol),	&
                                               sigma,fmin,fmax,fstep,local_file_unit,z21_filename)
@@ -220,16 +258,18 @@ IMPLICIT NONE
         write(local_file_unit,'(A,A,A,A)')'set title "',trim(surface_material_list(material_number)%name),trim(polstring(pol)),'"'
 
         write(local_file_unit,'(A)')'set term jpeg'
-        write(local_file_unit,'(A,A,A)')	&
-      'set output "',trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z21.jpg','"'
+        write(local_file_unit,'(A,A,A)')'set output "',trim(jpeg_filename),'"'
         write(local_file_unit,'(A,A,A)')'plot "',trim(z21_filename),'" u 1:2 title "Re{z21}" w lp,\'
         write(local_file_unit,'(A,A,A)')'     "',trim(z21_filename),'" u 1:3 title "Im{z21}" w lp'
 
-        write(local_file_unit,'(A)')'set term wxt 0'
-        write(local_file_unit,'(A,A,A)')'plot "',trim(z21_filename),'" u 1:2 title "Re{z21}" w lp,\'
-        write(local_file_unit,'(A,A,A)')'     "',trim(z21_filename),'" u 1:3 title "Im{z21}" w lp'
-        write(local_file_unit,'(A)')'pause 100'
-  
+        if (.NOT.write_all_material_info_to_file) then
+! only plot to the screen if we are operating in the interactive mode
+          write(local_file_unit,'(A)')'set term wxt 0'
+          write(local_file_unit,'(A,A,A)')'plot "',trim(z21_filename),'" u 1:2 title "Re{z21}" w lp,\'
+          write(local_file_unit,'(A,A,A)')'     "',trim(z21_filename),'" u 1:3 title "Im{z21}" w lp'
+          write(local_file_unit,'(A)')'pause 100'
+        end if
+	
         CLOSE(unit=local_file_unit)
 
 ! plot Z21 response
@@ -240,7 +280,15 @@ IMPLICIT NONE
 ! Write Z22 filter response 
   
         z22_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'.z22.fout'
-    
+
+! get the jpg output filenames - if we are running automatically then tag with the material number
+        if (write_all_material_info_to_file) then
+          base_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z22.jpg'
+          CALL add_integer_to_filename(base_filename,material_number,jpeg_filename)
+        else
+          jpeg_filename=trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z22.jpg'
+        end if
+     
         CALL output_material_frequency_response(surface_material_list(material_number)%Z22_S(pol),	&
                                             sigma,fmin,fmax,fstep,local_file_unit,z22_filename)
 ! Write Z22 gnuplot file
@@ -253,16 +301,18 @@ IMPLICIT NONE
         write(local_file_unit,'(A,A,A,A)')'set title "',trim(surface_material_list(material_number)%name),trim(polstring(pol)),'"'
 
         write(local_file_unit,'(A)')'set term jpeg'
-        write(local_file_unit,'(A,A,A)')	&
-        'set output "',trim(surface_material_list(material_number)%name)//trim(polstring(pol))//'_z22.jpg','"'
+        write(local_file_unit,'(A,A,A)')'set output "',trim(jpeg_filename),'"'
         write(local_file_unit,'(A,A,A)')'plot "',trim(z22_filename),'" u 1:2 title "Re{z22}" w lp,\'
         write(local_file_unit,'(A,A,A)')'     "',trim(z22_filename),'" u 1:3 title "Im{z22}" w lp'
 
-        write(local_file_unit,'(A)')'set term wxt 0'
-        write(local_file_unit,'(A,A,A)')'plot "',trim(z22_filename),'" u 1:2 title "Re{z22}" w lp,\'
-        write(local_file_unit,'(A,A,A)')'     "',trim(z22_filename),'" u 1:3 title "Im{z22}" w lp'
-        write(local_file_unit,'(A)')'pause 100'
-  
+       if (.NOT.write_all_material_info_to_file) then
+! only plot to the screen if we are operating in the interactive mode
+          write(local_file_unit,'(A)')'set term wxt 0'
+          write(local_file_unit,'(A,A,A)')'plot "',trim(z22_filename),'" u 1:2 title "Re{z22}" w lp,\'
+          write(local_file_unit,'(A,A,A)')'     "',trim(z22_filename),'" u 1:3 title "Im{z22}" w lp'
+          write(local_file_unit,'(A)')'pause 100'
+        end if
+	
         CLOSE(unit=local_file_unit)
 
 ! plot Z22 response

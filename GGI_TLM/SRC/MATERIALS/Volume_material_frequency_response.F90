@@ -30,9 +30,10 @@
 ! History
 !
 !     started 07/11/2012 CJS
+!     17/10/2014 CJS - add write_all_material_info_to_file flag - eliminates the need for user input in this case
 !
 
-SUBROUTINE Volume_material_frequency_response()
+SUBROUTINE Volume_material_frequency_response(write_all_material_info_to_file)
 
 USE TLM_general
 USE TLM_volume_materials
@@ -46,6 +47,8 @@ USE constants
 IMPLICIT NONE
 
 ! variables passed to subroutine
+  
+  logical :: write_all_material_info_to_file
 
 ! local_variables
   
@@ -55,7 +58,9 @@ IMPLICIT NONE
   real*8  :: fmin,fmax,fstep
   real*8  :: sigma
   character(LEN=filename_length)    :: gnuplot_filename
-  character(LEN=line_length)	:: command
+  character(LEN=filename_length)    :: base_filename
+  character(LEN=filename_length)    :: jpeg_filename
+  character(LEN=line_length)	    :: command
 
 ! function_types
 
@@ -73,9 +78,14 @@ IMPLICIT NONE
 ! read the material number to output
 
 ! read the volume material number to view  
-  write(*,*)
-  write(*,*)'Enter the volume material number to view or 0 to view all of them'
-  read(*,*)material_number
+  if (write_all_material_info_to_file) then
+! set the material number to zero to indicate that all material data should be written
+    material_number=0
+  else
+    write(*,*)
+    write(*,*)'Enter the volume material number to view or 0 to view all of them'
+    read(*,*)material_number
+  end if
   
   if ( (material_number.lt.0).OR.(material_number.gt.n_volume_materials) ) then
     write(*,*)'volume_material_number is outside the available range'
@@ -110,9 +120,16 @@ IMPLICIT NONE
       fstep=(fmax-fmin)/200d0
 
 ! Write Dielectric filter response
-  
       eps_filename=trim(volume_material_list(material_number)%name)//'.eps.fout'
-    
+
+! get the jpg output filenames - if we are running automatically then tag with the material number
+      if (write_all_material_info_to_file) then
+        base_filename=trim(volume_material_list(material_number)%name)//'_eps.jpg'
+        CALL add_integer_to_filename(base_filename,material_number,jpeg_filename)
+      else
+        jpeg_filename=trim(volume_material_list(material_number)%name)//'_eps.jpg'
+      end if
+      
       sigma=volume_material_list(material_number)%sigma_e
     
       CALL output_material_frequency_response(volume_material_list(material_number)%eps_S,	&
@@ -128,15 +145,18 @@ IMPLICIT NONE
       write(local_file_unit,'(A,A,A)')'set title "',trim(volume_material_list(material_number)%name),'"'
 
       write(local_file_unit,'(A)')'set term jpeg'
-      write(local_file_unit,'(A,A,A)')'set output "',trim(volume_material_list(material_number)%name)//'_eps.jpg','"'
+      write(local_file_unit,'(A,A,A)')'set output "',trim(jpeg_filename),'"'
       write(local_file_unit,'(A,A,A)')'plot "',trim(eps_filename),'" u 1:2 title "Re{epsr}" w lp,\'
       write(local_file_unit,'(A,A,A)')'     "',trim(eps_filename),'" u 1:3 title "Im{epsr}" w lp'
 
-      write(local_file_unit,'(A)')'set term wxt 0'
-      write(local_file_unit,'(A,A,A)')'plot "',trim(eps_filename),'" u 1:2 title "Re{epsr}" w lp,\'
-      write(local_file_unit,'(A,A,A)')'     "',trim(eps_filename),'" u 1:3 title "Im{epsr}" w lp'
-      write(local_file_unit,'(A)')'pause 100'
-  
+      if (.NOT.write_all_material_info_to_file) then
+! only plot to the screen if we are operating in the interactive mode
+        write(local_file_unit,'(A)')'set term wxt 0'
+        write(local_file_unit,'(A,A,A)')'plot "',trim(eps_filename),'" u 1:2 title "Re{epsr}" w lp,\'
+        write(local_file_unit,'(A,A,A)')'     "',trim(eps_filename),'" u 1:3 title "Im{epsr}" w lp'
+        write(local_file_unit,'(A)')'pause 100'
+      end if
+      
       CLOSE(unit=local_file_unit)
 
 ! plot permittivity response
@@ -147,6 +167,14 @@ IMPLICIT NONE
 ! Write Magnetic filter response
   
       mu_filename=trim(volume_material_list(material_number)%name)//'.mu.fout'
+
+! get the jpg output filenames - if we are running automatically then tag with the material number
+      if (write_all_material_info_to_file) then
+        base_filename=trim(volume_material_list(material_number)%name)//'_mu.jpg'
+        CALL add_integer_to_filename(base_filename,material_number,jpeg_filename)
+      else
+        jpeg_filename=trim(volume_material_list(material_number)%name)//'_mu.jpg'
+      end if
     
       sigma=volume_material_list(material_number)%sigma_e
     
@@ -163,15 +191,18 @@ IMPLICIT NONE
       write(local_file_unit,'(A,A,A)')'set title "',trim(volume_material_list(material_number)%name),'"'
 
       write(local_file_unit,'(A)')'set term jpeg'
-      write(local_file_unit,'(A,A,A)')'set output "',trim(volume_material_list(material_number)%name)//'_mu.jpg','"'
+      write(local_file_unit,'(A,A,A)')'set output "',trim(jpeg_filename),'"'
       write(local_file_unit,'(A,A,A)')'plot "',trim(mu_filename),'" u 1:2 title "Re{mur}" w lp,\'
       write(local_file_unit,'(A,A,A)')'     "',trim(mu_filename),'" u 1:3 title "Im{mur}" w lp'
 
-      write(local_file_unit,'(A)')'set term wxt 0'
-      write(local_file_unit,'(A,A,A)')'plot "',trim(mu_filename),'" u 1:2 title "Re{mur}" w lp,\'
-      write(local_file_unit,'(A,A,A)')'     "',trim(mu_filename),'" u 1:3 title "Im{mur}" w lp'
-      write(local_file_unit,'(A)')'pause 100'
-  
+      if (.NOT.write_all_material_info_to_file) then
+! only plot to the screen if we are operating in the interactive mode
+        write(local_file_unit,'(A)')'set term wxt 0'
+        write(local_file_unit,'(A,A,A)')'plot "',trim(mu_filename),'" u 1:2 title "Re{mur}" w lp,\'
+        write(local_file_unit,'(A,A,A)')'     "',trim(mu_filename),'" u 1:3 title "Im{mur}" w lp'
+        write(local_file_unit,'(A)')'pause 100'
+      end if
+      
       CLOSE(unit=local_file_unit)
 
 ! plot permeability response

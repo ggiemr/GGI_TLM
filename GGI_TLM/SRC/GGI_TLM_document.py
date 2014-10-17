@@ -114,19 +114,38 @@ DR = Renderer()
 # Start to create the document using the PyRTF stuff
 
 doc     = Document()
+
 ss      = doc.StyleSheet
-section = Section()
-doc.Sections.append( section )
+
+intro_section = Section(break_type=None)
+geom_section = Section(break_type=3)
+mesh_section = Section(break_type=3)
+vmat_section = Section(break_type=3)
+smat_section = Section(break_type=3)
+run_section = Section(break_type=3)
+#post_section = Section(break_type=3)
+results_section = Section(break_type=3)
+appendix1_section = Section(break_type=3)
+
+doc.Sections.append( intro_section )
+doc.Sections.append( geom_section )
+doc.Sections.append( mesh_section )
+doc.Sections.append( vmat_section )
+doc.Sections.append( smat_section )
+doc.Sections.append( run_section )
+#doc.Sections.append( post_section )
+doc.Sections.append( results_section )
+doc.Sections.append( appendix1_section )
 
 title = 'Simulation name: ' + name
 
 p = Paragraph( ss.ParagraphStyles.Heading1 )
 p.append( title )
-section.append( p )
+intro_section.append( p )
 
 p = Paragraph( ss.ParagraphStyles.Heading2 )
 p.append( 'Model description')
-section.append( p )
+intro_section.append( p )
 
 #  WRITE THE PROBLEM DESCRIPTION SECTION
 
@@ -138,13 +157,13 @@ output_line_list=return_intermediate_lines( start_line , end_line , inp_file_con
 for line in output_line_list:
 	p = Paragraph( ss.ParagraphStyles.Normal )
 	p.append( line )
-	section.append( p )
+	intro_section.append( p )
 
 #  WRITE THE GEOMETRY SECTION
 
 p = Paragraph( ss.ParagraphStyles.Heading2 )
 p.append( 'Geometry')
-section.append( p )
+geom_section.append( p )
 
 #  include the geometry files
 #  include the geometry information and geometry image(s)
@@ -157,7 +176,7 @@ output_line_list=return_intermediate_lines( start_line , end_line , info_file_co
 for line in output_line_list:
 	p = Paragraph( ss.ParagraphStyles.Normal )
 	p.append( line )
-	section.append( p )
+	geom_section.append( p )
 
 #  plot the geom files using calls to paraview
 
@@ -265,7 +284,7 @@ geometry_image_filename=name+"_1_geometry.png"
 WriteImage(geometry_image_filename)
 
 image = Image( geometry_image_filename , scale_x=60 , scale_y=60 )
-section.append( Paragraph( image ) )
+geom_section.append( Paragraph( image ) )
 
 # set view angle 2, note the constant 57.29578 converts from degrees to radians
 r=camera.GetDistance()
@@ -281,7 +300,7 @@ geometry_image_filename=name+"_2_geometry.png"
 WriteImage(geometry_image_filename)
 
 image = Image( geometry_image_filename , scale_x=60 , scale_y=60 )
-section.append( Paragraph( image ) )
+geom_section.append( Paragraph( image ) )
 
 # set view angle 3, note the constant 57.29578 converts from degrees to radians
 r=camera.GetDistance()
@@ -297,7 +316,7 @@ geometry_image_filename=name+"_3_geometry.png"
 WriteImage(geometry_image_filename)
 
 image = Image( geometry_image_filename , scale_x=60 , scale_y=60 )
-section.append( Paragraph( image ) )
+geom_section.append( Paragraph( image ) )
 
 # delete the geometry objects from the view
 
@@ -315,7 +334,7 @@ for line in range (0,nline):
 
 p = Paragraph( ss.ParagraphStyles.Heading2 )
 p.append( 'Mesh')
-section.append( p )
+mesh_section.append( p )
 
 #  include the meshing information and mesh image(s)
 
@@ -327,7 +346,7 @@ output_line_list=return_intermediate_lines( start_line , end_line , info_file_co
 for line in output_line_list:
 	p = Paragraph( ss.ParagraphStyles.Normal )
 	p.append( line )
-	section.append( p )
+	mesh_section.append( p )
 
 #  plot the mesh files using calls to paraview
 
@@ -435,10 +454,10 @@ camera.SetPosition(dx,dy,dz)
 
 Render()
 
-mesh_image_filename=name+"_2_mesh.png"
+mesh_image_filename=name+"_1_mesh.png"
 WriteImage(mesh_image_filename)
 image = Image( mesh_image_filename , scale_x=60 , scale_y=60 )
-section.append( Paragraph( image ) )
+mesh_section.append( Paragraph( image ) )
 
 # set view angle 2, note the constant 57.29578 converts from degrees to radians
 r=camera.GetDistance()
@@ -451,10 +470,10 @@ camera.SetPosition(dx,dy,dz)
 
 Render()
 
-mesh_image_filename=name+"_1_mesh.png"
+mesh_image_filename=name+"_2_mesh.png"
 WriteImage(mesh_image_filename)
 image = Image( mesh_image_filename , scale_x=60 , scale_y=60 )
-section.append( Paragraph( image ) )
+mesh_section.append( Paragraph( image ) )
 
 # set view angle 3, note the constant 57.29578 converts from degrees to radians
 r=camera.GetDistance()
@@ -470,13 +489,24 @@ Render()
 mesh_image_filename=name+"_3_mesh.png"
 WriteImage(mesh_image_filename)
 image = Image( mesh_image_filename , scale_x=60 , scale_y=60 )
-section.append( Paragraph( image ) )
+mesh_section.append( Paragraph( image ) )
+
+# delete the mesh objects from the view
+
+for vol in range (0,nvol):
+	Delete( vmeshlist[vol] )
+
+for surf in range (0,nsurf):
+	Delete( smeshlist[surf] )
+
+for line in range (0,nline):
+	Delete( lmeshlist[line] )
 
 # INCLUDE THE VOLUME MATERIAL INFORMATION
 
 p = Paragraph( ss.ParagraphStyles.Heading2 )
 p.append( 'Volume materials')
-section.append( p )
+vmat_section.append( p )
 
 #  include the meshing information and mesh image(s)
 
@@ -488,34 +518,106 @@ output_line_list=return_intermediate_lines( start_line , end_line , info_file_co
 for line in output_line_list:
 	p = Paragraph( ss.ParagraphStyles.Normal )
 	p.append( line )
-	section.append( p )
+	vmat_section.append( p )
 
 
 # run the GGI_TLM_material_model_checks process to get all the volume material frequency responses in jpeg format
 
-os.system("rm *.jpg")
+os.system("rm *.jpg*")
 
 GGI_TLM_material_model_checks_file = open('./GGI_TLM_material_model_checks_in.txt', 'w')
 GGI_TLM_material_model_checks_file.write(name + "\n")
-GGI_TLM_material_model_checks_file.write("1   : option to output volume material frequency responses \n")
-GGI_TLM_material_model_checks_file.write("0   : option to output responses for all volumes \n")
+GGI_TLM_material_model_checks_file.write("5   : option to output all volume material data to file \n")
 GGI_TLM_material_model_checks_file.write("0   : exit \n")
 GGI_TLM_material_model_checks_file.close()
 
 os.system("GGI_TLM_material_model_checks < GGI_TLM_material_model_checks_in.txt")
 
-result_file_list= glob.glob("*.jpg")
+# Put the volume mesh for each volume material in the document along with the associated 
+# frequency response plots
 
-for result_file in result_file_list:
+volume_material_mesh_files= glob.glob("./*.vmat_cells.vtk.*")
+nvol=len(volume_material_mesh_files)
 
-	image = Image( result_file , scale_x=30 , scale_y=30 )
-	section.append( Paragraph( image ) )
+volume_epsr_response_file_list= glob.glob("*eps.jpg.*")
+volume_mur_response_file_list= glob.glob("*mu.jpg.*")
+
+# check that we have the correct number of files
+if len(volume_epsr_response_file_list) != nvol:
+	print "ERROR: There is a problem with the number of files relating to volume materials"
+	print "nvol=" +str(nvol) + " n_epsr files="+ str(len(volume_epsr_response_file_list) )
+	quit
+	
+if len(volume_mur_response_file_list) != nvol:
+	print "ERROR: There is a problem with the number of files relating to volume materials"
+	print "nvol=" +str(nvol) + " n_mur files="+ str(len(volume_mur_response_file_list) )
+	quit
+
+# loop over the volumes and add the mesh image, premittivity and permeability responses for each
+# volume material 
+
+for vol in range (0,nvol):
+
+	number=vol+1
+	number_string=str(number)
+	
+	vmesh_file=glob.glob("*.vmat_cells.vtk." +number_string)
+	
+# First plot the mesh to file	
+        vmesh = OpenDataFile(vmesh_file)
+	vDataRepresentation = GetDisplayProperties( vmesh )
+	vDataRepresentation.Opacity = 0.5
+	vDataRepresentation.Representation = 'Surface With Edges'
+	
+	colour=float(vol+1)/float(nvol)
+	
+	vDataRepresentation.DiffuseColor = [ colour, 0.0, 0.0]	
+	
+	Show( vmesh )	
+	vol=vol+1
+	
+	RenderView1 = GetRenderView()	
+	RenderView1.Background = [0.0, 0.3333333333333333, 1.0]
+
+# get camera attributes	    
+	camera = GetActiveCamera() 
+
+# set view angle 1, note the constant 57.29578 converts from degrees to radians
+	r=camera.GetDistance()
+	theta=30.0/57.29578
+	phi=60.0/57.29578
+	dx=r*sin(theta)*cos(phi)
+	dy=r*sin(theta)*sin(phi)
+	dz=r*cos(theta)
+	camera.SetPosition(dx,dy,dz)
+
+	Render()
+
+	mesh_image_filename=name+"_volume_material_mesh.png"
+	WriteImage(mesh_image_filename)
+	image = Image( mesh_image_filename , scale_x=60 , scale_y=60 )
+	vmat_section.append( Paragraph( image ) )
+	
+	Delete( vmesh )
+	
+# put the volume material frequency responses into the document
+
+	base_filename_list=[ "*eps.jpg." , "*mu.jpg." ]
+	
+	for filename in base_filename_list:
+
+		imagefile =glob.glob(filename+number_string)
+# move to temporary .jpg file (PyRTF expects jpeg files to have the extension .jpg not .jpg.n) then add to document	
+# note we are assuming that there is only a single file matching the pattern here...
+		os.system("mv " + imagefile[0] + " temp_eps.jpg")	
+		image = Image( "temp_eps.jpg" , scale_x=30 , scale_y=30 )
+		vmat_section.append( Paragraph( image ) )
 
 # INCLUDE THE SURFACE MATERIAL INFORMATION
 
 p = Paragraph( ss.ParagraphStyles.Heading2 )
 p.append( 'Surface materials')
-section.append( p )
+smat_section.append( p )
 
 #  include the meshing information and mesh image(s)
 
@@ -527,33 +629,114 @@ output_line_list=return_intermediate_lines( start_line , end_line , info_file_co
 for line in output_line_list:
 	p = Paragraph( ss.ParagraphStyles.Normal )
 	p.append( line )
-	section.append( p )
+	smat_section.append( p )
 
 # run the GGI_TLM_material_model_checks process to get all the volume material frequency responses in jpeg format
 
-os.system("rm *.jpg")
+os.system("rm *.jpg*")
 
 GGI_TLM_material_model_checks_file = open('./GGI_TLM_material_model_checks_in.txt', 'w')
 GGI_TLM_material_model_checks_file.write(name + "\n")
-GGI_TLM_material_model_checks_file.write("3   : option to output surface material frequency responses \n")
-GGI_TLM_material_model_checks_file.write("0   : option to output responses for all surfaces \n")
+GGI_TLM_material_model_checks_file.write("6   : option to output all surface material data to file \n")
 GGI_TLM_material_model_checks_file.write("0   : exit \n")
 GGI_TLM_material_model_checks_file.close()
 
 os.system("GGI_TLM_material_model_checks < GGI_TLM_material_model_checks_in.txt")
 
-result_file_list= glob.glob("*.jpg")
+# Put the surface mesh for each surface material in the document
 
-for result_file in result_file_list:
+surface_material_mesh_files= glob.glob("./*.smat_faces.vtk.*")
+nsurf=len(surface_material_mesh_files)
 
-	image = Image( result_file , scale_x=30 , scale_y=30 )
-	section.append( Paragraph( image ) )
+# loop over the surfaces and add the mesh image and IBC matrix frequency responses for each
+
+for surf in range (0,nsurf):
+
+	number=surf+1
+	number_string=str(number)
+	
+	smesh_file=glob.glob("*.smat_faces.vtk." +number_string)
+
+	smesh=OpenDataFile(smesh_file) 
+
+	sDataRepresentation= GetDisplayProperties( smesh ) 
+	sDataRepresentation.Opacity = 0.5
+	sDataRepresentation.Representation = 'Surface With Edges'
+	
+	colour=float(surf+1)/float(nsurf)
+	
+	sDataRepresentation.DiffuseColor = [0.0, colour, 0.0]	
+	
+	Show( smesh )	
+
+# set background colour to blue    		
+	RenderView1 = GetRenderView()	
+	RenderView1.Background = [0.0, 0.3333333333333333, 1.0]
+
+# get camera attributes	    
+	camera = GetActiveCamera() 
+
+# set view angle 1, note the constant 57.29578 converts from degrees to radians
+	r=camera.GetDistance()
+	theta=30.0/57.29578
+	phi=60.0/57.29578
+	dx=r*sin(theta)*cos(phi)
+	dy=r*sin(theta)*sin(phi)
+	dz=r*cos(theta)
+	camera.SetPosition(dx,dy,dz)
+
+	Render()
+
+	mesh_image_filename=name+"_surface_material_mesh.png"
+	WriteImage(mesh_image_filename)
+	image = Image( mesh_image_filename , scale_x=60 , scale_y=60 )
+	smat_section.append( Paragraph( image ) )
+
+# delete the mesh objects from the view
+
+	Delete( smesh )
+
+# put the surface material frequency responses into the document
+
+	anisotropic_test=glob.glob("*:X_polarisation_z11.jpg."+number_string)
+	
+	if len(anisotropic_test) == 0:
+# Assume we have a normal isotropic IBC model
+		base_filename_list=[ "*_z11.jpg." , 
+		                     "*_z12.jpg." ,
+		                     "*_z21.jpg." ,
+		                     "*_z22.jpg." ]
+
+        else:
+# Assume we have an aisotropic IBC model	
+		base_filename_list=[ "*:X_polarisation_z11.jpg." , 
+		                     "*:X_polarisation_z12.jpg." ,
+		                     "*:X_polarisation_z21.jpg." ,
+		                     "*:X_polarisation_z22.jpg." ,
+	                             "*:Y_polarisation_z11.jpg." , 
+		                     "*:Y_polarisation_z12.jpg." ,
+		                     "*:Y_polarisation_z21.jpg." ,
+		                     "*:Y_polarisation_z22.jpg." ,
+	                             "*:Z_polarisation_z11.jpg." , 
+		                     "*:Z_polarisation_z12.jpg." ,
+		                     "*:Z_polarisation_z21.jpg." ,
+		                     "*:Z_polarisation_z22.jpg." ]
+	
+	for filename in base_filename_list:
+		imagefile =glob.glob(filename+number_string)
+# move to temporary .jpg file (PyRTF expects jpeg files to have the extension .jpg not .jpg.n) then add to document	
+# note we are assuming that there is only a single file matching the pattern here...
+		os.system("mv " + imagefile[0] + " temp_IBC.jpg")	
+		image = Image( "temp_IBC.jpg" , scale_x=30 , scale_y=30 )
+		smat_section.append( Paragraph( image ) )
+
+
 
 #  WRITE THE RUNTIME INFORMATION
 
 p = Paragraph( ss.ParagraphStyles.Heading2 )
 p.append( 'Run information')
-section.append( p )
+run_section.append( p )
 
 start_line="#START OF RUN INFORMATION"
 end_line="#END OF RUN INFORMATION"
@@ -563,7 +746,7 @@ output_line_list=return_intermediate_lines( start_line , end_line , info_file_co
 for line in output_line_list:
 	p = Paragraph( ss.ParagraphStyles.Normal )
 	p.append( line )
-	section.append( p )
+	run_section.append( p )
 
 ##  WRITE THE POST PROCESSING INFORMATION
 #
@@ -579,13 +762,13 @@ for line in output_line_list:
 
 p = Paragraph( ss.ParagraphStyles.Heading1 )
 p.append( 'Results')
-section.append( p )
+results_section.append( p )
 
 #  INCLUDE THE RESUTLS .JPG FILES
 
 # run the plot_jpg process to produce the result plots in jpeg format
 
-os.system("rm *.jpg")
+os.system("rm *.jpg*")
 
 sed_command_file = open('./sed_command', 'w')
 sed_command_file.write("{s/#JPG/ /g \n")
@@ -601,18 +784,18 @@ result_file_list= glob.glob("*.jpg")
 for result_file in result_file_list:
 
 	image = Image( result_file , scale_x=50 , scale_y=50 )
-	section.append( Paragraph( image ) )
+	results_section.append( Paragraph( image ) )
 
 # ADD THE INPUT FILE AS AN APPENDIX
 
 p = Paragraph( ss.ParagraphStyles.Heading1 )
 p.append( 'APPENDIX 1: GGI_TLM input file')
-section.append( p )
+appendix1_section.append( p )
 
 for line in inp_file_contents:
 	p = Paragraph( ss.ParagraphStyles.Normal )
 	p.append( line )
-	section.append( p )
+	appendix1_section.append( p )
 
 # WRITE DOCUMENT TO FILE
 

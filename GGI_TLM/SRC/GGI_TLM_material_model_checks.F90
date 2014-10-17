@@ -31,6 +31,9 @@
 ! HISTORY
 !
 !     started 6/11/2012 CJS
+!     17/10/2014 CJS - add write_all_material_info_to_file flag and options 5 and 6:
+!                      eliminates the need for user input if information on all materials is required
+!                      This option is used in the automatic documentation
 !
 !
 PROGRAM GGI_TLM_material_model_checks
@@ -45,6 +48,8 @@ IMPLICIT NONE
 ! local variables
 
   integer :: number_of_options,option
+  
+  logical :: write_all_material_info_to_file
 
 ! START
 
@@ -82,7 +87,7 @@ IMPLICIT NONE
   write(*,*)'Number of surface materials=',n_surface_materials
   write(*,*)'Number of surfaces=',n_surfaces
   
-  number_of_options=4
+  number_of_options=6
 
 10 CONTINUE  ! start of post_processing action
 
@@ -93,6 +98,8 @@ IMPLICIT NONE
   write(*,*)'2. View volume material cells '
   write(*,*)'3. View surface material frequency response '
   write(*,*)'4. View surface material faces '
+  write(*,*)'5. Write all volume material information to file '
+  write(*,*)'6. Write all surface material information to file '
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required cable model option 1 :',number_of_options,' or 0 to quit'
@@ -118,25 +125,45 @@ IMPLICIT NONE
     
     write(*,*)'View volume material frequency response'
     
-    CALL Volume_material_frequency_response()
+    write_all_material_info_to_file=.FALSE.
+    CALL Volume_material_frequency_response(write_all_material_info_to_file)
     
   else if (option.EQ.2) then
     
     write(*,*)'View volume material cells'
     
-    CALL plot_volume_material_cells()
+    write_all_material_info_to_file=.FALSE.
+    CALL plot_volume_material_cells(write_all_material_info_to_file)
     
   else if (option.EQ.3) then
   
     write(*,*)'View surface material frequency response'
        
-    CALL Surface_material_frequency_response()
+    write_all_material_info_to_file=.FALSE.
+    CALL Surface_material_frequency_response(write_all_material_info_to_file)
 
   else if (option.EQ.4) then
   
     write(*,*)'View surface material faces'
     
-    CALL plot_surface_material_faces()
+    write_all_material_info_to_file=.FALSE.
+    CALL plot_surface_material_faces(write_all_material_info_to_file)
+
+  else if (option.EQ.5) then
+  
+    write(*,*)'Write all volume material information to file'
+    
+    write_all_material_info_to_file=.TRUE.
+    CALL Volume_material_frequency_response(write_all_material_info_to_file)
+    CALL plot_volume_material_cells(write_all_material_info_to_file)
+
+  else if (option.EQ.6) then
+  
+    write(*,*)'Write all surface material information to file'
+    
+    write_all_material_info_to_file=.TRUE.
+    CALL Surface_material_frequency_response(write_all_material_info_to_file)
+    CALL plot_surface_material_faces(write_all_material_info_to_file)
 
   end if
   

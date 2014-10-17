@@ -33,8 +33,9 @@
 !     started 5/11/2012 CJS
 !     revised 19/2/2013 CJS plot cells used in TLM solver only... Some may get overwritten by
 !                           other materials
+!     17/10/2014 CJS - add write_all_material_info_to_file flag - eliminates the need for user input in this case
 !
-SUBROUTINE plot_volume_material_cells()
+SUBROUTINE plot_volume_material_cells(write_all_material_info_to_file)
 
 USE TLM_general
 USE mesh
@@ -45,6 +46,10 @@ USE file_information
 USE constants
 
 IMPLICIT NONE
+  
+! variables passed to subroutine
+  
+  logical :: write_all_material_info_to_file
 
 ! local variables
 
@@ -66,8 +71,15 @@ integer :: cx,cy,cz
   write(*,*)
   write(*,*)'Number of volume materials=',n_volume_materials
   write(*,*)
-  write(*,*)'Enter the volume material number to view or 0 to view all of them'
-  read(*,*)volume_material_number
+
+  if (write_all_material_info_to_file) then
+! set the material number to zero to indicate that all material data should be written
+    volume_material_number=0
+  else
+    write(*,*)
+    write(*,*)'Enter the volume material number to view or 0 to view all of them'
+    read(*,*)volume_material_number
+  end if
   
   if (volume_material_number.eq.0) then
   
