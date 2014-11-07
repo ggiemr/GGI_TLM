@@ -9,11 +9,19 @@
 #
 ### NOTHING BELOW HERE SHOULD NEED TO BE CHANGED ###
 
+# These definitions fixed by IFlintoft for Ubuntu 14.04LTS 3/11/2014 see issues on github website
+#MATERIAL_DIRECTORY_STRING="${TEST_DATA_DIRECTORY}/MATERIAL_DATA"
+#MATERIAL_DIRECTORY="${MATERIAL_DIRECTORY_STRING//\//\/}"
+#
+#CABLE_DIRECTORY_STRING="${TEST_DATA_DIRECTORY}/CABLE_DATA"
+#CABLE_DIRECTORY="${CABLE_DIRECTORY_STRING//\//\/}"
+
 MATERIAL_DIRECTORY_STRING="${TEST_DATA_DIRECTORY}/MATERIAL_DATA"
-MATERIAL_DIRECTORY="${MATERIAL_DIRECTORY_STRING//\//\/}"
+MATERIAL_DIRECTORY="${MATERIAL_DIRECTORY_STRING//\//\\/}"
 
 CABLE_DIRECTORY_STRING="${TEST_DATA_DIRECTORY}/CABLE_DATA"
-CABLE_DIRECTORY="${CABLE_DIRECTORY_STRING//\//\/}"
+CABLE_DIRECTORY="${CABLE_DIRECTORY_STRING//\//\\/}"
+
 
 echo " "
 echo "Automatic testing of GGI_TLM"
@@ -28,6 +36,7 @@ GGI_TLM_memory_usage.txt \
 *.plt \
 *vtk* \
 *.txt \
+*.info \
 *.jpeg \
 *.png \
 *.fout* \
@@ -40,6 +49,7 @@ GGI_TLM_memory_usage.txt \
 *.jpg \
 *.msh \
 *.avi \
+*.info \
 IELF_value.out \
 fort.* \
 save_result \
@@ -162,10 +172,20 @@ else
        rm -f $RUN_NAME.*
        
        echo "$RUN_NAME" > run_name.txt
+
        echo "{
               s/MATERIAL_DIRECTORY/${MATERIAL_DIRECTORY}/g
               s/CABLE_DIRECTORY/${CABLE_DIRECTORY}/g
 	      }" > sed_command
+
+# Add any parameter substitutions specified to the sed command
+# Read the parameter name and value from the file line by line
+       while IFS== read  PARAMETER VALUE
+       do           
+        
+         echo "s/${PARAMETER}/${VALUE}/g" >> sed_command
+            
+       done < PROBLEM_SPECIFICATION_FILES/parameter_definition.dat
 
        sed -f sed_command PROBLEM_SPECIFICATION_FILES/$RUN_NAME.inp > ./$RUN_NAME.inp
 
@@ -311,7 +331,6 @@ else
       
      elif [ "$ACTION" = "check_reference" ] ; then
      
-
 # find all the files in the  PROBLEM_SPECIFICATION_FILES  directory ending in _ref. These are the reference files to check
 
       FILE_LIST=$( find ./PROBLEM_SPECIFICATION_FILES/ -name "*_ref" )
@@ -379,6 +398,8 @@ else
         fi
 	
       fi
+       
+       echo "FINISHED: $TEST_CASE: check_reference" > ./progress
       
      elif [ "$ACTION" = "document" ] ; then
 

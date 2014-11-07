@@ -48,12 +48,14 @@ IMPLICIT NONE
   integer	:: n_frequencies
   integer	:: frequency_loop
   
+  real*8,allocatable	:: multiplication_factor(:)
+  
 ! START
 
 !  write(*,*)'Sum Frequency domain data'
   
   write(*,*)' '
-  write(*,*)'Result=sum 1..N {fn}'
+  write(*,*)'Result=sum 1..N {fn*multiplication_factor}'
   write(*,*)' '
   write(*,*)'where fn is a set of N frequency domain quantities'
   write(*,*)' '
@@ -61,17 +63,28 @@ IMPLICIT NONE
   write(*,*)'Enter the number of frequency domain quantities to sum:'
   read(*,*)n_functions
   write(record_user_inputs_unit,*)n_functions,' number of functions to sum'
+  
+  ALLOCATE( multiplication_factor(1:n_functions) )
+  
+  write(post_process_info_unit,*)'	Number of functions to sum=',n_functions
 
   n_functions_of_time=0
   n_functions_of_frequency=n_functions+1
   
   CALL Allocate_post_data()
   
+  write(post_process_info_unit,*)'	Frequency domain functions:'
   do function_number=1,n_functions
   
-    write(*,*)'File for f1 data:'
+    write(*,*)'File for frequency domain data:'
     CALL read_frequency_domain_data(function_number)
+    
+    write(*,*)'Enter the multiplication_factor for this function'
+    read(*,*)multiplication_factor(function_number)
+    write(record_user_inputs_unit,*)multiplication_factor(function_number),' Multiplication_factor for this function'
 
+   write(post_process_info_unit,*)'	Multiplication_factor for this function:',multiplication_factor(function_number)
+ 
     if (function_number.gt.1) then
 ! check that the frequencies match...
       if (function_of_frequency(1)%n_frequencies.NE.function_of_frequency(function_number)%n_frequencies) then
@@ -122,7 +135,7 @@ IMPLICIT NONE
     
     do function_number=1,n_functions
 
-      result=result+function_of_frequency(function_number)%value(frequency_loop)
+      result=result+function_of_frequency(function_number)%value(frequency_loop)*multiplication_factor(function_number)
       
     end do
     
@@ -142,6 +155,8 @@ IMPLICIT NONE
   
   function_number=n_functions_of_frequency
   CALL write_Frequency_Domain_Data(function_number)
+  
+  DEALLOCATE( multiplication_factor )
 
   CALL Deallocate_post_data()
 

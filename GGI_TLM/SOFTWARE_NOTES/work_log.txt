@@ -564,7 +564,30 @@
 			clean_all - as for clean but also removes any RESULTS_tag directories created with save
 			
 16/10/2014 	CJS	Update to version 1.0.4 
-
+			
+22/10/2014 	CJS	Tidy up some of the auto documentation stuff - restructure the script into modules
+			in the new AUTO_DOCUMENTATION directory, also include some of the cable information in the document. 
+			
+23/10/2014 	CJS	Start to rationalise the Wigner function calculation work and bring it into the GGI_TLM_post_process code
+			This involves unifying the 1D and 2D scans and should mean that the whole Wigner function validation process can
+			be run in GGI_TLM without too much trouble...
+			
+3/11/2014 	Flintoft, CJS	Include patch to get the automatic tests to run on a Ubuntu 14.04LTS
+				system. Without the patch the pathname separators do not appear to be escaped correctly
+				causing sed to fail. See issues 3/11/2014.
+			
+3/11/2014 	CJS	Fix problem in DIPOLE test case: gnuplot file for plotting results with reference had an error.
+			
+5/11/2014 	CJS	Include a process for defining an input file in terms of parameters which are defined in a separate file, 'parameter_definition.dat'
+			Test case is  MONOPOLE_PARAMETERISED
+			
+7/11/2014 	CJS	Include the option of excitation on both sides of a surface in the excitation_surface_list packet. (see known problems no 121)
+			Note that the point excitation on a surface already assumes that the excitation should be added to both sides. 
+			
+7/11/2014 	CJS	Reverse the diode - The specified direction should relate to the forward (conducting) direction of the diode
+			
+7/11/2014 	CJS	Include post process to add scaled time domain data together
+     
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE
 		- Start to implement and document all the Fieldsolve test cases : STARTED

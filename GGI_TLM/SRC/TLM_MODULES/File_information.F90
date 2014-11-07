@@ -185,6 +185,8 @@ IMPLICIT NONE
   character(len=7)	:: record_user_inputs_extn='_in.txt'
   integer,parameter 	:: record_user_inputs_unit=80
   
+   integer,parameter 	:: post_process_info_unit=81
+ 
   integer,parameter 	:: local_file_unit=90
   
   integer,parameter 	:: progress_file_unit=91

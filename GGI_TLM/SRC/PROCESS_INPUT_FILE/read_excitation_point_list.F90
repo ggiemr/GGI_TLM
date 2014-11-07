@@ -88,8 +88,6 @@ character*256	:: input_line
     CALL read_field_or_currrent_component(input_file_unit,excitation_points(excitation_number)%field_component)
 
     CALL read_centre_or_face(input_file_unit,excitation_points(excitation_number)%cell_point%point)
-! point excitation assumed at cell centre at the moment
-!    excitation_points(excitation_number)%cell_point%point=centre
 
     read(input_file_unit,'(A)',err=9005)input_line
     

@@ -111,7 +111,7 @@ IMPLICIT NONE
     
     write(*,*)'Output the cable geometry '
     
-    CALL Output_cable_geometry()
+    CALL Output_cable_geometry(6) ! send output to unit 6 i.e. the screen
     
   else if (option.EQ.2) then
     
@@ -123,7 +123,7 @@ IMPLICIT NONE
   
     write(*,*)'Output the cable bundle geometry at any segment '
     
-    CALL Output_bundle_geometry()
+    CALL Output_bundle_geometry(6)
 
   else if (option.EQ.4) then
   

@@ -71,6 +71,7 @@ TYPE::excitation_surface_type
 
   integer			:: excitation_function_number
   integer			:: surface_number
+  logical 			:: excitation_on_both_sides
   logical 			:: excitation_on_outward_normal
   integer 			:: number_of_faces
   type(cell_point),allocatable	:: face_list(:)

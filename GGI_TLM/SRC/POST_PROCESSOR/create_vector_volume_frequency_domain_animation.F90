@@ -121,12 +121,12 @@ IMPLICIT NONE
 ! STAGE 1. Open data file
 
 5 write(*,*)
-  write(*,*)'Surface field output files:'
+  write(*,*)'Volume field output files:'
   
   command='ls -ltr *.frequency_output_volume.fout'
   CALL system(command)
 
-  write(*,*)'Enter the surface field filename'
+  write(*,*)'Enter the volume field filename'
   read(*,*)filename
   inquire(file=trim(filename),exist=file_exists)
   if (.NOT.file_exists) then
@@ -248,9 +248,9 @@ IMPLICIT NONE
   write(*,*)'Number of volumes read:',n_volumes
   write(*,*)' '
   
-! read the number of the surface to write to file  
+! read the number of the volume to write to file  
 
-100 CONTINUE  ! read surface numbers for the animation
+100 CONTINUE  ! read volume numbers for the animation
   
   do i=1,3
   
@@ -267,7 +267,7 @@ IMPLICIT NONE
       write(*,*)'Output volume must be between 0 and ',n_volumes
       GOTO 100
     end if
-    write(record_user_inputs_unit,*)output_volume_xyz(i),' Output surface component number',i
+    write(record_user_inputs_unit,*)output_volume_xyz(i),' Output volume component number',i
     
   end do
 
@@ -298,7 +298,7 @@ IMPLICIT NONE
             (n_points.NE.volume_animation(surface)%n_points).OR.	&
             (n_frames.NE.volume_animation(surface)%n_frames ) ) then
 	write(*,*)'Error in create_vector_volume_frequency_domain_animation'
-	write(*,*)'Component surfaces have different amounts of data'
+	write(*,*)'Component volumes have different amounts of data'
 	STOP
       end if
       

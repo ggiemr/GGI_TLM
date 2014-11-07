@@ -68,7 +68,7 @@ IMPLICIT NONE
   CALL Allocate_post_data()
   
   function_number=1
-  
+      
   CALL Read_Frequency_Domain_Data(function_number) ! read function of frequency 
   
 ! Allocate and read the filter function to apply
@@ -83,6 +83,9 @@ IMPLICIT NONE
   call read_Sfilter(Sfilter1,local_file_unit) ! filter function
 
   close(UNIT=local_file_unit)
+  
+  write(record_user_inputs_unit,'(A)')trim(filter_file_name)  
+  write(post_process_info_unit,*)'	Filter filename:',trim(filter_file_name)
 
 ! we offer a choice of applying the filter frequency response as 
 ! specified or that of the digital filter obtained using the bilinear transformation  
@@ -93,8 +96,10 @@ IMPLICIT NONE
   read(*,'(A)')ch
   if ( (ch.eq.'s').OR.(ch.eq.'S') ) then
     Zfilter_flag=.FALSE.
+    write(post_process_info_unit,*)'	Apply s-plane filter'
   else if ( (ch.eq.'z').OR.(ch.eq.'Z') ) then
     Zfilter_flag=.TRUE.
+    write(post_process_info_unit,*)'	Apply z-plane filter'
   else
     write(*,*)"Response should be 'u' or 'n'"
     STOP
@@ -105,6 +110,7 @@ IMPLICIT NONE
     write(*,*)'Enter the timestep'
     read(*,*)dt
     write(record_user_inputs_unit,*)dt,' timestep'
+    write(post_process_info_unit,*)'	Timestep=',dt,' seconds'
     Zfilter1=s_to_z(Sfilter1,dt) 
   end if
   

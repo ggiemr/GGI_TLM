@@ -112,17 +112,14 @@ IMPLICIT NONE
     if (surface_material_list(material_number)%type.EQ.surface_material_type_PEC) then
     
       write(*,*)'Material number',material_number,' is PEC'
-      RETURN
   
     else if (surface_material_list(material_number)%type.EQ.surface_material_type_PMC) then
   
       write(*,*)'Material number',material_number,' is PMC'
-      RETURN
   
     else if (surface_material_list(material_number)%type.EQ.surface_material_type_DIODE) then
   
       write(*,*)'Material number',material_number,' is DIODE'
-      RETURN
   
     else if ( (surface_material_list(material_number)%type.EQ.surface_material_type_DISPERSIVE).OR. 	&
               (surface_material_list(material_number)%type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE) )then
@@ -134,10 +131,12 @@ IMPLICIT NONE
       sigma=0d0
     
       if (surface_material_list(material_number)%type.EQ.surface_material_type_DISPERSIVE) then
+        write(*,*)'Material number',material_number,' is DISPERSIVE'
         pol1=1
         pol2=1
         polstring(1)=''
       else if (surface_material_list(material_number)%type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE) then
+        write(*,*)'Material number',material_number,' is ANISOTROPIC_DISPERSIVE'
         pol1=1
         pol2=3   
         polstring(1)=':X_polarisation'
@@ -322,6 +321,10 @@ IMPLICIT NONE
       
       end do ! next polarisation
     
+    else 
+  
+      write(*,*)'Material number',material_number,' is of UNKNOWN material type:',surface_material_list(material_number)%type
+      
     end if
 
   end do ! next material

@@ -301,10 +301,11 @@ integer	:: function_number
   write(*,*)'Enter the filename for the formatted data'
   read(*,'(A256)')filename
   write(record_user_inputs_unit,'(A)')trim(filename)
-  
-! open the file to write
-  
-  OPEN(unit=local_file_unit,file=filename)
+ 
+! Give the option to append to existing file...  
+!! open the file to write
+!  
+!  OPEN(unit=local_file_unit,file=filename)
     
   write(*,*)'Do you want to append new data to an existing data file? (y/n)'
   read(*,'(A)')ch

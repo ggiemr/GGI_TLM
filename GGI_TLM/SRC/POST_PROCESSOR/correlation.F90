@@ -62,6 +62,7 @@ IMPLICIT NONE
   write(*,*)'Enter the number of time domain quantities for correlation calculation'
   read(*,*)n_functions_of_time
   write(record_user_inputs_unit,*)n_functions_of_time,' number of time domain quantities for correlation calculation '
+  write(post_process_info_unit,*)'	Number of functions of time to correlate=',n_functions_of_time
 
   if (n_functions_of_time.gt.max_files) then
     write(*,*)'Maximum number of time domain functions exceeded'
@@ -205,6 +206,7 @@ IMPLICIT NONE
   write(*,*)'Enter the number of frequency domain quantities for correlation calculation'
   read(*,*)n_functions_of_frequency_in
   write(record_user_inputs_unit,*)n_functions_of_frequency_in,' number of frequency domain quantities for correlation calculation'
+  write(post_process_info_unit,*)'	Number of functions of frequency to correlate=',n_functions_of_frequency_in
 
   if (n_functions_of_time.gt.max_files) then
     write(*,*)'Maximum number of frequency domain functions exceeded'

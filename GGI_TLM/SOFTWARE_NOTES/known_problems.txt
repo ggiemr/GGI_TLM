@@ -365,8 +365,28 @@ output point is 'inside' the PEC/PMC and sees no field.
      model refinements (series resistance, junction capacitance) have not been tested properly.
      
 116. Diode model needs to be documented
+     DONE
      
 117. Do we need to implement a lumped element surface material model i.e. generalise the diode model to
      other lumped elements - perhaps using the existing frequency dependent impedance model for wires? 
      It may be useful for modelling high frequency surface mount devices maybe..
      It could also be a link to SPICE (ngspice?) models...
+     
+118. Can we parameterise the geometry i.e. specify parameters at the top of the input file such as a dielectric substrate thickness
+     and then refer to this label in the rest of the document... This could maybe be done by writing a separate input file then
+     generating the final input file using some kind of search and replace process (sed?). This approach would have the benefit of not      
+     requiring any changes to GGI_TLM, just the scripts which run it.
+     DONE: A file called parameter_definition.dat is included in the PROBLEM_SPECIFICATION_FILES directory. This file has all the parameters specified in the form
+#PARAMETER_NAME=VALUE
+     A sed command then does a simple search and replace when copying the input file to the run directory, substituting #PARAMETER_NAME with value everywhere.
+     
+119. What exactly is needed for mpi compilation? How do we set this up from scratch? What needs to be in the PATH? This should be rigorously        documented. 
+
+120. Need to document the parameterised geometry process
+
+121. The excitation_surface_list needs to be sorted out. If only one side of a surface is excited then the code gives odd results - in almost all cases
+     (sources in free space) the surface excitation should be added to both sides of the excitation surface. Maybe we need to have the option of setting the
+     excitation side of the surface to both sides as a default...
+     DONE
+     
+122. Need to document the surface excitations properly so that the meaning of a single sided excitation is understood. 

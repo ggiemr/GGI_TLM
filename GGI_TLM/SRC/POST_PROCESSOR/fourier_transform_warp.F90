@@ -98,12 +98,22 @@ IMPLICIT NONE
   write(record_user_inputs_unit,'(E16.7,A)')fmin,' fmin'
   write(record_user_inputs_unit,'(E16.7,A)')fmax,' fmax'
   write(record_user_inputs_unit,'(I16,A)')n_frequencies,' n_frequencies'
+  
+  if (freq_range_type.EQ.'log') then
+    write(post_process_info_unit,*)'	Logarithmic frequency scale:'
+  else
+    write(post_process_info_unit,*)'	Linear frequency scale:'
+  end if
+  write(post_process_info_unit,*)'	Fmin=',fmin,' Hz'
+  write(post_process_info_unit,*)'	Fmax=',fmax,' Hz'
+  write(post_process_info_unit,*)'	n_frequencies=',n_frequencies
 
 110 CONTINUE       
   write(*,*)'Bicubic frequency warping? (y or n)'
   read(*,'(A)')ch
   if ( (ch.eq.'y').OR.(ch.eq.'Y') ) then
     bicubic_warp_flag=.TRUE.
+    write(post_process_info_unit,*)'	Bicubic frequency warping'
   else if ( (ch.eq.'n').OR.(ch.eq.'N') ) then
     bicubic_warp_flag=.FALSE.
   else
@@ -131,6 +141,7 @@ IMPLICIT NONE
       write(*,*)'Enter the frequency scaling factor'
       read(*,*)frequency_scale
       write(record_user_inputs_unit,'(E16.7,A)')frequency_scale,' Frequency scaling factor'
+      write(post_process_info_unit,*)'	Include Frequency scaling factor:',frequency_scale
     end if
     
   end if ! .NOT.bicubic_warp_flag

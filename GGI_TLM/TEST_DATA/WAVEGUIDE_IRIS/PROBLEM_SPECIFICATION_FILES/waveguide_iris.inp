@@ -70,11 +70,11 @@ xplane
 Point_list 
 2   Number of points (integer)
 1       POINT_NUMBER (integer)
-0.00025 0.00025 -0.01   excitation point coordinates
+0.00025 0.00025 -0.01   output point coordinates
 0.0 0.0 0.0
 0.0 0.0 0.0
 2       POINT_NUMBER (integer)
-0.00025 -0.00025 0.01   excitation point coordinates
+0.00025 -0.00025 0.01   output point coordinates
 0.0 0.0 0.0
 0.0 0.0 0.0
 

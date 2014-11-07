@@ -111,6 +111,8 @@ IMPLICIT NONE
     GOTO 5
   end if
   write(record_user_inputs_unit,'(A)')trim(filename)
+    
+  write(post_process_info_unit,*)'	Frequency domain surface field data filename:',trim(filename)
   
   OPEN(unit=local_file_unit,file=filename)
     
@@ -246,8 +248,6 @@ IMPLICIT NONE
 
   write(*,*)'Output modal field on surface number',output_surface
   write(record_user_inputs_unit,*)output_surface,' Mode Output surface'
-  
-! add surface number to base filename
 
   write(*,*)'Enter the filename for the mode'
   read(*,'(A)')mode_filename

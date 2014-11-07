@@ -391,7 +391,11 @@ POST_PROCESSOR/create_time_domain_vector_animation.o \
 POST_PROCESSOR/generate_far_field_plot.o \
 POST_PROCESSOR/re_format_data_file.o \
 POST_PROCESSOR/Vis_nD.o \
-POST_PROCESSOR/S11_TO_VSWR.o
+POST_PROCESSOR/S11_TO_VSWR.o\
+POST_PROCESSOR/Convert_Frequency_Domain_Volume_Field_Format.o \
+POST_PROCESSOR/Spatial_correlation.o \
+POST_PROCESSOR/Wigner_function.o \
+POST_PROCESSOR/sum_time_domain_data.o
 
 OPTIMISATION_OBJS=  \
 OPTIMISATION/opt_module.o \

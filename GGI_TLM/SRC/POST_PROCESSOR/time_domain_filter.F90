@@ -79,6 +79,8 @@ IMPLICIT NONE
   call read_Sfilter(Sfilter1,local_file_unit) ! filter function
 
   close(UNIT=local_file_unit)
+  
+  write(post_process_info_unit,*)'	Filter filename:',trim(filter_file_name)
 
 ! Calculate the digital filter coefficients using the bilinear transformation
   

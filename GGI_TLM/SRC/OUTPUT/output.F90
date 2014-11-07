@@ -347,62 +347,74 @@ IMPLICIT NONE
   
   CALL write_line('CALLED: finish_outputs',0,output_to_screen_flag)
   
-  if (n_output_points.gt.0) then
+  write (info_file_unit,'(A)')"#START OF OUTPUT INFORMATION"
   
+  if (n_output_points.gt.0) then
+    
+    write (info_file_unit,'(A)')"Time domain field output at a point"   
     CLOSE(unit=field_output_unit)
     
   end if
   
   if (n_output_surfaces.gt.0) then
   
+    write (info_file_unit,'(A)')"Time domain field output over a surface"
     CLOSE(unit=surface_field_output_unit)
     
   end if
   
   if (n_output_volumes.gt.0) then
   
+    write (info_file_unit,'(A)')"Time domain field output over a volume"
     CLOSE(unit=volume_field_output_unit)
     
   end if
   
   if (n_output_volume_averages.gt.0) then
   
+    write (info_file_unit,'(A)')"Time domain field output averaged over a volume"
     CLOSE(unit=volume_average_field_output_unit)
     
   end if
   
   if (n_output_modes.gt.0) then
   
+    write (info_file_unit,'(A)')"Modal field output"
     CLOSE(unit=mode_output_unit)
     
   end if
   
   if (n_PB_far_field_surfaces.gt.0) then
   
+    write (info_file_unit,'(A)')"Far field output"
     CLOSE(unit=PB_far_field_output_unit)
     
   end if
   
   if (n_RCS_surfaces.gt.0) then
   
+    write (info_file_unit,'(A)')"RCS output"
     CLOSE(unit=rcs_output_unit)
     
   end if
   
   if (n_SAR_volumes.gt.0) then
   
+    write (info_file_unit,'(A)')"SAR output"
     CLOSE(unit=SAR_output_unit)
     
   end if
   
   if (n_frequency_output_surfaces.gt.0) then
   
+    write (info_file_unit,'(A)')"Frequency domain field over a surface"
     CLOSE(unit=frequency_output_surface_unit)
     
   end if
   
   if (n_frequency_output_volumes.gt.0) then
   
+    write (info_file_unit,'(A)')"Frequency domain field over a volume"
     CLOSE(unit=frequency_output_volume_unit)
     
   end if
@@ -410,11 +422,14 @@ IMPLICIT NONE
 ! CABLE OUTPUTS
   if (n_cable_outputs.gt.0) then
   
+    write (info_file_unit,'(A)')"Time domain cable current output"
     CLOSE(unit=cable_current_output_unit)
   
   end if  ! n_cable_outputs.gt.0
  
   CALL write_line('FINISHED: finish_outputs',0,output_to_screen_flag)
+
+  write (info_file_unit,'(A)')"#END OF OUTPUT INFORMATION"
 
   RETURN
 

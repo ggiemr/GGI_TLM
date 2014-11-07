@@ -30,7 +30,7 @@
 !1	       ! EXCITATION surface NUMBER
 !1	       ! excitation function number
 !2	       ! excitation surface
-!-1	       ! side of surface for excitation
+!0	       ! side of surface for excitation 0, -1 or +1, 0 excites on both sides of the surface (default)
 !Ex
 !soft
 
@@ -84,7 +84,12 @@ character*256	:: input_line
        
     read(input_file_unit,*,err=9005)side_of_surface_for_excitation
     
-    if (side_of_surface_for_excitation.eq.1) then
+    excitation_surfaces(excitation_number)%excitation_on_both_sides=.FALSE.   
+    excitation_surfaces(excitation_number)%excitation_on_outward_normal=.FALSE.
+    
+    if (side_of_surface_for_excitation.eq.0) then
+      excitation_surfaces(excitation_number)%excitation_on_both_sides=.TRUE.   
+    else if (side_of_surface_for_excitation.eq.1) then
       excitation_surfaces(excitation_number)%excitation_on_outward_normal=.TRUE.
     else if (side_of_surface_for_excitation.eq.-1) then
       excitation_surfaces(excitation_number)%excitation_on_outward_normal=.FALSE.
@@ -131,7 +136,7 @@ character*256	:: input_line
      STOP
      
 9020 CALL write_line('Error reading excitation surface list packet',0,.TRUE.)
-     CALL write_line("Side of surface for excitation should be +1 or -1",0,.TRUE.)
+     CALL write_line("Side of surface for excitation should be 0, +1 or -1",0,.TRUE.)
      CALL write_error_line(input_file_unit)
      STOP
      

@@ -92,6 +92,15 @@ IMPLICIT NONE
   write(record_user_inputs_unit,'(I16,A)')n_frequencies,' n_frequencies'
   
   if (freq_range_type.EQ.'log') then
+    write(post_process_info_unit,*)'	Logarithmic frequency scale:'
+  else
+    write(post_process_info_unit,*)'	Linear frequency scale:'
+  end if
+  write(post_process_info_unit,*)'	Fmin=',fmin,' Hz'
+  write(post_process_info_unit,*)'	Fmax=',fmax,' Hz'
+  write(post_process_info_unit,*)'	n_frequencies=',n_frequencies
+  
+  if (freq_range_type.EQ.'log') then
   
     log_fmin=log10(fmin)
     log_fmax=log10(fmax)
@@ -259,6 +268,10 @@ IMPLICIT NONE
   fmin=0d0
   fstep=1d0/(n_frequencies*dt)
   fmax=fstep*(n_frequencies-1)
+  
+  write(post_process_info_unit,*)'	Fmin=',fmin,' Hz'
+  write(post_process_info_unit,*)'	Fmax=',fmax,' Hz'
+  write(post_process_info_unit,*)'	n_frequencies=',n_frequencies
 
 ! Generate the frequency list
   function_of_frequency(function_number)%n_frequencies=n_frequencies

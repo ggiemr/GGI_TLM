@@ -1,0 +1,17 @@
+           3  Post processing option: Fourier Transform
+geometry.field.tout
+           1
+lin
+   0.1000000E+06 fmin
+   0.3000000E+08 fmax
+            200 n_frequencies
+geometry.fout
+           3  Post processing option: Fourier Transform
+geometry.excitation.tout
+           1
+lin
+   0.1000000E+06 fmin
+   0.3000000E+08 fmax
+            200 n_frequencies
+excitation.fout
+           0  Post processing option: Quit

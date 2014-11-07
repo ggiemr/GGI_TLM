@@ -83,7 +83,9 @@ integer	:: function_number
     GOTO 5
   end if
   write(record_user_inputs_unit,'(A)')trim(filename)
-  
+      
+  write(post_process_info_unit,*)'	Data filename:',trim(filename)
+
 ! open and read the file
   
   OPEN(unit=local_file_unit,file=filename)
@@ -95,6 +97,7 @@ integer	:: function_number
   write(*,*)'Enter the column number for function data'
   read(*,*)n_function
   write(record_user_inputs_unit,*)n_function,' column for function data'
+  write(post_process_info_unit,*)'	Process comun number:',n_function
   
   conversion_type=0
   
@@ -118,6 +121,14 @@ integer	:: function_number
     end if
 
     write(record_user_inputs_unit,*)conversion_type,' data conversion type'
+  
+    if (conversion_type.EQ.0) then
+      write(post_process_info_unit,*)'	No data conversion is applied'
+    else if (conversion_type.EQ.1) then
+      write(post_process_info_unit,*)'	Convert from dB to field amplitude' 
+    else if (conversion_type.EQ.2) then
+      write(post_process_info_unit,*)'	Convert from field amplitude to dB' 
+    end if
 
   end if
     

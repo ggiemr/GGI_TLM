@@ -67,6 +67,7 @@ IMPLICIT NONE
   CALL Allocate_post_data()
   
   write(*,*)'File for complex S21 data:'
+  write(post_process_info_unit,*)'	Complex S21 data:'
   function_number=1
   CALL read_frequency_domain_data(function_number)
     
@@ -74,11 +75,13 @@ IMPLICIT NONE
   read(*,*)d
   
   write(record_user_inputs_unit,*)d,' Antenna separation, d'
+  write(post_process_info_unit,*)'	Antenna separation=',d,' m'
     
   write(*,*)'Enter antenna load impedance (ohms)'
   read(*,*)Zload
   
   write(record_user_inputs_unit,*)Zload,' Antenna load impedance, Zload'
+  write(post_process_info_unit,*)'	Antenna load impedance=',Zload,' ohms'
 
 ! Allocate memory for result
 
@@ -207,10 +210,12 @@ IMPLICIT NONE
   CALL Allocate_post_data()
   
   write(*,*)'File for complex S21 data:'
+  write(post_process_info_unit,*)'	Complex S21 data:'
   function_number=1
   CALL read_frequency_domain_data(function_number)
   
   write(*,*)'File for complex antenna factor data for known antenna:'
+  write(post_process_info_unit,*)'	Complex antenna factor of known antenna:'
   function_number=2
   CALL read_frequency_domain_data(function_number)
     
@@ -218,11 +223,13 @@ IMPLICIT NONE
   read(*,*)d
   
   write(record_user_inputs_unit,*)d,' Antenna separation, d'
+  write(post_process_info_unit,*)'	Antenna separation=',d,' m'
     
   write(*,*)'Enter antenna load impedance (ohms)'
   read(*,*)Zload
   
   write(record_user_inputs_unit,*)Zload,' Antenna load impedance, Zload'
+  write(post_process_info_unit,*)'	Antenna load impedance=',Zload,' ohms'
 
 ! check that the frequencies match...
 

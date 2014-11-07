@@ -15,7 +15,7 @@
 !    You should have received a copy of the GNU General Public License
 !    along with this program.  If not, see <http://www.gnu.org/licenses/>.   
 !
-! SUBROUTINE Output_cable_geometry()
+! SUBROUTINE Output_cable_geometry(output_unit)
 ! SUBROUTINE Output_cable_route()
 ! SUBROUTINE Output_bundle_geometry()
 ! SUBROUTINE Output_junction_specification()
@@ -38,15 +38,20 @@
 ! HISTORY
 !
 !     started 6/11/2012 CJS
+!     22/10/2014 CJS send output to a specified unit
 !
 !
-SUBROUTINE Output_cable_geometry()
+SUBROUTINE Output_cable_geometry(output_unit)
 
 USE TLM_general
 USE Cables
 USE File_information
 
 IMPLICIT NONE
+
+! variables passed to subroutine
+
+  integer output_unit
 
 ! local variables
 
@@ -60,13 +65,20 @@ IMPLICIT NONE
 
   CALL write_line('CALLED: Output_cable_geometry',0,output_to_screen_flag)
 
-  write(*,*)'Number of cable geometries=',n_cable_geometries
+  write(output_unit,*)'Cable geometry information:'
+  write(output_unit,*)'Number of cable geometries=',n_cable_geometries
   
 10 continue
 
-  write(*,*)
-  write(*,*)'Enter the number of the cable geometry to output or 0 to output all of then'
-  read(*,*)cable_geometry
+  
+  if (output_unit.eq.6) then
+! the process is operating interactively so ask for the cable number to write, otherwise write them all
+    write(output_unit,*)
+    write(output_unit,*)'Enter the number of the cable geometry to output or 0 to output all of then'
+    read(*,*)cable_geometry
+  else
+    cable_geometry=0
+  end if
   
   if (cable_geometry.eq.0) then
     first_cable_geometry=1
@@ -74,7 +86,7 @@ IMPLICIT NONE
   else 
   
     if ( (cable_geometry.lt.0).OR.(cable_geometry.gt.n_cable_geometries) ) then
-      write(*,*)'Cable geometry is outside the available range'
+      write(output_unit,*)'Cable geometry is outside the available range'
       RETURN
     end if
     
@@ -84,68 +96,75 @@ IMPLICIT NONE
   
   do cable_geometry=first_cable_geometry,last_cable_geometry
   
-    write(*,*)
-    write(*,*)'Cable geometry number		=',cable_geometry
-    write(*,*)
-    write(*,*)'Geometry type			=',trim(cable_geometry_list(cable_geometry)%cable_geometry_type_string)
-    write(*,*)'Geometry type number		=',cable_geometry_list(cable_geometry)%cable_geometry_type
-    write(*,*)'Number of conductors		=',cable_geometry_list(cable_geometry)%n_conductors
-    write(*,*)'Number of Shielded conductors	=',cable_geometry_list(cable_geometry)%n_shielded_conductors
-    write(*,*)'External_conductor_radius	=',cable_geometry_list(cable_geometry)%external_conductor_radius
-    write(*,*)'External_dielectric_radius	=',cable_geometry_list(cable_geometry)%external_dielectric_radius
-    write(*,*)'External_dielectric_permittivity	=',cable_geometry_list(cable_geometry)%external_dielectric_permittivity
+    write(output_unit,*)
+    write(output_unit,*)'Cable geometry number		=',cable_geometry
+    write(output_unit,*)
+    write(output_unit,*)'Geometry type			= ',trim(cable_geometry_list(cable_geometry)%cable_geometry_type_string)
+    
+!    write(output_unit,*)'Geometry type number		=',cable_geometry_list(cable_geometry)%cable_geometry_type
+
+    write(output_unit,*)'Number of conductors		=',cable_geometry_list(cable_geometry)%n_conductors
+    write(output_unit,*)'Number of Shielded conductors	=',cable_geometry_list(cable_geometry)%n_shielded_conductors
+    write(output_unit,*)'External_conductor_radius	=',cable_geometry_list(cable_geometry)%external_conductor_radius
+    write(output_unit,*)'External_dielectric_radius	=',cable_geometry_list(cable_geometry)%external_dielectric_radius
+    write(output_unit,*)'External_dielectric_permittivity	=',cable_geometry_list(cable_geometry)%external_dielectric_permittivity
+
+    if (output_unit.eq.6) then
+! interactive mode so write more information
 
 ! write parameters
-    write(*,*)'Number of parameters		=',cable_geometry_list(cable_geometry)%n_parameters
+      write(output_unit,*)'Number of parameters		=',cable_geometry_list(cable_geometry)%n_parameters
     
-    n_cols=cable_geometry_list(cable_geometry)%n_parameters
-    write(*,*)'Parameter list:'
-    write(*,*)(cable_geometry_list(cable_geometry)%parameters(col),	&
+      n_cols=cable_geometry_list(cable_geometry)%n_parameters
+      write(output_unit,*)'Parameter list:'
+      write(output_unit,*)(cable_geometry_list(cable_geometry)%parameters(col),	&
                                    col=1,cable_geometry_list(cable_geometry)%n_parameters)
 				   
-    n_rows=cable_geometry_list(cable_geometry)%n_conductors
-    n_cols=n_rows
+      n_rows=cable_geometry_list(cable_geometry)%n_conductors
+      n_cols=n_rows
     
 ! write Sc
-    write(*,*)'Shielded conductor flag vector (Sc):'
-    write(*,8000)(cable_geometry_list(cable_geometry)%Sc(row),row=1,n_rows)
+      write(output_unit,*)'Shielded conductor flag vector (Sc):'
+      write(output_unit,8000)(cable_geometry_list(cable_geometry)%Sc(row),row=1,n_rows)
     
 ! write Tv
-    write(*,*)'Voltage reference matrix (Tv):'
-    do row=1,n_rows	   
-      write(*,8000)(cable_geometry_list(cable_geometry)%Tv(row,col),col=1,n_cols)
-      write(*,*)
-    end do
+      write(output_unit,*)'Voltage reference matrix (Tv):'
+      do row=1,n_rows	   
+        write(output_unit,8000)(cable_geometry_list(cable_geometry)%Tv(row,col),col=1,n_cols)
+        write(output_unit,*)
+      end do
     
 ! write Ti
-    write(*,*)'Current reference matrix (Ti):'
-    do row=1,n_rows	   
-      write(*,8000)(cable_geometry_list(cable_geometry)%Ti(row,col),col=1,n_cols)
-      write(*,*)
-    end do
+      write(output_unit,*)'Current reference matrix (Ti):'
+      do row=1,n_rows	   
+        write(output_unit,8000)(cable_geometry_list(cable_geometry)%Ti(row,col),col=1,n_cols)
+        write(output_unit,*)
+      end do
     
 ! write L_internal
-    write(*,*)'Internal inductance matrix (L_internal):'
-    do row=1,n_rows	   
-      write(*,8010)(cable_geometry_list(cable_geometry)%L_internal(row,col),col=1,n_cols)
-      write(*,*)
-    end do
+      write(output_unit,*)'Internal inductance matrix (L_internal):'
+      do row=1,n_rows	   
+        write(output_unit,8010)(cable_geometry_list(cable_geometry)%L_internal(row,col),col=1,n_cols)
+        write(output_unit,*)
+      end do
     
 ! write C_internal
-    write(*,*)'Internal capacitance matrix (C_internal):'
-    do row=1,n_rows	   
-      write(*,8010)(cable_geometry_list(cable_geometry)%C_internal(row,col),col=1,n_cols)
-      write(*,*)
-    end do
+      write(output_unit,*)'Internal capacitance matrix (C_internal):'
+      do row=1,n_rows	   
+        write(output_unit,8010)(cable_geometry_list(cable_geometry)%C_internal(row,col),col=1,n_cols)
+        write(output_unit,*)
+      end do
     
-    write(*,*)'________________________________________________________'
-    write(*,*)
+      write(output_unit,*)'________________________________________________________'
+      write(output_unit,*)
+
+    end if
 
 8000 format(100I4)
 8010 format(100E15.6) 
   end do ! next cable geometry
   
-
+  write(output_unit,*)
 
   CALL write_line('FINISHED: Output_cable_geometry',0,output_to_screen_flag)
 
@@ -295,15 +314,20 @@ END SUBROUTINE Output_cable_route
 ! HISTORY
 !
 !     started 6/11/2012 CJS
+!     22/10/2014 CJS send output to a specified unit
 !
 !
-SUBROUTINE Output_bundle_geometry()
+SUBROUTINE Output_bundle_geometry(output_unit)
 
 USE TLM_general
 USE Cables
 USE File_information
 
 IMPLICIT NONE
+
+! variables passed to subroutine
+
+  integer output_unit
 
 ! local variables
 
@@ -327,21 +351,28 @@ IMPLICIT NONE
 
   CALL write_line('CALLED: Output_bundle_segment_geometry',0,output_to_screen_flag)
   
-  write(*,*)'Number of cable bundle geometries=',n_bundle_segment_geometries
+  write(output_unit,*)'Cable Bundle geometry information:'
+  write(output_unit,*)'Number of cable bundle geometries=',n_bundle_segment_geometries
 
-  write(*,*)
-  write(*,*)'Enter the number of the bundle geometry to output or 0 to output a summary '
-  read(*,*)bundle_geometry
+  
+  if (output_unit.eq.6) then
+! the process is operating interactively so ask for the cable number to write, otherwise write them all
+    write(output_unit,*)
+    write(output_unit,*)'Enter the number of the bundle geometry to output or 0 to output a summary '
+    read(*,*)bundle_geometry
+  else
+    bundle_geometry=0
+  end if
   
   if (bundle_geometry.eq.0) then
     
-    write(*,*)'geometry  n_cables  n_conductors	   Cable list'
-    write(*,*)' number   '
+    write(output_unit,*)'geometry  n_cables  n_conductors	   Cable list'
+    write(output_unit,*)' number   '
       
     do bundle_geometry=1,n_bundle_segment_geometries
        
       n_cols= bundle_segment_geometry_list(bundle_geometry)%n_cables
-      write(*,8000)bundle_geometry,bundle_segment_geometry_list(bundle_geometry)%n_cables,	&
+      write(output_unit,8000)bundle_geometry,bundle_segment_geometry_list(bundle_geometry)%n_cables,	&
                    bundle_segment_geometry_list(bundle_geometry)%n_conductors,'           ',	&
 		  (bundle_segment_geometry_list(bundle_geometry)%cable_list(i),i=1,n_cols)
        
@@ -353,37 +384,37 @@ IMPLICIT NONE
   
   if ( (bundle_geometry.lt.1).OR.(bundle_geometry.gt.n_bundle_segment_geometries) ) then
   
-    write(*,*)'Bundle geometry number should greater than 0 and less than ',n_bundle_segment_geometries
+    write(output_unit,*)'Bundle geometry number should greater than 0 and less than ',n_bundle_segment_geometries
     RETURN
     
   end if
 
-  write(*,*)'geometry  n_cables  n_conductors	   Cable list'
-  write(*,*)' number   '
+  write(output_unit,*)'geometry  n_cables  n_conductors	   Cable list'
+  write(output_unit,*)' number   '
   n_cols= bundle_segment_geometry_list(bundle_geometry)%n_cables
-  write(*,8000)bundle_geometry,bundle_segment_geometry_list(bundle_geometry)%n_cables,      &
+  write(output_unit,8000)bundle_geometry,bundle_segment_geometry_list(bundle_geometry)%n_cables,      &
   	       bundle_segment_geometry_list(bundle_geometry)%n_conductors,'	      ',    &
     	      (bundle_segment_geometry_list(bundle_geometry)%cable_list(i),i=1,n_cols)
 
-  write(*,*)''
-  write(*,*)'Number of conductors  ',bundle_segment_geometry_list(bundle_geometry)%n_conductors
-  write(*,*)''
-  write(*,*)' conductor     xc            yc            rc            ri'
-  write(*,*)'  number    '
+  write(output_unit,*)''
+  write(output_unit,*)'Number of conductors  ',bundle_segment_geometry_list(bundle_geometry)%n_conductors
+  write(output_unit,*)''
+  write(output_unit,*)' conductor     xc            yc            rc            ri'
+  write(output_unit,*)'  number    '
 
   do row=1,bundle_segment_geometry_list(bundle_geometry)%n_conductors
   
-    write(*,8030)row,bundle_segment_geometry_list(bundle_geometry)%xc(row),	&
+    write(output_unit,8030)row,bundle_segment_geometry_list(bundle_geometry)%xc(row),	&
                      bundle_segment_geometry_list(bundle_geometry)%yc(row),	&
                      bundle_segment_geometry_list(bundle_geometry)%rc(row),	&
                      bundle_segment_geometry_list(bundle_geometry)%ri(row)
     
   end do ! next row
   
-  write(*,*)''
-  write(*,*)'Cable bundle radius    : ',bundle_segment_geometry_list(bundle_geometry)%cable_bundle_radius
-  write(*,*)'TLM_reference_radius_rL: ',bundle_segment_geometry_list(bundle_geometry)%TLM_reference_radius_rL
-  write(*,*)'TLM_reference_radius_rC: ',bundle_segment_geometry_list(bundle_geometry)%TLM_reference_radius_rC
+  write(output_unit,*)''
+  write(output_unit,*)'Cable bundle radius    : ',bundle_segment_geometry_list(bundle_geometry)%cable_bundle_radius
+  write(output_unit,*)'TLM_reference_radius_rL: ',bundle_segment_geometry_list(bundle_geometry)%TLM_reference_radius_rL
+  write(output_unit,*)'TLM_reference_radius_rC: ',bundle_segment_geometry_list(bundle_geometry)%TLM_reference_radius_rC
 
 ! Write cross section data to file(s)
 
@@ -449,7 +480,7 @@ IMPLICIT NONE
 
   gnuplot_filename='cable_plot.plt'
     
-  write(*,*)'Enter the output required s(creen) g(if) j(peg)'
+  write(output_unit,*)'Enter the output required s(creen) g(if) j(peg)'
   read(*,'(A)')plot_option
   
   CALL convert_to_lower_case(plot_option,1)
@@ -495,54 +526,54 @@ IMPLICIT NONE
 ! Write L,C materices to screen
 
   n_cols=bundle_segment_geometry_list(bundle_geometry)%n_conductors
-  write(*,*)'L'    
+  write(output_unit,*)'L'    
   do row=1,n_cols
-    write(*,8010)(bundle_segment_geometry_list(bundle_geometry)%L(row,col),col=1,n_cols)
+    write(output_unit,8010)(bundle_segment_geometry_list(bundle_geometry)%L(row,col),col=1,n_cols)
   end do ! next row
     
-  write(*,*)'C'    
+  write(output_unit,*)'C'    
   do row=1,n_cols
-    write(*,8010)(bundle_segment_geometry_list(bundle_geometry)%C(row,col),col=1,n_cols)
+    write(output_unit,8010)(bundle_segment_geometry_list(bundle_geometry)%C(row,col),col=1,n_cols)
   end do ! next row
     
-  write(*,*)'R'    
+  write(output_unit,*)'R'    
   do row=1,n_cols
-    write(*,8010)(bundle_segment_geometry_list(bundle_geometry)%R(row,col),col=1,n_cols)	 
+    write(output_unit,8010)(bundle_segment_geometry_list(bundle_geometry)%R(row,col),col=1,n_cols)	 
   end do ! next row
     
-  write(*,*)'Zlink'    
+  write(output_unit,*)'Zlink'    
   do row=1,n_cols
-    write(*,8010)(bundle_segment_geometry_list(bundle_geometry)%Zlink(row,col),col=1,n_cols)	 
+    write(output_unit,8010)(bundle_segment_geometry_list(bundle_geometry)%Zlink(row,col),col=1,n_cols)	 
   end do ! next row
     
-  write(*,*)'Ylink'    
+  write(output_unit,*)'Ylink'    
   do row=1,n_cols
-    write(*,8010)(bundle_segment_geometry_list(bundle_geometry)%Ylink(row,col),col=1,n_cols)	 
+    write(output_unit,8010)(bundle_segment_geometry_list(bundle_geometry)%Ylink(row,col),col=1,n_cols)	 
   end do ! next row
     
-  write(*,*)'ZLstub'    
+  write(output_unit,*)'ZLstub'    
   do row=1,n_cols
-    write(*,8010)(bundle_segment_geometry_list(bundle_geometry)%ZLstub(row,col),col=1,n_cols)	 
+    write(output_unit,8010)(bundle_segment_geometry_list(bundle_geometry)%ZLstub(row,col),col=1,n_cols)	 
   end do ! next row
     
-  write(*,*)'Yf'    
+  write(output_unit,*)'Yf'    
   do row=1,n_cols
-    write(*,8010)(bundle_segment_geometry_list(bundle_geometry)%Yf(row,col),col=1,n_cols)	 
+    write(output_unit,8010)(bundle_segment_geometry_list(bundle_geometry)%Yf(row,col),col=1,n_cols)	 
   end do ! next row
     
-  write(*,*)'Tv'    
+  write(output_unit,*)'Tv'    
   do row=1,n_cols
-    write(*,8020)(bundle_segment_geometry_list(bundle_geometry)%Tv(row,col),col=1,n_cols)     
+    write(output_unit,8020)(bundle_segment_geometry_list(bundle_geometry)%Tv(row,col),col=1,n_cols)     
   end do ! next row
     
-  write(*,*)'Ti'    
+  write(output_unit,*)'Ti'    
   do row=1,n_cols
-    write(*,8020)(bundle_segment_geometry_list(bundle_geometry)%Ti(row,col),col=1,n_cols)     
+    write(output_unit,8020)(bundle_segment_geometry_list(bundle_geometry)%Ti(row,col),col=1,n_cols)     
   end do ! next row
     
-  write(*,*)'Sc'    
+  write(output_unit,*)'Sc'    
   do row=1,n_cols
-    write(*,*)bundle_segment_geometry_list(bundle_geometry)%SC(row)
+    write(output_unit,*)bundle_segment_geometry_list(bundle_geometry)%SC(row)
   end do ! next row
   
 8000  format(I7,I9,I12,A,100I5)

@@ -69,9 +69,7 @@ IMPLICIT NONE
     write(info_file_unit,*)''
     write(info_file_unit,*)'#START OF MESH DESCRIPTION'
     write(info_file_unit,*)''
-    write(info_file_unit,*)'Mesh'
-    write(info_file_unit,*)''
-    write(info_file_unit,*)'dl=',dl
+    write(info_file_unit,*)'Cell size, dl=',dl,' m'
     write(info_file_unit,*)''
     write(info_file_unit,*)'Nx=',nx 
     write(info_file_unit,*)'Ny=',ny 
@@ -80,9 +78,9 @@ IMPLICIT NONE
     write(info_file_unit,*)'Total number of cells=',nx*ny*nz
     write(info_file_unit,*)'' 
     write(info_file_unit,*)'Outer boundary reflection coefficients'
-    write(info_file_unit,*)'R_xmin=',R_xmin,' R_xmax=',R_xmax
-    write(info_file_unit,*)'R_ymin=',R_ymin,' R_ymax=',R_ymax
-    write(info_file_unit,*)'R_zmin=',R_zmin,' R_zmax=',R_zmax
+    write(info_file_unit,'(A7,F8.4,A7,F8.4)')'R_xmin=',R_xmin,' R_xmax=',R_xmax
+    write(info_file_unit,'(A7,F8.4,A7,F8.4)')'R_ymin=',R_ymin,' R_ymax=',R_ymax
+    write(info_file_unit,'(A7,F8.4,A7,F8.4)')'R_zmin=',R_zmin,' R_zmax=',R_zmax
     write(info_file_unit,*)''
     write(info_file_unit,*)'#END OF MESH DESCRIPTION'
     write(info_file_unit,*)'____________________________________________________'
@@ -111,6 +109,7 @@ IMPLICIT NONE
     write(*,*)'TLM solution Started:'
     call write_date_and_time(0)
     write(*,*)'' 
+    
   end if
 
 #if defined(MPI)

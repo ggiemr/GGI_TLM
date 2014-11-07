@@ -6,13 +6,13 @@ make clean_all
 rm compilation_date.inc
 cd ..
 cd TEST_DATA
-run_automatic_test clean
+run_automatic_test clean_all
 cd ..
 cd ANALYTIC_TEST_DATA
 run_automatic_test clean
 cd ..
 cd TEMPLATE_PROJECT
-run_automatic_test clean
+run_automatic_test clean_all
 cd ..
 
 echo "

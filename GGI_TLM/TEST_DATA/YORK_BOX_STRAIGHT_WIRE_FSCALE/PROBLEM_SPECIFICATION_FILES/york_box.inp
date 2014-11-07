@@ -1,4 +1,11 @@
-# York box with straight wire - 3cm mesh 
+#START OF DESCRIPTION
+
+York box with straight wire - 3cm mesh 
+This simulaton demonstrates how to set up and post process
+a problem using the frequency scaling operation.
+Here we use a frequency scaling factor of 2.
+
+#END OF DESCRIPTION
 
 Mesh_outer_boundary_dimension
 -0.36 0.36    -0.27 0.27    -0.42 0.42

@@ -18,7 +18,7 @@ plot "PROBLEM_SPECIFICATION_FILES/dipole.field.tout_ref" u 1:3 title "Dipole fie
 #
 
 #set autoscale x
-s#et autoscale y
+#set autoscale y
 #
 #set xlabel "Angle (degrees)"
 #set ylabel "Normalised Far field"

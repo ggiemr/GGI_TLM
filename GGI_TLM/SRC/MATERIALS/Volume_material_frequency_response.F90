@@ -106,12 +106,10 @@ IMPLICIT NONE
     if (volume_material_list(material_number)%type.EQ.volume_material_type_PEC) then
   
       write(*,*)'Material number',material_number,' is PEC'
-      RETURN
   
     else if (volume_material_list(material_number)%type.EQ.volume_material_type_PMC) then
   
       write(*,*)'Material number',material_number,' is PMC'
-      RETURN
   
     else if (volume_material_list(material_number)%type.EQ.volume_material_type_DISPERSIVE) then
     

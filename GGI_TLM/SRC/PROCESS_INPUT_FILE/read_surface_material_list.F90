@@ -294,9 +294,9 @@ logical	:: file_exists
 	  
       end if
       
-      surface_material_list(surface_material_number)%Diode_sign=1
+      surface_material_list(surface_material_number)%Diode_sign=-1
       if (surface_material_list(surface_material_number)%Diode_direction(1:1).EQ.'-') then
-        surface_material_list(surface_material_number)%Diode_sign=-1
+        surface_material_list(surface_material_number)%Diode_sign=+1
       end if  
             
     else

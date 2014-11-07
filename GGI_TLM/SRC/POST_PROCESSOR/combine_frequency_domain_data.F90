@@ -67,10 +67,12 @@ IMPLICIT NONE
   CALL Allocate_post_data()
   
   write(*,*)'File for f1 data:'
+  write(post_process_info_unit,*)'File for f1 data:'
   function_number=1
   CALL read_frequency_domain_data(function_number)
   
   write(*,*)'File for f2 data:'
+  write(post_process_info_unit,*)'File for f2 data:'
   function_number=2
   CALL read_frequency_domain_data(function_number)
   
@@ -84,6 +86,10 @@ IMPLICIT NONE
   write(record_user_inputs_unit,*)A,' constant, A'
   write(record_user_inputs_unit,*)B,' constant, B'
   write(record_user_inputs_unit,*)C,' constant, C'
+  
+  write(post_process_info_unit,*)A,' constant, A'
+  write(post_process_info_unit,*)B,' constant, B'
+  write(post_process_info_unit,*)C,' constant, C'
 
 ! check that the frequencies match...
 
@@ -199,10 +205,12 @@ IMPLICIT NONE
   CALL Allocate_post_data()
   
   write(*,*)'File for f1 data:'
+  write(post_process_info_unit,*)'File for f1 data:'
   function_number=1
   CALL read_frequency_domain_data(function_number)
   
   write(*,*)'File for f2 data:'
+  write(post_process_info_unit,*)'File for f2 data:'
   function_number=2
   CALL read_frequency_domain_data(function_number)
 
@@ -337,10 +345,12 @@ IMPLICIT NONE
   CALL Allocate_post_data()
   
   write(*,*)'File for f1 data:'
+  write(post_process_info_unit,*)'File for f1 data:'
   function_number=1
   CALL read_frequency_domain_data(function_number)
   
   write(*,*)'File for f2 data:'
+  write(post_process_info_unit,*)'File for f2 data:'
   function_number=2
   CALL read_frequency_domain_data(function_number)
   
@@ -354,6 +364,10 @@ IMPLICIT NONE
   write(record_user_inputs_unit,*)A,' constant, A'
   write(record_user_inputs_unit,*)B,' constant, B'
   write(record_user_inputs_unit,*)C,' constant, C'
+  
+  write(post_process_info_unit,*)A,' constant, A'
+  write(post_process_info_unit,*)B,' constant, B'
+  write(post_process_info_unit,*)C,' constant, C'
 
 ! check that the frequencies match...
 

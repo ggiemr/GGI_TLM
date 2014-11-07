@@ -234,7 +234,7 @@ else
 	
         echo "$LINE " >> progress     
       
-      elif [ "$ACTION" != "clean" ] ; then
+      elif [[ "$ACTION" != "clean"  &&  "$ACTION" != "clean_all" ]]; then
       
         read LINE < progress
     

@@ -86,6 +86,17 @@ IMPLICIT NONE
   CALL set_bundle_outputs() 
 
   CALL write_cable_model()     
+  
+! write a summary of the cable information to the .cable_info file    
+  write(cable_info_file_unit,*)'____________________________________________________'
+  write(cable_info_file_unit,*)'' 
+  write(cable_info_file_unit,'(A)')''
+  write(cable_info_file_unit,'(A)')'#START OF CABLE SUMMARY INFORMATION'
+  write(cable_info_file_unit,*)''
+  CALL Output_cable_geometry(cable_info_file_unit)
+  CALL Output_bundle_geometry(cable_info_file_unit)
+  write(cable_info_file_unit,*)''
+  write(cable_info_file_unit,'(A)')'#END OF CABLE SUMMARY INFORMATION'
 
   CALL deallocate_geometry()
   

@@ -14,3 +14,8 @@ The Python script used in the automatic creation of simulation documents uses th
 
 PyRTF (Version 0.45) by Simon Cusack, available under the gpl license
 License: http://www.gnu.org/licenses/gpl.html
+
+The following people have contributed to the project by offering comments, raising issues etc. Many thanks to you...
+
+John Evans
+Ian Flintoft

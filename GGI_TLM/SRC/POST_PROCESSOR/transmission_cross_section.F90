@@ -64,10 +64,12 @@ IMPLICIT NONE
   CALL Allocate_post_data()
   
   write(*,*)'File for transmitted power:'
+  write(post_process_info_unit,*)'	File for transmitted power:'
   function_number=1
   CALL read_frequency_domain_data(function_number)
   
   write(*,*)'File for cavity field data:'
+  write(post_process_info_unit,*)'	File for cavity field data:'
   function_number=2
   CALL read_frequency_domain_data(function_number)
 
@@ -76,8 +78,10 @@ IMPLICIT NONE
   read(*,'(A)')ch
   write(record_user_inputs_unit,'(A)')ch
   if ( (ch.eq.'E').OR.(ch.eq.'e') ) then
+    write(post_process_info_unit,*)'	E field data'
     Pscale=1d0/Z0
   else
+    write(post_process_info_unit,*)'	H field data'
     Pscale=Z0
   end if  
 

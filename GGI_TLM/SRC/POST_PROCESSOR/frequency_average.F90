@@ -79,6 +79,7 @@ IMPLICIT NONE
   CALL Allocate_post_data()
   
   write(*,*)'File for frequency averaging'
+  write(post_process_info_unit,*)'File for frequency domain data:'
   function_number=1
   CALL read_frequency_domain_data(function_number)
 
@@ -96,12 +97,14 @@ IMPLICIT NONE
     write(*,*)'Enter the averaging bandwidth'
     read(*,*)bandwidth
     write(record_user_inputs_unit,*)bandwidth,' averaging bandwidth'
+    write(post_process_info_unit,*)'	Averaging bandwidth:',bandwidth
   
   else ! bandwidth_type.EQ.'p'
   
     write(*,*)'Enter the averaging percentage bandwidth'
     read(*,*)percentage_bandwidth
     write(record_user_inputs_unit,*)percentage_bandwidth,' averaging percentage bandwidth'
+    write(post_process_info_unit,*)'	Averaging percentage bandwidth:',percentage_bandwidth
   
   end if
   
@@ -109,6 +112,7 @@ IMPLICIT NONE
   write(*,*)'Enter the percentage of the averaging bandwidth which is uniform'
   read(*,*)percentage_uniform
   write(record_user_inputs_unit,*)percentage_uniform,' uniform window percentage bandwidth'
+  write(post_process_info_unit,*)'	Trapezoidal window plateau percentage bandwidth:',percentage_uniform
   
 20 CONTINUE
   write(*,*)"Is the input field or power? ('f' or 'p' )"
@@ -117,6 +121,11 @@ IMPLICIT NONE
   
   if ( (input_type.NE.'f').AND.(input_type.NE.'p') ) GOTO 20
   write(record_user_inputs_unit,'(A)')input_type
+  if (input_type.EQ.'f') then
+    write(post_process_info_unit,*)'	Input values are field quantities'
+  else
+    write(post_process_info_unit,*)'	Input values are power quantities' 
+  end if
 
 30 CONTINUE
   write(*,*)"Do you want to average field, power or dB? ('f', 'p' or 'd')"
@@ -125,6 +134,14 @@ IMPLICIT NONE
   
   if ( (average_type.NE.'f').AND.(average_type.NE.'p').AND.(average_type.NE.'d') ) GOTO 30
   write(record_user_inputs_unit,'(A)')average_type
+  
+  if (average_type.EQ.'f') then
+    write(post_process_info_unit,*)'	Average field values'
+  else if (average_type.EQ.'p') then
+    write(post_process_info_unit,*)'	Average power values' 
+  else 
+    write(post_process_info_unit,*)'	Average dB values' 
+  end if
   
 ! Do the process twice, the first time to count the numnber of frequency outputs
 ! and the second to set the frequency output data

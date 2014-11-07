@@ -57,6 +57,8 @@ IMPLICIT NONE
   read(*,'(A256)')filename
   write(record_user_inputs_unit,'(A)')trim(filename)
     
+  write(post_process_info_unit,*)'	Frequency domain output data filename:',trim(filename)
+    
   OPEN(unit=local_file_unit,file=filename)
   
   CALL write_frequency_domain_header_data(local_file_unit,1,function_of_frequency(function_number)%n_frequencies)
@@ -115,6 +117,8 @@ IMPLICIT NONE
   write(*,*)'Enter the frequency domain data output filename'
   read(*,'(A256)')filename
   write(record_user_inputs_unit,'(A)')trim(filename)
+    
+  write(post_process_info_unit,*)'	Frequency domain output data filename:',trim(filename)
     
   OPEN(unit=local_file_unit,file=filename)
   
@@ -198,7 +202,9 @@ integer	:: function_number
     GOTO 5
   end if
   write(record_user_inputs_unit,'(A)')trim(filename)
-  
+    
+  write(post_process_info_unit,*)'	Frequency domain data filename:',trim(filename)
+
   OPEN(unit=local_file_unit,file=filename)
   
   CALL read_frequency_domain_header_data(local_file_unit,n_data_points,n_frequencies)
@@ -210,6 +216,8 @@ integer	:: function_number
   write(*,*)'Enter the output point required'
   read(*,*)output_point
   write(record_user_inputs_unit,*)output_point
+  
+  write(post_process_info_unit,*)'	Frequency domain output point:',output_point
 
 ! read the input file   
        
@@ -339,6 +347,8 @@ integer	:: function_number1,function_number2
     GOTO 5
   end if
   write(record_user_inputs_unit,'(A)')trim(filename)
+    
+  write(post_process_info_unit,*)'	S parameter data filename:',trim(filename)
   
   OPEN(unit=local_file_unit,file=filename)
   
@@ -476,6 +486,8 @@ integer	:: function_number
     GOTO 5
   end if
   write(record_user_inputs_unit,'(A)')trim(filename)
+    
+  write(post_process_info_unit,*)'	One port S parameter data filename:',trim(filename)
   
   OPEN(unit=local_file_unit,file=filename)
   

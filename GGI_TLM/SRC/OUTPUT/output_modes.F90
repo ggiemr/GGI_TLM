@@ -467,11 +467,11 @@ IMPLICIT NONE
   
     do output_mode=1,n_output_modes
     
-      write(*,*)'output_mode',output_mode
+!      write(*,*)'output_mode',output_mode
  
       do output_face=1,output_mode_list(output_mode)%n_mode_samples
       
-        write(*,*)'output_face',output_face
+!        write(*,*)'output_face',output_face
       
 ! copy the faces from the geometry structure to the local
 ! output_surface structure
@@ -481,7 +481,7 @@ IMPLICIT NONE
         cz=output_mode_list(output_mode)%face_list(output_face)%cell%k
         face=output_mode_list(output_mode)%face_list(output_face)%point
 
-        write(*,*)'cell_face',cx,cy,cz,face
+!        write(*,*)'cell_face',cx,cy,cz,face
       
         if (rank.eq.cell_face_rank(cz,face)) then
    	     

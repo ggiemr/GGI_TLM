@@ -78,6 +78,8 @@ character(len=256)	:: filename
   end if
   write(record_user_inputs_unit,'(A)')trim(filename)
   
+  write(post_process_info_unit,*)'	Time domain data filename:',trim(filename)
+  
   OPEN(unit=local_file_unit,file=filename)
   
   CALL read_time_domain_header_data(local_file_unit,n_data_points,n_timesteps)
@@ -89,6 +91,8 @@ character(len=256)	:: filename
   write(*,*)'Enter the output point required'
   read(*,*)output_point
   write(record_user_inputs_unit,*)output_point
+  
+  write(post_process_info_unit,*)'	Time domain output point:',output_point
   
 ! read the input file   
        
@@ -182,6 +186,8 @@ integer			:: function_number
   write(*,*)'Enter the filename for the time domain curve'
   read(*,'(A256)')filename
   write(record_user_inputs_unit,'(A)')trim(filename)
+    
+  write(post_process_info_unit,*)'	Time domain output data filename:',trim(filename)
 
   OPEN(unit=local_file_unit,file=filename)
   
@@ -248,6 +254,8 @@ integer			:: function_number
   write(*,*)'Enter the filename for the time domain data'
   read(*,'(A256)')filename
   write(record_user_inputs_unit,'(A)')trim(filename)
+    
+  write(post_process_info_unit,*)'	Time domain output array data filename:',trim(filename)
 
   OPEN(unit=local_file_unit,file=filename)
   

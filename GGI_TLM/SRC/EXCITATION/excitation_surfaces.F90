@@ -284,7 +284,7 @@ END SUBROUTINE initialise_excitation_surfaces
 !     started 14/08/2012 CJS
 !     allow superposition of sources 26/9/3013
 !     allow hard and soft sources 12/2/2014 CJS
-!
+!     include the possibility to excite both sides of the surface at the same time (option 0 in side specification) 7/11/2014
 !
 SUBROUTINE Surface_excitation
 
@@ -331,24 +331,41 @@ IMPLICIT NONE
    
 	  excitation_array_point=excitation_surfaces(excitation_surface)%face_excitation_field_number_list(excitation_face)
  	     
-          if	(face.eq.face_xmin) then
-	    side=1
-          else if (face.eq.face_xmax) then
-	    side=2
-          else if (face.eq.face_ymin) then
-	    side=1	
-          else if (face.eq.face_ymax) then
-	    side=2	
-          else if (face.eq.face_zmin) then
-	    side=1	
-          else if (face.eq.face_zmax) then
-	    side=2	
-          end if
+	  if ( .NOT.excitation_surfaces(excitation_surface)%excitation_on_both_sides ) then
+! excitation on a single side of the surface
+	     
+            if	(face.eq.face_xmin) then
+	      side=1
+            else if (face.eq.face_xmax) then
+	      side=2
+            else if (face.eq.face_ymin) then
+	      side=1	
+            else if (face.eq.face_ymax) then
+	      side=2	
+            else if (face.eq.face_zmin) then
+	      side=1	
+            else if (face.eq.face_zmax) then
+	      side=2	
+            end if
 	
-          face_excitation_field(excitation_array_point,side,field_component)=	&
-	      face_excitation_field(excitation_array_point,side,field_component)+value
-          if (field_component.le.6) then
-            face_excitation_type(excitation_array_point,side,field_component)=excitation_surfaces(excitation_surface)%source_type
+            face_excitation_field(excitation_array_point,side,field_component)=	&
+	        face_excitation_field(excitation_array_point,side,field_component)+value
+            if (field_component.le.6) then
+              face_excitation_type(excitation_array_point,side,field_component)=excitation_surfaces(excitation_surface)%source_type
+	    end if
+	  
+	  else
+! excitation on both sides of the surface
+
+	    do side=1,2
+              face_excitation_field(excitation_array_point,side,field_component)=	&
+	          face_excitation_field(excitation_array_point,side,field_component)+value
+              if (field_component.le.6) then
+                face_excitation_type(excitation_array_point,side,field_component)=	&
+		  excitation_surfaces(excitation_surface)%source_type
+	      end if
+	    end do ! next side
+	  
 	  end if
 	  
 	end if ! excitation point in this processor's mesh

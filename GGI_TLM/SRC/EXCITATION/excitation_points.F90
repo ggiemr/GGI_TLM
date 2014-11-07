@@ -219,7 +219,7 @@ END SUBROUTINE initialise_excitation_points
 !     
 !     
 ! COMMENTS
-!     
+!     Note that the point excitation on a face will add the source to both sides of the face
 !
 ! HISTORY
 !

@@ -82,11 +82,13 @@ IMPLICIT NONE
   CALL Allocate_post_data()
   
   write(*,*)'File 1 with reference frequency data'
+  write(post_process_info_unit,*)'File for f1 data:'
   function_number=1
   CALL read_frequency_domain_data(function_number)  
   n_samples1=function_of_frequency(1)%n_frequencies
   
   write(*,*)'File 2 with frequency data to be interpolated'
+  write(post_process_info_unit,*)'File for f2 data:'
   function_number=2
   CALL read_frequency_domain_data(function_number)
   n_samples2=function_of_frequency(2)%n_frequencies
@@ -98,6 +100,15 @@ IMPLICIT NONE
   
   if ( (average_type.NE.'f').AND.(average_type.NE.'p').AND.(average_type.NE.'d') ) GOTO 20
   write(record_user_inputs_unit,'(A)')average_type
+  
+  if (average_type.EQ.'f') then
+    write(post_process_info_unit,*)'	Average field values'
+  else if (average_type.EQ.'p') then
+    write(post_process_info_unit,*)'	Average power values' 
+  else 
+    write(post_process_info_unit,*)'	Average dB values' 
+  end if
+  
      
   write(*,*)'Enter the minimum frequency for IELF calculation'
   read(*,*)fmin
@@ -106,6 +117,9 @@ IMPLICIT NONE
   write(*,*)'Enter the maximum frequency for IELF calculation'
   read(*,*)fmax
   write(record_user_inputs_unit,*)fmax,' maximum frequency for IELF calculation'
+  
+  write(post_process_info_unit,*)'	Minimum frequency for IELF calculation=',fmin,' Hz'
+  write(post_process_info_unit,*)'	Maximum frequency for IELF calculation=',fmax,' Hz'
 
 ! loop over samples of file 1 to work out sample_min and sample_max for local_ielf_value
 

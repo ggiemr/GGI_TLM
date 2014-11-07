@@ -3,6 +3,12 @@ echo " "
 echo "Automatic testing of GGI_TLM"
 echo " "
 
+# Can set directory names for material and cable data if required
+# by un-commenting the two lines below...
+# Note the use of escape characters to avoid problems with sed
+#MATERIAL_DIRECTORY="\/home\/chris\/GGI_TLM\/GGI_TLM\/TEST_DATA\/MATERIAL_DATA"
+#CABLE_DIRECTORY="\/home\/chris\/GGI_TLM\/GGI_TLM\/TEST_DATA\/CABLE_DATA"
+
 CLEANING_LIST="\
 progress \
 sed_command \
@@ -24,6 +30,7 @@ GGI_TLM_memory_usage.txt \
 *.jpg \
 *.msh \
 *.avi \
+*.info \
 IELF_value.out \
 fort.* \
 save_result \
@@ -145,10 +152,30 @@ else
 # clean any existing output files     
        rm -f $RUN_NAME.*
        
+       echo "$RUN_NAME" > run_name.txt
+       
 
 # copy input file and all material, cable and mode files to the run directory
        
-       cp PROBLEM_SPECIFICATION_FILES/$RUN_NAME.inp ./$RUN_NAME.inp
+#OLD#       cp PROBLEM_SPECIFICATION_FILES/$RUN_NAME.inp ./$RUN_NAME.inp
+
+       echo "{
+              s/MATERIAL_DIRECTORY/${MATERIAL_DIRECTORY}/g
+              s/CABLE_DIRECTORY/${CABLE_DIRECTORY}/g
+	      }" > sed_command
+
+# Add any parameter substitutions specified to the sed command
+# Read the parameter name and value from the file line by line
+       while IFS== read  PARAMETER VALUE
+       do           
+        
+         echo "s/${PARAMETER}/${VALUE}/g" >> sed_command
+            
+       done < PROBLEM_SPECIFICATION_FILES/parameter_definition.dat
+
+       sed -f sed_command PROBLEM_SPECIFICATION_FILES/$RUN_NAME.inp > ./$RUN_NAME.inp
+       
+       
        cp PROBLEM_SPECIFICATION_FILES/*.vmat .
        cp PROBLEM_SPECIFICATION_FILES/*.smat . 
        cp PROBLEM_SPECIFICATION_FILES/*.cable .
@@ -288,7 +315,6 @@ else
        echo "FINISHED: $TEST_CASE: reference" > ./progress
       
      elif [ "$ACTION" = "check_reference" ] ; then
-     
 
 # find all the files in the  PROBLEM_SPECIFICATION_FILES  directory ending in _ref. These are the reference files to check
 
@@ -357,6 +383,8 @@ else
         fi
 	
       fi
+       
+       echo "FINISHED: $TEST_CASE: check_reference" > ./progress
       
      elif [ "$ACTION" = "document" ] ; then
 
@@ -396,6 +424,8 @@ else
        cp *.inp  RESULTS_$TAG
        cp *.info RESULTS_$TAG
        cp *.rtf  RESULTS_$TAG
+       
+       echo "FINISHED: $TEST_CASE: save" > ./progress
              
      else 
      
