@@ -1,14 +1,6 @@
 #JPG set term jpeg
 
-#OUTPUT_TO_FILE set output "Test_case_10_RCS_PEC_far_field.jpg"
-set autoscale x
-set autoscale y
-set xlabel "Time (s)"
-set ylabel "Normalised far field"
-plot "geometry.rcs.tout" u 2:3 title "GGI_TLM" w l
-#PAUSE pause -1
-
-#OUTPUT_TO_FILE set output "Test_case_10_RCS_PEC_RCS.jpg"
+#OUTPUT_TO_FILE set output "Test_case_DOCUMENTATION_TEST.jpg"
 set autoscale x
 set autoscale y
 set xlabel "Frequency (Hz)"

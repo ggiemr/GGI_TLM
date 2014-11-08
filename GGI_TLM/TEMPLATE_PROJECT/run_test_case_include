@@ -383,8 +383,6 @@ else
         fi
 	
       fi
-       
-       echo "FINISHED: $TEST_CASE: check_reference" > ./progress
       
      elif [ "$ACTION" = "document" ] ; then
 

@@ -65,21 +65,29 @@ mode_stir8.field.fout
           14  Post processing option: Sum Frequency Domain Data
            8  number of functions to sum
 mode_stir1.field.fout
-           1
+           1	   
+	   1.0   ! multiplication factor
 mode_stir2.field.fout
            1
+	   1.0   ! multiplication factor
 mode_stir3.field.fout
            1
+	   1.0   ! multiplication factor
 mode_stir4.field.fout
            1
+	   1.0   ! multiplication factor
 mode_stir5.field.fout
            1
+	   1.0   ! multiplication factor
 mode_stir6.field.fout
            1
+	   1.0   ! multiplication factor
 mode_stir7.field.fout
            1
+	   1.0   ! multiplication factor
 mode_stir8.field.fout
            1
+	   1.0   ! multiplication factor
 mode_stir_sum.field.fout
            5  Post processing option: Create Animation
 mode_stir.surface_field.tout

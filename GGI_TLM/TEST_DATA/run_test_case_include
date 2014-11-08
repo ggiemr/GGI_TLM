@@ -398,9 +398,7 @@ else
         fi
 	
       fi
-       
-       echo "FINISHED: $TEST_CASE: check_reference" > ./progress
-      
+             
      elif [ "$ACTION" = "document" ] ; then
 
 # Run python script to create the document
