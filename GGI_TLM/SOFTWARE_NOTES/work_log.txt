@@ -610,6 +610,9 @@
 			Include a SPLIT_RING_RESONATOR test case in the TEST_DATA directory
 			Fix bug in surface current density output - normal directions needed to be specified
 			
+17/12/2014	CJS	Allow random parameters in the parameter_definition.dat file
+			Update repository to version 1.0.6 with all the above developments
+			
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE
 		- Start to implement and document all the Fieldsolve test cases : STARTED
