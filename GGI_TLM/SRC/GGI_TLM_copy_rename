@@ -1,0 +1,91 @@
+ 
+if [[ "$#" = "2" || "$#" = "3" ]] ; then
+
+  OLD_DIRECTORY_NAME=$1
+  NEW_DIRECTORY_NAME=$2
+  
+  if [ "$#" = "3" ] ; then
+    NEW_RUN_NAME=$3
+  fi
+  
+#  Check that the test case exists
+  if [ -d "$OLD_DIRECTORY_NAME" ]; then
+
+# copy the existing test case    
+    cp -r $OLD_DIRECTORY_NAME $NEW_DIRECTORY_NAME
+
+# clean the new version of the test case
+    run_automatic_test clean_all $NEW_DIRECTORY_NAME
+    
+    echo "$OLD_DIRECTORY_NAME copied to $NEW_DIRECTORY_NAME"
+    
+    if [ -z "$NEW_RUN_NAME" ]; then 
+# No new run name set so exit at this point
+
+      exit 0
+      
+    fi
+    
+# Go into the PROBLEM_SPECIFICATION_FILES directory
+
+# save the current directory
+    pushd .
+    
+    cd $NEW_DIRECTORY_NAME/PROBLEM_SPECIFICATION_FILES
+
+#  Get the original name (name of the .inp file)
+     
+     NUMBER_OF_INPUT_FILES=$(ls *.inp | wc -l)
+     
+     if [ $NUMBER_OF_INPUT_FILES != 1 ] ; then
+       echo " Error: More than one input file found:"
+       ls *.inp
+       echo ""
+       cd ..
+       echo " Error: More than one input file found" > ./progress
+       exit 1
+     fi
+     
+     RUN_FILE_NAME=$(ls *.inp)     
+     ORIGINAL_RUN_NAME=${RUN_FILE_NAME%\.*}
+
+# copy and replace ${ORIGINAL_RUN_NAME} with ${NEW_RUN_NAME} in all files
+
+     echo "{
+            s/${ORIGINAL_RUN_NAME}/${NEW_RUN_NAME}/g
+	    } " > sed_command
+
+     sed -i -f sed_command *
+
+# Rename the input file
+     mv ${ORIGINAL_RUN_NAME}.inp ${NEW_RUN_NAME}.inp
+     
+# Remove any reference results
+     rm *_ref
+      
+# Remove the sed commang string
+     rm sed_command
+    
+# go back to the starting directory
+     popd 
+
+  else
+# directory does not exist
+
+    echo "
+ERROR: Test case $OLD_DIRECTORY_NAME does not exist
+"
+    exit 1
+
+  fi
+  
+else 
+
+  echo "
+ERROR: An existing directory, new_directory and an optional new_run_name should be specified. Use GGI_TLM_copy_rename as follows:
+  
+GGI_TLM_copy_rename OLD_DIRECTORY_NAME NEW_DIRECTORY_NAME new_run_name
+"
+  exit 1
+
+fi

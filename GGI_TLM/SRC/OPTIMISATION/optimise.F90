@@ -78,23 +78,28 @@ integer number_of_evaluations_performed
   write(*,*)'Enter the maximum number of function evaluations to use'
   read(*,*)max_evaluations
 
+! if the maximum number of evaluations is set to 1 then assume that we 
+! only want a single evaluation for testing, otherwise
+! increase the number of evaluations so that we can get at least one 
+! round of optimisation after the initial evaluation of the simplex points. 
+
   if (optimisation_technique.eq.'s') then
   
-    if (max_evaluations.lt.n_params+1) then
+    if ( (max_evaluations.lt.n_params+1).AND.(max_evaluations.NE.1) ) then
       write(*,*)'Increasing maximum number of evaluations'
       max_evaluations=n_params+1
     end if
 
   else if  (optimisation_technique.eq.'b') then
   
-    if (max_evaluations.lt.n_params*2+1) then
+    if ( (max_evaluations.lt.n_params*2+1).AND.(max_evaluations.NE.1) ) then
       write(*,*)'Increasing maximum number of evaluations'
       max_evaluations=n_params*2+1
     end if
 
   else if  (optimisation_technique.eq.'m') then
 
-    if (max_evaluations.lt.1) then
+    if ( (max_evaluations.lt.1).AND.(max_evaluations.NE.1) ) then
       write(*,*)'Increasing maximum number of evaluations'
       max_evaluations=1
     end if
@@ -194,8 +199,12 @@ integer number_of_evaluations_performed
   end do
   evaluation_number=min_evaluation_number-1
   last_call=1
-  call opt_calc_error()
 
+  if (min_evaluation_number.NE.number_of_evaluations_performed) then
+! recalculate the optimum solution so that the optimum solution is the active one.
+    call opt_calc_error()
+  end if
+  
 ! close monitoring file  
   close(unit=55)
   

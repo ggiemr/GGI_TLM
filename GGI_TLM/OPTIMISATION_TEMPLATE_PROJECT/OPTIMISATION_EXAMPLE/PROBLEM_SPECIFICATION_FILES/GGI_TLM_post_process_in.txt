@@ -1,0 +1,88 @@
+           3  Post processing option: Fourier Transform
+single_cell.volume_average_field.tout
+           1
+lin
+   1e6 fmin
+   3000e6 fmax
+             1000 n_frequencies
+Ey1.fout
+           3  Post processing option: Fourier Transform
+single_cell.volume_average_field.tout
+           2
+lin
+   1e6 fmin
+   3000e6 fmax
+             1000 n_frequencies
+Hx1.fout
+           3  Post processing option: Fourier Transform
+single_cell.volume_average_field.tout
+           3
+lin
+   1e6 fmin
+   3000e6 fmax
+             1000 n_frequencies
+Ey2.fout
+           3  Post processing option: Fourier Transform
+single_cell.volume_average_field.tout
+           4
+lin
+   1e6 fmin
+   3000e6 fmax
+             1000 n_frequencies
+Hx2.fout
+           3  Post processing option: Fourier Transform
+single_cell.volume_average_field.tout
+           5
+lin
+   1e6 fmin
+   3000e6 fmax
+             1000 n_frequencies
+Ey3.fout
+           3  Post processing option: Fourier Transform
+single_cell.volume_average_field.tout
+           6
+lin
+   1e6 fmin
+   3000e6 fmax
+             1000 n_frequencies
+Hx3.fout
+           3  Post processing option: Fourier Transform
+single_cell.volume_average_field.tout
+           7
+lin
+   1e6 fmin
+   3000e6 fmax
+             1000 n_frequencies
+Ey4.fout
+           3  Post processing option: Fourier Transform
+single_cell.volume_average_field.tout
+           8
+lin
+   1e6 fmin
+   3000e6 fmax
+             1000 n_frequencies
+Hx4.fout
+           10  Post processing option: Twoport analysis
+Ey1.fout
+           1
+Ey2.fout
+           1
+Hx1.fout
+           1
+Hx2.fout
+           1
+Ey4.fout
+           1
+Ey3.fout
+           1
+Hx4.fout
+           1
+Hx3.fout
+           1
+  0.5e-3  port separation (m)
+  5e-3  port midpoint to interface distamce (m)
+  0.5e-3  port separation (m)
+  5e-3  port midpoint to interface distamce (m)
+1    ! Eycitation port number
+S21.fout
+           0  Post processing option: Quit

@@ -291,6 +291,7 @@ END SUBROUTINE initialise_frequency_output_surfaces
 ! HISTORY
 !
 !     started 14/08/2012 CJS
+!     16/12/2014  CJS  Fix bug in surface current density output - normal directions needed to be specified.  
 !
 !
 SUBROUTINE face_output_frequency_output_surfaces
@@ -353,18 +354,29 @@ IMPLICIT NONE
       
         if (rank.eq.cell_face_rank(cz,face)) then
 ! the output point is in this process so set the value   	     
+	
+          normx=0
+	  normy=0
+	  normz=0
+	
           if	(face.eq.face_xmin) then
 	    side=1
+            normx=1
           else if (face.eq.face_xmax) then
 	    side=2
+            normx=-1
           else if (face.eq.face_ymin) then
 	    side=1	
+	    normy=1
           else if (face.eq.face_ymax) then
 	    side=2	
+	    normy=-1
           else if (face.eq.face_zmin) then
 	    side=1	
+	    normz=1
           else if (face.eq.face_zmax) then
 	    side=2	
+	    normz=-1
           end if
  
 	  field(1:6)=face_output_field(output_field_number,side,1:6)

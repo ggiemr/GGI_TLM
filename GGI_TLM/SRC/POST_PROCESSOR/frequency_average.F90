@@ -254,7 +254,7 @@ IMPLICIT NONE
 	  if (input_type.eq.'f') then
 	  
    	    function_of_frequency(2)%frequency(n_frequencies_out)	=frequency
-   	    function_of_frequency(2)%value(n_frequencies_out)	=(0d0,0d0) ! only average mag and dB
+   	    function_of_frequency(2)%value(n_frequencies_out)	=cmplx(magnitude) ! only return magnitude and dB
    	    function_of_frequency(2)%magnitude(n_frequencies_out) =magnitude
    	    function_of_frequency(2)%phase(n_frequencies_out)	=0d0       ! only average mag and dB
    	    function_of_frequency(2)%dB(n_frequencies_out)	=power_dB

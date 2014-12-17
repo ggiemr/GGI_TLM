@@ -1,0 +1,9 @@
+5   		! number of parameters 
+bisection		! type of optimisation ('bisection' or 'simplex' or 'map')
+0.0		! convergence criterion
+20       	! max number of function evaluations
+0.5  0.25      	! initial value of parameters and delta value
+0.5  0.25      	! initial value of parameters and delta value
+0.5  0.25      	! initial value of parameters and delta value
+0.5  0.25      	! initial value of parameters and delta value
+0.5  0.25      	! initial value of parameters and delta value

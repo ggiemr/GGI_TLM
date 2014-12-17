@@ -150,6 +150,14 @@ logical	:: file_exists
       n_params=9
       problem_surfaces(surface_number)%surface_type=surface_type_triangle
      
+    else if (input_line.eq.'annulus') then
+      n_params=2
+      problem_surfaces(surface_number)%surface_type=surface_type_annulus
+     
+    else if (input_line.eq.'split_ring') then
+      n_params=3
+      problem_surfaces(surface_number)%surface_type=surface_type_split_ring
+     
     else if (input_line.eq.'triangulated_surface') then
     
       n_params=2
@@ -174,6 +182,26 @@ logical	:: file_exists
     
       n_params=2
       problem_surfaces(surface_number)%surface_type=surface_type_vtk_triangulated_surface
+
+! for a triangulated surface, read the mesh filename and check that the file exists
+      
+      read(input_file_unit,'(A)',end=9010)tri_surface_filename
+      problem_surfaces(surface_number)%filename=tri_surface_filename
+      
+      CALL write_line('Checking the existance of file:',0,.TRUE.)
+      CALL write_line(trim(problem_surfaces(surface_number)%filename),0,.TRUE.)
+      
+      inquire(file= problem_surfaces(surface_number)%filename,EXIST=file_exists)
+      
+      if (.NOT.file_exists) then
+! error - no triangulated surface file exists
+        goto 9060
+      end if
+     
+    else if (input_line.eq.'stl_triangulated_surface') then
+    
+      n_params=2
+      problem_surfaces(surface_number)%surface_type=surface_type_stl_triangulated_surface
 
 ! for a triangulated surface, read the mesh filename and check that the file exists
       

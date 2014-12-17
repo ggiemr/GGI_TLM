@@ -14,6 +14,9 @@ cd ..
 cd TEMPLATE_PROJECT
 run_automatic_test clean_all
 cd ..
+cd OPTIMISATION_TEMPLATE_PROJECT
+run_automatic_test clean_all
+cd ..
 
 echo "
 Time Domain Electromagnetic Field Simulation using the Transmission Line Modelling (TLM) method

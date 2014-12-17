@@ -102,6 +102,14 @@ integer	:: surface_number
     else if (problem_surfaces(surface_number)%surface_type.EQ.surface_type_triangle) then
       
       CALL build_surface_triangle(surface_number)
+
+    else if (problem_surfaces(surface_number)%surface_type.EQ.surface_type_annulus) then
+      
+      CALL build_surface_annulus(surface_number)
+
+    else if (problem_surfaces(surface_number)%surface_type.EQ.surface_type_split_ring) then
+      
+      CALL build_surface_split_ring(surface_number)
       
     else if (problem_surfaces(surface_number)%surface_type.EQ.surface_type_triangulated_surface) then
       
@@ -110,6 +118,10 @@ integer	:: surface_number
     else if (problem_surfaces(surface_number)%surface_type.EQ.surface_type_vtk_triangulated_surface) then
       
       CALL build_surface_vtk_triangulated_surface(surface_number)
+      
+    else if (problem_surfaces(surface_number)%surface_type.EQ.surface_type_stl_triangulated_surface) then
+      
+      CALL build_surface_stl_triangulated_surface(surface_number)
        
     else ! surface type not yet defined
     

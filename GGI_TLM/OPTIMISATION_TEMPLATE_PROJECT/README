@@ -1,0 +1,73 @@
+The directory OPTIMISATION_TEMPLATE_PROJECT contains a test case for optimisation of a parameterised geometry, in this case a FSS. It is provided here as a template for developing other optimisation projects in GGITLM.
+
+The process for generating a new optimisation project is as follows:
+
+1. Copy the OPTIMISATION_TEMPLATE_PROJECT directory and its contents to a new location:
+
+cp -r OPTIMISATION_TEMPLATE_PROJECT  NEW_DIRECTORY
+
+2. Go into the NEW_DIRECTORY where you should see the following:
+OPTIMISATION_EXAMPLE          
+run_test_case_include
+run_automatic_test
+README             
+
+Create a new directory for the project by copying and renaming the template
+
+GGI_TLM_copy_rename OPTIMISATION_EXAMPLE NEW_OPTIMISATION_PROJECT new_name
+
+3. go into the NEW_OPTIMISATION_PROJECT/PROBLEM_SPECIFICATION_FILES directory
+
+cd NEW_OPTIMISATION_PROJECT/PROBLEM_SPECIFICATION_FILES
+
+4. Either edit the existing input file or create a new one for the new project with the parameters to be optimised
+   replaced by names. In the example the names start with # and are in capitals (eg #DIM1) to make them easily identifiable.
+   
+5. Edit or create a GGI_TLM_post_process_in.txt file to post process the results as required
+   
+6. Edit the optimise_in.txt file to specify the number of parameters to optimise, type of optimisation and maximum number of GGI_TLM trial runs to perform
+
+7. Edit the fortran code optimisation_process.F90. Two processes are required to be coded by the user. Both are in 
+
+SUBROUTINE calculate_function(value)
+
+Firstly the parameters for the GGI_TLM run must be determined from the normalised optimisation parameters
+
+Secondly the results of the simulation must be processed to give a single figure of merit which is to be minimised.
+
+7a.
+
+The subroutine turns the normalised (between 0 and 1) optimisation parameters used internally by the optimiser into the
+actual parameters to be used in the GGI_TLM input file. Suitable transformation functions may be used to scale the normalised parameters to a particular range.
+
+e.g. to generate a value between 1 and 10 from the normalised parameter, p, the following could be used:
+value=1.0+p*9.0
+
+This part must be coded in the section following the comment line:
+! SET THE PROBLEM PARAMETERS FROM THE NORMALISED PARAMETER VALUES
+
+The objet is to create a file PROBLEM_SPECIFICATION_FILES/parameter_definition.dat in the form of the follwing example...
+#DIM1=0.545000E-01    
+#DIM2=0.400000E-01    
+#DIM3=0.250000E-01    
+       .
+       .
+       .
+
+i.e. a line specifying giving each of the parameters in the input file a value 
+
+7b. 
+
+GGI_TLM is run and the results post processed in the normal way by the system call:
+
+  call system("run_GGI_TLM_trial_solution")
+
+The second process that must be coded by the user is the generation of a single value (figure of merit) 
+from the results of the simulation, which is to be optimised. In the example we read the S21 of the FSS (S21.fout)
+and generate a value which is the sum of all the transmission coefficients in the desired pass bands (880MHz to 920MHz and 
+1780MHz to 1820MHz)
+
+The objkective function value to be minimised is placed in the variable 'value' which is returned to the main optimisation process from the subroutine.
+ 
+
+8. 

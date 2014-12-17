@@ -176,16 +176,35 @@ else
        echo "{
               s/MATERIAL_DIRECTORY/${MATERIAL_DIRECTORY}/g
               s/CABLE_DIRECTORY/${CABLE_DIRECTORY}/g
-	      }" > sed_command
+	      " > sed_command
 
 # Add any parameter substitutions specified to the sed command
 # Read the parameter name and value from the file line by line
        while IFS== read  PARAMETER VALUE
        do           
+
+# This process allows the substitution of random values specified by a min and max value       
+         TEST_STRING="URANDOM"
+         if test "${VALUE#*$TEST_STRING}" != "$VALUE" ; then
+	   	   
+	   echo "1" > GGI_TLM_generate_random_numbers_in.txt	   
+	   
+	   echo $VALUE | sed  "s/URANDOM//g" >> GGI_TLM_generate_random_numbers_in.txt
+	   echo "y
+random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt	   
+	   GGI_TLM_generate_random_numbers < GGI_TLM_generate_random_numbers_in.txt
+	   
+	   VALUE=$(GGI_TLM_generate_random_numbers < GGI_TLM_generate_random_numbers_in.txt)
+	   
+	   read VALUE < random_number.dat
+	   
+	 fi
         
          echo "s/${PARAMETER}/${VALUE}/g" >> sed_command
             
        done < PROBLEM_SPECIFICATION_FILES/parameter_definition.dat
+       
+       echo "	      }" >> sed_command
 
        sed -f sed_command PROBLEM_SPECIFICATION_FILES/$RUN_NAME.inp > ./$RUN_NAME.inp
 
@@ -282,6 +301,12 @@ else
        sed -f sed_command PROBLEM_SPECIFICATION_FILES/plot_result.plt > plot_result.plt
        
        gnuplot plot_result.plt
+      
+       RETURN_CODE=$?
+       if [[ $RETURN_CODE != 0 ]] ; then
+         echo "$TEST_CASE: Exit from plot" >> progress
+	 exit 1
+       fi
        
        echo "FINISHED: $TEST_CASE: plot" > ./progress
     
@@ -307,6 +332,12 @@ else
        sed -f sed_command PROBLEM_SPECIFICATION_FILES/plot_result_with_reference.plt > plot_result_with_reference.plt
        
        gnuplot plot_result_with_reference.plt
+      
+       RETURN_CODE=$?
+       if [[ $RETURN_CODE != 0 ]] ; then
+         echo "$TEST_CASE: Exit from plot_ref" >> progress
+	 exit 1
+       fi
        
        echo "FINISHED: $TEST_CASE: plot_ref" > ./progress
        
@@ -437,7 +468,9 @@ else
        cp *.inp  RESULTS_$TAG
        cp *.info RESULTS_$TAG
        cp *.rtf  RESULTS_$TAG
-             
+                                 
+       echo "FINISHED: $TEST_CASE: save" > ./progress
+
      else 
      
        echo "Unknown action: $ACTION"      

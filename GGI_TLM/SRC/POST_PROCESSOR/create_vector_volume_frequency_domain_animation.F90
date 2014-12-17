@@ -322,6 +322,7 @@ IMPLICIT NONE
 
   write(*,*)'Enter the filename for the animation'
   read(*,'(A256)')output_filename
+  write(record_user_inputs_unit,'(A)')output_filename 
   
 ! add surface number to base filename
 

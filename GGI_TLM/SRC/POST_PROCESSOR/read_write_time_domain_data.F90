@@ -44,7 +44,7 @@ integer	:: function_number
 
 ! local variables
 
-character(len=256)	:: filename
+  character(len=256)	:: filename
 
   integer		:: n_data_points
   integer		:: n_timesteps

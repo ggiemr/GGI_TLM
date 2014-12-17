@@ -90,6 +90,7 @@ IMPLICIT NONE
     read(input_file_unit,*,err=9000)frequency_output_surface(i)%frequency
       	
     CALL read_field_component_frequency_surface_output(input_file_unit,frequency_output_surface(i)%field_component)
+    
     CALL read_output_time_information(input_file_unit,	&
                                       frequency_output_surface(i)%specified_timestep_information,	&
                                       frequency_output_surface(i)%first_timestep,	&

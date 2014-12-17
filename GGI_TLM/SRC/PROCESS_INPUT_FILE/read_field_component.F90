@@ -295,7 +295,7 @@ character*2	:: input_line
      STOP
      
 9010 CALL write_line('Error reading field component for surface_output',0,.TRUE.)
-     CALL write_line("Expecting field compoent 'Ex', 'Ey', 'Ez', 'Hx', 'Hy', 'Hz', 'Em', 'Hm', 'Jx', 'Jy', 'Jz', 'Jm', 'Power'"&
+     CALL write_line("Expecting field compoent 'Ex', 'Ey', 'Ez', 'Hx', 'Hy', 'Hz', 'Jx', 'Jy', 'Jz',  "&
                      ,0,.TRUE.)
      CALL write_error_line(file_unit)
      STOP

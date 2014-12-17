@@ -15,23 +15,22 @@
 !    You should have received a copy of the GNU General Public License
 !    along with this program.  If not, see <http://www.gnu.org/licenses/>.   
 !
-! SUBROUTINE PDF_CDF
+! SUBROUTINE Statistical_tools
 !
 ! NAME
-!    PDF_CDF
+!    Statistical_tools
 !
 ! DESCRIPTION
 !     
 !     
 ! COMMENTS
-!     Insertion sorting algorithm now replaced by heapsort which is much faster for large data sets
+!     Some statistical tools for investigating 
 !
 ! HISTORY
 !
-!     started 8/08/2012 CJS
-!     CDF calculation based on sorting the sample data 15/7/2014
+!     Some statistical tools for investigating 28/11/2014
 !
-SUBROUTINE PDF_CDF()
+SUBROUTINE Statistical_tools()
 
 USE post_process
 USE file_information
@@ -52,7 +51,7 @@ IMPLICIT NONE
   real*8,allocatable	:: read_data(:)
   real*8,allocatable	:: f(:)
   
-  real*8		::fmax,fmin
+  real*8		:: fmax,fmin
  
   integer 		:: nbins
   integer		:: bx1
@@ -69,6 +68,7 @@ IMPLICIT NONE
   
   character		:: ch
   integer		:: conversion_type,max_conversion_type
+
 ! START
 
 ! get the filename for the data
@@ -109,8 +109,9 @@ IMPLICIT NONE
     write(*,*)'0: No conversion'
     write(*,*)'1: Convert from dB to field amplitude'
     write(*,*)'2: Convert from field amplitude to dB'
+    write(*,*)'3: Convert from field to field magnitude'
     
-    max_conversion_type=2
+    max_conversion_type=3
 
     read(*,*)conversion_type
     if ( (conversion_type.LT.0).OR.(conversion_type.GT.max_conversion_type) ) then 
@@ -126,6 +127,8 @@ IMPLICIT NONE
       write(post_process_info_unit,*)'	Convert from dB to field amplitude' 
     else if (conversion_type.EQ.2) then
       write(post_process_info_unit,*)'	Convert from field amplitude to dB' 
+    else if (conversion_type.EQ.3) then
+      write(post_process_info_unit,*)'	Convert from field to field magnitude' 
     end if
 
   end if
@@ -158,6 +161,10 @@ IMPLICIT NONE
 	else if (conversion_type.eq.2) then
 ! Convert from field amplitude to dB	 
           f(sample)=20d0*log10(abs(read_data(n_function)))
+	  
+	else if (conversion_type.eq.3) then
+! Convert from field to field magnitude	 
+          f(sample)=(abs(read_data(n_function)))
 	  
         end if
 	
@@ -193,27 +200,7 @@ IMPLICIT NONE
   
   write(*,*)'Minimum data value=',fmin
   write(*,*)'Maximum data value=',fmax
-  
-! calculate the mean and variance of the data set
 
-! calculate mean
-  mean=0.0       
-  do sample=1,n_samples
-    mean=mean+f(sample)
-  end do
-  mean=mean/n_samples
-  write(*,2010),'mean f=     ',mean
-
-! calculate variance       
-  variance=0.0       
-  do sample=1,n_samples
-    variance=variance+((f(sample)-mean)**2)
-  end do
-  variance=variance/n_samples
-  write(*,2010),'variance f= ',variance
-  write(*,2010),'standard deviation f = ',sqrt(variance)
-
-! get the number of bins for the distribution data
 
   write(*,*)'Enter the number of bins for the distribution data'
   read(*,*)nbins
@@ -229,7 +216,7 @@ IMPLICIT NONE
   
   OPEN(unit=local_file_unit,file=filename)
   
-! calculate the PDF and the CDF  og binned data
+! calculate the PDF and the CDF 1:of binned data
   
   ALLOCATE ( x(1:nbins) )
   ALLOCATE ( binx1(1:nbins) )
@@ -243,7 +230,7 @@ IMPLICIT NONE
     
     bx1=int(dble(nbins)*(f(sample)-fmin)/(fmax-fmin))+1
     if ((bx1.ge.1).and.(bx1.le.nbins))then
-      binx1(bx1)=binx1(bx1)+1
+      binx1(1:bx1)=binx1(1:bx1)+1
     else
       write(*,*)'Bin out of range',bx1,nbins
     end if
@@ -293,33 +280,6 @@ IMPLICIT NONE
   DEALLOCATE ( x )
   DEALLOCATE ( binx1 )
   DEALLOCATE ( pdfx )
-  
-! NEW PROCESS TO GIVE HIGHER RESOLUTION RESULTS FOR PDF
-
-  nbins=n_samples
-
-! open a file for the distribution data
-  
-  write(*,*)'Enter the filename for the distribution data : CDF only (new process)'
-  read(*,'(A256)')filename
-  write(record_user_inputs_unit,'(A)')trim(filename)
-  
-! open the file to write
-  
-  OPEN(unit=local_file_unit,file=filename)
-  
-! calculate the PDF by sorting of the sample data
-
-!  CALL sample_sort_insertion(f,n_samples)
-  CALL sample_sort_heapsort(f,n_samples)
-  
-  do sample=1,n_samples       
-    
-    write(local_file_unit,*)f(sample),real(sample)/real(n_samples),1d0-real(sample)/real(n_samples)
-
-  end do
-  
-  close(unit=local_file_unit)
 
   RETURN
      
@@ -327,242 +287,5 @@ IMPLICIT NONE
      CALL write_line('filename:',0,.TRUE.)
      write(*,*)trim(filename)
      STOP 
-  
-END SUBROUTINE PDF_CDF
-!
-! ___________________________________________________________________________
-!
-!
- SUBROUTINE sample_sort_insertion(f,n)
- 
-IMPLICIT NONE 
- 
-  integer n
-  real*8 f(1:n)
-  real*8 fj
- 
-  integer i,j
- 
-! START
- 
-  do j=2,n
-  
-    fj=f(j)
-    i=j-1
-    
-    do while ( (i.GT.0).AND.(f(i).GT.fj) )
-    
-      f(i+1)=f(i)
-      i=i-1 
       
-    end do
-  
-    f(i+1)=fj
-    
-  end do
- 
-  RETURN
- 
- END SUBROUTINE sample_sort_insertion
- 
-!
-! ___________________________________________________________________________
-!
-!
-  SUBROUTINE sample_sort_heapsort(f,n)
- 
-  IMPLICIT NONE 
- 
-  integer n
-  real*8 f(1:n)
- 
-  integer i,end
-  
-  integer j
- 
-! START
-
-  CALL build_heap(f,n)
-    
-  end=n
-  
-!   write(*,*)'START'
-!  CALL check_heap(f,n,end)
-  
-  do i=1,n-1
-   
-! the maximum value is at the head of the heap. 
-! Swap this with the end value in the heap and 
-! reduce the size of the heap by 1
-
-    CALL swap(f,n,1,end)
-    
-    end=end-1
-
-! the new value at the top of the heap now needs to be filtered down to it's correct level
-! this process ensures that the heap property is maintained
-    CALL sift_down(f,n,end,1)
-  
-!    write(*,*)'STAGE',i
-!    CALL check_heap(f,n,end)
-     
-  end do
- 
-  RETURN
- 
-  END SUBROUTINE sample_sort_heapsort
-!
-! ___________________________________________________________________________
-!
-!
-  SUBROUTINE check_heap(f,n,end)
- 
-  IMPLICIT NONE 
- 
-  integer n,end
-  real*8 f(1:n)
-  
-  integer i,j,parent
- 
-! START
-
-  do i=2,end
-  
-    parent=i/2
-  
-    if (f(parent).LT.f(i)) then
-      write(*,*)'Heap failed, i=',i,' i/2=',i/2
-      write(*,*)'f(i/2)=',f(i/2)
-      write(*,*)'f(i)=',f(i)
-      
-      write(*,*)
- 
-      do j=1,n
-  
-         write(*,*)j,f(j),j/2
-
-      end do
-      
-      STOP
-    end if
-  
-  end do
- 
-  RETURN
- 
-  END SUBROUTINE check_heap
-!
-! ___________________________________________________________________________
-!
-!
-  SUBROUTINE build_heap(f,n)
- 
-  IMPLICIT NONE 
- 
-  integer n
-  real*8 f(1:n)
-  
-  integer i
- 
-! START
-
-  do i=2,n
-  
-    CALL sift_up(f,n,i)
-  
-  end do
- 
-  RETURN
- 
-  END SUBROUTINE build_heap
-!
-! ___________________________________________________________________________
-!
-!
-  RECURSIVE SUBROUTINE sift_up(f,n,i)
- 
-IMPLICIT NONE 
- 
-  integer n,i
-  real*8 f(1:n)
-  
-  integer parent
- 
-! START
-
-  if (i.eq.1) RETURN
-  
-  parent=i/2
-  
-  if (f(i).GT.f(parent)) then
-    CALL swap(f,n,i,parent)
-    CALL sift_up(f,n,parent)
-  else
-    RETURN
-  end if
- 
-  END SUBROUTINE sift_up
-!
-! ___________________________________________________________________________
-!
-!
-  RECURSIVE SUBROUTINE sift_down(f,n,end,parent)
- 
-  IMPLICIT NONE 
- 
-  integer n,end,parent
-  real*8 f(1:n)
-  
-  integer child1,child2,cmax
-  real*8 fcmax
- 
-! START
-
-!  if (parent.GE.end) RETURN   ! Check not now required due to checks on the existance of children
-  
-  child1=parent*2
-  
-  if (child1.GT.end) RETURN  ! no children in the heap
-  
-  child2=child1+1
-  
-! work out the maximum child value which exists in the heap
-  cmax=child1
-  fcmax=f(child1)
-  if ( (child2.LE.end).AND.(f(child2).GT.fcmax) ) then
-    cmax=child2
-    fcmax=f(child2)
-  end if
-  
-! check whether the parent value is larger than the maximum child value and of so continue to sift_down
-  if (fcmax.GT.f(parent)) then
-  
-    CALL swap(f,n,cmax,parent)
-    CALL sift_down(f,n,end,cmax)
-    
-  end if
-  
-  END SUBROUTINE sift_down
-!
-! ___________________________________________________________________________
-!
-!
-  SUBROUTINE swap(f,n,i,j)
- 
-  IMPLICIT NONE 
- 
-  integer n,i,j
-  real*8 f(1:n)
-    
-  real*8 fswap
- 
-! START
-    
-  fswap=f(i)
-  f(i)=f(j)
-  f(j)=fswap
- 
-  RETURN
- 
-  END SUBROUTINE swap
-
+END SUBROUTINE Statistical_tools

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+ACTION="run_seq"
+
+CURRENT_DIRECTORY=$( pwd )
+
+PROBLEM_NAME=$( basename ${CURRENT_DIRECTORY} )
+
+ 
+# RUN THE DEFAULT TEST CASE SEQUENCE
+  source ../run_test_case_include $ACTION  $PROBLEM_NAME
+  

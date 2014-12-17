@@ -58,6 +58,8 @@ MODEL_BUILDER_NAME=GGI_TLM_model_builder
 
 CABLE_MODEL_BUILDER_NAME=GGI_TLM_cable_model_builder
 
+GEOMETRY_CHECKS_NAME=GGI_TLM_geometry_checks
+
 MODEL_CHECKS_NAME=GGI_TLM_model_checks
 
 CABLE_MODEL_CHECKS_NAME=GGI_TLM_cable_model_checks
@@ -201,8 +203,11 @@ GEOMETRY/build_surface_yplane.o \
 GEOMETRY/build_surface_zplane.o \
 GEOMETRY/build_surface_quad.o \
 GEOMETRY/build_surface_triangle.o \
+GEOMETRY/build_surface_annulus.o \
+GEOMETRY/build_surface_split_ring.o \
 GEOMETRY/build_surface_triangulated_surface.o \
 GEOMETRY/build_surface_vtk_triangulated_surface.o \
+GEOMETRY/build_surface_stl_triangulated_surface.o \
 GEOMETRY/build_volume_sphere.o \
 GEOMETRY/build_volume_rectangular_block.o  \
 GEOMETRY/build_volume_rectangular_block2.o \
@@ -395,7 +400,11 @@ POST_PROCESSOR/S11_TO_VSWR.o\
 POST_PROCESSOR/Convert_Frequency_Domain_Volume_Field_Format.o \
 POST_PROCESSOR/Spatial_correlation.o \
 POST_PROCESSOR/Wigner_function.o \
-POST_PROCESSOR/sum_time_domain_data.o
+POST_PROCESSOR/sum_time_domain_data.o \
+POST_PROCESSOR/RMS_frequency_domain_data.o \
+POST_PROCESSOR/Reciprocal_frequency_domain_data.o \
+POST_PROCESSOR/Time_frequency_analysis.o \
+POST_PROCESSOR/Statistical_tools.o
 
 OPTIMISATION_OBJS=  \
 OPTIMISATION/opt_module.o \
@@ -483,6 +492,7 @@ MAKE_optimisation \
 MAKE_analytic \
 $(MODEL_BUILDER_NAME) \
 $(CABLE_MODEL_BUILDER_NAME) \
+$(GEOMETRY_CHECKS_NAME) \
 $(MODEL_CHECKS_NAME) \
 $(CABLE_MODEL_CHECKS_NAME) \
 $(MATERIAL_MODEL_CHECKS_NAME) \
@@ -491,6 +501,7 @@ $(FILTER_FIT_NAME) \
 $(FILTER_FORMAT_CONVERT_NAME) \
 $(POST_PROCESSOR_NAME) \
 RUN_SCRIPT \
+COPY_RENAME_SCRIPT \
 WRITE_SEQ_VERSION
 
   else
@@ -562,6 +573,10 @@ $(CABLE_MODEL_BUILDER_NAME): $(CABLE_MODEL_BUILDER_NAME).F90 $(OBJS)
 	$(FC) $(FLAGS) -o $(CABLE_MODEL_BUILDER_NAME) $(CABLE_MODEL_BUILDER_NAME).F90 $(OBJS) $(LIBS) 
 	mv $(CABLE_MODEL_BUILDER_NAME) $(EXECUTABLE_DIR)
 # 
+$(GEOMETRY_CHECKS_NAME): $(GEOMETRY_CHECKS_NAME).F90 $(OBJS) 
+	$(FC) $(FLAGS) -o $(GEOMETRY_CHECKS_NAME) $(GEOMETRY_CHECKS_NAME).F90 $(OBJS) $(LIBS)
+	mv $(GEOMETRY_CHECKS_NAME) $(EXECUTABLE_DIR)	
+# 
 $(MODEL_CHECKS_NAME): $(MODEL_CHECKS_NAME).F90 $(OBJS) 
 	$(FC) $(FLAGS) -o $(MODEL_CHECKS_NAME) $(MODEL_CHECKS_NAME).F90 $(OBJS) $(LIBS)
 	mv $(MODEL_CHECKS_NAME) $(EXECUTABLE_DIR)	
@@ -594,6 +609,10 @@ $(POST_PROCESSOR_NAME): $(POST_PROCESSOR_NAME).F90 $(OBJS)
 RUN_SCRIPT: run_GGI_TLM
 	cat ../run_configuration_data run_GGI_TLM > $(EXECUTABLE_DIR)/run_GGI_TLM
 	chmod +x $(EXECUTABLE_DIR)/run_GGI_TLM
+# 
+COPY_RENAME_SCRIPT: GGI_TLM_copy_rename
+	cat ../run_configuration_data GGI_TLM_copy_rename > $(EXECUTABLE_DIR)/GGI_TLM_copy_rename
+	chmod +x $(EXECUTABLE_DIR)/GGI_TLM_copy_rename
 
 # make CONSTANTS
 MAKE_constants:

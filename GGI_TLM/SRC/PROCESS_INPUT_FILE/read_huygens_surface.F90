@@ -23,16 +23,25 @@
 ! DESCRIPTION
 !     read huygens surface data
 !
-! Example packet:
+! Example packet1:
 !
 !Huygens_surface
-!0     surface number
-!-1	       ! side of surface for excitation
-!1     excitation function number
-!0.0 0.0  wave vector Theta and Phi 
-!1.0 0.0  Polarisation theta and Phi
+!0       !surface number
+!-1	 ! side of surface for excitation
+!1       !  excitation function number
+!0.0 0.0 !  wave vector Theta and Phi 
+!1.0 0.0 !  Polarisation theta and Phi
 !
 !
+! Example packet2:
+!
+!Huygens_surface
+!0       !surface number
+!-1	 ! side of surface for excitation
+!1       !  excitation function number
+!Random  !  wave vector Theta and Phi 
+!Random  !  Polarisation theta and Phi
+!!
 ! COMMENTS
 !     
 !
@@ -53,6 +62,11 @@ IMPLICIT NONE
 ! local variables
 
   integer side_of_surface_for_excitation
+  
+  real*8 a,b
+  real*8 r,theta,phi,u
+  real*8 x,y,z
+  character ch
 
 ! START  
 
@@ -79,15 +93,76 @@ IMPLICIT NONE
     end if
     
     read(input_file_unit,*,err=9000)huygens_surface%excitation_function_number
-    
-    read(input_file_unit,*,err=9000)huygens_surface%Ktheta,huygens_surface%Kphi
-    
-    read(input_file_unit,*,err=9000)huygens_surface%Etheta,huygens_surface%Ephi
 
-! convert angles to radians
+! check for random excitation    
     
-  huygens_surface%Ktheta=(pi/180d0)*huygens_surface%Ktheta
-  huygens_surface%Kphi  =(pi/180d0)*huygens_surface%Kphi
+! Wave direction 
+    read(input_file_unit,'(A1)')ch
+    
+    if ( (ch.eq.'r').OR.(ch.eq.'R') ) then
+
+! set random direction
+      CALL random_number(a)
+      CALL random_number(b)
+      theta=a*2d0*pi
+      u    =b*2d0-1d0
+    
+      x=cos(theta)*sqrt(1d0-u*u)
+      y=sin(theta)*sqrt(1d0-u*u)
+      z=u
+    
+      r=sqrt(x*x+y*y+z*z)
+      if (x.ne.0d0) then
+        phi=atan2(y,x)
+      else
+        if (y.gt.0d0) then
+          phi=pi/2d0
+        else if (y.lt.0d0) then
+          phi=-pi/2d0
+        else
+          phi=0d0
+        end if
+      end if
+      if(r.ne.0d0) then
+        theta=acos(z/r)
+      else
+        theta=0d0
+      end if
+      
+      huygens_surface%Ktheta=theta
+      huygens_surface%Kphi=phi
+
+    else
+! this is not a face junction so go back as if the extra line had not been read
+  
+      backspace(unit=input_file_unit)
+      read(input_file_unit,*,err=9000)huygens_surface%Ktheta,huygens_surface%Kphi
+  
+! convert angles to radians
+      huygens_surface%Ktheta=(pi/180d0)*huygens_surface%Ktheta
+      huygens_surface%Kphi  =(pi/180d0)*huygens_surface%Kphi
+  
+    end if
+       
+! Wave polarisation 
+    read(input_file_unit,'(A1)')ch
+    
+    if ( (ch.eq.'r').OR.(ch.eq.'R') ) then
+
+! set random polarisation
+  
+      CALL random_number(a)
+      b=sqrt(1d0-a*a)
+      huygens_surface%Etheta=a
+      huygens_surface%Ephi=b
+      
+    else
+! this is not a face junction so go back as if the extra line had not been read
+  
+      backspace(unit=input_file_unit)
+      read(input_file_unit,*,err=9000)huygens_surface%Etheta,huygens_surface%Ephi
+  
+    end if
   
   CALL write_line('FINISHED: read_huygens_surface',0,output_to_screen_flag)
   

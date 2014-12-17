@@ -311,6 +311,10 @@ IMPLICIT NONE
     huygens_surface%Ki(2)=ky
     huygens_surface%Ki(3)=kz
     
+    if (rank.eq.0) write(info_file_unit,8010)'K theta=',huygens_surface%Ktheta*180D0/pi,' K phi=',huygens_surface%Kphi*180D0/pi
+    if (rank.eq.0) write(info_file_unit,8010)'E theta=',huygens_surface%Etheta,' E phi=',huygens_surface%Ephi
+8010 format(A8,F12.6,A7,F12.6)
+    if (rank.eq.0) write(info_file_unit,*)''
     if (rank.eq.0) write(info_file_unit,8000)'K vector=',huygens_surface%Ki(1),huygens_surface%Ki(2),huygens_surface%Ki(3)
 8000 format(A,3F12.6)
 

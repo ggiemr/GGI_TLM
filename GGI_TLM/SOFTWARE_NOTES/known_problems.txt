@@ -376,17 +376,23 @@ output point is 'inside' the PEC/PMC and sees no field.
      and then refer to this label in the rest of the document... This could maybe be done by writing a separate input file then
      generating the final input file using some kind of search and replace process (sed?). This approach would have the benefit of not      
      requiring any changes to GGI_TLM, just the scripts which run it.
-     DONE: A file called parameter_definition.dat is included in the PROBLEM_SPECIFICATION_FILES directory. This file has all the parameters specified in the form
-#PARAMETER_NAME=VALUE
+     DONE: A file called parameter_definition.dat is included in the PROBLEM_SPECIFICATION_FILES directory. 
+     This file has all the parameters specified in the form #PARAMETER_NAME=VALUE
      A sed command then does a simple search and replace when copying the input file to the run directory, substituting #PARAMETER_NAME with value everywhere.
      
 119. What exactly is needed for mpi compilation? How do we set this up from scratch? What needs to be in the PATH? This should be rigorously        documented. 
 
 120. Need to document the parameterised geometry process
+     DONE
 
 121. The excitation_surface_list needs to be sorted out. If only one side of a surface is excited then the code gives odd results - in almost all cases
      (sources in free space) the surface excitation should be added to both sides of the excitation surface. Maybe we need to have the option of setting the
      excitation side of the surface to both sides as a default...
      DONE
      
-122. Need to document the surface excitations properly so that the meaning of a single sided excitation is understood. 
+122. Need to document the surface excitations properly so that the meaning of a single sided excitation is understood.
+     DONE 
+     
+123. It is becomming important to consider binary formats for some files - vtk files initially I think.
+
+124. Need to document new surface geometry types 'annulus' and 'split-ring', also the SPLIT_RING_RESONATOR test case

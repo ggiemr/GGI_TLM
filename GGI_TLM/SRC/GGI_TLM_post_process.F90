@@ -46,7 +46,7 @@ IMPLICIT NONE
 
 ! local variables
 
-  integer,parameter	:: number_of_options=44
+  integer,parameter	:: number_of_options=48
   integer	:: option
 
   character(len=256)	:: command
@@ -113,6 +113,10 @@ IMPLICIT NONE
   write(*,*)'42. Calculate spatial correlation for 1D and 2D complex data sets'
   write(*,*)'43. Calculate and propagate Wigner function from complex spatial correlation data'
   write(*,*)'44. Sum Time Domain Data'
+  write(*,*)'45. Square root Sum of squares/RMS calculation for Frequency Domain Data'
+  write(*,*)'46. Reciprocal Frequency Domain Data'
+  write(*,*)'47. Time-frequency analysis'
+  write(*,*)'48. Statistical tools'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -482,6 +486,39 @@ IMPLICIT NONE
     write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: SUM TIME DOMAIN DATA'
     write(post_process_info_unit,*)'Sum time domain data'
     CALL Sum_Time_Domain_Data()
+   
+  else if (option.EQ.45) then
+
+    write(*,*)'Square root Sum of squares/RMS calculation for Frequency Domain Data'
+    
+    write(record_user_inputs_unit,*)option,	&
+      ' POST PROCESSING OPTION: SQUARE ROOT SUM OF SQUARES SQUARES/RMS CALCULATION FOR FREQUENCY DOMAIN DATA'
+    write(post_process_info_unit,*)'Square root Sum of squares/RMS calculation for Frequency Domain Data'
+    CALL RMS_Frequency_Domain_Data()
+    
+  else if (option.EQ.46) then
+
+    write(*,*)'Reciprocal Frequency Domain Data'
+    
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: RECIPROCAL FREQUENCY DOMAIN DATA'
+    write(post_process_info_unit,*)'Reciprocal Frequency Domain Data'
+    CALL Reciprocal_Frequency_Domain_Data()
+    
+  else if (option.EQ.47) then
+
+    write(*,*)'Time-frequency analysis'
+    
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: Time-frequency analysis'
+    write(post_process_info_unit,*)'Time-frequency analysis'
+    CALL Time_frequency_analysis()
+    
+  else if (option.EQ.48) then
+
+    write(*,*)'Statistical tools'
+    
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: STATISTICAL TOOLS'
+    write(post_process_info_unit,*)'Apply statistical tools'
+    CALL Statistical_tools()
      
   else
    

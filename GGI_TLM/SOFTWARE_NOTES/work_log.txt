@@ -587,7 +587,29 @@
 7/11/2014 	CJS	Reverse the diode - The specified direction should relate to the forward (conducting) direction of the diode
 			
 7/11/2014 	CJS	Include post process to add scaled time domain data together
+
+18/11/2014	CJS	Include the option to excite the huygens surface with a plane wave with random direction and polarisation
      
+26/11/2014	CJS	Create a new program GGI_TLM_geometry_checks which builds the geometry and writes it out to vtk files for
+ 			visualisation with paraview. This process is much faster than running the model builder if all that is 
+			required is to check the geometry.
+			
+28/11/2014	CJS	Implement time-frequency analysis and make a place for the implementation of some statistical 
+			tools in the post-processor...
+			
+2/12/2014	CJS	Implement reader for surfaces defined in ascii stl format
+
+9/12/2014	CJS	Include an optimisation template problem directory (OPTIMISATION_TEMPLATE_PROJECT) with some instructions
+			for how to construct a new optimisation project from it. The optimisation process has been simplified to some
+			extent from the original and the test case TEST_DATA/OPTIMISE_FSS has been updated to use the new process.
+			Develop a script for changing the run_name in an existing project. This allows an existing project to be
+			copied, then the script is used to change the run_name in all the files in the PROBLEM_SPECIFICATION_FILES 
+			directory.  
+			
+16/12/2014	CJS	Implement the surface geometry types 'annulus' and 'split-ring'
+			Include a SPLIT_RING_RESONATOR test case in the TEST_DATA directory
+			Fix bug in surface current density output - normal directions needed to be specified
+			
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE
 		- Start to implement and document all the Fieldsolve test cases : STARTED

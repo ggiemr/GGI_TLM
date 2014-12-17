@@ -33,7 +33,8 @@
 !
 !     started 14/08/2014 CJS
 !     28/08/2014 CJS: add 1D plot and also make plots 3D
-!     
+!     28/11/2014 CJS Try to keep the x/y aspect ratio sensible...
+!
 !
 SUBROUTINE Vis_nD(function_number)
 
@@ -77,7 +78,6 @@ integer	:: function_number
   real*8,allocatable	:: min_data(:)
   
   real*8		:: min_value,value_range,zrange
-  integer		:: izrange
   
   real*8		:: value(4)
   real*8		:: new_value(4)
@@ -98,6 +98,7 @@ integer	:: function_number
   integer		:: element(4)
  
   integer		:: i
+  real*8		:: dx,dy,lx,ly
   
   integer 		:: num,den
   
@@ -269,19 +270,44 @@ integer	:: function_number
 ! ny=1 for 1D plots, we must increase this in order to generate a surface to plot
   if (ndim.eq.1) ny=2
   
-!  write(*,*)'nx=',nx
-!  write(*,*)'ny=',ny
+  write(*,*)'nx=',nx
+  write(*,*)'ny=',ny
  
   ALLOCATE( x_values(1:nx) )
   ALLOCATE( y_values(1:ny) )
   ALLOCATE( plot_data(1:nx,1:ny) )
+
+! define the plotting array - this is rather aritrary at the moment: 
+! keep the x/y aspect ratio unless it is too large (too small)
   
+  if ( ( (nx*5.LT.ny).OR.(ny*5.LT.nx) ).AND.(ndim.ne.1) ) then
+
+! large aspect ratio- make the plot square
+    dx=1d0/(nx-1)
+    dy=1d0/(ny-1)
+    write(*,*)'Large aspect ratio, make plot square'
+    
+  else
+! aspect ratio less than 1:5 or 1D plot so keep it as it is
+
+    dx=1d0
+    dy=1d0
+    
+  end if
+  
+  lx=dx*(nx-1)
+  ly=dy*(ny-1)
+  
+! set the x and y values for the surface plot
+  write(*,*)'nx=',nx,' dx=',dx,' lx=',lx
+  write(*,*)'ny=',ny,' dy=',dy,' ly=',ly
+
   do i=1,nx
-    x_values(i)=i-1
+    x_values(i)=(i-1)*dx
   end do
   
   do i=1,ny
-    y_values(i)=i-1
+    y_values(i)=(i-1)*dy
   end do
   
   iy=0
@@ -340,7 +366,7 @@ integer	:: function_number
     end do    
   end do
   
-! again a special case for 1 dimensional data, artificially add another coulmn of y data
+! again a special case for 1 dimensional data, artificially add another column of y data
   if (ndim.eq.1) then
     plot_data(1:nx,2)=plot_data(1:nx,1)
   end if
@@ -348,9 +374,9 @@ integer	:: function_number
   write(*,*)'Enter the filename visualisation data (without vtk extension)'
   read(*,'(A)')filename
   write(record_user_inputs_unit,'(A)')trim(filename)
-  
-  izrange=max(n(1),n(2),1)
-  zrange=real(izrange)
+
+! set the height (zrange) of the surface plot to be related to the x and y extent of the plot  
+  zrange=max(lx,ly)/4d0
   
   write(*,*)'minimum data value=',min_value
   write(*,*)'value_range       =',value_range

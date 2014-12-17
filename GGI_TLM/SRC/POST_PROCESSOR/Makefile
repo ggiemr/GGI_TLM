@@ -35,8 +35,12 @@ Vis_nD.o \
 S11_TO_VSWR.o \
 Convert_Frequency_Domain_Volume_Field_Format.o \
 Spatial_correlation.o \
-Wigner_function.o\
-sum_time_domain_data.o
+Wigner_function.o \
+sum_time_domain_data.o \
+RMS_frequency_domain_data.o \
+Reciprocal_frequency_domain_data.o \
+Time_frequency_analysis.o \
+Statistical_tools.o
 
 default: $(POST_PROCESSOR_OBJS)
 
