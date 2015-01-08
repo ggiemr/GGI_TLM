@@ -156,6 +156,11 @@ real*8,allocatable	  :: read_data(:)
     
       n_params=1
       excitation_functions(excitation_number)%type=excitation_function_type_noise
+   
+    else if (input_line.eq.'sinusoidal_pulse') then
+    
+      n_params=7
+      excitation_functions(excitation_number)%type=excitation_function_type_sinusoidal_pulse
 
     else
 

@@ -172,6 +172,7 @@ IMPLICIT NONE
   real*8	:: tpeak
   real*8	:: fpeak
   real*8	:: r_random
+  real*8	:: t1,t2,t3,t4,pulse_amplitude
   
   real*8 	:: interpolate_function
 
@@ -433,6 +434,43 @@ IMPLICIT NONE
 	  
         CALL random_number(r_random)
 	excitation_functions(excitation_number)%value_face(timestep)=	amplitude*(r_random-0.5d0)
+	
+      else if (excitation_functions(excitation_number)%type.EQ.excitation_function_type_sinusoidal_pulse) then
+      
+        amplitude=excitation_functions(excitation_number)%parameters(1)
+        frequency=excitation_functions(excitation_number)%parameters(2)
+        phase=excitation_functions(excitation_number)%parameters(3)*pi/180d0
+        t1=excitation_functions(excitation_number)%parameters(4)
+        t2=excitation_functions(excitation_number)%parameters(5)
+        t3=excitation_functions(excitation_number)%parameters(6)
+        t4=excitation_functions(excitation_number)%parameters(7)
+
+! work out the trapezoidal pulse amplitude (between 0 and 1)	
+	pulse_amplitude=0d0
+	if ( (time.ge.t1).AND.(time.lt.t2) ) then
+	  pulse_amplitude=(time-t1)/(t2-t1)
+	else if ( (time.ge.t2).AND.(time.le.t3) ) then
+	  pulse_amplitude=1d0
+	else if ( (time.ge.t3).AND.(time.le.t4) ) then
+	  pulse_amplitude=(t4-time)/(t4-t3)
+	end if
+	  
+	excitation_functions(excitation_number)%value(timestep)=	&
+	     amplitude*pulse_amplitude*sin(2d0*pi*frequency*time-phase)
+	  
+! half timestep excitation	  
+! work out the trapezoidal pulse amplitude (between 0 and 1)	
+	pulse_amplitude=0d0
+	if ( (time+dt/2d0.ge.t1).AND.(time+dt/2d0.lt.t2) ) then
+	  pulse_amplitude=(time+dt/2d0-t1)/(t2-t1)
+	else if ( (time+dt/2d0.ge.t2).AND.(time+dt/2d0.le.t3) ) then
+	  pulse_amplitude=1d0
+	else if ( (time+dt/2d0.ge.t3).AND.(time+dt/2d0.le.t4) ) then
+	  pulse_amplitude=(t4-(time+dt/2d0))/(t4-t3)
+	end if
+	  
+	excitation_functions(excitation_number)%value_face(timestep)=	&
+	     amplitude*pulse_amplitude*sin(2d0*pi*frequency*(time+dt/2d0)-phase)
 
       else if (excitation_functions(excitation_number)%type.EQ.excitation_function_type_file) then
       

@@ -42,7 +42,7 @@ TYPE::excitation_function_type
 
   integer	:: type
   integer	:: n_parameters
-  real*8	:: parameters(6) 
+  real*8	:: parameters(10) ! the number of parameters set here should be greater or equal to the maximum required. 
   real*8,allocatable	:: value(:)
   real*8,allocatable	:: value_face(:)
   
@@ -141,7 +141,8 @@ END TYPE excitation_mode_type
   integer,parameter	:: excitation_function_type_double_exponential=8
   integer,parameter	:: excitation_function_type_differential_gaussian=9
   integer,parameter	:: excitation_function_type_noise=10
-  integer,parameter	:: excitation_function_type_file=11
+  integer,parameter	:: excitation_function_type_sinusoidal_pulse=11
+  integer,parameter	:: excitation_function_type_file=12
   
   integer,parameter	:: source_type_hard=0
   integer,parameter	:: source_type_soft=1

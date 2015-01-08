@@ -38,7 +38,8 @@ The run_configuration_data file sets the following:
 
 Please see the make_configuration_data and run_configuration_data files for an example setup and change as required
 
-Note that it is useful to ensure that the EXECUTABLE_DIR and the current directory (.) is in your path 
+Note that it is useful to ensure that the EXECUTABLE_DIR and the current directory (.) is in your path.
+You may also need to include the path to the FORTRAN compiler, MPI stuff etc. 
 
 _______________________________________________________________________________________________________
 

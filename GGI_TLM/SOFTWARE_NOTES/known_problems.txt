@@ -393,8 +393,11 @@ output point is 'inside' the PEC/PMC and sees no field.
 122. Need to document the surface excitations properly so that the meaning of a single sided excitation is understood.
      DONE 
      
-123. It is becomming important to consider binary formats for some files - vtk files initially I think.
+123. It is becomming important to consider binary formats for some files - vtk files initially I think. 
+     Portability of binary formats may be an issue...We could maybe consider using gzip for large ascii data files out of GGI_TLM maybe?
 
 124. Need to document new surface geometry types 'annulus' and 'split-ring', also the SPLIT_RING_RESONATOR test case
 
 125. Need to document random parameter specification in the parameter_definitions.dat file
+
+126. Need to document sinusoidal pulse excitation function (implemented 7/1/2015)

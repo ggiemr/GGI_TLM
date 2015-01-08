@@ -613,6 +613,8 @@
 17/12/2014	CJS	Allow random parameters in the parameter_definition.dat file
 			Update repository to version 1.0.6 with all the above developments
 			
+7/1/2015	CJS	Implement a sine wave pulse function - required for non-linear absorber analysis.
+			
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE
 		- Start to implement and document all the Fieldsolve test cases : STARTED
