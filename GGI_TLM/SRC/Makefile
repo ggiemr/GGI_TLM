@@ -71,7 +71,8 @@ else ifeq ($(PARALLEL_MODE),SEQ)
 action3:
 	@echo "Explicitly make SEQ, last make SEQ"
 	@echo "LAST_MAKE=$(LAST_MAKE)"
-        make -f Makefile_GGI_TLM PARALLEL_MODE=SEQ
+	@echo "Issuing command: make -f Makefile_GGI_TLM PARALLEL_MODE=SEQ"
+	make -f Makefile_GGI_TLM PARALLEL_MODE=SEQ
   else
 action4:
 	@echo "Explicitly make SEQ, last make *not* SEQ"
@@ -88,7 +89,7 @@ else
 action5:
 	@echo "re-make MPI"
 	@echo "LAST_MAKE=$(LAST_MAKE)"
-        make -f Makefile_GGI_TLM PARALLEL_MODE=MPI
+	make -f Makefile_GGI_TLM PARALLEL_MODE=MPI
   else ifeq ($(LAST_MAKE),SEQ)
 action6:
 	@echo "re-make SEQ"
