@@ -131,16 +131,16 @@ integer	:: function_number
     STOP
   end if 
     
-  write(*,*)'Enter the number of columns of data to read'
+  write(*,*)'Enter the number of columns of data in the output file'
   read(*,*)n_columns
-  write(record_user_inputs_unit,*)n_columns,' Number of columns of data to read'
+  write(record_user_inputs_unit,*)n_columns,' Number of columns of data in the output file'
     
   max_column=0
   ALLOCATE( column_list(1:n_columns) )
   
   do loop=1,n_columns
   
-    write(*,'(A,I2,A)')'Which Column should output file column ',loop,' come from? '
+    write(*,'(A,I2,A)')'Which Column should output file column ',loop,' come from? ( enter 0 to create an empty column)'
     read(*,*)column_list(loop)
     write(record_user_inputs_unit,*)column_list(loop),' Column number for output file column',loop
     max_column=max(max_column,column_list(loop))
@@ -150,7 +150,9 @@ integer	:: function_number
 ! Initial read of the data file
     
   ALLOCATE( input_line_data(1:max_column) )
-       
+  
+  input_line_data(1:max_column)=0d0
+  
   do loop=1,2
 
 ! read lines to ignore
@@ -169,10 +171,14 @@ integer	:: function_number
 
         do col_loop=1,n_columns
 	
-          data(sample,col_loop)=input_line_data( column_list(col_loop) )
+	  if (column_list(col_loop).NE.0) then
 	  
-	  max_data(col_loop)=max( max_data(col_loop),data(sample,col_loop) )
-	  min_data(col_loop)=min( min_data(col_loop),data(sample,col_loop) )
+            data(sample,col_loop)=input_line_data( column_list(col_loop) )
+	  
+	    max_data(col_loop)=max( max_data(col_loop),data(sample,col_loop) )
+	    min_data(col_loop)=min( min_data(col_loop),data(sample,col_loop) )
+	    
+	  end if
 	  
 	end do
 	

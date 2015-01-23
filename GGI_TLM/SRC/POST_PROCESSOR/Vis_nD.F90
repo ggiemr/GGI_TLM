@@ -34,6 +34,7 @@
 !     started 14/08/2014 CJS
 !     28/08/2014 CJS: add 1D plot and also make plots 3D
 !     28/11/2014 CJS Try to keep the x/y aspect ratio sensible...
+!     16/01/2015 CJS Allow the plotting of a reduced set of data (useful for very large data sets)
 !
 !
 SUBROUTINE Vis_nD(function_number)
@@ -94,6 +95,9 @@ integer	:: function_number
 
   integer               ::  nx,ny
   integer               ::  ix,iy
+  
+  integer		:: nxplot,nyplot
+  integer		:: nplotmin(4),nplotmax(4)
 
   integer		:: element(4)
  
@@ -101,7 +105,8 @@ integer	:: function_number
   real*8		:: dx,dy,lx,ly
   
   integer 		:: num,den
-  
+    
+  character		:: ch
 
 ! START
 
@@ -260,7 +265,7 @@ integer	:: function_number
   end do
   
   do i=1,nDim
-    write(*,'(A,I2,A,I10)')'n ',i,'=',n(i)
+    write(*,'(A,I1,A,A,A,I10)')'n(',i,')=n(',axis_label(i),')=',n(i)
   end do
       
 ! get the plotting dimensions
@@ -272,19 +277,74 @@ integer	:: function_number
   
   write(*,*)'nx=',nx
   write(*,*)'ny=',ny
+   
+  if (ndim.GT.2) then 
+  
+    write(*,*)'Do you want to restrict the range of the plot (i.e. number of sub plots) (y/n)?'
+    read(*,'(A)')ch
+    write(record_user_inputs_unit,'(A,A)')ch,' ! Restrict range of plot (i.e. number of sub plots)'
+    
+  else
+  
+! only a 1D or 2D plot so don't restrict the number of plots  
+    ch='n'
+    
+  end if
+  
+  if ( (ch.EQ.'y').OR.(ch.EQ.'Y') ) then
+
+! Only restrict the large x and large y axis ranges
+    nplotmin(1:2)=1
+    nplotmax(1:2)=n(1:2)
+      
+! Large x range
+    write(*,*)'Number of plots in the large_x range is',n(3)
+    
+    write(*,*)'Enter the fisrt plot of the xrange to include'
+    read(*,*)nplotmin(3)
+    write(record_user_inputs_unit,*)nplotmin(3),' First plot of the xrange to include'
+    
+    write(*,*)'Enter the last plot of the xrange to include'
+    read(*,*)nplotmax(3)
+    write(record_user_inputs_unit,*)nplotmax(3),' Last plot of the xrange to include'
+      
+! Large y range
+    write(*,*)'Number of plots in the large_y range is',n(3)
+    
+    write(*,*)'Enter the fisrt plot of the yrange to include'
+    read(*,*)nplotmin(4)
+    write(record_user_inputs_unit,*)nplotmin(4),' First plot of the yrange to include'
+    
+    write(*,*)'Enter the last plot of the yrange to include'
+    read(*,*)nplotmax(4)
+    write(record_user_inputs_unit,*)nplotmax(4),' Last plot of the yrange to include'
+
+! get the new plotting dimensions
+    nxplot=(nplotmax(1)-nplotmin(1)+1)*(nplotmax(3)-nplotmin(3)+1)
+    nyplot=(nplotmax(2)-nplotmin(2)+1)*(nplotmax(4)-nplotmin(4)+1)
+   
+  else
+! don't restrict plot range
+    nplotmin(1:4)=1
+    nplotmax(1:4)=n(1:4)
+    nxplot=nx
+    nyplot=ny
+  end if
+
+! get the new plotting dimensions
  
-  ALLOCATE( x_values(1:nx) )
-  ALLOCATE( y_values(1:ny) )
-  ALLOCATE( plot_data(1:nx,1:ny) )
+  ALLOCATE( x_values(1:nxplot) )
+  ALLOCATE( y_values(1:nyplot) )
+  ALLOCATE( plot_data(1:nxplot,1:nyplot) )
 
 ! define the plotting array - this is rather aritrary at the moment: 
 ! keep the x/y aspect ratio unless it is too large (too small)
   
-  if ( ( (nx*5.LT.ny).OR.(ny*5.LT.nx) ).AND.(ndim.ne.1) ) then
+  if ( ( (nxplot*5.LT.nyplot).OR.(nyplot*5.LT.nxplot) ).AND.(ndim.ne.1) ) then
 
 ! large aspect ratio- make the plot square
-    dx=1d0/(nx-1)
-    dy=1d0/(ny-1)
+    dx=1d0/(nxplot-1)
+    dy=1d0/(nyplot-1)
     write(*,*)'Large aspect ratio, make plot square'
     
   else
@@ -299,28 +359,54 @@ integer	:: function_number
   ly=dy*(ny-1)
   
 ! set the x and y values for the surface plot
-  write(*,*)'nx=',nx,' dx=',dx,' lx=',lx
-  write(*,*)'ny=',ny,' dy=',dy,' ly=',ly
+  write(*,*)'nxplot=',nxplot,' dx=',dx,' lx=',lx
+  write(*,*)'nyplot=',nyplot,' dy=',dy,' ly=',ly
 
-  do i=1,nx
-    x_values(i)=(i-1)*dx
+! loop over the whole x axis and save the x data only where we are plotting results
+  ix=0
+  i=0
+  do a3=1,n(3)  ! large x axis
+    do a1=1,n(1)  ! small x axis
+    
+      ix=ix+1
+      
+      if ( (a3.GE.nplotmin(3)).AND.(a3.LE.nplotmax(3)) ) then
+        i=i+1
+        x_values(i)=(ix-1)*dx
+      end if
+      
+    end do
   end do
   
-  do i=1,ny
-    y_values(i)=(i-1)*dy
-  end do
-  
+! loop over the whole y axis and save the y data only where we are plotting results
   iy=0
-  
+  i=0
   do a4=1,n(4)  ! large y axis
     do a2=1,n(2)  ! small y axis
     
       iy=iy+1
+      if ( (a4.GE.nplotmin(4)).AND.(a4.LE.nplotmax(4)) ) then
+        i=i+1
+        y_values(i)=(iy-1)*dy
+      end if
+      
+    end do
+  end do
+ 
+  write(*,*)'Get the plot data'
+
+  iy=0
+  
+  do a4=nplotmin(4),nplotmax(4)  ! large y axis
+    do a2=nplotmin(2),nplotmax(2)  ! small y axis
+
+      iy=iy+1
+      
       ix=0
       
-      do a3=1,n(3)  ! large x axis
-        do a1=1,n(1)  ! small x axis
-    
+      do a3=nplotmin(3),nplotmax(3)  ! large x axis
+        do a1=nplotmin(1),nplotmax(1)  ! small x axis
+      
           ix=ix+1
 	  
 	  element(4)=a4
@@ -337,13 +423,13 @@ integer	:: function_number
 	    end if
           end do
 	  
-	  if (ix.GT.nx) then
-	    write(*,*)'ix error',ix,nx
+	  if (ix.GT.nxplot) then
+	    write(*,*)'ix error',ix,nxplot
 	    STOP
 	  end if
 	  
-	  if (iy.GT.ny) then
-	    write(*,*)'iy error',iy,ny
+	  if (iy.GT.nyplot) then
+	    write(*,*)'iy error',iy,nyplot
 	    STOP
 	  end if
 	  
@@ -360,7 +446,7 @@ integer	:: function_number
 	  end if
 	  
           plot_data(ix,iy)=Data(sample,column_list(data_column))
-	    	  
+	  	  
         end do    
       end do   
     end do    
@@ -368,7 +454,7 @@ integer	:: function_number
   
 ! again a special case for 1 dimensional data, artificially add another column of y data
   if (ndim.eq.1) then
-    plot_data(1:nx,2)=plot_data(1:nx,1)
+    plot_data(1:nxplot,2)=plot_data(1:nxplot,1)
   end if
  
   write(*,*)'Enter the filename visualisation data (without vtk extension)'
@@ -376,14 +462,14 @@ integer	:: function_number
   write(record_user_inputs_unit,'(A)')trim(filename)
 
 ! set the height (zrange) of the surface plot to be related to the x and y extent of the plot  
-  zrange=max(lx,ly)/4d0
+  zrange=max(dx*(nxplot-1),dy*(nyplot-1))/4d0
   
   write(*,*)'minimum data value=',min_value
   write(*,*)'value_range       =',value_range
   write(*,*)'z_range           =',zrange
 
   filename2=trim(filename)//".vtk"
-  CALL write_4D_vtk_data(nx,ny,x_values,y_values,plot_data,min_value,value_range,zrange,filename2)    
+  CALL write_4D_vtk_data(nxplot,nyplot,x_values,y_values,plot_data,min_value,value_range,zrange,filename2)    
   
   DEALLOCATE( x_values )
   DEALLOCATE( y_values )
@@ -400,26 +486,26 @@ integer	:: function_number
   
   if (ndim.ne.1) then
   
-    x_values(1)=-0.5 
+    x_values(1)=-0.5*dx
+    do i=2,nx
+      x_values(i)=x_values(i-1)+n(1)*dx
+    end do
+
+    y_values(1)=-0.5*dy
+    do i=2,ny
+      y_values(i)=y_values(i-1)+n(2)*dy
+    end do
+   
+  else if (ndim.eq.1) then
+! Special case for 1 dimensional data
+     
+    x_values(1)=-0.5
     do i=2,nx
       x_values(i)=x_values(i-1)+n(1)
     end do
 
-    y_values(1)=-0.5 
-    do i=2,ny
-      y_values(i)=y_values(i-1)+n(2)
-    end do
-  
-  else if (ndim.eq.1) then
-! Special case for 1 dimensional data
-     
-  x_values(1)=-0.5
-  do i=2,nx
-    x_values(i)=x_values(i-1)+n(1)
-  end do
-
-  y_values(1)=-0.5
-  y_values(2)=1.5
+    y_values(1)=-0.5
+    y_values(2)=1.5
    
   end if
   

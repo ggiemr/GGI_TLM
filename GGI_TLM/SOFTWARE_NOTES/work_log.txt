@@ -614,7 +614,12 @@
 			Update repository to version 1.0.6 with all the above developments
 			
 7/1/2015	CJS	Implement a sine wave pulse function - required for non-linear absorber analysis.
-			
+
+16/1/2015	CJS	Fix problem when number of cells is not the same for all volumes in Convert_Frequency_Domain_Volume_Field_Format.F90
+			Allow the user to restrict the range (number of subplots) in multi-dimensional visualisation
+
+
+
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE
 		- Start to implement and document all the Fieldsolve test cases : STARTED

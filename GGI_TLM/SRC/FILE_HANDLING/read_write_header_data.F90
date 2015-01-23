@@ -98,8 +98,8 @@ IMPLICIT NONE
 ! check title string   
    if (title.ne.time_domain_output_file_header) goto 9000
    
-   read(file_unit,'(A25,I10)')  description,n_data_points
-   read(file_unit,'(A25,I10)')  description,n_timesteps
+   read(file_unit,'(A25,I16)')  description,n_data_points
+   read(file_unit,'(A25,I16)')  description,n_timesteps
   
 !  CALL write_line('FINISHED: read_time_domain_header_data',0,output_to_screen_flag)
 

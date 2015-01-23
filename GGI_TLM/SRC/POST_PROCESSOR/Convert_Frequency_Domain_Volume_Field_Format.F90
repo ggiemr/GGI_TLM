@@ -29,6 +29,7 @@
 ! HISTORY
 !
 !     started 23/10/2014 CJS
+!     Fix problem when number of cells is not the same for all volumes... CJS 16/1/2015
 !
 SUBROUTINE Convert_Frequency_Domain_Volume_Field_Format
 
@@ -48,7 +49,7 @@ integer :: n_cells
 integer :: n_quads
 integer :: n_frames
 
-integer :: surface,volume,point,quad
+integer :: volume,point,quad
 integer :: ip_quad,point1,point2,point3,point4
 integer :: cx,cy,cz
 real*8	:: x,y,z
@@ -89,7 +90,7 @@ TYPE(surface_animation_data),allocatable	:: volume_animation(:)
 
 !# NUMBER OF FREQUENCY OUTPUT VOLUMES:
 !2
-!# START SURFACE FIELD FILE TEMPLATE, OUTPUT VOLUME NUMBER:    1
+!# START VOLUME FIELD FILE TEMPLATE, OUTPUT VOLUME NUMBER:    1
 !# Number of points:'
 !20
 !# Number of faces:'
@@ -105,26 +106,26 @@ TYPE(surface_animation_data),allocatable	:: volume_animation(:)
   ALLOCATE ( volume_animation(1:n_volumes) )
 #
 ! read header information  
-  do surface=1,n_volumes
+  do volume=1,n_volumes
   
     read(local_file_unit,'(A80)')
     read(local_file_unit,'(A80)')
     read(local_file_unit,*)n_points
-    volume_animation(surface)%n_points=n_points
+    volume_animation(volume)%n_points=n_points
      
-    write(*,*)'Number of points=',volume_animation(surface)%n_points
+    write(*,*)'Number of points=',volume_animation(volume)%n_points
   
     read(local_file_unit,'(A80)')
     read(local_file_unit,*)n_quads
-    volume_animation(surface)%n_quads=n_quads
+    volume_animation(volume)%n_quads=n_quads
      
-    write(*,*)'Number of quads=',volume_animation(surface)%n_quads
+    write(*,*)'Number of quads=',volume_animation(volume)%n_quads
   
     read(local_file_unit,'(A80)')
     read(local_file_unit,*)n_frames
-    volume_animation(surface)%n_frames=n_frames
+    volume_animation(volume)%n_frames=n_frames
      
-    write(*,*)'Number of frames=',volume_animation(surface)%n_frames
+    write(*,*)'Number of frames=',volume_animation(volume)%n_frames
     
     n_cells=n_points/8
     if (n_cells.ne.n_quads/6) then
@@ -137,23 +138,23 @@ TYPE(surface_animation_data),allocatable	:: volume_animation(:)
 
     write(*,*)'Allocating data'
        
-    ALLOCATE ( volume_animation(surface)%points(1:n_points,1:3) ) 
-    ALLOCATE ( volume_animation(surface)%quads(1:n_quads,1:4) ) 
-    ALLOCATE ( volume_animation(surface)%complex_data(1:n_cells) ) 
-    ALLOCATE ( volume_animation(surface)%magnitude_data(1:n_cells) ) 
+    ALLOCATE ( volume_animation(volume)%points(1:n_points,1:3) ) 
+    ALLOCATE ( volume_animation(volume)%quads(1:n_quads,1:4) ) 
+    ALLOCATE ( volume_animation(volume)%complex_data(1:n_cells) ) 
+    ALLOCATE ( volume_animation(volume)%magnitude_data(1:n_cells) ) 
   
-    volume_animation(surface)%points(1:n_points,1:3)=0D0
-    volume_animation(surface)%quads(1:n_quads,1:4)=0
-    volume_animation(surface)%complex_data(1:n_cells)=0D0
-    volume_animation(surface)%magnitude_data(1:n_cells)=0D0
+    volume_animation(volume)%points(1:n_points,1:3)=0D0
+    volume_animation(volume)%quads(1:n_quads,1:4)=0
+    volume_animation(volume)%complex_data(1:n_cells)=0D0
+    volume_animation(volume)%magnitude_data(1:n_cells)=0D0
   
     write(*,*)'Reading points'
 
     do point=1,n_points
       read(local_file_unit,*)x,y,z
-      volume_animation(surface)%points(point,1)=x
-      volume_animation(surface)%points(point,2)=y
-      volume_animation(surface)%points(point,3)=z
+      volume_animation(volume)%points(point,1)=x
+      volume_animation(volume)%points(point,2)=y
+      volume_animation(volume)%points(point,3)=z
     end do
     
 ! read quads    
@@ -161,14 +162,14 @@ TYPE(surface_animation_data),allocatable	:: volume_animation(:)
 
     do quad=1,n_quads
       read(local_file_unit,*)ip_quad,point1,point2,point3,point4
-      volume_animation(surface)%quads(quad,1)=point1
-      volume_animation(surface)%quads(quad,2)=point2
-      volume_animation(surface)%quads(quad,3)=point3
-      volume_animation(surface)%quads(quad,4)=point4
+      volume_animation(volume)%quads(quad,1)=point1
+      volume_animation(volume)%quads(quad,2)=point2
+      volume_animation(volume)%quads(quad,3)=point3
+      volume_animation(volume)%quads(quad,4)=point4
     end do
     
-    volume_animation(surface)%max_data=-1e30
-    volume_animation(surface)%min_data=1e30
+    volume_animation(volume)%max_data=-1e30
+    volume_animation(volume)%min_data=1e30
     
 ! read data    
     write(*,*)'Reading data'
@@ -176,7 +177,7 @@ TYPE(surface_animation_data),allocatable	:: volume_animation(:)
     
       read(local_file_unit,*)cx,cy,cz,re,im
       
-      volume_animation(surface)%complex_data(quad)=cmplx(re,im)
+      volume_animation(volume)%complex_data(quad)=cmplx(re,im)
       
     end do
     
@@ -232,6 +233,11 @@ TYPE(surface_animation_data),allocatable	:: volume_animation(:)
       OPEN(unit=local_file_unit,file=filename)
     
     end if
+
+    n_points=volume_animation(volume)%n_points
+    n_quads=volume_animation(volume)%n_quads
+    n_frames=volume_animation(volume)%n_frames
+    n_cells=n_points/8
 
 ! loop over the output cells  
     do quad=1,n_cells

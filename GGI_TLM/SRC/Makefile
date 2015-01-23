@@ -76,6 +76,7 @@ action3:
 action4:
 	@echo "Explicitly make SEQ, last make *not* SEQ"
 	@echo "LAST_MAKE=$(LAST_MAKE)"
+	@echo "Issuing command: make -f Makefile_GGI_TLM clean"
 	make -f Makefile_GGI_TLM clean
 	make -f Makefile_GGI_TLM PARALLEL_MODE=SEQ
   endif

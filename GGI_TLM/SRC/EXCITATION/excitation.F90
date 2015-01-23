@@ -494,7 +494,7 @@ IMPLICIT NONE
       end if  ! excitation_function_type
       
       write(excitation_output_unit,time_domain_output_format)time,excitation_number,	&
-                                   excitation_functions(excitation_number)%value(timestep)
+                excitation_functions(excitation_number)%value(timestep)
 
     end do ! next timestep
 
