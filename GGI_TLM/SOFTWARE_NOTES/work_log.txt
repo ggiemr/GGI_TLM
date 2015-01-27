@@ -618,6 +618,8 @@
 16/1/2015	CJS	Fix problem when number of cells is not the same for all volumes in Convert_Frequency_Domain_Volume_Field_Format.F90
 			Allow the user to restrict the range (number of subplots) in multi-dimensional visualisation
 
+27/1/2015	CJS	Fix Mlayer code for arbitrary angle incident field - still needs testing...
+
 
 
 Next stages:  	

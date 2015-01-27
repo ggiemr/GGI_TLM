@@ -26,13 +26,14 @@
 !     
 ! COMMENTS
 !     
-! 
+! Tried to make this work for arbitrary angles and polarisation. 
+! NEEDS THOROUGH TESTING CJS 27/1/2015
 !
 !
 ! HISTORY
 !
 !     started 12/01/10 CJS
-!
+!     Attempt to get it working for arbitrary incicent angles CJS 27/1/2015
 !
   PROGRAM Mlayer
 
@@ -44,6 +45,8 @@ USE filter_functions
 USE Mlayer_file_module
 USE Mlayer_module
 
+IMPLICIT NONE
+
 ! local variables
 
   integer n_frequencies,frequency_loop
@@ -51,10 +54,12 @@ USE Mlayer_module
 ! START
 
   write(*,*)'Calculate reflection and transmission of layers in the yz plane'
-  write(*,*)'as a function of frequency, angle of incidence'
-  write(*,*)'and polarisation'
+  write(*,*)'as a function of frequency, angle of incidence and polarisation'
   write(*,*)'Note:'
-  write(*,*)'1. Angle of incidence is measured from normal'
+  write(*,*)'Wave propagation is in the x direction'
+  write(*,*)'There is no field variation in the z direction (normal to the plane of propagation)'
+  write(*,*)'Angle of incidence is measured from the normal to the layers'
+  write(*,*)'i.e. the angle between the k vector and the x direction'
   write(*,*)'TE(z) polarisation: Ex, Ey, Hz'
   write(*,*)'TM(z) polarisation: Ez, Hx, Hy'
   

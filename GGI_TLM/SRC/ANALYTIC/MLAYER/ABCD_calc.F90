@@ -45,6 +45,8 @@ USE filter_functions
 USE Mlayer_file_module
 USE Mlayer_module
 
+IMPLICIT NONE
+
 ! variables passed to subroutine
 
   integer layer
@@ -53,7 +55,9 @@ USE Mlayer_module
 
   real*8 d
   complex*16 epsr,mur
-  complex*16 beta,Z
+  complex*16 beta0,beta0_material,beta,Z
+  
+  complex*16 cos_theta_material
   
   complex*16 j_beta_d,p_j_beta_d,m_j_beta_d
   real*8     re,im
@@ -66,16 +70,23 @@ USE Mlayer_module
        -j*material_list(layer)%sigma_e/(w*eps0) 
        
   mur=evaluate_Sfilter_frequency_response(material_list(layer)%mu_S,f)  &
-      -j*material_list(layer)%sigma_m/(w*eps0) 
+      -j*material_list(layer)%sigma_m/(w*mu0)
            
-  beta=w*sqrt(mu0*mur*eps0*epsr)/cos(angle_rad)
+  beta0=w*sqrt(mu0*eps0)
+  beta0_material=w*sqrt(mu0*mur*eps0*epsr)
+  if (aimag(beta0_material).gt.0d0) beta0_material=beta0_material*(-1d0,0d0)
   
-  if (aimag(beta).gt.0d0) beta=beta*(-1d0,0d0)
+  cos_theta_material=sqrt( 1d0-( (beta0/beta0_material)*sin(angle_rad) )**2 )
+  if (dble(cos_theta_material).lt.0d0) then
+    cos_theta_material=cos_theta_material*(-1d0,0d0)
+  end if
+    
+  beta=beta0_material*cos_theta_material
   
   if (polarisation.eq.TE) then
-    Z=sqrt(mu0*mur/(eps0*epsr))*cos(angle_rad)
+    Z=sqrt(mu0*mur/(eps0*epsr))*cos_theta_material
   else
-    Z=sqrt(mu0*mur/(eps0*epsr))/cos(angle_rad)
+    Z=sqrt(mu0*mur/(eps0*epsr))/cos_theta_material
   end if
   
   p_j_beta_d= j*beta*d
@@ -134,6 +145,8 @@ USE filter_functions
 
 USE Mlayer_file_module
 USE Mlayer_module
+
+IMPLICIT NONE
 
 ! variables passed to subroutine
 

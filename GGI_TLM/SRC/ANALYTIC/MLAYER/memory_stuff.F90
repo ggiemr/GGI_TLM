@@ -46,6 +46,8 @@ USE filter_functions
 USE Mlayer_file_module
 USE Mlayer_module
 
+IMPLICIT NONE
+
 ! START
 
   write(info_file_unit,*)'Allocating memory'
@@ -86,6 +88,8 @@ USE filter_functions
 
 USE Mlayer_file_module
 USE Mlayer_module
+
+IMPLICIT NONE
 
 ! START
 

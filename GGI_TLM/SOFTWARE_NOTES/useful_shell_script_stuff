@@ -1,0 +1,92 @@
+
+## TEST WHETHER THE NUMBER OF ARGUMENTS IS AS REQUIRED (1 HERE)
+if [ "$#" != "1" ] ; then
+
+  echo "Error: expected 1 argument... "
+  echo "Example:
+useful_script_stuff test_argument"
+       
+  exit 1
+  
+else
+## SET A VARIABLE TO BE EQUAL TO ONE OF THE ARGUMENTS (First arguemnt here)
+
+  VAR=$1
+
+  echo "Argument found :$VAR"
+
+fi
+
+## LOOP OVER A LIST
+
+echo "Loop over a list"
+
+LIST="
+ELEMENT_1
+ELEMENT_2
+ELEMENT_3
+$VAR
+"
+  
+for PARAMETER in $LIST
+do
+
+  echo "PARAMETER=$PARAMETER "
+  
+done
+
+## NUMERIC LOOP ##
+
+echo "Numeric loop"
+N_LOOPS=6
+
+LOOP_NUMBER=1
+
+while [ $LOOP_NUMBER -le $N_LOOPS ]
+do
+  echo "Loop number $LOOP_NUMBER of $NLOOPS"
+  (( LOOP_NUMBER++ ))
+done
+
+## LOOP OVER DATA READ FROM A FILE
+while read  P1 P2 P3 P4
+do   
+
+  echo "Parameters $P1 $P2 $P3 $P4"
+
+done < data_file.dat       
+
+## Read a line from a file
+      
+read LINE < filename
+
+## write the output from a command to a file
+
+echo "Test sending the result of a command to a file" > temp_file.txt
+
+## Append the output from a command to a file
+
+echo "Append this line to the file" >> temp_file.txt
+
+## Some further if statements...
+if [[ "$VAR" = "value_1" || "$VAR" = "value_2" ]] ; then
+  exit 1
+fi
+     
+## Number of files matching a pattern
+NUMBER_OF_INPUT_FILES=$(ls *.inp | wc -l)
+
+## sed command run using a file to specify the action
+
+echo "{
+       s/FILE_TEXT_1/REPLACEMENT_TEST_1/g
+       s/FILE_TEXT_2/REPLACEMENT_TEST_2/g
+       " > sed_command
+# run sed and create a new file with replaced text
+sed -f sed_command ORIGINAL_FILE > NEW_FILE
+
+# run sed and replace text in the original file
+sed -i -f sed_command ORIGINAL_FILE 
+
+# run sed with action in command line (here replace in original file)
+sed -i s/OLD_TEXT/NEW_TEXT/g file.txt

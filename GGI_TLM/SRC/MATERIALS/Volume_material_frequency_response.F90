@@ -31,7 +31,7 @@
 !
 !     started 07/11/2012 CJS
 !     17/10/2014 CJS - add write_all_material_info_to_file flag - eliminates the need for user input in this case
-!
+!     27/1/2015 CJS fix issues with conductivity terms for both dielectric and magnetic materials...
 
 SUBROUTINE Volume_material_frequency_response(write_all_material_info_to_file)
 
@@ -128,7 +128,7 @@ IMPLICIT NONE
         jpeg_filename=trim(volume_material_list(material_number)%name)//'_eps.jpg'
       end if
       
-      sigma=volume_material_list(material_number)%sigma_e
+      sigma=volume_material_list(material_number)%sigma_e/eps0
     
       CALL output_material_frequency_response(volume_material_list(material_number)%eps_S,	&
                                               sigma,fmin,fmax,fstep,local_file_unit,eps_filename)
@@ -174,7 +174,7 @@ IMPLICIT NONE
         jpeg_filename=trim(volume_material_list(material_number)%name)//'_mu.jpg'
       end if
     
-      sigma=volume_material_list(material_number)%sigma_e
+      sigma=volume_material_list(material_number)%sigma_m/mu0   ! found error 27/1/2015: was sigma_e...
     
       CALL output_material_frequency_response(volume_material_list(material_number)%mu_S,	&
                                               sigma,fmin,fmax,fstep,local_file_unit,mu_filename)

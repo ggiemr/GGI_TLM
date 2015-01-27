@@ -40,6 +40,8 @@ MODULE Mlayer_module
 
 USE filter_types
   
+IMPLICIT NONE
+
 ! parameters
   
   integer TE
@@ -119,6 +121,8 @@ END MODULE Mlayer_module
 !
 MODULE Mlayer_file_module
 
+IMPLICIT NONE
+
   character*4	:: input_file_extn
   character*5	:: info_file_extn
   character*4	:: S11_file_extn
@@ -132,7 +136,7 @@ MODULE Mlayer_file_module
   
   character*5	:: power_file_extn
   
-  character*4	:: material_file_extn
+  character*5	:: material_file_extn
   character*5	:: thin_layer_file_extn
   
   parameter (input_file_extn=".inp")
@@ -146,8 +150,8 @@ MODULE Mlayer_file_module
   parameter (Z21_file_extn=".z21.fdmat")
   parameter (Z22_file_extn=".z22.fdmat")
   parameter (power_file_extn=".Pout")
-  parameter (material_file_extn=".mat")
-  parameter (thin_layer_file_extn=".tmat")
+  parameter (material_file_extn=".vmat")
+  parameter (thin_layer_file_extn=".smat")
   
   integer	:: input_file_unit
   integer	:: info_file_unit

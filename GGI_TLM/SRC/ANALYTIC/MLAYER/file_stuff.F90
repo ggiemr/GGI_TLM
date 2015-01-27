@@ -40,6 +40,8 @@
   
 USE Mlayer_file_module
   
+IMPLICIT NONE
+
 ! START
   
   write(*,*)'Enter the input filename (without .inp extension)'
@@ -147,6 +149,8 @@ USE Mlayer_file_module
 USE filter_types
 USE filter_functions
 
+IMPLICIT NONE
+
 ! local variables
 
   integer layer,layer_number
@@ -171,6 +175,7 @@ USE filter_functions
   write(info_file_unit,*)'Incident angle=',angle
   
   angle_rad=angle*pi/180d0
+  write(*,*)'Incident angle=',angle_rad,' radians'
     
   read(input_file_unit,'(A2)',END=9000,ERR=9010)polarisation_in
   write(*,*)'Polarisation=',polarisation_in
@@ -393,6 +398,8 @@ USE filter_functions
   
 USE Mlayer_file_module
   
+IMPLICIT NONE
+
 ! START
 
   write(info_file_unit,*)'Closing files'  

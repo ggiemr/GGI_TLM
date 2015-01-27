@@ -401,3 +401,17 @@ output point is 'inside' the PEC/PMC and sees no field.
 125. Need to document random parameter specification in the parameter_definitions.dat file
 
 126. Need to document sinusoidal pulse excitation function (implemented 7/1/2015)
+
+127. The Mlayer code needs proper testing, especially for lossy materials and at arbirary angles - no validation exists yet apart from
+     some rough and ready comparisons for waveguide loaded with dielectric material samples
+
+128. Check the number of material cells in the .info file - is this the final number or the number set before the possibility of material
+     calls being overwritten by other material volumes? Does this imply that more memory is allocated for material data than is really required?
+     ANSWER: The volume mesh may be used for output as well as material specifications so we cannot assume that one volume takes 
+     precidence over another in the mesh until materials are allocated to volumes. This leads to the current discrepancy in the info file information.
+     The model builder is doing the correct thing but the solver needs to be a little more clever about this... There will be issues with running in 
+     parallel maybe too if we try to resolve this. It is believed that the solver does the expected thing in overwriting one material specification 
+     in a cell with another depending on the order of specification.  
+     
+129. We need the check the material frequency responses are correct for lossy magnetic and dielectric materials - especially those with
+     a magnetic conductivity term...

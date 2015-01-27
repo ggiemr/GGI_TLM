@@ -45,6 +45,8 @@ USE filter_functions
 USE Mlayer_file_module
 USE Mlayer_module
 
+IMPLICIT NONE
+
 ! local variables
 
   integer layer
@@ -167,6 +169,8 @@ USE Mlayer_module
   SUBROUTINE S_to_Z2(S11,S12,S21,S22,Z11,Z12,Z21,Z22,Z0_inc)
   
 USE constants
+
+IMPLICIT NONE
              
   complex*16 S11,S12,S21,S22
   complex*16 Z11,Z12,Z21,Z22
@@ -215,6 +219,8 @@ USE constants
   
 USE constants 
  
+IMPLICIT NONE
+
   real*8 a,b
   
   if (b.ne.0d0) then
