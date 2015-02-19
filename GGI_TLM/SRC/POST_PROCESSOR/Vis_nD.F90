@@ -27,7 +27,7 @@
 !    
 !     
 ! COMMENTS
-!     
+!     We may need to think about an option to interpolate data...
 !
 ! HISTORY
 !
@@ -35,6 +35,8 @@
 !     28/08/2014 CJS: add 1D plot and also make plots 3D
 !     28/11/2014 CJS Try to keep the x/y aspect ratio sensible...
 !     16/01/2015 CJS Allow the plotting of a reduced set of data (useful for very large data sets)
+!     6/02/2015 CJS Change the order of writing points in the vtk file. This improves the look of
+!               correlation matrix visualisation especially. 
 !
 !
 SUBROUTINE Vis_nD(function_number)
@@ -607,7 +609,9 @@ SUBROUTINE write_4D_vtk_data(nx,ny,x_values,y_values,data,min_value,value_range,
   
     do iy=1,ny-1
       
-      write(20,8010)4,point,point+1,point+ny+1,point+ny
+!      write(20,8010)4,point,point+1,point+ny+1,point+ny
+! this ordering of the points may lead to a better interpolation of some datasets...
+      write(20,8010)4,point+1,point,point+ny,point+ny+1
 8010  format(I3,4I8)
       count=count+1
 

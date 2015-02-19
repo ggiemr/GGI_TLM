@@ -81,7 +81,7 @@ NUMBER_OF_INPUT_FILES=$(ls *.inp | wc -l)
 echo "{
        s/FILE_TEXT_1/REPLACEMENT_TEST_1/g
        s/FILE_TEXT_2/REPLACEMENT_TEST_2/g
-       " > sed_command
+       }" > sed_command
 # run sed and create a new file with replaced text
 sed -f sed_command ORIGINAL_FILE > NEW_FILE
 
@@ -90,3 +90,16 @@ sed -i -f sed_command ORIGINAL_FILE
 
 # run sed with action in command line (here replace in original file)
 sed -i s/OLD_TEXT/NEW_TEXT/g file.txt
+      
+### Check the status of the process just finished
+RETURN_CODE=$?        
+if [[ $RETURN_CODE != 0 ]] ; then
+  
+  echo "***** FAILED *****"
+   
+else
+
+  echo "FINISHED CORRECTLY"     
+
+fi
+

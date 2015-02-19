@@ -620,6 +620,12 @@
 
 27/1/2015	CJS	Fix Mlayer code for arbitrary angle incident field - still needs testing...
 
+5/02/2015	CJS	Make some alterations to the information provided in the cable_info file to support the
+			generation of cable model validation problems. 
+			Changes were to check_and_stabilise_cable_model.F90 and focuss on the modal analysis of the
+			MTL system described by the L and C matrices for the GGI_TLM model. The same analysis is performed
+			for a reduced system removing the TLM reference conductor and hence modelling the in-cell 
+			differential mode(s)
 
 
 Next stages:  	

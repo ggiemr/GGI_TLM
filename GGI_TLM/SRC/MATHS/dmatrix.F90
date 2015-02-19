@@ -28,6 +28,7 @@
 ! subroutine dsvd_invert(A,ar,ac,AI,matdim) 
 ! subroutine dinvert_Gauss_Jordan(A,ar,AI,matdim) 
 ! subroutine deig(A,ar,GAMMA,matdim) 
+! subroutine deigvectors(A,ar,GAMMA,Z,matdim) 
 ! subroutine check_difference(m1,nr,nc,m2,matdim)
 ! subroutine Cholesky
 
@@ -632,12 +633,10 @@ IMPLICIT NONE
        integer		:: row,col
 
 ! START
-       
-! diagonalise symmetric matrix A i.e. write A in the form PDPT where D is diagonal
-  
+         
   N=ar
   
-  matz=0d0   ! set to zero integer to calculate eigenvectors only
+  matz=0   ! set to zero integer to calculate eigenvalues
   
   ALLOCATE( A_local(N,N) )
   ALLOCATE( WR_local(N) )
@@ -663,6 +662,114 @@ IMPLICIT NONE
   do row=1,n
     gamma(row)=dcmplx(Wr_local(row),Wi_local(row)) 
   end do		
+      
+  DEALLOCATE( A_local )
+  DEALLOCATE( WR_local )
+  DEALLOCATE( WI_local )
+  DEALLOCATE( Z_local )
+    		  
+  return
+  end
+!
+! __________________________________________________
+!
+!
+       subroutine deigvectors(A,ar,GAMMA,Z,matdim) 
+
+IMPLICIT NONE
+
+! calculate the eigenvalues of A using EISPACK
+
+       integer ar,matdim
+       real*8 A(matdim,matdim)
+       complex*16 GAMMA(matdim)
+       complex*16 Z(matdim,matdim)
+       
+!      EISPACK ARGUMENTS
+
+       integer*4	:: n
+       integer*4	:: ierr
+       integer 		:: matz
+       REAL*8,allocatable :: A_local(:,:)
+       REAL*8,allocatable :: WR_local(:)
+       REAL*8,allocatable :: WI_local(:)
+       REAL*8,allocatable :: Z_local(:,:)
+       
+       real*8 	:: norm
+       
+       integer		:: row,col
+
+! START
+         
+  N=ar
+  
+  matz=1   ! set to non-zero integer to calculate eigenvalues and eigenvectors
+  
+  ALLOCATE( A_local(N,N) )
+  ALLOCATE( WR_local(N) )
+  ALLOCATE( WI_local(N) )
+  ALLOCATE( Z_local(N,N) )
+
+! Copy matrix  
+  do row=1,N
+    do col=1,N
+
+      A_local(row,col)=A(row,col)
+      
+    end do
+  end do
+  
+  CALL rg ( n, A_local, WR_local, WI_local , matz, Z_local, ierr )
+  
+  if (ierr.ne.0) then
+    write(*,*)'Error in deig'
+    STOP
+  end if
+
+! assemble the complex output matrices from the real output of subroutine rg          
+  
+  col=1
+  
+  do while (col.LE.N)
+  
+    if (Wi_local(col).EQ.0d0) then
+    
+! real eigenvalue
+      gamma(col)=dcmplx(Wr_local(col),Wi_local(col)) 
+      do row=1,N
+        Z(row,col)=dcmplx(Z_local(row,col)) 
+      end do
+      col=col+1
+    
+    else
+    
+! The first of a complex eigenvalue pair
+      gamma(col  )=dcmplx(Wr_local(col), Wi_local(col)) 
+      gamma(col+1)=dcmplx(Wr_local(col),-Wi_local(col)) 
+      do row=1,N
+        Z(row,col  )=dcmplx(Z_local(row,col), Z_local(row,col+1)) 
+        Z(row,col+1)=dcmplx(Z_local(row,col),-Z_local(row,col+1)) 
+      end do
+      col=col+2
+    
+    end if  
+      
+  end do	
+  
+! normalise the magnitude of the eigenvectors	
+
+  do col=1,N
+  
+    norm=0d0
+    do row=1,N
+      norm=norm+Z(row,col)*conjg(Z(row,col))
+    end do
+    
+    do row=1,N
+      Z(row,col)=Z(row,col)/sqrt(norm)
+    end do
+    
+  end do ! next eigenvector
       
   DEALLOCATE( A_local )
   DEALLOCATE( WR_local )

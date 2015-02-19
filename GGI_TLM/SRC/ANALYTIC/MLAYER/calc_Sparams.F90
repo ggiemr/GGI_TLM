@@ -118,16 +118,16 @@ IMPLICIT NONE
    
   write(S11_file_unit,8010)f,angle,real(S_11),imag(S_11),  &
                            abs(S_11),atan2b(imag(S_11),real(S_11))*180D0/pi  &
-			   ,-20d0*log10(abs(S_11))
+			   ,20d0*log10(abs(S_11))
   write(S12_file_unit,8010)f,angle,real(S_12),imag(S_12),  &
                            abs(S_12),atan2b(imag(S_12),real(S_12))*180D0/pi  &
-			   ,-20d0*log10(abs(S_12))
+			   ,20d0*log10(abs(S_12))
   write(S21_file_unit,8010)f,angle,real(S_21),imag(S_21),  &
                            abs(S_21),atan2b(imag(S_21),real(S_21))*180D0/pi  &
-			   ,-20d0*log10(abs(S_21))
+			   ,20d0*log10(abs(S_21))
   write(S22_file_unit,8010)f,angle,real(S_22),imag(S_22),  &
                            abs(S_22),atan2b(imag(S_22),real(S_22))*180D0/pi  &
-			   ,-20d0*log10(abs(S_22))
+			   ,20d0*log10(abs(S_22))
 
   write(Z11_file_unit,8000)f,real(Z_11),imag(Z_11),  &
                            abs(Z_11),atan2b(imag(Z_11),real(Z_11))*180D0/pi

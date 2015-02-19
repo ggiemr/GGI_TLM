@@ -17,14 +17,35 @@
 !
 !       subroutine cmatmul(A,ar,ac,B,br,bc,C,matdim)
 !       subroutine ctranspose(u,nr,nc,ut,nmodes)
+!       subroutine cconjugate_transpose(u,nr,nc,ut,nmodes)
 !       subroutine cmatvmul(A,ar,ac,B,br,C,matdim)
-!       subroutine csvd(A,ar,ac,matdim,U,GAMMA,VT) 
-!       subroutine csvd_invert(A,ar,ac,AI,matdim) 
-!
+!       subroutine cinvert_Gauss_Jordan(A,n,AI,matdim) 
+!       subroutine cinvert_Moore_Penrose(A,m,n,AI,matdim) 
 ! __________________________________________________
 !
 !
        subroutine ctranspose(u,nr,nc,ut,nmodes)
+
+IMPLICIT NONE
+       
+       integer nmodes
+       complex*16 u(nmodes,nmodes),ut(nmodes,nmodes)
+       integer nr,nc
+       integer r,c
+       
+       do r=1,nr
+         do c=1,nc
+	   ut(c,r)=u(r,c)
+	 end do
+       end do
+
+       return
+       end
+!
+! __________________________________________________
+!
+!
+       subroutine cconjugate_transpose(u,nr,nc,ut,nmodes)
 
 IMPLICIT NONE
        
@@ -254,14 +275,14 @@ IMPLICIT NONE
 
   if (m.ge.n) then
   
-    CALL ctranspose(A,m,n,AH,matdim)
+    CALL cconjugate_transpose(A,m,n,AH,matdim)
     CALL cmatmul(AH,n,m,A,m,n,T,matdim)
     CALL cinvert_Gauss_Jordan(T,n,TI,matdim) 
     CALL cmatmul(TI,n,n,AH,n,m,AI,matdim)
     
   else
   
-    CALL ctranspose(A,m,n,AH,matdim)
+    CALL cconjugate_transpose(A,m,n,AH,matdim)
     CALL cmatmul(A,m,n,AH,n,m,T,matdim)
     CALL cinvert_Gauss_Jordan(T,m,TI,matdim) 
     CALL cmatmul(AH,n,m,TI,m,m,AI,matdim)
