@@ -311,7 +311,7 @@ integer	:: function_number
     write(record_user_inputs_unit,*)nplotmax(3),' Last plot of the xrange to include'
       
 ! Large y range
-    write(*,*)'Number of plots in the large_y range is',n(3)
+    write(*,*)'Number of plots in the large_y range is',n(4)
     
     write(*,*)'Enter the fisrt plot of the yrange to include'
     read(*,*)nplotmin(4)

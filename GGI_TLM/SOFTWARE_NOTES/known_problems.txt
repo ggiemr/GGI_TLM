@@ -415,3 +415,9 @@ output point is 'inside' the PEC/PMC and sees no field.
      
 129. We need the check the material frequency responses are correct for lossy magnetic and dielectric materials - especially those with
      a magnetic conductivity term...
+     
+130. Cable modelling theoory docuement: equation 3.1.21 - maybe need too change notation for inductance - L is used for more than one quantitiy. 
+
+131. GGI_TLM_theory document: pg 20. equation references are missing.
+
+132. 

@@ -8,7 +8,7 @@ FC=mpif90.mpich2
 
 # 2. MPI_INCLUDE :This is the path to the file mpif.h 
 
-MPI_INCLUDE=/usr/include/mpich2
+MPI_INCLUDE=/usr/include/mpich
 
 # 3. Set the compilation flags. Three options are given below for the mpif90 compiler
 #    These flags may be quite different for another compiler.

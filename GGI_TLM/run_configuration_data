@@ -4,7 +4,7 @@
 # 1. This needs to be set to your particular command for running mpi jobs, 
 #    this command is followed by the number of processors to use 
 
-MPI_RUN_COMMAND="mpirun.mpich2 -np "
+MPI_RUN_COMMAND="mpirun.mpich -np "
 
 # 2. This needs to be set to your particular command for running seqential codes (often not required)
 

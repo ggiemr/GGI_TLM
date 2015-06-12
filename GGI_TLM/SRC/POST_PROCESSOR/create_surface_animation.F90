@@ -196,7 +196,7 @@ IMPLICIT NONE
   
     read(local_file_unit,'(A80)'),ipline
   
-    write(*,*)'Finished reading fieldsolve geometry data'
+    write(*,*)'Finished reading GGI_TLM geometry data'
     
     surface_animation(surface)%max_data=-1e30
     surface_animation(surface)%min_data=1e30
@@ -410,7 +410,7 @@ IMPLICIT NONE
       write(animation_output_unit,8010)4,point,point+1,point+2,point+3
       point=point+4
 
-8010  format(I3,4I8)
+8010  format(I3,4I12)
       
     end do ! next quad
 
@@ -427,7 +427,7 @@ IMPLICIT NONE
     
       if (scale.eq.logscale) then
         if (surface_animation(output_surface)%frame_data(frame,quad).ne.0.0) then
-	  point_data=log(surface_animation(output_surface)%frame_data(frame,quad))
+	  point_data=log(abs(surface_animation(output_surface)%frame_data(frame,quad)))
 	else
 	  point_data=min_data
 	end if

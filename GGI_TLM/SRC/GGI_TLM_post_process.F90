@@ -46,7 +46,7 @@ IMPLICIT NONE
 
 ! local variables
 
-  integer,parameter	:: number_of_options=48
+  integer,parameter	:: number_of_options=49
   integer	:: option
 
   character(len=256)	:: command
@@ -117,6 +117,7 @@ IMPLICIT NONE
   write(*,*)'46. Reciprocal Frequency Domain Data'
   write(*,*)'47. Time-frequency analysis'
   write(*,*)'48. Statistical tools'
+  write(*,*)'49. Create Poynting Vector plot'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -519,6 +520,14 @@ IMPLICIT NONE
     write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: STATISTICAL TOOLS'
     write(post_process_info_unit,*)'Apply statistical tools'
     CALL Statistical_tools()
+    
+  else if (option.EQ.49) then
+
+    write(*,*)'Create Poynting Vector plot'
+    
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: CREATE POYNTING VECTOR PLOT'
+    write(post_process_info_unit,*)'Poynting Vector plot'
+    CALL create_poynting_vector_plot()
      
   else
    

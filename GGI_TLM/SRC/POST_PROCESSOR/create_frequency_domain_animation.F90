@@ -144,6 +144,7 @@ IMPLICIT NONE
 ! read header information  
   do surface=1,n_surfaces
   
+    write(*,*)'Surface number',surface
     read(local_file_unit,'(A80)'),ipline
     read(local_file_unit,'(A80)'),ipline
     read(local_file_unit,*)n_points
@@ -209,7 +210,7 @@ IMPLICIT NONE
       
     end do
     
-    write(*,*)'Finished reading fieldsolve geometry data'
+    write(*,*)'Finished reading GGI_TLM geometry data'
       
   end do ! read next surface
  

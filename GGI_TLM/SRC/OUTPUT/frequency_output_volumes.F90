@@ -563,7 +563,7 @@ IMPLICIT NONE
           write(frequency_output_volume_unit,8010)4,point_number+1,point_number+5,point_number+6,point_number+2  ! zmax face
           point_number=point_number+8
   
-8010 	  format(I3,4I8)
+8010 	  format(I3,4I12)
      
         end do ! next cell
 

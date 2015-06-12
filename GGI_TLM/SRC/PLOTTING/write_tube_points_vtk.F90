@@ -280,3 +280,72 @@ IMPLICIT NONE
   return
   
 END SUBROUTINE get_LT_vectors
+!
+! NAME
+!     SUBROUTINE write_cube_points_vtk
+!
+! DESCRIPTION
+!     write_cube_points_vtk
+!
+!     write_cube_points vtk format file
+!     Used to plot vector fields
+!     
+! COMMENTS
+!     
+!
+! HISTORY
+!
+!     started 12/06/2015 CJS
+!
+!
+SUBROUTINE write_cube_points_vtk(x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,	&
+                                 x5,y5,z5,x6,y6,z6,x7,y7,z7,x8,y8,z8,file_unit)
+
+USE constants
+
+IMPLICIT NONE
+
+real*8		:: x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4
+real*8		:: x5,y5,z5,x6,y6,z6,x7,y7,z7,x8,y8,z8
+integer		:: file_unit
+
+! local variables
+
+! START
+    
+   write(file_unit,8000)     x1,y1,z1
+   write(file_unit,8000)     x2,y2,z2
+   write(file_unit,8000)     x3,y3,z3
+   write(file_unit,8000)     x4,y4,z4
+  
+   write(file_unit,8000)     x5,y5,z5
+   write(file_unit,8000)     x8,y8,z8
+   write(file_unit,8000)     x7,y7,z7
+   write(file_unit,8000)     x6,y6,z6
+   
+   write(file_unit,8000)     x2,y2,z2
+   write(file_unit,8000)     x6,y6,z6
+   write(file_unit,8000)     x7,y7,z7
+   write(file_unit,8000)     x3,y3,z3
+  
+   write(file_unit,8000)     x1,y1,z1
+   write(file_unit,8000)     x4,y4,z4
+   write(file_unit,8000)     x8,y8,z8
+   write(file_unit,8000)     x5,y5,z5
+  
+   write(file_unit,8000)     x1,y1,z1
+   write(file_unit,8000)     x5,y5,z5
+   write(file_unit,8000)     x6,y6,z6
+   write(file_unit,8000)     x2,y2,z2
+   
+   write(file_unit,8000)     x3,y3,z3
+   write(file_unit,8000)     x7,y7,z7
+   write(file_unit,8000)     x8,y8,z8
+   write(file_unit,8000)     x4,y4,z4  
+	      
+8000  format(3E14.5)
+  
+  RETURN
+  
+  
+END SUBROUTINE write_cube_points_vtk

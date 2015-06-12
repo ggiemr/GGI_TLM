@@ -40,7 +40,8 @@ sum_time_domain_data.o \
 RMS_frequency_domain_data.o \
 Reciprocal_frequency_domain_data.o \
 Time_frequency_analysis.o \
-Statistical_tools.o
+Statistical_tools.o \
+create_poynting_vector_plot.o
 
 default: $(POST_PROCESSOR_OBJS)
 

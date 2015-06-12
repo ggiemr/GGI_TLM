@@ -674,7 +674,7 @@ IMPLICIT NONE
      	  write(frequency_output_surface_unit,8010)4,point_number,point_number+1,point_number+2,point_number+3
      	  point_number=point_number+4
   
-8010 	  format(I3,4I8)
+8010 	  format(I3,4I12)
      
         end do ! next face
 

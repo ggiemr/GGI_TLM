@@ -290,6 +290,8 @@ IMPLICIT NONE
 	write(*,*)'Component surfaces have different amounts of data'
 	STOP
       end if
+      max_data=max(surface_animation(surface)%max_data,max_data)
+      min_data=min(surface_animation(surface)%min_data,min_data)
       
     end if
   end do

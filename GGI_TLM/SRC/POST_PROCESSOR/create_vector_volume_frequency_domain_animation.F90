@@ -301,6 +301,8 @@ IMPLICIT NONE
 	write(*,*)'Component volumes have different amounts of data'
 	STOP
       end if
+      max_data=max(volume_animation(surface)%max_data,max_data)
+      min_data=min(volume_animation(surface)%min_data,min_data)
       
     end if
   end do
@@ -322,7 +324,7 @@ IMPLICIT NONE
 
   write(*,*)'Enter the filename for the animation'
   read(*,'(A256)')output_filename
-  write(record_user_inputs_unit,'(A)')output_filename 
+  write(record_user_inputs_unit,'(A)')trim(output_filename)
   
 ! add surface number to base filename
 
