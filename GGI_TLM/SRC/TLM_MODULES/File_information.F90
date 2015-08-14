@@ -188,11 +188,12 @@ IMPLICIT NONE
    integer,parameter 	:: post_process_info_unit=81
  
   integer,parameter 	:: local_file_unit=90
+  integer,parameter 	:: local_file_unit2=91
   
-  integer,parameter 	:: progress_file_unit=91
+  integer,parameter 	:: progress_file_unit=92
   character(len=8)	:: progress_filename='progress'
   
-  integer,parameter 	:: scratch_file_unit=92
+  integer,parameter 	:: scratch_file_unit=93
   
 END MODULE File_information
 !

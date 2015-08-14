@@ -30,6 +30,8 @@
 !	1       surface_number (integer)
 !	sphere 
 !	1.0       surface parameters (n*real)
+!	surface_roughness 
+!	0.2
 !	0.0 0.0 0.0
 !	0.0 0.0 0.0
 !	2       surface_number (integer)
@@ -49,6 +51,7 @@
 ! HISTORY
 !
 !     started 6/08/2012 CJS
+!     surface roughness 13/8/2015 CJS
 !
 !
 SUBROUTINE read_surface_list
@@ -230,7 +233,20 @@ logical	:: file_exists
       read(input_file_unit,*,end=9020)    &
       (problem_surfaces(surface_number)%surface_parameters(i),i=1,n_params)
     end if
-        
+    
+! check for surface roughness specification
+    problem_surfaces(surface_number)%roughness_flag=.FALSE.
+    read(input_file_unit,'(A17)',end=9070)input_line
+    CALL convert_to_lower_case(input_line,256)
+    
+    if (input_line.EQ.'surface_roughness') then
+      problem_surfaces(surface_number)%roughness_flag=.TRUE.
+      read(input_file_unit,*,end=9070)problem_surfaces(surface_number)%roughness_p1
+    else
+! no roughness parameters specified so step back as if the current line had not been read
+      backspace(input_file_unit)
+    end if
+       
 ! read transformation
     problem_surfaces(surface_number)%trans%trans_type='euler'
     problem_surfaces(surface_number)%trans%trans_number=1
@@ -283,6 +299,9 @@ logical	:: file_exists
 9060 CALL write_line('Error in read_Surface_list_packet_data',0,.TRUE.)
      CALL write_line('Vtk format triangulated surface file not found',0,.TRUE.)
      CALL write_line(trim(problem_surfaces(surface_number)%filename),0,.TRUE.)
+     STOP
+  
+9070 CALL write_line('Error in read_Surface_list_packet_data',0,.TRUE.)
      STOP
   
 END SUBROUTINE read_surface_list

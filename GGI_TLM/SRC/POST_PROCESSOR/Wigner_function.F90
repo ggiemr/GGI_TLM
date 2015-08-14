@@ -29,7 +29,7 @@
 ! HISTORY
 !
 !     started 23/10/2014 CJS
-!
+!     attempt to improve the numerics of the Wigner function propagation
 !
 SUBROUTINE wigner_function
 
@@ -65,6 +65,7 @@ complex*16,allocatable	:: WF(:,:,:,:)
 
 complex*16,allocatable	:: WF2(:,:,:,:)
 complex*16,allocatable	:: Cov2(:,:,:,:)
+integer,allocatable	:: Nsamples_WF2(:,:,:,:)
 
 real*8			:: frequency
 real*8			:: dx,dy,dA
@@ -213,6 +214,7 @@ logical	:: inc_evanescent
   ALLOCATE(Cov2(1:nx,1:ny,1:nx,1:ny))
   
   ALLOCATE(WF2(1:2*nx-1,1:2*ny-1,1:np,1:np))
+  ALLOCATE(Nsamples_WF2(1:2*nx-1,1:2*ny-1,1:np,1:np))
   
   ALLOCATE( x_values(1:nx) )
   ALLOCATE( y_values(1:ny) )
@@ -475,7 +477,8 @@ logical	:: inc_evanescent
   write(*,*)'PROPAGATE THE WIGNER FUNCTION A DISTANCE Z'
   
   WF2(:,:,:,:)=(0d0,0d0)
- 
+  Nsamples_WF2(1:2*nx-1,1:2*ny-1,1:np,1:np)=0
+  
   do ix1=1,2*nx-1
   
 !    x1=xmin+ix1*dl/2.0
@@ -515,12 +518,18 @@ logical	:: inc_evanescent
             iy2=NINT((y2-ymin)*2d0/dy)
       
             if ((ix2.ge.1).AND.(ix2.LE.2*nx-1).AND.(iy2.ge.1).AND.(iy2.LE.2*ny-1)) then
-              WF2(ix1,iy1,ipx,ipy)=WF(ix2,iy2,ipx,ipy)
+!OLD              WF2(ix1,iy1,ipx,ipy)=WF(ix2,iy2,ipx,ipy)
+
+              WF2(ix1,iy1,ipx,ipy)=WF2(ix1,iy1,ipx,ipy)+WF(ix2,iy2,ipx,ipy)
+	      
+	      Nsamples_WF2(ix1,iy1,ipx,ipy)=Nsamples_WF2(ix1,iy1,ipx,ipy)+1
+	      
             end if
 	
           else
 
 ! Propagation rule for evanescent waves
+! Note that this is still the original algorithm applied here...
             if (inc_evanescent) then
 	
               WF2(ix1,iy1,ipx,ipy)=WF(ix1,iy1,ipx,ipy)*exp(-2d0*k*z*sqrt(mag_p*mag_p-1d0))
@@ -541,6 +550,29 @@ logical	:: inc_evanescent
     
   end do
 
+! finish the revised algorithm...
+  do ix1=1,2*nx-1
+  
+    do iy1=1,2*ny-1
+    
+      do ipx=1,npx
+          
+        do ipy=1,npy
+	
+	  if(Nsamples_WF2(ix1,iy1,ipx,ipy).NE.0) then
+	  
+	    WF2(ix1,iy1,ipx,ipy)=WF2(ix1,iy1,ipx,ipy)/Nsamples_WF2(ix1,iy1,ipx,ipy)
+	    
+	  end if
+	
+        end do
+    
+      end do
+      
+    end do
+    
+  end do
+ 
 ! WRITE THE PROPAGATED WIGNER FUNCTION TO FILE  
 
   write(*,*)'WRITE THE PROPAGATED WIGNER FUNCTION TO FILE '
@@ -682,6 +714,7 @@ logical	:: inc_evanescent
   read(*,'(A)')filename
   
   open(unit=local_file_unit,file=trim(filename))
+  open(unit=local_file_unit2,file=trim(filename)//'_diag')
   write(record_user_inputs_unit,'(A)')trim(filename)
 
   do ix1=1,nx
@@ -695,6 +728,15 @@ logical	:: inc_evanescent
           write(local_file_unit,8010)x_values(ix1),y_values(iy1),x_values(ix2),y_values(iy2),	&
 	      real(Cov2(ix1,iy1,ix2,iy2)),Imag(Cov2(ix1,iy1,ix2,iy2)),Abs(Cov2(ix1,iy1,ix2,iy2))
 8010  format(7E16.6)
+
+          if ( (ix1.eq.ix2).AND.(iy1.eq.iy2) ) then
+! write diagonal elements
+            write(local_file_unit2,8020)x_values(ix1),y_values(iy1),	&
+	      real(Cov2(ix1,iy1,ix2,iy2)),Imag(Cov2(ix1,iy1,ix2,iy2)),Abs(Cov2(ix1,iy1,ix2,iy2))
+	  
+8020 format(5E16.7)
+	  
+	  end if
           
         end do    
       end do   
@@ -702,6 +744,7 @@ logical	:: inc_evanescent
   end do
   
   close(unit=local_file_unit)
+  close(unit=local_file_unit2)
  
   DEALLOCATE(Cov)
   DEALLOCATE(WF)

@@ -307,6 +307,7 @@ IMPLICIT NONE
   write(*,*)'Enter the filename for the correlation data'
   read(*,'(A)')opfilename  
   open(unit=12,file=opfilename)
+  open(unit=14,file=trim(opfilename)//'_diag')
   write(record_user_inputs_unit,'(A)')trim(opfilename)
   
 ! write final corelation data
@@ -324,9 +325,15 @@ IMPLICIT NONE
                         abs(c(px1,py1,px2,py2)),real(c(px1,py1,px2,py2)/cnorm),imag(c(px1,py1,px2,py2)/cnorm)
 8010 format(9E16.7)
 
-!          write(12,8010)px1,py1,px2,py2,real(c(px1,py1,px2,py2)),imag(c(px1,py1,px2,py2)),	&
-!                        abs(c(px1,py1,px2,py2)),real(c(px1,py1,px2,py2)/cnorm),imag(c(px1,py1,px2,py2)/cnorm)
-!8010 format(4I8,5E16.7)
+          if ( (px1.eq.px2).AND.(py1.eq.py2) ) then
+! write diagonal elements
+	  
+            cnorm=sqrt(c(px1,py1,px1,py1)*c(px2,py2,px2,py2))
+            write(14,8020)x_value(px1),y_value(py1),real(c(px1,py1,px2,py2)),imag(c(px1,py1,px2,py2)),	&
+                        abs(c(px1,py1,px2,py2)),real(c(px1,py1,px2,py2)/cnorm),imag(c(px1,py1,px2,py2)/cnorm)
+8020 format(7E16.7)
+	  
+	  end if
 
   	end do ! next py2
       end do ! next px2
@@ -337,6 +344,7 @@ IMPLICIT NONE
   
   close(unit=10)
   close(unit=12)
+  close(unit=14)
   
   DEALLOCATE( data_line )
   DEALLOCATE(data)

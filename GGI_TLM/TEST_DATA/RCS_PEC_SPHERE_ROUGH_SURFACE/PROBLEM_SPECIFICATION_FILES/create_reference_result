@@ -1,0 +1,5 @@
+cp sphere.field.tout PROBLEM_SPECIFICATION_FILES/sphere.field.tout_ref
+cp sphere.rcs.tout PROBLEM_SPECIFICATION_FILES/sphere.rcs.tout_ref
+cp sphere.rcs.fout PROBLEM_SPECIFICATION_FILES/sphere.rcs.fout_ref
+
+

@@ -30,6 +30,7 @@
 ! HISTORY
 !
 !     started 7/08/2012 CJS
+!     surface roughness 13/8/2015 CJS
 !
 
 MODULE geometry_types
@@ -130,6 +131,10 @@ TYPE::surface_type
   integer			:: mesh_cell_xmin,mesh_cell_xmax
   integer			:: mesh_cell_ymin,mesh_cell_ymax
   integer			:: mesh_cell_zmin,mesh_cell_zmax
+  
+  logical			:: roughness_flag
+  real*8			:: roughness_p1
+  real*8			:: roughness_p2
 
 END TYPE surface_type
 

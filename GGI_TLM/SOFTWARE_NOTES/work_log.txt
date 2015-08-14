@@ -626,6 +626,9 @@
 			MTL system described by the L and C matrices for the GGI_TLM model. The same analysis is performed
 			for a reduced system removing the TLM reference conductor and hence modelling the in-cell 
 			differential mode(s)
+			
+17/08/2015	CJS	Start to try some ideas for modelling surface roughness by displacing ideal surfaces in the normal direction by
+			a random distance. Tested on a spherical shell example.
 
 
 Next stages:  	
