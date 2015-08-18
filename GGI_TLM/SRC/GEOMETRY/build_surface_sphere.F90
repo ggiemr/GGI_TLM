@@ -108,6 +108,7 @@ integer		:: pvalue
       radius=radius0
       if (problem_surfaces(surface_number)%roughness_flag) then
         CALL random_number(r_random)
+	r_random=(r_random-0.5d0)*2d0
         radius=radius+r_random*problem_surfaces(surface_number)%roughness_p1
       end if
       CALL rthetaphi_to_xyz_point(radius,theta,phi,point1)
@@ -126,6 +127,7 @@ integer		:: pvalue
           radius=radius0
           if (problem_surfaces(surface_number)%roughness_flag) then
             CALL random_number(r_random)
+	    r_random=(r_random-0.5d0)*2d0
             radius=radius+r_random*problem_surfaces(surface_number)%roughness_p1
           end if
           CALL rthetaphi_to_xyz_point(radius,theta,phi,point1)
@@ -145,6 +147,7 @@ integer		:: pvalue
       radius=radius0
       if (problem_surfaces(surface_number)%roughness_flag) then
      	CALL random_number(r_random)
+	r_random=(r_random-0.5d0)*2d0
      	radius=radius+r_random*problem_surfaces(surface_number)%roughness_p1
       end if
       CALL rthetaphi_to_xyz_point(radius,theta,phi,point1)

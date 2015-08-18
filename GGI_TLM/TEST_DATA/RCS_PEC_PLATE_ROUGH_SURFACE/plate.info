@@ -1,0 +1,123 @@
+ ____________________________________________________
+ 
+ #START OF VOLUME MATERIAL DESCRIPTION
+ 
+ Number of volume materials=           0
+ 
+ 
+ #END OF VOLUME MATERIAL DESCRIPTION
+ ____________________________________________________
+ 
+ #START OF SURFACE MATERIAL DESCRIPTION
+ 
+ Number of surface materials=           1
+ 
+ 
+ Surface material_number :            1
+ Material type: PEC
+Number of geometric surfaces=         1
+Total number of material faces=          3792
+ 
+ #END OF SURFACE MATERIAL DESCRIPTION
+ ____________________________________________________
+ 
+ Huygens surface
+ 
+K theta=    0.000000 K phi=    0.000000
+E theta=    1.000000 E phi=    0.000000
+ 
+K vector=    0.000000    0.000000    1.000000
+E vector=    1.000000    0.000000    0.000000
+H vector=    0.000000    0.002654    0.000000
+ Number of surface patches=        4374
+ Offset for source term= -0.13999999999999999     
+ 
+  ____________________________________________________
+ 
+ Setting cell update codes
+ Number of special cells         1
+ Total number of cable cells         0
+ Total number of excitation cells         0
+ Total number of output cells         1
+  ____________________________________________________
+ 
+ Setting face update codes
+Number of special faces     12188
+Total number of cable faces         0
+Total number of excitation faces      4374
+Total number of output faces      5046
+ ____________________________________________________
+ 
+ RCS surface
+ 
+ Number of RCS surface faces=        5046
+ (R.k)min= -0.14500000000000002     
+ (R.k)max=  0.14500000000000002     
+ Far field time period=   1.0967335876074641E-008
+ Far field distance	=   3.2879245799999999     
+ n_far_field_points=         659
+ far_field_point_offset=         -30
+ 
+ Huygens surface number           1  Number of cell_faces=        4374
+ ____________________________________________________
+ 
+ #START OF MESH DESCRIPTION
+ 
+ Cell size, dl=   1.0000000000000000E-002  m
+ 
+ Nx=          41
+ Ny=          41
+ Nz=          41
+ 
+ Total number of cells=       68921
+ 
+ Outer boundary reflection coefficients
+R_xmin=  0.0000 R_xmax  0.0000
+R_ymin=  0.0000 R_ymax  0.0000
+R_zmin=  0.0000 R_zmax  0.0000
+ 
+ #END OF MESH DESCRIPTION
+ ____________________________________________________
+ 
+ #START OF RUN INFORMATION
+ 
+ GGI_TLM version:1.1.0
+ GGI_TLM date   :19th February 2015
+ GGI_TLM compilation date:Tue Aug 18 15:19:16 BST 2015
+ 
+ Timestep=   1.6678204759907604E-011  seconds
+ 
+ Number of timesteps=         600
+ 
+ Number of processes=            1
+ 
+ bicubic_warp_flag=  F
+ frequency_scale_flag=  F
+ frequency_scale=    1.0000000000000000     
+ 
+ GGI_TLM solution Started:
+ Date:18/08/2015
+ Time:16:13:00.031
+ 
+
+Memory Usage:
+
+  PID %CPU %MEM   RSS    VSZ COMMAND
+29531  0.0  0.1 12228  28244 GGI_TLM_SEQ
+
+
+ 
+ TLM solution Finished:
+ Date:18/08/2015
+ Time:16:13:05.577
+ 
+Run time:     00:00:05
+ 
+Run time per timestep:   0.92E-02 seconds
+ 
+ #END OF RUN INFORMATION
+ 
+#START OF OUTPUT INFORMATION
+Time domain field output at a point
+RCS output
+#END OF OUTPUT INFORMATION

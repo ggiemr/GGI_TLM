@@ -1,0 +1,6 @@
+cp plate.field.tout PROBLEM_SPECIFICATION_FILES/plate.field.tout_ref
+cp plate.rcs.tout PROBLEM_SPECIFICATION_FILES/plate.rcs.tout_ref
+cp plate.rcs.fout PROBLEM_SPECIFICATION_FILES/plate.rcs.fout_ref
+cp plate.far_field.fout.1 PROBLEM_SPECIFICATION_FILES/plate.far_field.fout.1_ref
+
+

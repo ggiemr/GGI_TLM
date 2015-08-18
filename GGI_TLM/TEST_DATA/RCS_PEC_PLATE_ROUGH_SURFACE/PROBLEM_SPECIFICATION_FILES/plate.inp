@@ -1,0 +1,88 @@
+
+Mesh_outer_boundary_dimension
+-0.205 0.205    -0.205 0.205    -0.205 0.205    
+
+Mesh_cell_dimension
+0.01  ( 3*integer)
+
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+Surface_list
+3   Number of surfaces (integer)
+1       surface_number (integer)
+rectangle
+0.25 0.25    surface parameters (n*real)
+surface_roughness 
+0.02
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       surface_number (integer)
+rectangular_block
+0.27 0.27 0.27        surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+3       surface_number (integer)
+rectangular_block
+0.29 0.29 0.29      surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Point_list
+1   Number of points (integer)
+1       point_number (integer)
+0.1 0.1 0.1    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Surface_material_list
+1   Number of surface materials (integer)
+1   SURFACE MATERIAL NUMBER
+PEC
+1       number of surfaces
+1       surface list
+1       surface orientation list
+
+Excitation_function_list
+1              ! number of excitations
+1              ! EXCITATION NUMBER
+gaussian
+1.0 1e-10 3e-10
+
+Huygens_surface
+2     surface number
+1     side of surface for excitation
+1     excitation function number
+0.0 0.0  wave vector Theta and Phi 
+1.0 0.0  Polarisation theta and Phi
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+1		! output point
+Ex
+centre
+output_timestep_information
+1      ! first output timestep
+200    ! last output timestep
+1     ! output timestep interval
+
+RCS_surface
+3     surface number
+1     Side of surface for RCS output
+0.3e9 3e9 0.1e8 frequency range for far field calculation
+180.0  Theta 
+0.0  Phi
+
+Far_field_surface_list
+1     number of far field surfaces
+1     FAR_FIELD_SURFACE_NUMBER
+3     surface number
+1		! side of surface for output (+1 or -1)
+3E9 frequency for far field calculation
+-180.0 180.0 1.0  Theta_min  Theta_max Theta_step
+0.0 0.0 1.0    Phi_min  Phi_max Phi_step
+
+Simulation_time
+10e-9
+
