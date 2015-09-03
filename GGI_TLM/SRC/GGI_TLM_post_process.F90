@@ -117,7 +117,7 @@ IMPLICIT NONE
   write(*,*)'46. Reciprocal Frequency Domain Data'
   write(*,*)'47. Time-frequency analysis'
   write(*,*)'48. Statistical tools'
-  write(*,*)'49. Create Poynting Vector plot'
+  write(*,*)'49. Create Poynting Vector or real/ imag E or H vector plot'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -523,10 +523,10 @@ IMPLICIT NONE
     
   else if (option.EQ.49) then
 
-    write(*,*)'Create Poynting Vector plot'
+    write(*,*)'Create Poynting Vector plot or real/ imag E or H vector plot'
     
-    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: CREATE POYNTING VECTOR PLOT'
-    write(post_process_info_unit,*)'Poynting Vector plot'
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: CREATE POYNTING VECTOR OR REAL/ IMAG E OR H VECTOR PLOT'
+    write(post_process_info_unit,*)'Create Poynting Vector or real/ imag E or H vector plot'
     CALL create_poynting_vector_plot()
      
   else

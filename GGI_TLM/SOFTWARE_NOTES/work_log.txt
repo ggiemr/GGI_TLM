@@ -629,6 +629,10 @@
 			
 17/08/2015	CJS	Start to try some ideas for modelling surface roughness by displacing ideal surfaces in the normal direction by
 			a random distance. Tested on a spherical shell example.
+			
+2/9/2015 	CJS     Allow Huygens surface on boundaries with non-zero reflection coefficient 
+			
+3/9/2015 	CJS     Allow plotting of real or imaginary E or H field vectors in poynting vector plot post process
 
 
 Next stages:  	

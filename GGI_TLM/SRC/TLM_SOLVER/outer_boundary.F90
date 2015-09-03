@@ -30,6 +30,7 @@
 !
 !     started 14/08/2012 CJS
 !     Huygens surface 4/12/2012 CJS
+!     Allow Huygens surface on boundaries with non-zero reflection coefficient 2/9/2015 CJS
 !
 !
 SUBROUTINE outer_boundary
@@ -164,8 +165,8 @@ IMPLICIT NONE
         Ms(2)=-(normz*value*(huygens_surface%Ei(1))-normx*value*(huygens_surface%Ei(3)))
         Ms(3)=-(normx*value*(huygens_surface%Ei(2))-normy*value*(huygens_surface%Ei(1)))  
 	
-        V(Vy_xmin,cx,cy,cz)=V(Vy_xmin,cx,cy,cz)-Js(2)*dl*Z0/2d0-Ms(3)*dl/2d0
-        V(Vz_xmin,cx,cy,cz)=V(Vz_xmin,cx,cy,cz)-Js(3)*dl*Z0/2d0+Ms(2)*dl/2d0
+        V(Vy_xmin,cx,cy,cz)=V(Vy_xmin,cx,cy,cz)-Js(2)*dl*Z0/2d0-Ms(3)*dl/2d0+R_xmin*(-Js(2)*dl*Z0/2d0+Ms(3)*dl/2d0)
+        V(Vz_xmin,cx,cy,cz)=V(Vz_xmin,cx,cy,cz)-Js(3)*dl*Z0/2d0+Ms(2)*dl/2d0+R_xmin*(-Js(3)*dl*Z0/2d0-Ms(2)*dl/2d0)
     
         cx=nx    
 	huygens_face=huygens_face+1 
@@ -185,8 +186,8 @@ IMPLICIT NONE
         Ms(2)=-(normz*value*(huygens_surface%Ei(1))-normx*value*(huygens_surface%Ei(3)))
         Ms(3)=-(normx*value*(huygens_surface%Ei(2))-normy*value*(huygens_surface%Ei(1)))  
 
-        V(Vy_xmax,cx,cy,cz)=V(Vy_xmax,cx,cy,cz)-Js(2)*dl*Z0/2d0+Ms(3)*dl/2d0
-        V(Vz_xmax,cx,cy,cz)=V(Vz_xmax,cx,cy,cz)-Js(3)*dl*Z0/2d0-Ms(2)*dl/2d0
+        V(Vy_xmax,cx,cy,cz)=V(Vy_xmax,cx,cy,cz)-Js(2)*dl*Z0/2d0+Ms(3)*dl/2d0+R_xmax*(-Js(2)*dl*Z0/2d0-Ms(3)*dl/2d0)
+        V(Vz_xmax,cx,cy,cz)=V(Vz_xmax,cx,cy,cz)-Js(3)*dl*Z0/2d0-Ms(2)*dl/2d0+R_xmax*(-Js(3)*dl*Z0/2d0+Ms(2)*dl/2d0)
 		
       end do    ! next y cell
     end do      ! next z cell
@@ -213,8 +214,8 @@ IMPLICIT NONE
         Ms(2)=-(normz*value*(huygens_surface%Ei(1))-normx*value*(huygens_surface%Ei(3)))
         Ms(3)=-(normx*value*(huygens_surface%Ei(2))-normy*value*(huygens_surface%Ei(1)))  
 
-        V(Vx_ymin,cx,cy,cz)=V(Vx_ymin,cx,cy,cz)-Js(1)*dl*Z0/2d0+Ms(3)*dl/2d0
-        V(Vz_ymin,cx,cy,cz)=V(Vz_ymin,cx,cy,cz)-Js(3)*dl*Z0/2d0-Ms(1)*dl/2d0
+        V(Vx_ymin,cx,cy,cz)=V(Vx_ymin,cx,cy,cz)-Js(1)*dl*Z0/2d0+Ms(3)*dl/2d0+R_ymin*(-Js(1)*dl*Z0/2d0-Ms(3)*dl/2d0)
+        V(Vz_ymin,cx,cy,cz)=V(Vz_ymin,cx,cy,cz)-Js(3)*dl*Z0/2d0-Ms(1)*dl/2d0+R_ymin*(-Js(3)*dl*Z0/2d0+Ms(1)*dl/2d0)
     
         cy=ny
 	huygens_face=huygens_face+1 
@@ -234,8 +235,8 @@ IMPLICIT NONE
         Ms(2)=-(normz*value*(huygens_surface%Ei(1))-normx*value*(huygens_surface%Ei(3)))
         Ms(3)=-(normx*value*(huygens_surface%Ei(2))-normy*value*(huygens_surface%Ei(1)))  
 
-        V(Vx_ymax,cx,cy,cz)=V(Vx_ymax,cx,cy,cz)-Js(1)*dl*Z0/2d0-Ms(3)*dl/2d0
-        V(Vz_ymax,cx,cy,cz)=V(Vz_ymax,cx,cy,cz)-Js(3)*dl*Z0/2d0+Ms(1)*dl/2d0
+        V(Vx_ymax,cx,cy,cz)=V(Vx_ymax,cx,cy,cz)-Js(1)*dl*Z0/2d0-Ms(3)*dl/2d0+R_ymax*(-Js(1)*dl*Z0/2d0+Ms(3)*dl/2d0)
+        V(Vz_ymax,cx,cy,cz)=V(Vz_ymax,cx,cy,cz)-Js(3)*dl*Z0/2d0+Ms(1)*dl/2d0+R_ymax*(-Js(3)*dl*Z0/2d0-Ms(1)*dl/2d0)
     	  
       end do  ! next x cell
     end do      ! next z cell
@@ -265,8 +266,8 @@ IMPLICIT NONE
           Ms(2)=-(normz*value*(huygens_surface%Ei(1))-normx*value*(huygens_surface%Ei(3)))
           Ms(3)=-(normx*value*(huygens_surface%Ei(2))-normy*value*(huygens_surface%Ei(1)))  
 
-          V(Vx_zmin,cx,cy,cz)=V(Vx_zmin,cx,cy,cz)-Js(1)*dl*Z0/2d0-Ms(2)*dl/2d0
-          V(Vy_zmin,cx,cy,cz)=V(Vy_zmin,cx,cy,cz)-Js(2)*dl*Z0/2d0+Ms(1)*dl/2d0
+          V(Vx_zmin,cx,cy,cz)=V(Vx_zmin,cx,cy,cz)-Js(1)*dl*Z0/2d0-Ms(2)*dl/2d0+R_zmin*(-Js(1)*dl*Z0/2d0+Ms(2)*dl/2d0)
+          V(Vy_zmin,cx,cy,cz)=V(Vy_zmin,cx,cy,cz)-Js(2)*dl*Z0/2d0+Ms(1)*dl/2d0+R_zmin*(-Js(2)*dl*Z0/2d0-Ms(1)*dl/2d0)
   	  
         end do  ! next x cell
       end do    ! next y cell
@@ -298,8 +299,8 @@ IMPLICIT NONE
           Ms(2)=-(normz*value*(huygens_surface%Ei(1))-normx*value*(huygens_surface%Ei(3)))
           Ms(3)=-(normx*value*(huygens_surface%Ei(2))-normy*value*(huygens_surface%Ei(1)))  
 
-          V(Vx_zmax,cx,cy,cz)=V(Vx_zmax,cx,cy,cz)-Js(1)*dl*Z0/2d0+Ms(2)*dl/2d0
-          V(Vy_zmax,cx,cy,cz)=V(Vy_zmax,cx,cy,cz)-Js(2)*dl*Z0/2d0-Ms(1)*dl/2d0
+          V(Vx_zmax,cx,cy,cz)=V(Vx_zmax,cx,cy,cz)-Js(1)*dl*Z0/2d0+Ms(2)*dl/2d0+R_zmax*(-Js(1)*dl*Z0/2d0-Ms(2)*dl/2d0)
+          V(Vy_zmax,cx,cy,cz)=V(Vy_zmax,cx,cy,cz)-Js(2)*dl*Z0/2d0-Ms(1)*dl/2d0+R_zmax*(-Js(2)*dl*Z0/2d0+Ms(1)*dl/2d0)
   	  
         end do  ! next x cell
       end do    ! next y cell

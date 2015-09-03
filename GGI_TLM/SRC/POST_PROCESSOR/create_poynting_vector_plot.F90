@@ -23,6 +23,7 @@
 ! DESCRIPTION
 !    Read frequency domain vector E and H fields and calculate the Poynting vector
 !    Then plot the resulting vector field
+!    Now extended to plot real and imaginary E and H fioeld vectors
 !     
 ! COMMENTS
 !     
@@ -30,6 +31,7 @@
 ! HISTORY
 !
 !     started 12/6/2015 CJS
+!     plot real and imaginary E and H fioeld vectors 3/9/2015 CJS
 !
 SUBROUTINE create_poynting_vector_plot
 
@@ -118,6 +120,10 @@ IMPLICIT NONE
   integer	:: optype
   integer,parameter :: avg_power=1
   integer,parameter :: reactive_power=2
+  integer,parameter :: E_re=3
+  integer,parameter :: E_im=4
+  integer,parameter :: H_re=5
+  integer,parameter :: H_im=6
   
   integer	:: plot_type
   integer,parameter :: vector_plot=1
@@ -349,15 +355,16 @@ IMPLICIT NONE
   
     
   write(*,*)
-  write(*,*)'Do you want to plot Average power flow (1) or Reactive power (2) ?'
+  write(*,*)'Do you want to plot Average power flow (1), Reactive power (2), Real E (3), Imag E (4), Real H (5) or Imag H (6) ?'
 
 200 CONTINUE  
   read(*,*)optype
-  if ( (optype.NE.avg_power).AND.(optype.NE.reactive_power) )then
-    write(*,*)'Expecting either 1 or 2 as a response...'
+  if ( (optype.LT.avg_power).AND.(optype.GT.H_im) )then
+    write(*,*)'Expecting either 1-6 as a response...'
     GOTO 200
   end if
-  write(record_user_inputs_unit,*)optype,' Average power flow (1) or Reactive power (2) '
+  write(record_user_inputs_unit,*)optype,&
+   ' Average power flow (1), Reactive power (2), Real E (3), Imag E (4), Real H (5) or Imag H (6)'
     
   write(*,*)
   write(*,*)'Do you want a vector plot (1) or magnitude plot (2) ?'
@@ -411,10 +418,29 @@ IMPLICIT NONE
 
     end do  ! next field component
 
+! get the plot vector
+    if ( (optype.EQ.avg_power).OR.(optype.EQ.reactive_power) )then
 ! Calculate the complex Poynting vector P=ExH*      
-    PV(1)=Efield(2)*conjg(Hfield(3))-Efield(3)*conjg(Hfield(2))
-    PV(2)=Efield(3)*conjg(Hfield(1))-Efield(1)*conjg(Hfield(3))
-    PV(3)=Efield(1)*conjg(Hfield(2))-Efield(2)*conjg(Hfield(1))
+      PV(1)=Efield(2)*conjg(Hfield(3))-Efield(3)*conjg(Hfield(2))
+      PV(2)=Efield(3)*conjg(Hfield(1))-Efield(1)*conjg(Hfield(3))
+      PV(3)=Efield(1)*conjg(Hfield(2))-Efield(2)*conjg(Hfield(1))
+    else if ( optype.EQ.E_re )then
+      PV(1)=cmplx(Dble(Efield(1)))
+      PV(2)=cmplx(Dble(Efield(2)))
+      PV(3)=cmplx(Dble(Efield(3)))
+    else if ( optype.EQ.H_re )then
+      PV(1)=cmplx(Dble(Hfield(1)))
+      PV(2)=cmplx(Dble(Hfield(2)))
+      PV(3)=cmplx(Dble(Hfield(3))) 
+    else if ( optype.EQ.E_im )then
+      PV(1)=cmplx(Dble(-j*Efield(1)))
+      PV(2)=cmplx(Dble(-j*Efield(2)))
+      PV(3)=cmplx(Dble(-j*Efield(3)))
+    else if ( optype.EQ.H_im )then
+      PV(1)=cmplx(Dble(-j*Hfield(1)))
+      PV(2)=cmplx(Dble(-j*Hfield(2)))
+      PV(3)=cmplx(Dble(-j*Hfield(3))) 
+    end if
      
     if (optype.eq.avg_power) then
       data_range=max(data_range,real(PV(1))/2,real(PV(2))/2,real(PV(3))/2)
@@ -524,11 +550,29 @@ IMPLICIT NONE
                        ( volume_animation(template_volume)%points(point+1,3)		&
                         -volume_animation(template_volume)%points(point+2,3) )**2 )
 
-
+! get the plot vector
+    if ( (optype.EQ.avg_power).OR.(optype.EQ.reactive_power) )then
 ! Calculate the complex Poynting vector P=ExH*      
       PV(1)=Efield(2)*conjg(Hfield(3))-Efield(3)*conjg(Hfield(2))
       PV(2)=Efield(3)*conjg(Hfield(1))-Efield(1)*conjg(Hfield(3))
       PV(3)=Efield(1)*conjg(Hfield(2))-Efield(2)*conjg(Hfield(1))
+    else if ( optype.EQ.E_re )then
+      PV(1)=cmplx(Dble(Efield(1)))
+      PV(2)=cmplx(Dble(Efield(2)))
+      PV(3)=cmplx(Dble(Efield(3)))
+    else if ( optype.EQ.H_re )then
+      PV(1)=cmplx(Dble(Hfield(1)))
+      PV(2)=cmplx(Dble(Hfield(2)))
+      PV(3)=cmplx(Dble(Hfield(3))) 
+    else if ( optype.EQ.E_im )then
+      PV(1)=cmplx(Dble(-j*Efield(1)))
+      PV(2)=cmplx(Dble(-j*Efield(2)))
+      PV(3)=cmplx(Dble(-j*Efield(3)))
+    else if ( optype.EQ.H_im )then
+      PV(1)=cmplx(Dble(-j*Hfield(1)))
+      PV(2)=cmplx(Dble(-j*Hfield(2)))
+      PV(3)=cmplx(Dble(-j*Hfield(3))) 
+    end if
 
 ! calculate the vector to plot
       do i=1,3
@@ -540,8 +584,10 @@ IMPLICIT NONE
 		
         if (optype.eq.avg_power) then
           vector(i)=0.5d0*re  ! Real power
-	else
+	else if (optype.eq.reactive_power) then
           vector(i)=0.5d0*im  ! Reactive power
+	else
+          vector(i)=re
 	end if
 	
       end do
@@ -620,7 +666,7 @@ IMPLICIT NONE
 
     if (plot_type.eq.vector_plot) then
 
-      write(animation_output_unit,'(A,2I10)')'POLYGONS',n_quads_arrow,n_quads_arrow*5
+      write(animation_output_unit,'(A,2I12)')'POLYGONS',n_quads_arrow,n_quads_arrow*5
 
       point=0
       do quad=1,n_quads_arrow
@@ -628,12 +674,12 @@ IMPLICIT NONE
         write(animation_output_unit,8010)4,point,point+1,point+2,point+3
         point=point+4
 
-8010    format(I3,4I8)
+8010    format(I3,4I12)
       
       end do ! next cell
 
 ! write point based data
-      write(animation_output_unit,'(A,I10)')'POINT_DATA ',n_points_arrow
+      write(animation_output_unit,'(A,I12)')'POINT_DATA ',n_points_arrow
       write(animation_output_unit,'(A)')'SCALARS Field_on_cells float 1'
       write(animation_output_unit,'(A)')'LOOKUP_TABLE field_on_cells_table'
 
@@ -652,7 +698,7 @@ IMPLICIT NONE
       
     else if (plot_type.eq.magnitude_plot) then
 
-      write(animation_output_unit,'(A,2I10)')'POLYGONS',n_quads_cell,n_quads_cell*5
+      write(animation_output_unit,'(A,2I12)')'POLYGONS',n_quads_cell,n_quads_cell*5
 
       point=0
       do quad=1,n_quads_cell
@@ -663,7 +709,7 @@ IMPLICIT NONE
       end do ! next cell
 
 ! write point based data
-      write(animation_output_unit,'(A,I10)')'POINT_DATA ',n_points_cell
+      write(animation_output_unit,'(A,I12)')'POINT_DATA ',n_points_cell
       write(animation_output_unit,'(A)')'SCALARS Field_on_cells float 1'
       write(animation_output_unit,'(A)')'LOOKUP_TABLE field_on_cells_table'
 
