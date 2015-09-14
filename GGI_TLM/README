@@ -45,13 +45,7 @@ ________________________________________________________________________________
 
 CYGWIN INSTALLATION NOTES
 
-The system will need to be set up as described in the SYSTEM CONFIGURATION note above. 
-
-The path can be set correctly by editing the .bash_profile file to include the line
-
-PATH=".:${HOME}/GGI_TLM/GGI_TLM/bin:${PATH}"
-
-where ${HOME}/GGI_TLM/GGI_TLM/bin should be replaced by the path to the GGI_TLM/bin directory on your system.
+Please see the file README_windows_cygwin
 
 _______________________________________________________________________________________________________
 
