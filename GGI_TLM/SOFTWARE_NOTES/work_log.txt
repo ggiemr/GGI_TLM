@@ -634,6 +634,7 @@
 			
 3/9/2015 	CJS     Allow plotting of real or imaginary E or H field vectors in poynting vector plot post process
 
+24/9/2015	CJS	Generate surface meshes on spheres based on a triangle sub-division algorithm starting with an icosahedron.
 
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE
