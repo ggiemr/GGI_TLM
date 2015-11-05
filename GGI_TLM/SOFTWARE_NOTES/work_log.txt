@@ -636,6 +636,8 @@
 
 24/9/2015	CJS	Generate surface meshes on spheres based on a triangle sub-division algorithm starting with an icosahedron.
 
+5/11/2015	CJS	Include a flag for compressing ooutpput files and start to incorporate the compression of files into
+			the code - frequency_output_volume data initially 
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE
 		- Start to implement and document all the Fieldsolve test cases : STARTED

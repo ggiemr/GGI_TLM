@@ -32,6 +32,7 @@
 !
 !     started 12/6/2015 CJS
 !     plot real and imaginary E and H fioeld vectors 3/9/2015 CJS
+!     5/11/2015  CJS allow the process to work on compressed files
 !
 SUBROUTINE create_poynting_vector_plot
 
@@ -131,6 +132,12 @@ IMPLICIT NONE
   
   character*3 :: ch3
   logical	:: logscale_flag
+
+! compression stuff
+  logical	:: compression_flag
+  integer	:: len_filename
+  character(len=256)	:: filename2
+  character*3   :: extn
   
 ! START
 
@@ -141,7 +148,7 @@ IMPLICIT NONE
 5 write(*,*)
   write(*,*)'Volume field output files:'
   
-  command='ls -ltr *.frequency_output_volume.fout'
+  command='ls -ltr *.frequency_output_volume.fout*'
   CALL system(command)
 
   write(*,*)'Enter the volume field filename'
@@ -153,8 +160,19 @@ IMPLICIT NONE
   end if
   write(record_user_inputs_unit,'(A)')trim(filename)
   
-  OPEN(unit=local_file_unit,file=filename)
-   
+! check for .gz extension which indicates a compressed file
+  compression_flag=.FALSE.
+  len_filename=LEN(trim(filename))
+  extn=filename(len_filename-2:len_filename)
+  if (extn.EQ.'.gz') then
+    compression_flag=.TRUE.
+  end if
+  
+!  OPEN(unit=local_file_unit,file=filename)
+! note we must give the filename without the .gz extension here
+  filename2=filename(1:len_filename-3)
+  CALL open_output_file_read(local_file_unit,filename2,compression_flag)
+
   base_filename=trim(filename)
     
 ! STAGE 2. Read frequency_output_volume file
@@ -732,7 +750,8 @@ IMPLICIT NONE
   
 ! STAGE 7. Close fieldsolve file and deallocate memory
 
-  CLOSE(unit=local_file_unit)
+!  CLOSE(unit=local_file_unit)
+   CALL close_output_file(local_file_unit,filename2,compression_flag)
     
 ! Deallocate memory for animation  
     

@@ -126,7 +126,7 @@ END SUBROUTINE set_frequency_output_volumes_in_mesh
 ! HISTORY
 !
 !     started 5/12/2012 CJS
-!
+!     5/11/2015 CJS	Include file compression stuff
 !
 SUBROUTINE initialise_frequency_output_volumes
 
@@ -201,7 +201,10 @@ IMPLICIT NONE
     if (rank.eq.0) then
 ! rank 0 process only: write header for volume field outputs. Could maybe use write_volume_mesh_list_vtk...
   
-      OPEN(unit=frequency_output_volume_unit,file=trim(problem_name)//frequency_output_volume_extn)
+  
+!      OPEN(unit=frequency_output_volume_unit,file=trim(problem_name)//frequency_output_volume_extn)
+      CALL open_output_file_write(frequency_output_volume_unit,	&
+           trim(problem_name)//frequency_output_volume_extn,compress_output_files)
 
       write(frequency_output_volume_unit,'(A)')'# NUMBER OF FREQUENCY OUTPUT VOLUMES:'
       write(frequency_output_volume_unit,'(I10)')n_frequency_output_volumes

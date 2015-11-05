@@ -30,6 +30,7 @@
 !
 !     started 23/10/2014 CJS
 !     Fix problem when number of cells is not the same for all volumes... CJS 16/1/2015
+!     5/11/2015  CJS allow the process to work on compressed files
 !
 SUBROUTINE Convert_Frequency_Domain_Volume_Field_Format
 
@@ -66,13 +67,19 @@ logical	:: file_exists
 
 TYPE(surface_animation_data),allocatable	:: volume_animation(:)
 
+! compression stuff
+  logical	:: compression_flag
+  integer	:: len_filename
+  character(len=256)	:: filename2
+  character*3   :: extn
+
 ! START
 ! Open data file
 
 5 write(*,*)
   write(*,*)'Volume field output files:'
   
-  command='ls -ltr *.frequency_output_volume.fout'
+  command='ls -ltr *.frequency_output_volume.fout*'
   CALL system(command)
 
   write(*,*)'Enter the volume field filename'
@@ -83,9 +90,20 @@ TYPE(surface_animation_data),allocatable	:: volume_animation(:)
     GOTO 5
   end if
   write(record_user_inputs_unit,'(A)')trim(filename)
+
+! check for .gz extension which indicates a compressed file
+  compression_flag=.FALSE.
+  len_filename=LEN(trim(filename))
+  extn=filename(len_filename-2:len_filename)
+  if (extn.EQ.'.gz') then
+    compression_flag=.TRUE.
+  end if
   
-  OPEN(unit=local_file_unit,file=filename)
-     
+!  OPEN(unit=local_file_unit,file=filename)
+! note we must give the filename without the .gz extension here
+  filename2=filename(1:len_filename-3)
+  CALL open_output_file_read(local_file_unit,filename2,compression_flag)
+      
 ! STAGE 2. Read frequency_output_volume file
 
 !# NUMBER OF FREQUENCY OUTPUT VOLUMES:
@@ -266,7 +284,8 @@ TYPE(surface_animation_data),allocatable	:: volume_animation(:)
   
     end do ! next cell
  
-    CLOSE(unit=local_file_unit)
+!  CLOSE(unit=local_file_unit)
+    CALL close_output_file(local_file_unit,filename2,compression_flag)
   
     GOTO 2000 ! see whether we need to output another of the volumes
  

@@ -78,6 +78,7 @@ IMPLICIT NONE
   frequency_scale_flag=.FALSE.
   frequency_scale=1d0
   set_random_number_seed=.FALSE.
+  compress_output_files=.FALSE.
   
   periodic_boundary=.FALSE.
   

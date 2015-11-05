@@ -329,7 +329,7 @@ END SUBROUTINE write_frequency_domain_outputs
 ! HISTORY
 !
 !     started 15/08/2012 CJS
-!
+!     5/11/2015 CJS Include file compression stuff
 !
 SUBROUTINE finish_outputs
 
@@ -415,7 +415,9 @@ IMPLICIT NONE
   if (n_frequency_output_volumes.gt.0) then
   
     write (info_file_unit,'(A)')"Frequency domain field over a volume"
-    CLOSE(unit=frequency_output_volume_unit)
+!    CLOSE(unit=frequency_output_volume_unit)
+    CALL close_output_file(frequency_output_volume_unit,	&
+         trim(problem_name)//frequency_output_volume_extn,compress_output_files)
     
   end if
 

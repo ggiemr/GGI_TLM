@@ -36,6 +36,7 @@ SUBROUTINE read_input_file_solver
 USE TLM_general
 USE file_information
 USE geometry
+USE TLM_output
 
 IMPLICIT NONE
 
@@ -154,6 +155,10 @@ character*256	:: input_line
     else if (input_line.EQ.'frequency_scale_flag') then
     
       CALL read_frequency_scale_flag()
+            
+    else if (input_line.EQ.'compress_output_files') then
+    
+        compress_output_files=.TRUE.
             
     else if (input_line.EQ.'wrapping_boundary_conditions') then
     

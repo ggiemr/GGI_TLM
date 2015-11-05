@@ -30,6 +30,7 @@
 !
 !     started 28/01/2013 CJS
 !     bug fix 22/11/2013 CJS n_cells not set correctly when writing animation data to file
+!     5/11/2015  CJS allow the process to work on compressed files
 !
 SUBROUTINE create_vector_volume_frequency_domain_animation
 
@@ -114,6 +115,13 @@ IMPLICIT NONE
   logical	:: found_volume
   integer 	:: number_of_cone_surfaces
   logical	:: scale_vector
+
+! compression stuff
+  logical	:: compression_flag
+  integer	:: len_filename
+  character(len=256)	:: filename2
+  character*3   :: extn
+  
 ! START
 
   number_of_cone_surfaces=8
@@ -123,7 +131,7 @@ IMPLICIT NONE
 5 write(*,*)
   write(*,*)'Volume field output files:'
   
-  command='ls -ltr *.frequency_output_volume.fout'
+  command='ls -ltr *.frequency_output_volume.fout*'
   CALL system(command)
 
   write(*,*)'Enter the volume field filename'
@@ -134,9 +142,20 @@ IMPLICIT NONE
     GOTO 5
   end if
   write(record_user_inputs_unit,'(A)')trim(filename)
+
+! check for .gz extension which indicates a compressed file
+  compression_flag=.FALSE.
+  len_filename=LEN(trim(filename))
+  extn=filename(len_filename-2:len_filename)
+  if (extn.EQ.'.gz') then
+    compression_flag=.TRUE.
+  end if
   
-  OPEN(unit=local_file_unit,file=filename)
-   
+!  OPEN(unit=local_file_unit,file=filename)
+! note we must give the filename without the .gz extension here
+  filename2=filename(1:len_filename-3)
+  CALL open_output_file_read(local_file_unit,filename2,compression_flag)
+
   base_filename=trim(filename)
     
 ! STAGE 2. Read frequency_output_volume file
@@ -161,6 +180,7 @@ IMPLICIT NONE
 ! read header information  
   do surface=1,n_volumes
   
+    write(*,*)'volume number',surface,' of',n_volumes
     read(local_file_unit,'(A80)'),ipline
     read(local_file_unit,'(A80)'),ipline
     read(local_file_unit,*)n_points
@@ -475,7 +495,9 @@ IMPLICIT NONE
   
 ! STAGE 7. Close fieldsolve file and deallocate memory
 
-  CLOSE(unit=local_file_unit)
+!  CLOSE(unit=local_file_unit)
+   CALL close_output_file(local_file_unit,filename2,compression_flag)
+
     
 ! Deallocate memory for animation  
     

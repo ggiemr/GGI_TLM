@@ -423,3 +423,6 @@ output point is 'inside' the PEC/PMC and sees no field.
 132. GGI_TLM_user_guide: Far_field_surface_list needs updating (at the moment the name is far_field_surface etc)
 
 133. The Huygens surface on the outer boundary requires boundary reflection coefficients of 0 on all outer boundaries or we run into problems...
+     STARTED: this problem has been addressed and (maybe) solved but it needs proper testing.
+
+134  We need to include the compression of output files for all output types.

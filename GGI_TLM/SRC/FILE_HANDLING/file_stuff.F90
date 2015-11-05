@@ -21,6 +21,9 @@
 ! SUBROUTINE close_vtk_file
 ! SUBROUTINE open_file
 ! SUBROUTINE close_file
+! SUBROUTINE open_output_file_write
+! SUBROUTINE open_output_file_read
+! SUBROUTINE close_output_file
 ! NAME
 !     SUBROUTINE open_general_files
 !
@@ -193,12 +196,12 @@ integer :: file_unit
 END SUBROUTINE close_vtk_file
 !
 ! NAME
-!     SUBROUTINE open_vtk_file
+!     SUBROUTINE open_file
 !
 ! DESCRIPTION
-!     open_vtk_file:
+!     open_file:
 !
-!     open vtk file with the provided unit, file extension and integer tag
+!     open file with the provided unit, file extension and integer tag
 !     
 ! COMMENTS
 !     
@@ -264,3 +267,191 @@ integer :: file_unit
   RETURN
   
 END SUBROUTINE close_file
+!
+! NAME
+!     SUBROUTINE open_output_file_write
+!
+! DESCRIPTION
+!     open_output_file_write:
+!
+!     open output file with the provided unit, file extension and compression flag
+!     If compression is required then this process is achieved using a named pipe
+!     linked to gzip
+!     
+! COMMENTS
+!     
+!
+! HISTORY
+!
+!     started 5/11/2015 CJS
+!
+!
+SUBROUTINE open_output_file_write(file_unit,file,compression_flag)
+
+IMPLICIT NONE
+
+integer :: file_unit
+character*(*)	:: file
+logical	::compression_flag
+
+! local variables
+
+character(len=256)	:: filename
+character(len=256)	:: gzfilename
+character(len=256)	:: Instruction
+integer			:: iostat
+
+! START
+
+  if (.NOT.compression_flag) then
+  
+    filename=trim(file)
+    open(UNIT=file_unit,FILE=filename)
+  
+  else
+! compression is required
+
+    filename=trim(file)
+    gzfilename=trim(filename)//'.gz'
+
+! the name of the pipe is 'filename'
+    call SYSTEM("rm -f "//trim(filename)//" ;mkfifo "//trim(filename))
+
+! start a background gzip process with the pipe as input
+! gzip writes to the filename with additional .gz extensiion
+
+    Instruction="gzip -9 -c < "//trim(filename)//" > "//trim(gzfilename)//" &"
+    call SYSTEM(Instruction)
+
+! open a connection to the pipe for writing
+    open(UNIT=file_unit,file=trim(filename),iostat=iostat,ACTION='WRITE')
+    
+  end if
+
+  RETURN
+  
+END SUBROUTINE open_output_file_write
+!
+! NAME
+!     SUBROUTINE open_output_file_read
+!
+! DESCRIPTION
+!     open_output_file_read:
+!
+!     open output file with the provided unit, file extension and compression flag
+!     If compression is required then this process is achieved using a named pipe
+!     linked to gzip
+!     
+! COMMENTS
+!     
+!
+! HISTORY
+!
+!     started 5/11/2015 CJS
+!
+!
+SUBROUTINE open_output_file_read(file_unit,file,compression_flag)
+
+IMPLICIT NONE
+
+integer :: file_unit
+character*(*)	:: file
+logical	::compression_flag
+
+! local variables
+
+character(len=256)	:: filename
+character(len=256)	:: gzfilename
+character(len=256)	:: Instruction
+integer			:: iostat
+logical			:: exists
+
+! START
+
+  if (.NOT.compression_flag) then
+  
+    filename=trim(file)
+    open(UNIT=file_unit,FILE=filename)
+  
+  else
+! compression is required
+
+    filename=trim(file)
+    gzfilename=trim(filename)//'.gz'
+
+! check that the .gz file exists...
+    INQUIRE(FILE=trim(gzfilename), EXIST=exists)
+    if (.NOT.exists) then
+      write(*,*)'File does not exist:',trim(gzfilename)
+      STOP
+    end if
+
+! the name of the pipe is 'filename'
+    call SYSTEM("rm -f "//trim(filename)//" ;mkfifo "//trim(filename))
+
+! start a background gzip -dc process with the .gz file as input and the pipe as output
+
+    Instruction="gzip -dc "//trim(gzfilename)//" > "//trim(filename)//"  &"
+    call SYSTEM(Instruction)
+
+! open a connection to the pipe for writing
+    open(UNIT=file_unit,file=trim(filename),iostat=iostat,ACTION='READ')
+    
+  end if
+
+  RETURN
+  
+END SUBROUTINE open_output_file_read
+!
+! NAME
+!     SUBROUTINE close_output_file
+!
+! DESCRIPTION
+!     close an output file used for reading or writing
+!    
+!
+! COMMENTS
+!     
+!
+! HISTORY
+!
+!     started 5/11/2015 CJS
+!
+!
+SUBROUTINE close_output_file(file_unit,file,compression_flag)
+
+IMPLICIT NONE
+
+integer :: file_unit
+character*(*)	:: file
+logical	::compression_flag
+
+! local variables
+
+character(len=256)	:: filename
+character(len=256)	:: gzfilename
+character(len=256)	:: Instruction
+
+! START
+
+  if (.NOT.compression_flag) then
+
+    close(unit=file_unit)
+    
+  else
+  
+    filename=trim(file)
+    gzfilename=trim(filename)//'.gz'
+  
+! close the fortran connection to the pipe
+    close(unit=file_unit)
+
+! remove the named pipe
+    Instruction="rm -f "//trim(filename)
+    CALL system(Instruction)
+
+  end if
+
+  RETURN
+  
+END SUBROUTINE close_output_file

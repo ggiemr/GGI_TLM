@@ -21,10 +21,11 @@
 !     read_bicubic_warp_flag
 !
 ! DESCRIPTION
-!     read output volume_average list
+!     read bicubic_warp_flag
 !
 ! Example packet:
-!
+!bicubic_warp_flag
+!TRUE
 !
 !
 ! COMMENTS

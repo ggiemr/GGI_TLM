@@ -1,3 +1,5 @@
+## Some other tests...
+
 
 ## TEST WHETHER THE NUMBER OF ARGUMENTS IS AS REQUIRED (1 HERE)
 if [ "$#" != "1" ] ; then
@@ -15,6 +17,37 @@ else
 
   echo "Argument found :$VAR"
 
+fi
+
+## Some other tests...
+
+#String_tests 		Description
+
+string1 = string2 	True if strings are equal
+string1 != string2 	True if the strings are not equal
+-n string1 		True if the string is not null
+-z string1 		True if the string is null
+
+#Numeric_tests 		Description
+number1 -eq number2 	True if the expressions are equal
+number1 -ne number2 	True if the expressions are not equal
+
+number1 -gt number2 	True if number1 is greater than number2
+number1 -lt number2 	True if number1 is less than number2
+
+number1 -ge number2 	True if number1 is greater than or equal to number2
+number1 -le number2 	True if number1 is less than or equal to number1
+
+#File_tests 		Description
+
+-f file 		True if the provided string is a file
+-s file 		True if the file has a non-zero size
+-d file 		True if the file is a directory
+
+
+## Some further if statements...
+if [[ "$VAR" = "value_1" || "$VAR" = "value_2" ]] ; then
+  exit 1
 fi
 
 ## LOOP OVER A LIST
@@ -67,11 +100,6 @@ echo "Test sending the result of a command to a file" > temp_file.txt
 ## Append the output from a command to a file
 
 echo "Append this line to the file" >> temp_file.txt
-
-## Some further if statements...
-if [[ "$VAR" = "value_1" || "$VAR" = "value_2" ]] ; then
-  exit 1
-fi
      
 ## Number of files matching a pattern
 NUMBER_OF_INPUT_FILES=$(ls *.inp | wc -l)

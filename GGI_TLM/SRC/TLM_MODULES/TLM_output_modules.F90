@@ -357,5 +357,7 @@ type(SAR_volume_type),allocatable    	:: SAR_volume_list(:)
   
 integer					:: n_output_modes
 type(output_mode_type),allocatable 	:: output_mode_list(:)
+
+logical					:: compress_output_files
  
 END MODULE TLM_output
