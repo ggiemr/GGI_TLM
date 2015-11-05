@@ -1,0 +1,45 @@
+          49  POST PROCESSING OPTION: CREATE POYNTING VECTOR OR REAL/ IMAG E OR H VECTOR PLOT
+cylinder.frequency_output_volume.fout.gz
+           1  Output volume component number           1
+           0  Output volume component number           2
+           0  Output volume component number           3
+           0  Output volume component number           4
+           2  Output volume component number           5
+           3  Output volume component number           6
+           1  Average power flow (1), Reactive power (2), Real E (3), Imag E (4), Real H (5) or Imag H (6)
+           2  vector plot (1) or magnitude plot (2) 
+lin
+y
+poynting_vector
+           3  Post processing option: Fourier Transform
+cylinder.field.tout
+           1
+lin
+   1.0e8 fmin
+   5.0e8 fmax
+            1000 n_frequencies
+cylinder.fout
+          18  POST PROCESSING OPTION: CREATE VECTOR FREQUENCY DOMAIN ANIMATION
+cylinder.frequency_output_volume.fout.gz
+           0  Output surface component number           1
+           2  Output surface component number           2
+           3  Output surface component number           3
+y
+H_field
+          18  POST PROCESSING OPTION: CREATE VECTOR FREQUENCY DOMAIN ANIMATION
+cylinder.frequency_output_volume.fout.gz
+           1  Output surface component number           1
+           0  Output surface component number           2
+           0  Output surface component number           3
+y
+E_field   
+          41  POST PROCESSING OPTION: Convert Frequency Domain Volume Field Output 
+cylinder.frequency_output_volume.fout.gz
+           1    ! frequency output volume to write to file
+formatted_output_data.dat
+n ! Append to existing file?
+           2    ! frequency output volume to write to file
+formatted_output_data.dat
+y ! Append to existing file?
+           0    ! frequency output volume to write to file
+           0  Post processing option: Quit
