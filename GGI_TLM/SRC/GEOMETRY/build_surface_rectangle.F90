@@ -138,7 +138,7 @@ integer		:: pvalue
       end if
       
 ! calculate the number of triangles and allocate memory for the triangulated surface data      
-      number_of_triangles=n_x*n_y*2
+      number_of_triangles=(n_x-1)*(n_y-1)*2
       problem_surfaces(surface_number)%number_of_triangles=number_of_triangles    
       allocate( problem_surfaces(surface_number)%triangle_list(1:number_of_triangles) )
 
@@ -169,6 +169,12 @@ integer		:: pvalue
 	end do ! next y
 	
       end do ! next x
+      
+      if (triangle_count.NE.number_of_triangles) then
+        write(*,*)'Error in build_surface_rectangle'
+	write(*,*)triangle_count,number_of_triangles
+	STOP
+      end if
       
       DEALLOCATE( point_list )
 

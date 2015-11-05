@@ -3,6 +3,8 @@
 Mesh_outer_boundary_dimension
 -2.9512195e-6 2.9512195e-6 -2.9512195e-6 2.9512195e-6 -2.9512195e-6 2.9512195e-6
 
+new_mesh_generation
+
 # Specify the mesh dimensions
 Mesh_dimensions_in_cells
 61 61 61
