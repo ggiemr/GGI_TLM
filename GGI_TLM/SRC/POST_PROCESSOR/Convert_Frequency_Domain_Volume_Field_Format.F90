@@ -99,10 +99,13 @@ TYPE(surface_animation_data),allocatable	:: volume_animation(:)
     compression_flag=.TRUE.
   end if
   
-!  OPEN(unit=local_file_unit,file=filename)
-! note we must give the filename without the .gz extension here
-  filename2=filename(1:len_filename-3)
-  CALL open_output_file_read(local_file_unit,filename2,compression_flag)
+  if (compression_flag) then
+! We must give the filename without the .gz extension here
+    filename2=filename(1:len_filename-3)
+    CALL open_output_file_read(local_file_unit,filename2,compression_flag)
+  else
+    OPEN(unit=local_file_unit,file=filename)
+  end if
       
 ! STAGE 2. Read frequency_output_volume file
 
@@ -284,8 +287,11 @@ TYPE(surface_animation_data),allocatable	:: volume_animation(:)
   
     end do ! next cell
  
-!  CLOSE(unit=local_file_unit)
-    CALL close_output_file(local_file_unit,filename2,compression_flag)
+    if (compression_flag) then
+     CALL close_output_file(local_file_unit,filename2,compression_flag)
+    else
+      CLOSE(unit=local_file_unit)
+    end if
   
     GOTO 2000 ! see whether we need to output another of the volumes
  

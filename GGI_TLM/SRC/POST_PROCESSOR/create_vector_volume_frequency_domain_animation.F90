@@ -150,13 +150,16 @@ IMPLICIT NONE
   if (extn.EQ.'.gz') then
     compression_flag=.TRUE.
   end if
-  
-!  OPEN(unit=local_file_unit,file=filename)
-! note we must give the filename without the .gz extension here
-  filename2=filename(1:len_filename-3)
-  CALL open_output_file_read(local_file_unit,filename2,compression_flag)
 
-  base_filename=trim(filename)
+  if (compression_flag) then
+! We must give the filename without the .gz extension here
+    filename2=filename(1:len_filename-3)
+    CALL open_output_file_read(local_file_unit,filename2,compression_flag)
+    base_filename=trim(filename2)
+  else
+    OPEN(unit=local_file_unit,file=filename)
+    base_filename=trim(filename)
+  end if
     
 ! STAGE 2. Read frequency_output_volume file
 
@@ -495,9 +498,11 @@ IMPLICIT NONE
   
 ! STAGE 7. Close fieldsolve file and deallocate memory
 
-!  CLOSE(unit=local_file_unit)
+  if (compression_flag) then
    CALL close_output_file(local_file_unit,filename2,compression_flag)
-
+  else
+    CLOSE(unit=local_file_unit)
+  end if
     
 ! Deallocate memory for animation  
     
