@@ -1,6 +1,0 @@
- Set_mesh_parameters:
- (dlx.ne.dl).OR.(dly.ne.dl).OR.(dlz.ne.dl)
- dl=  0.10000000000000002     
- dlx=  0.10000000000000001     
- dly=  0.10000000000000001     
- dlz=  0.10000000000000001     

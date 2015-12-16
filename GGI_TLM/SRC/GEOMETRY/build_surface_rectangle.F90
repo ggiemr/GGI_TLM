@@ -69,6 +69,8 @@ real*8		:: r_random
 integer		:: tvalue
 integer		:: pvalue
 
+real*8		:: edge_length
+
 ! START
 
     
@@ -78,12 +80,16 @@ integer		:: pvalue
       lx=problem_surfaces(surface_number)%surface_parameters(1)
       ly=problem_surfaces(surface_number)%surface_parameters(2)
 
-! set the length of triangle edges to be of the order of dl/2, half the mesh edge length and ensure
+! set the length of triangle edges based on the correlation length of the surface roughness parameter 
+! if this is unset or too small then set it to be of the order of dl/2, half the mesh edge length and ensure
 ! we have at least 2 edges in each dimension
 
-      nlx=2*NINT(lx/dl)  ! ensure that nlx is an even number
+      edge_length=problem_surfaces(surface_number)%roughness_p2*2d0
+      if (edge_length.LT.dl/2d0) edge_length=dl
+      
+      nlx=2*NINT(lx/edge_length)  ! ensure that nlx is an even number
       if (nlx.lt.2) nlx=2
-      nly=2*NINT(ly/dl)  ! ensure that nlx is an even number
+      nly=2*NINT(ly/edge_length)  ! ensure that nlx is an even number
       if (nly.lt.2) nly=2
       
       n_x=nlx

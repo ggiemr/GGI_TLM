@@ -638,6 +638,10 @@
 
 5/11/2015	CJS	Include a flag for compressing ooutpput files and start to incorporate the compression of files into
 			the code - frequency_output_volume data initially 
+			
+16/12/2015	CJS	Add a second surface roughness parameter for rectangular surfaces to control the spatial correlation
+                        by specifying the triangulation edge length for the rectangular surface prior to distortion of the surface nodes
+			 
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE
 		- Start to implement and document all the Fieldsolve test cases : STARTED

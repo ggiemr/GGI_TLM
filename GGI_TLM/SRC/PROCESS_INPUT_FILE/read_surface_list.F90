@@ -236,12 +236,21 @@ logical	:: file_exists
     
 ! check for surface roughness specification
     problem_surfaces(surface_number)%roughness_flag=.FALSE.
+    problem_surfaces(surface_number)%roughness_p1=0d0
+    problem_surfaces(surface_number)%roughness_p2=0d0
     read(input_file_unit,'(A17)',end=9070)input_line
     CALL convert_to_lower_case(input_line,256)
     
     if (input_line.EQ.'surface_roughness') then
       problem_surfaces(surface_number)%roughness_flag=.TRUE.
-      read(input_file_unit,*,end=9070)problem_surfaces(surface_number)%roughness_p1
+      if (problem_surfaces(surface_number)%surface_type.EQ.surface_type_sphere) then
+! read a single roughness parameter
+        read(input_file_unit,*,end=9070)problem_surfaces(surface_number)%roughness_p1
+      else
+! read two roughness parameters
+        read(input_file_unit,*,end=9070)problem_surfaces(surface_number)%roughness_p1,  &
+	                                problem_surfaces(surface_number)%roughness_p2
+      end if
     else
 ! no roughness parameters specified so step back as if the current line had not been read
       backspace(input_file_unit)

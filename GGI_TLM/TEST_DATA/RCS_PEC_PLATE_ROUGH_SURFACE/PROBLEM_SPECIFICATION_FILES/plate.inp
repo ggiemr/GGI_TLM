@@ -14,7 +14,7 @@ Surface_list
 rectangle
 0.25 0.25    surface parameters (n*real)
 surface_roughness 
-0.02
+0.02 0.025
 0.0 0.0 0.0
 0.0 0.0 0.0
 2       surface_number (integer)
