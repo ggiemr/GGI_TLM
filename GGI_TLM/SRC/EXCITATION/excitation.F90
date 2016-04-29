@@ -367,7 +367,7 @@ IMPLICIT NONE
 
         if (time.ge.0d0) then
     
-          amplitude=1d0/excitation_functions(excitation_number)%parameters(1)
+          amplitude=excitation_functions(excitation_number)%parameters(1)
           alpha=1d0/excitation_functions(excitation_number)%parameters(2)
           beta=1d0/excitation_functions(excitation_number)%parameters(3)
           tpeak=(log(beta)-log(alpha))/(beta-alpha)
@@ -611,7 +611,7 @@ IMPLICIT NONE
     
 ! START
 
-  t_offset=(offset-offset_min)/c0
+  t_offset=(offset-offset_min)/(c0/reduced_c_factor)
   local_time=(dble(timestep-1))*dt-t_offset  ! note this is the time at the start of the timestep, 
                                              ! not at the half timestep connect
   

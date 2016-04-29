@@ -136,6 +136,8 @@ IMPLICIT NONE
   real*8	:: dt
   integer	:: n_timesteps
   
+  real*8	:: reduced_c_factor=1d0
+  
   character(len=2),parameter	:: Ex_string='ex'
   character(len=2),parameter	:: Ey_string='ey'
   character(len=2),parameter	:: Ez_string='ez'

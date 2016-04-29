@@ -234,7 +234,7 @@ else
     
   fi
   
-  rm progress
+  rm -f progress
   touch progress
   
   if [ "$ACTION" = "run_mpi" ] ; then

@@ -91,7 +91,7 @@ IMPLICIT NONE
   
   CALL write_line('CALLED: set_TLM_solver_parameters',0,output_to_screen_flag)
   
-  dt=dl/(2d0*c0)
+  dt=dl/(2d0*c0/reduced_c_factor)
   
   n_timesteps=NINT(simulation_time/dt)
   

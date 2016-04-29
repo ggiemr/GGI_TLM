@@ -18,6 +18,7 @@
   SUBROUTINE calc_E_const(rp,tp,rb,Er_local,Et_local)
    
 USE constants
+USE TLM_general
 
 IMPLICIT NONE
   
@@ -44,6 +45,7 @@ IMPLICIT NONE
   SUBROUTINE calc_E_cos(rp,tp,rb,m,Er_local,Et_local)
    
 USE constants
+USE TLM_general
 
 IMPLICIT NONE
   
@@ -71,6 +73,7 @@ IMPLICIT NONE
   SUBROUTINE calc_E_sin(rp,tp,rb,m,Er_local,Et_local)
    
 USE constants
+USE TLM_general
 
 IMPLICIT NONE
   
@@ -98,6 +101,7 @@ IMPLICIT NONE
   SUBROUTINE calc_E_ICR_const(rp,tp,rb,Er_local,Et_local)
    
 USE constants
+USE TLM_general
 
 IMPLICIT NONE
   
@@ -121,6 +125,7 @@ IMPLICIT NONE
   SUBROUTINE calc_E_ICR_cos(rp,tp,rb,m,Er_local,Et_local)
    
 USE constants
+USE TLM_general
 
 IMPLICIT NONE
   
@@ -132,8 +137,8 @@ IMPLICIT NONE
 
 ! START
 
-  Er_local=-((rp/rb)**(m-1))*cos(m*tp)/( 2d0*eps0 ) 
-  Et_local= ((rp/rb)**(m-1))*sin(m*tp)/( 2d0*eps0 )
+  Er_local=-((rp/rb)**(m-1))*cos(m*tp)/( 2d0*(eps0*reduced_c_factor) ) 
+  Et_local= ((rp/rb)**(m-1))*sin(m*tp)/( 2d0*(eps0*reduced_c_factor) )
  
  return
  
@@ -145,6 +150,7 @@ IMPLICIT NONE
   SUBROUTINE calc_E_ICR_sin(rp,tp,rb,m,Er_local,Et_local)
    
 USE constants
+USE TLM_general
 
 IMPLICIT NONE
   
@@ -156,8 +162,8 @@ IMPLICIT NONE
 
 ! START
  
-  Er_local=-((rp/rb)**(m-1))*sin(m*tp)/( 2d0*eps0 )
-  Et_local=-((rp/rb)**(m-1))*cos(m*tp)/( 2d0*eps0 )
+  Er_local=-((rp/rb)**(m-1))*sin(m*tp)/( 2d0*(eps0*reduced_c_factor) )
+  Et_local=-((rp/rb)**(m-1))*cos(m*tp)/( 2d0*(eps0*reduced_c_factor) )
  
  return
  
@@ -169,6 +175,7 @@ IMPLICIT NONE
   SUBROUTINE calc_E_OCR_const(rp,tp,rb,Er_local,Et_local)
    
 USE constants
+USE TLM_general
 
 IMPLICIT NONE
   
@@ -179,7 +186,7 @@ IMPLICIT NONE
 
 ! START
  
-  Er_local=rb/(eps0*rp)
+  Er_local=rb/((eps0*reduced_c_factor)*rp)
   Et_local=0d0
  
  return
@@ -192,6 +199,7 @@ IMPLICIT NONE
   SUBROUTINE calc_E_OCR_cos(rp,tp,rb,m,Er_local,Et_local)
    
 USE constants
+USE TLM_general
 
 IMPLICIT NONE
   
@@ -203,8 +211,8 @@ IMPLICIT NONE
 
 ! START
  
-  Er_local= ((rb/rp)**(m+1))*cos(m*tp)/( 2d0*eps0 )
-  Et_local= ((rb/rp)**(m+1))*sin(m*tp)/( 2d0*eps0 )
+  Er_local= ((rb/rp)**(m+1))*cos(m*tp)/( 2d0*(eps0*reduced_c_factor) )
+  Et_local= ((rb/rp)**(m+1))*sin(m*tp)/( 2d0*(eps0*reduced_c_factor) )
  
  return
  
@@ -216,6 +224,7 @@ IMPLICIT NONE
   SUBROUTINE calc_E_OCR_sin(rp,tp,rb,m,Er_local,Et_local)
    
 USE constants
+USE TLM_general
 
 IMPLICIT NONE
   
@@ -227,8 +236,8 @@ IMPLICIT NONE
 
 ! START
  
-  Er_local= ((rb/rp)**(m+1))*sin(m*tp)/( 2d0*eps0 )
-  Et_local=-((rb/rp)**(m+1))*cos(m*tp)/( 2d0*eps0 )
+  Er_local= ((rb/rp)**(m+1))*sin(m*tp)/( 2d0*(eps0*reduced_c_factor) )
+  Et_local=-((rb/rp)**(m+1))*cos(m*tp)/( 2d0*(eps0*reduced_c_factor) )
  
  return
  

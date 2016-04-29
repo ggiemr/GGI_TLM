@@ -184,6 +184,7 @@ END SUBROUTINE set_volume_material_mesh
 ! History
 !
 !     started 04/09/12 CJS
+!     reduced_c stuff 26/04/2016 CJS
 !
 
 SUBROUTINE calculate_volume_material_filter_coefficients()
@@ -225,8 +226,8 @@ IMPLICIT NONE
     
 ! Calculate Filter coefficients for the frequency dependent impedance of electric susceptibility
       
-! Electric loss admittance
-      volume_material_list(material_number)%Ge=volume_material_list(material_number)%sigma_e*dl
+! Electric loss admittance : reduce the conductivity when with the reduced_c algorithm running
+      volume_material_list(material_number)%Ge=volume_material_list(material_number)%sigma_e*dl/reduced_c_factor
       if (volume_material_list(material_number)%Ge.lt.0d0) then
 ! if we think this is a result of tolerance issuse then set to zero, else cause an error
         if (volume_material_list(material_number)%Ge.lt.-small) then
@@ -256,9 +257,9 @@ IMPLICIT NONE
 
       if (volume_material_list(material_number)%eps_filter_exists) then
 
-! Stage 1. Calculate susceptibility impedance= 1/( jw*eps0*dl*(epsr(jw)-1) )
+! Stage 1. Calculate susceptibility impedance= 1/( jw*(eps0*reduced_c_factor)*dl*(epsr(jw)-1) )
 
-        Cstub_constant=eps0*dl
+        Cstub_constant=(eps0*reduced_c_factor)*dl
           
         CALL calculate_electric_susceptibility_impedance_Sfilter(		&
                      volume_material_list(material_number)%eps_S,Cstub_constant,Zs_eps_Sfilter ) 
@@ -321,9 +322,9 @@ IMPLICIT NONE
 
       if (volume_material_list(material_number)%mu_filter_exists) then
 
-! Stage 1. Calculate susceptibility impedance= jw*mu0*dl*(mur(jw)-1)
+! Stage 1. Calculate susceptibility impedance= jw*(mu0*reduced_c_factor)*dl*(mur(jw)-1)
 
-        Lstub_constant=mu0*dl
+        Lstub_constant=(mu0*reduced_c_factor)*dl
       
         CALL calculate_magnetic_susceptibility_impedance_Sfilter(		&
                    volume_material_list(material_number)%mu_S,Lstub_constant,Zs_mu_Sfilter)

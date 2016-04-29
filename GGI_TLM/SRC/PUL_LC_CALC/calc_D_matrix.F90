@@ -19,6 +19,7 @@
    
 USE pul_data
 USE constants
+USE TLM_general
 
 IMPLICIT NONE
   
@@ -122,7 +123,7 @@ IMPLICIT NONE
 	  
 	      m=0
 	      call calc_phi_OCR_const(rp,tp,rw,phi_local)
-	      pul_D(row,col)=-rw*log(rp)/eps0
+	      pul_D(row,col)=-rw*log(rp)/(eps0*reduced_c_factor)
     
 	    else if (col_point.le.1+pul_wire_spec(col_wire)%nterms) then ! A term (cos theta)
 	  

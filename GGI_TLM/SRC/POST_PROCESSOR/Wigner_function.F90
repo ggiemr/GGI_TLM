@@ -30,6 +30,7 @@
 !
 !     started 23/10/2014 CJS
 !     attempt to improve the numerics of the Wigner function propagation
+!     attempt to improve the speed of the process 20/1/2016 CJS: reorder arrays, pre-calculate exponential functions, single precision
 !
 SUBROUTINE wigner_function
 
@@ -46,48 +47,51 @@ integer			:: np,npx,npy
 
   integer		:: max_col
   integer		:: n_lines
-  real*8		:: value(4)
+  real*4		:: value(4)
   integer		:: step(0:4)
   integer		:: n(0:4)
-  real*8		:: data_line(1:6)
+  real*4		:: data_line(1:6)
   integer		:: loop
   integer		:: num,den
   
-  real*8,allocatable    :: x_values(:)
-  real*8,allocatable    :: y_values(:)
+  real*4,allocatable    :: x_values(:)
+  real*4,allocatable    :: y_values(:)
   
-  real*8,allocatable    :: sx_values(:)
-  real*8,allocatable    :: sy_values(:)
+  real*4,allocatable    :: sx_values(:)
+  real*4,allocatable    :: sy_values(:)
   
 
-complex*16,allocatable	:: Cov(:,:,:,:)
-complex*16,allocatable	:: WF(:,:,:,:)
+complex,allocatable	:: Cov(:,:,:,:)
+complex,allocatable	:: WF(:,:,:,:)
 
-complex*16,allocatable	:: WF2(:,:,:,:)
-complex*16,allocatable	:: Cov2(:,:,:,:)
+complex,allocatable	:: WF2(:,:,:,:)
+complex,allocatable	:: Cov2(:,:,:,:)
 integer,allocatable	:: Nsamples_WF2(:,:,:,:)
 
-real*8			:: frequency
-real*8			:: dx,dy,dA
+complex,allocatable	:: exp_function(:,:,:,:)
+
+real*4			:: frequency
+real*4			:: dx,dy,dA
 
 character*256		:: filename
 
-real*8			:: k,w
+real*4			:: k,w
 
-real*8			:: x1,xmin,xmax,x2
-real*8			:: y1,ymin,ymax,y2
-real*8			:: sx2,sx,sy2,sy
-real*8			:: px,py,dp,kdpA
-real*8			:: pmin,pmax,mag_p
+real*4			:: x1,xmin,xmax,x2
+real*4			:: y1,ymin,ymax,y2
+real*4			:: sx2,sx,sy2,sy
+real*4			:: px,py,dp,kdpA
+real*4			:: pmin,pmax,mag_p
 
-real*8			:: z
+real*4			:: z
 
-complex*16		:: sum
+complex		:: sum
 
-real*8			:: re,im,x0
+real*4			:: re,im,x0
 integer			:: element_x1,element_y1,element_x2,element_y2
 
 integer			:: ix1,ix2,iy1,iy2,isx,isy,ipx,ipy
+integer			:: array_sx,array_sy
 
 integer			:: i,ii,i1,i2,i3,i4
 
@@ -114,7 +118,7 @@ logical	:: inc_evanescent
 
   n_lines=0
   step(:)=0
-  value(:)=0d0
+  value(:)=0.0
    
 10 CONTINUE
 
@@ -207,14 +211,14 @@ logical	:: inc_evanescent
 
   write(*,*)'ALLOCATE MEMORY AND READ COVARIANCE DATA FILE'
   
-  ALLOCATE(Cov(1:nx,1:ny,1:nx,1:ny))
+  ALLOCATE(Cov(1:nx,1:nx,1:ny,1:ny))
   
-  ALLOCATE(WF(1:2*nx-1,1:2*ny-1,1:np,1:np))
+  ALLOCATE(WF(1:np,1:np,1:2*nx-1,1:2*ny-1))
   
-  ALLOCATE(Cov2(1:nx,1:ny,1:nx,1:ny))
+  ALLOCATE(Cov2(1:nx,1:nx,1:ny,1:ny))
   
-  ALLOCATE(WF2(1:2*nx-1,1:2*ny-1,1:np,1:np))
-  ALLOCATE(Nsamples_WF2(1:2*nx-1,1:2*ny-1,1:np,1:np))
+  ALLOCATE(WF2(1:np,1:np,1:2*nx-1,1:2*ny-1))
+  ALLOCATE(Nsamples_WF2(1:np,1:np,1:2*nx-1,1:2*ny-1))
   
   ALLOCATE( x_values(1:nx) )
   ALLOCATE( y_values(1:ny) )
@@ -224,8 +228,8 @@ logical	:: inc_evanescent
 
   rewind(local_file_unit)
   
-  x_values(1:nx)=0d0
-  y_values(1:ny)=0d0
+  x_values(1:nx)=0.0
+  y_values(1:ny)=0.0
   
   do ix1=1,nx
     do iy1=1,ny
@@ -235,10 +239,10 @@ logical	:: inc_evanescent
           read(local_file_unit,*)x1,y1,x2,y2,re,im
 
 ! We could check the file format here maybe???
-     	  
+! note 21/1/2016: reordered array
           x_values(ix1)=x1
           y_values(iy1)=y1
-          Cov(ix1,iy1,ix2,iy2)=cmplx(re,im)
+          Cov(ix1,ix2,iy1,iy2)=cmplx(re,im)
       
         end do     
       end do     
@@ -250,13 +254,13 @@ logical	:: inc_evanescent
   dx=x_values(2)-x_values(1)
   dy=y_values(2)-y_values(1)
   
-  xmax=nx*dx/2d0
+  xmax=nx*dx/2.0
   xmin=-xmax
   do ix1=1,2*nx-1
     sx_values(ix1)=xmin+ix1*dx/2.0
   end do
   
-  ymax=ny*dy/2d0
+  ymax=ny*dy/2.0
   ymin=-ymax
   do iy1=1,2*ny-1
     sy_values(iy1)=ymin+iy1*dy/2.0
@@ -289,7 +293,7 @@ logical	:: inc_evanescent
   end if
   write(record_user_inputs_unit,'(A,A)')ch,'  !  Do you want to propagate the evansecent field (y/n)?'
 
-  w=2d0*pi*frequency
+  w=2.0*pi*frequency
   k=w/c0
   
   pmin=-pmax
@@ -297,20 +301,20 @@ logical	:: inc_evanescent
   
 ! sort out the numerical integration element of area for 1D and 2D scenarios for the correlation to Wigner function integration
   if (nx.eq.1) then
-    dA=2d0*dy
+    dA=2.0*dy
   else if (ny.eq.1) then
-    dA=2d0*dx
+    dA=2.0*dx
   else
-    dA=2d0*dx*2d0*dy
+    dA=2.0*dx*2.0*dy
   end if
       
 ! sort out the numerical integration element of area for 1D and 2D scenarios for the Wigner function to correlation function integration
   if (nx.eq.1) then
-    kdpA=k*dp/(2d0*pi)
+    kdpA=k*dp/(2.0*pi)
   else if (ny.eq.1) then
-    kdpA=k*dp/(2d0*pi)
+    kdpA=k*dp/(2.0*pi)
   else
-    kdpA=k*k*dp*dp/((2d0*pi)*(2d0*pi))
+    kdpA=k*k*dp*dp/((2.0*pi)*(2.0*pi))
   end if
 
   write(*,*)''
@@ -336,9 +340,52 @@ logical	:: inc_evanescent
   
 ! EVALUATE THE WIGNER DISTRIBUTION FUNCTION
 
+! pre-calculate the Fourier integral complex exponentials
+  
+! may have the range of s wrong here... need to check
+  ALLOCATE(exp_function(-ny:ny,-nx:nx,1:np,1:np))
+
+  do ipx=1,npx
+  
+    if (npx.eq.1) then
+      px=0.0
+    else
+      px=pmin+(ipx-1)*dp
+    end if
+  
+    do ipy=1,npy
+  
+      if (npy.eq.1) then
+    	py=0.0
+      else
+    	py=pmin+(ipy-1)*dp
+      end if
+  
+      do array_sx=-nx,nx
+      	   
+    	sx=(real(array_sx))*dx
+    	  
+  	do array_sy=-ny,ny
+  
+  	  element_y1=iy1-isy+1
+  	  element_y2=isy
+
+  	  sy=(real(array_sy))*dy
+    	      
+    	  exp_function(array_sy,array_sx,ipy,ipx)=exp(-j*k*(px*sx+py*sy))*dA
+    	    
+  	end do ! next sy
+  
+      end do ! next sx
+       
+    end do ! next py
+      
+  end do ! next px
+
+
   write(*,*)'EVALUATE THE WIGNER DISTRIBUTION FUNCTION'
 
-  Cov2(:,:,:,:)=(0d0,0d0)
+  Cov2(:,:,:,:)=(0.0,0.0)
       
   write(6,8100,advance='no')'ix1= ',1,' of ',2*nx-1,' iy1= ',1,' of ',2*ny-1
 8100    format(A5,I10,A4,I10,A6,I10,A4,I10)    
@@ -355,7 +402,7 @@ logical	:: inc_evanescent
       do ipx=1,npx
       
 	if (npx.eq.1) then
-	  px=0d0
+	  px=0.0
 	else
 	  px=pmin+(ipx-1)*dp
 	end if
@@ -363,54 +410,50 @@ logical	:: inc_evanescent
         do ipy=1,npy
       
 	  if (npy.eq.1) then
-	    py=0d0
+	    py=0.0
 	  else
 	    py=pmin+(ipy-1)*dp
 	  end if
     
 ! Integrate over sx
-          sum=(0d0,0d0)
+          sum=(0.0,0.0)
     
           do isx=1,ix1
       
-          element_x1=ix1-isx+1
-          element_x2=isx
+            element_x1=ix1-isx+1
+            element_x2=isx
+	  
+! only continue if the element row,col exists : check no 1
+	    if (     (element_x1.ge.1).AND.(element_x1.LE.nx) &
+	        .AND.(element_x2.ge.1).AND.(element_x2.LE.nx) ) then 
       
-! sx2=sx/2 is the speparation in m of the data available in the covariance matrix    
-          sx2=(real(element_x2-element_x1))*dx/2.0
-	  sx=2d0*sx2
-    
+! sx2=sx/2 is the speparation in m of the data available in the covariance matrix    	      
+              array_sx=element_x2-element_x1
+	      
 !   Integrate over sy
-            do isy=1,iy1
+              do isy=1,iy1
       
-              element_y1=iy1-isy+1
-              element_y2=isy
-      
-! sy2=sy/2 is the speparation in m of the data available in the covariance matrix    
-              sy2=(real(element_y2-element_y1))*dy/2.0
-	      sy=2d0*sy2
+                element_y1=iy1-isy+1
+                element_y2=isy
 	
-! only continue if the element row,col exists	
-	      if (     (element_x1.ge.1).AND.(element_x1.LE.nx) &
-	          .AND.(element_x2.ge.1).AND.(element_x2.LE.nx) &    
-	          .AND.(element_y1.ge.1).AND.(element_y1.LE.ny) &    
-	          .AND.(element_y2.ge.1).AND.(element_y2.LE.ny)   ) then 
+! only continue if the element row,col exists : check no 2
+	        if (     (element_y1.ge.1).AND.(element_y1.LE.ny) &    
+	            .AND.(element_y2.ge.1).AND.(element_y2.LE.ny)   ) then 
+      
+! sy2=sy/2 is the speparation in m of the data available in the covariance matrix  
+                  array_sy=element_y2-element_y1
 		  
-!	        write(*,*)ix1,iy1,ipx,ipy
-!	        write(*,*)px,py,sx,sy
-!	        write(*,*)exp(-j*k*(px*sx+py*sy))
-!	        write(*,*)Cov(element_x1,element_y1,element_x2,element_y2)
-!	        write(*,*)dA
+	          sum=sum+exp_function(array_sy,array_sx,ipy,ipx)*Cov(element_x1,element_x2,element_y1,element_y2)
 		
-	        sum=sum+exp(-j*k*(px*sx+py*sy))*Cov(element_x1,element_y1,element_x2,element_y2)*dA
-		
-	      end if
+	        end if ! check 2 on y element existance
   
-            end do ! next sy
+              end do ! next sy
+	    
+	    end if  ! check 1 on x element existance
   
           end do ! next sx
       
-          WF(ix1,iy1,ipx,ipy)=sum
+          WF(ipy,ipx,iy1,ix1)=sum
       
         end do ! next py
       
@@ -419,6 +462,8 @@ logical	:: inc_evanescent
     end do ! next iy
     
   end do ! next ix
+  
+  DEALLOCATE(exp_function)
 
 ! WRITE THE WIGNER FUNCTION TO FILE  
 
@@ -432,18 +477,16 @@ logical	:: inc_evanescent
 
   do ix1=1,2*nx-1
   
-!    x1=xmin+ix1*dl/2.0
     x1=sx_values(ix1)
   
     do iy1=1,2*ny-1
     
-!      y1=ymin+iy1*dl/2.0
       y1=sy_values(iy1)
        
       do ipx=1,npx
     
 	if (npx.eq.1) then
-	  px=0d0
+	  px=0.0
 	else
 	  px=pmin+(ipx-1)*dp
 	end if
@@ -451,16 +494,17 @@ logical	:: inc_evanescent
         do ipy=1,npy
     
 	  if (npy.eq.1) then
-	    py=0d0
+	    py=0.0
 	  else
 	    py=pmin+(ipy-1)*dp
 	  end if
 
 ! If the Wigner function value is too small to fit in the standard Fortran format then set it to zero.
-	  if (abs(WF(ix1,iy1,ipx,ipy)).LT.1D-30) WF(ix1,iy1,ipx,ipy)=0d0
+	  if (abs(WF(ipy,ipx,iy1,ix1)).LT.1E-30) WF(ipy,ipx,iy1,ix1)=0.0
       
-          write(local_file_unit,8000)x1,y1,px,py,real(WF(ix1,iy1,ipx,ipy)),Imag(WF(ix1,iy1,ipx,ipy)),Abs(WF(ix1,iy1,ipx,ipy))
-8000  format(7E16.6)
+!          write(local_file_unit,8000)x1,y1,px,py,real(WF(ipy,ipx,iy1,ix1)),Imag(WF(ipy,ipx,iy1,ix1)),Abs(WF(ipy,ipx,iy1,ix1))
+          write(local_file_unit,8000)x1,y1,px,py,real(WF(ipy,ipx,iy1,ix1))
+8000  format(5E12.4)
       
         end do
       
@@ -476,23 +520,21 @@ logical	:: inc_evanescent
 
   write(*,*)'PROPAGATE THE WIGNER FUNCTION A DISTANCE Z'
   
-  WF2(:,:,:,:)=(0d0,0d0)
-  Nsamples_WF2(1:2*nx-1,1:2*ny-1,1:np,1:np)=0
+  WF2(:,:,:,:)=(0.0,0.0)
+  Nsamples_WF2(1:np,1:np,1:2*nx-1,1:2*ny-1)=0
   
   do ix1=1,2*nx-1
   
-!    x1=xmin+ix1*dl/2.0
     x1=sx_values(ix1)
   
     do iy1=1,2*ny-1
     
-!      y1=ymin+iy1*dl/2.0
       y1=sy_values(iy1)
        
       do ipx=1,npx
     
 	if (npx.eq.1) then
-	  px=0d0
+	  px=0.0
 	else
 	  px=pmin+(ipx-1)*dp
 	end if
@@ -500,29 +542,29 @@ logical	:: inc_evanescent
         do ipy=1,npy
     
 	  if (npy.eq.1) then
-	    py=0d0
+	    py=0.0
 	  else
 	    py=pmin+(ipy-1)*dp
 	  end if
  
           mag_p=sqrt(px*px+py*py)
       
-          if (abs(mag_p).LT.1d0) then
+          if (abs(mag_p).LT.1.0) then
 
 ! Propagation rule for propagating waves
       
-            x2=x1-z*px/sqrt(1d0-abs(mag_p)**2)
-            ix2=NINT((x2-xmin)*2d0/dx)
+            x2=x1-z*px/sqrt(1.0-abs(mag_p)**2)
+            ix2=NINT((x2-xmin)*2.0/dx)
       
-            y2=y1-z*py/sqrt(1d0-abs(mag_p)**2)
-            iy2=NINT((y2-ymin)*2d0/dy)
+            y2=y1-z*py/sqrt(1.0-abs(mag_p)**2)
+            iy2=NINT((y2-ymin)*2.0/dy)
       
             if ((ix2.ge.1).AND.(ix2.LE.2*nx-1).AND.(iy2.ge.1).AND.(iy2.LE.2*ny-1)) then
-!OLD              WF2(ix1,iy1,ipx,ipy)=WF(ix2,iy2,ipx,ipy)
+!OLD              WF2(ipy,ipx,iy1,ix1)=WF(ipy,ipx,iy2,ix2)
 
-              WF2(ix1,iy1,ipx,ipy)=WF2(ix1,iy1,ipx,ipy)+WF(ix2,iy2,ipx,ipy)
+              WF2(ipy,ipx,iy1,ix1)=WF2(ipy,ipx,iy1,ix1)+WF(ipy,ipx,iy2,ix2)
 	      
-	      Nsamples_WF2(ix1,iy1,ipx,ipy)=Nsamples_WF2(ix1,iy1,ipx,ipy)+1
+	      Nsamples_WF2(ipy,ipx,iy1,ix1)=Nsamples_WF2(ipy,ipx,iy1,ix1)+1
 	      
             end if
 	
@@ -532,11 +574,11 @@ logical	:: inc_evanescent
 ! Note that this is still the original algorithm applied here...
             if (inc_evanescent) then
 	
-              WF2(ix1,iy1,ipx,ipy)=WF(ix1,iy1,ipx,ipy)*exp(-2d0*k*z*sqrt(mag_p*mag_p-1d0))
+              WF2(ipy,ipx,iy1,ix1)=WF(ipy,ipx,iy1,ix1)*exp(-2.0*k*z*sqrt(mag_p*mag_p-1.0))
 	  
 	    else
 	
-	      WF2(ix1,iy1,ipx,ipy)=0d0
+	      WF2(ipy,ipx,iy1,ix1)=0.0
 	
 	    end if
       
@@ -559,9 +601,9 @@ logical	:: inc_evanescent
           
         do ipy=1,npy
 	
-	  if(Nsamples_WF2(ix1,iy1,ipx,ipy).NE.0) then
+	  if(Nsamples_WF2(ipy,ipx,iy1,ix1).NE.0) then
 	  
-	    WF2(ix1,iy1,ipx,ipy)=WF2(ix1,iy1,ipx,ipy)/Nsamples_WF2(ix1,iy1,ipx,ipy)
+	    WF2(ipy,ipx,iy1,ix1)=WF2(ipy,ipx,iy1,ix1)/Nsamples_WF2(ipy,ipx,iy1,ix1)
 	    
 	  end if
 	
@@ -586,18 +628,16 @@ logical	:: inc_evanescent
 
   do ix1=1,2*nx-1
   
-!    x1=xmin+ix1*dl/2.0
     x1=sx_values(ix1)
   
     do iy1=1,2*ny-1
     
-!      y1=ymin+iy1*dl/2.0
       y1=sy_values(iy1)
        
       do ipx=1,npx
     
 	if (npx.eq.1) then
-	  px=0d0
+	  px=0.0
 	else
 	  px=pmin+(ipx-1)*dp
 	end if
@@ -605,15 +645,16 @@ logical	:: inc_evanescent
         do ipy=1,npy
     
 	  if (npy.eq.1) then
-	    py=0d0
+	    py=0.0
 	  else
 	    py=pmin+(ipy-1)*dp
 	  end if
 
 ! If the Wigner function value is too small to fit in the standard Fortran format then set it to zero.
-	  if (abs(WF2(ix1,iy1,ipx,ipy)).LT.1D-30) WF2(ix1,iy1,ipx,ipy)=0d0
+	  if (abs(WF2(ipy,ipx,iy1,ix1)).LT.1D-30) WF2(ipy,ipx,iy1,ix1)=0.0
       
-          write(local_file_unit,8000)x1,y1,px,py,real(WF2(ix1,iy1,ipx,ipy)),Imag(WF2(ix1,iy1,ipx,ipy)),Abs(WF2(ix1,iy1,ipx,ipy))
+!          write(local_file_unit,8000)x1,y1,px,py,real(WF2(ipy,ipx,iy1,ix1)),Imag(WF2(ipy,ipx,iy1,ix1)),Abs(WF2(ipy,ipx,iy1,ix1))
+          write(local_file_unit,8000)x1,y1,px,py,real(WF2(ipy,ipx,iy1,ix1))
       
         end do
       
@@ -628,79 +669,102 @@ logical	:: inc_evanescent
 ! EVALUATE THE COVARIANCE FUNCTION FROM THE WIGNER DISTRIBUTION FUNCTION
 
   write(*,*)'EVALUATE THE COVARIANCE FUNCTION FROM THE WIGNER DISTRIBUTION FUNCTION'
+
+! pre-calculate the Fourier integral complex exponentials
+  ALLOCATE(exp_function(1:np,1:np,-ny:ny,-nx:nx))
+    
+  do array_sx=-nx,nx
+       
+    sx=(real(array_sx))*dx
+      
+    do array_sy=-ny,ny
   
-  Cov2(:,:,:,:)=(0d0,0d0)
+      sy=(real(array_sy))*dy
+  
+      do ipx=1,npx
+     
+    	if (npx.eq.1) then
+    	  px=0.0
+    	else
+    	  px=pmin+(ipx-1)*dp
+    	end if
+  
+  	do ipy=1,npy
+  
+    	  if (npy.eq.1) then
+    	    py=0.0
+    	  else
+    	    py=pmin+(ipy-1)*dp
+    	  end if
+      
+    	  exp_function(ipy,ipx,array_sy,array_sx)=exp(j*k*(px*sx+py*sy))*kdpA
+    	  
+  	end do ! next py
+  
+      end do ! next px
+    	
+    end do ! next sy
+  
+  end do ! next sx
+
+ 
+  Cov2(:,:,:,:)=(0.0,0.0)
       
   write(6,8100,advance='no')'ix1= ',1,' of ',2*nx-1,' iy1= ',1,' of ',2*ny-1
   flush(6)
 
   do ix1=1,2*nx-1
   
-!    x1=xmin+ix1*dl/2.0
-    x1=sx_values(ix1)
-  
     do iy1=1,2*ny-1
     
       write(6,'(A)',advance='no')char(13)
       write(6,8100,advance='no')'ix1= ',ix1,' of ',2*nx-1,' iy1= ',iy1,' of ',2*ny-1
       flush(6)    
-  
-!      y1=ymin+iy1*dl/2.0
-      y1=sy_values(iy1)
     
       do isx=1,ix1   
       
         element_x1=ix1-isx+1
         element_x2=isx
+	  
+! only continue if the element row,col exists : check no 1
+	if (     (element_x1.ge.1).AND.(element_x1.LE.nx) &
+	    .AND.(element_x2.ge.1).AND.(element_x2.LE.nx) ) then 
       
-! s2=s/2 is the speparation in m of the data available in the covariance matrix    
-        sx2=(real(element_x2-element_x1))*dx/2d0
-        sx=2d0*sx2
+! s2=s/2 is the speparation in m of the data available in the covariance matrix  
+          array_sx  = element_x2-element_x1
     
-        do isy=1,iy1  
+          do isy=1,iy1  
       
-          element_y1=iy1-isy+1
-          element_y2=isy
+            element_y1=iy1-isy+1
+            element_y2=isy
+	
+! only continue if the element row,col exists : check no 2
+	    if (     (element_y1.ge.1).AND.(element_y1.LE.ny) &    
+	        .AND.(element_y2.ge.1).AND.(element_y2.LE.ny)   ) then 
       
 ! s2=s/2 is the speparation in m of the data available in the covariance matrix    
-          sy2=(real(element_y2-element_y1))*dy/2d0
-          sy=2d0*sy2
-
-	  if (     (element_x1.ge.1).AND.(element_x1.LE.nx) &
-	      .AND.(element_x2.ge.1).AND.(element_x2.LE.nx) &	 
-	      .AND.(element_y1.ge.1).AND.(element_y1.LE.ny) &	 
-	      .AND.(element_y2.ge.1).AND.(element_y2.LE.ny)   ) then 
+              array_sy  = element_y2-element_y1
     
 ! Integrate over px and py
-            sum=(0d0,0d0)
+              sum=(0.0,0.0)
   
-            do ipx=1,npx
-         
-	      if (npx.eq.1) then
-	        px=0d0
-	      else
-	        px=pmin+(ipx-1)*dp
-	      end if
+              do ipx=1,npx
+           
+                do ipy=1,npy
+    	    
+	          sum=sum+exp_function(ipy,ipx,array_sy,array_sx)*WF2(ipy,ipx,iy1,ix1)
+		  
+                end do ! next py
   
-              do ipy=1,npy
-    
-	        if (npy.eq.1) then
-	          py=0d0
-	        else
-	          py=pmin+(ipy-1)*dp
-	        end if
+              end do ! next px
 	    
-	        sum=sum+exp(j*k*(px*sx+py*sy))*WF2(ix1,iy1,ipx,ipy)*kdpA
-
-              end do ! next py
-  
-            end do ! next px
+              Cov2(element_x1,element_x2,element_y1,element_y2)=sum
 	  
-            Cov2(element_x1,element_y1,element_x2,element_y2)=sum
+	    end if ! ! check 2 on y element existance
 	    
-          end if  ! element is in the matrix
-      
-        end do ! next sy
+          end do ! next sy
+	  
+	end if  ! check 1 on x element existance
         
       end do ! next sx
    
@@ -723,18 +787,18 @@ logical	:: inc_evanescent
         do iy2=1,ny
     
 ! If the Covariance function value is too small to fit in the standard Fortran format then set it to zero.
-	  if (abs(Cov2(ix1,iy1,ix2,iy2)).LT.1D-30) Cov2(ix1,iy1,ix2,iy2)=0d0
+	  if (abs(Cov2(ix1,ix2,iy1,iy2)).LT.1D-30) Cov2(ix1,ix2,iy1,iy2)=0.0
 	  
           write(local_file_unit,8010)x_values(ix1),y_values(iy1),x_values(ix2),y_values(iy2),	&
-	      real(Cov2(ix1,iy1,ix2,iy2)),Imag(Cov2(ix1,iy1,ix2,iy2)),Abs(Cov2(ix1,iy1,ix2,iy2))
-8010  format(7E16.6)
+	      real(Cov2(ix1,ix2,iy1,iy2)),Imag(Cov2(ix1,ix2,iy1,iy2)),Abs(Cov2(ix1,ix2,iy1,iy2))
+8010  format(7E12.4)
 
           if ( (ix1.eq.ix2).AND.(iy1.eq.iy2) ) then
 ! write diagonal elements
             write(local_file_unit2,8020)x_values(ix1),y_values(iy1),	&
-	      real(Cov2(ix1,iy1,ix2,iy2)),Imag(Cov2(ix1,iy1,ix2,iy2)),Abs(Cov2(ix1,iy1,ix2,iy2))
+	      real(Cov2(ix1,ix2,iy1,iy2)),Imag(Cov2(ix1,ix2,iy1,iy2)),Abs(Cov2(ix1,ix2,iy1,iy2))
 	  
-8020 format(5E16.7)
+8020 format(5E12.4)
 	  
 	  end if
           
@@ -757,6 +821,8 @@ logical	:: inc_evanescent
   
   DEALLOCATE( sx_values )
   DEALLOCATE( sy_values )
+  
+  DEALLOCATE(exp_function)
 
 
   RETURN

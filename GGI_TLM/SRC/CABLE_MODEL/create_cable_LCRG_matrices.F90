@@ -256,9 +256,9 @@ IMPLICIT NONE
       r_inner =cable_geometry_list(cable_geometry_number)%parameters(4)
       epsr    =cable_geometry_list(cable_geometry_number)%parameters(5)
     
-      Lw=(mu0/(2d0*pi))*log(r_shield/r_inner)
+      Lw=((mu0*reduced_c_factor)/(2d0*pi))*log(r_shield/r_inner)
     
-      Cw=(2d0*pi*eps0*epsr)/log(r_shield/r_inner)
+      Cw=(2d0*pi*(eps0*reduced_c_factor)*epsr)/log(r_shield/r_inner)
       
       if (cable_geometry_list(cable_geometry_number)%cable_geometry_type.EQ.cable_geometry_type_coaxial) then
         Lt    =cable_geometry_list(cable_geometry_number)%parameters(6)

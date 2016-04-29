@@ -15,10 +15,10 @@
 !    You should have received a copy of the GNU General Public License
 !    along with this program.  If not, see <http://www.gnu.org/licenses/>.   
 !
-! SUBROUTINE sum_time_domain_data
+! SUBROUTINE multiply_time_domain_data
 !
 ! NAME
-!    sum_time_domain_data
+!    multiply_time_domain_data
 !
 ! DESCRIPTION
 !     
@@ -28,12 +28,10 @@
 !
 ! HISTORY
 !
-!     started 7/11/2014 CJS
-!     7/4/2016 CJS. Allow a small time discrepancy (less than dt)- this can occurr when
-!                   combingin cell centre and cell face quantities.
+!     started 7/4/2016 CJS based on sum_time_domain_data
 !
 !
-SUBROUTINE sum_time_domain_data
+SUBROUTINE multiply_time_domain_data
 
 
 USE post_process
@@ -50,7 +48,7 @@ IMPLICIT NONE
   integer	:: n_timesteps
   integer	:: time_loop
   
-  real*8,allocatable	:: multiplication_factor(:)
+  real*8	:: multiplication_factor
   
   real*8	:: dt,time_error
   
@@ -61,18 +59,21 @@ IMPLICIT NONE
 !  write(*,*)'Sum Time Domain Data'
   
   write(*,*)' '
-  write(*,*)'Result=sum 1..N {fn*multiplication_factor}'
+  write(*,*)'Result=multiplication_factor*(product 1..N {fn})'
   write(*,*)' '
   write(*,*)'where fn is a set of N time domain quantities'
   write(*,*)' '
   
-  write(*,*)'Enter the number of time domain quantities to sum:'
+  write(*,*)'Enter the number of time domain quantities to multiply:'
   read(*,*)n_functions
-  write(record_user_inputs_unit,*)n_functions,' number of functions to sum'
-  
-  ALLOCATE( multiplication_factor(1:n_functions) )
-  
-  write(post_process_info_unit,*)'	Number of functions to sum=',n_functions
+  write(record_user_inputs_unit,*)n_functions,' number of functions to multiply'
+    
+  write(post_process_info_unit,*)'	Number of functions to multiply=',n_functions
+    
+  write(*,*)'Enter the multiplication_factor'
+  read(*,*)multiplication_factor
+  write(record_user_inputs_unit,*)multiplication_factor,' Multiplication_factor'
+  write(post_process_info_unit,*)'	Multiplication_factor:',multiplication_factor
 
   n_functions_of_time=n_functions+1
   n_functions_of_frequency=0
@@ -80,7 +81,7 @@ IMPLICIT NONE
   CALL Allocate_post_data()
   
   warning_given=.FALSE.
-  
+ 
   write(post_process_info_unit,*)'	Time domain functions:'
   do function_number=1,n_functions
   
@@ -90,12 +91,6 @@ IMPLICIT NONE
     if (function_number.EQ.1) then
       dt=function_of_time(1)%time(2)-function_of_time(1)%time(1)
     end if
-    
-    write(*,*)'Enter the multiplication_factor for this function'
-    read(*,*)multiplication_factor(function_number)
-    write(record_user_inputs_unit,*)multiplication_factor(function_number),' Multiplication_factor for this function'
-
-   write(post_process_info_unit,*)'	Multiplication_factor for this function:',multiplication_factor(function_number)
  
     if (function_number.gt.1) then
 ! check that the time samples match...
@@ -107,7 +102,6 @@ IMPLICIT NONE
       end if
   
       do time_loop=1,function_of_time(1)%n_timesteps
-  
       
         time_error=abs(function_of_time(1)%time(time_loop)-function_of_time(function_number)%time(time_loop))
   
@@ -132,7 +126,7 @@ IMPLICIT NONE
           STOP
       
         end if
-   
+  
       end do
       
     end if !function_number.gt.1
@@ -154,11 +148,11 @@ IMPLICIT NONE
   
   do time_loop=1,n_timesteps
   
-    result=0d0
+    result=multiplication_factor
     
     do function_number=1,n_functions
 
-      result=result+function_of_time(function_number)%value(time_loop)*multiplication_factor(function_number)
+      result=result*function_of_time(function_number)%value(time_loop)
       
     end do
     
@@ -170,8 +164,6 @@ IMPLICIT NONE
   
   function_number=n_functions_of_time
   CALL write_time_Domain_Data(function_number)
-  
-  DEALLOCATE( multiplication_factor )
 
   CALL Deallocate_post_data()
 
@@ -179,4 +171,4 @@ IMPLICIT NONE
   
 
   
-END SUBROUTINE sum_time_domain_data
+END SUBROUTINE multiply_time_domain_data

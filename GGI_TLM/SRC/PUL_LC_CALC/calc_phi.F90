@@ -18,6 +18,7 @@
   SUBROUTINE calc_phi_const(rp,tp,rw,phi_local)
    
 USE constants
+USE TLM_general
 
 IMPLICIT NONE
   
@@ -44,6 +45,7 @@ IMPLICIT NONE
   SUBROUTINE calc_phi_cos(rp,tp,rw,m,phi_local)
    
 USE constants
+USE TLM_general
 
 IMPLICIT NONE
   
@@ -71,6 +73,7 @@ IMPLICIT NONE
   SUBROUTINE calc_phi_sin(rp,tp,rw,m,phi_local)
    
 USE constants
+USE TLM_general
 
 IMPLICIT NONE
   
@@ -98,6 +101,7 @@ IMPLICIT NONE
   SUBROUTINE calc_phi_ICR_const(rp,tp,rw,phi_local)
    
 USE constants
+USE TLM_general
 
 IMPLICIT NONE
   
@@ -108,7 +112,7 @@ IMPLICIT NONE
 
 ! START
  
- phi_local=-rw*log(rw)/eps0
+ phi_local=-rw*log(rw)/(eps0*reduced_c_factor)
  
  return
  
@@ -120,6 +124,7 @@ IMPLICIT NONE
   SUBROUTINE calc_phi_ICR_cos(rp,tp,rw,m,phi_local)
    
 USE constants
+USE TLM_general
 
 IMPLICIT NONE
   
@@ -131,7 +136,7 @@ IMPLICIT NONE
 
 ! START
  
- phi_local=(rp**m)*cos(m*tp)/( 2d0*eps0*m*(rw**(m-1)) )
+ phi_local=(rp**m)*cos(m*tp)/( 2d0*(eps0*reduced_c_factor)*m*(rw**(m-1)) )
  
  return
  
@@ -143,6 +148,7 @@ IMPLICIT NONE
   SUBROUTINE calc_phi_ICR_sin(rp,tp,rw,m,phi_local)
    
 USE constants
+USE TLM_general
 
 IMPLICIT NONE
   
@@ -154,7 +160,7 @@ IMPLICIT NONE
 
 ! START
  
- phi_local=(rp**m)*sin(m*tp)/( 2d0*eps0*m*(rw**(m-1)) ) 
+ phi_local=(rp**m)*sin(m*tp)/( 2d0*(eps0*reduced_c_factor)*m*(rw**(m-1)) ) 
  
  return
  
@@ -166,6 +172,7 @@ IMPLICIT NONE
   SUBROUTINE calc_phi_OCR_const(rp,tp,rw,phi_local)
    
 USE constants
+USE TLM_general
 
 IMPLICIT NONE
   
@@ -176,7 +183,7 @@ IMPLICIT NONE
 
 ! START
  
- phi_local=-rw*log(rp)/eps0
+ phi_local=-rw*log(rp)/(eps0*reduced_c_factor)
  
  return
  
@@ -188,6 +195,7 @@ IMPLICIT NONE
   SUBROUTINE calc_phi_OCR_cos(rp,tp,rw,m,phi_local)
    
 USE constants
+USE TLM_general
 
 IMPLICIT NONE
   
@@ -199,7 +207,7 @@ IMPLICIT NONE
 
 ! START
  
- phi_local=(rw**(m+1))*cos(m*tp)/( 2d0*eps0*m*(rp**m) ) 
+ phi_local=(rw**(m+1))*cos(m*tp)/( 2d0*(eps0*reduced_c_factor)*m*(rp**m) ) 
  
  return
  
@@ -211,6 +219,7 @@ IMPLICIT NONE
   SUBROUTINE calc_phi_OCR_sin(rp,tp,rw,m,phi_local)
    
 USE constants
+USE TLM_general
 
 IMPLICIT NONE
   
@@ -222,7 +231,7 @@ IMPLICIT NONE
 
 ! START
  
- phi_local=(rw**(m+1))*sin(m*tp)/( 2d0*eps0*m*(rp**m) )
+ phi_local=(rw**(m+1))*sin(m*tp)/( 2d0*(eps0*reduced_c_factor)*m*(rp**m) )
  
  return
  

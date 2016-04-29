@@ -46,7 +46,7 @@ IMPLICIT NONE
 
 ! local variables
 
-  integer,parameter	:: number_of_options=49
+  integer,parameter	:: number_of_options=51
   integer	:: option
 
   character(len=256)	:: command
@@ -118,6 +118,8 @@ IMPLICIT NONE
   write(*,*)'47. Time-frequency analysis'
   write(*,*)'48. Statistical tools'
   write(*,*)'49. Create Poynting Vector or real/ imag E or H vector plot'
+  write(*,*)'50. Multiply Time Domain Data'
+  write(*,*)'51. Create Time Domain Force Vector Animation in conducting volumes'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -528,7 +530,23 @@ IMPLICIT NONE
     write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: CREATE POYNTING VECTOR OR REAL/ IMAG E OR H VECTOR PLOT'
     write(post_process_info_unit,*)'Create Poynting Vector or real/ imag E or H vector plot'
     CALL create_poynting_vector_plot()
-     
+    
+  else if (option.EQ.50) then
+  
+    write(*,*)'Multiply Time Domain Data'
+
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: MULTIPLY TIME DOMAIN DATA'
+    write(post_process_info_unit,*)'Multiply time domain data'
+    CALL Multiply_Time_Domain_Data()
+    
+  else if (option.EQ.51) then
+  
+    write(*,*)'Create Time Domain Force Vector Animation in conducting volumes'
+
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: CREATE TIME DOMAIN FORCE VECTOR ANIMATION'
+    write(post_process_info_unit,*)'Create Time Domain Force Vector Animation in conducting volumes'
+    CALL create_time_domain_force_vector_animation()
+      
   else
    
     write(*,*)'Unknown option',option

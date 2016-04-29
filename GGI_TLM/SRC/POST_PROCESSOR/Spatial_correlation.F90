@@ -29,7 +29,7 @@
 ! HISTORY
 !
 !     started 23/10/2014 CJS
-!
+!     21/1/2014 CJS don't write correlation - no used anywhere really and files are already large...
 !
 SUBROUTINE spatial_correlation
 
@@ -321,17 +321,21 @@ IMPLICIT NONE
 	  if (abs(c(px1,py1,px2,py2)).LT.1D-30) c(px1,py1,px2,py2)=0d0
    
           cnorm=sqrt(c(px1,py1,px1,py1)*c(px2,py2,px2,py2))
+!          write(12,8010)x_value(px1),y_value(py1),x_value(px2),y_value(py2),real(c(px1,py1,px2,py2)),imag(c(px1,py1,px2,py2)),	&
+!                        abs(c(px1,py1,px2,py2)),real(c(px1,py1,px2,py2)/cnorm),imag(c(px1,py1,px2,py2)/cnorm)
           write(12,8010)x_value(px1),y_value(py1),x_value(px2),y_value(py2),real(c(px1,py1,px2,py2)),imag(c(px1,py1,px2,py2)),	&
-                        abs(c(px1,py1,px2,py2)),real(c(px1,py1,px2,py2)/cnorm),imag(c(px1,py1,px2,py2)/cnorm)
-8010 format(9E16.7)
+                        abs(c(px1,py1,px2,py2))
+8010 format(9E12.4)
 
           if ( (px1.eq.px2).AND.(py1.eq.py2) ) then
 ! write diagonal elements
 	  
             cnorm=sqrt(c(px1,py1,px1,py1)*c(px2,py2,px2,py2))
+!            write(14,8020)x_value(px1),y_value(py1),real(c(px1,py1,px2,py2)),imag(c(px1,py1,px2,py2)),	&
+!                        abs(c(px1,py1,px2,py2)),real(c(px1,py1,px2,py2)/cnorm),imag(c(px1,py1,px2,py2)/cnorm)
             write(14,8020)x_value(px1),y_value(py1),real(c(px1,py1,px2,py2)),imag(c(px1,py1,px2,py2)),	&
-                        abs(c(px1,py1,px2,py2)),real(c(px1,py1,px2,py2)/cnorm),imag(c(px1,py1,px2,py2)/cnorm)
-8020 format(7E16.7)
+                        abs(c(px1,py1,px2,py2))
+8020 format(7E12.4)
 	  
 	  end if
 

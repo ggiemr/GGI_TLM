@@ -128,7 +128,7 @@ IMPLICIT NONE
         jpeg_filename=trim(volume_material_list(material_number)%name)//'_eps.jpg'
       end if
       
-      sigma=volume_material_list(material_number)%sigma_e/eps0
+      sigma=volume_material_list(material_number)%sigma_e/(eps0*reduced_c_factor)
     
       CALL output_material_frequency_response(volume_material_list(material_number)%eps_S,	&
                                               sigma,fmin,fmax,fstep,local_file_unit,eps_filename)
@@ -174,7 +174,7 @@ IMPLICIT NONE
         jpeg_filename=trim(volume_material_list(material_number)%name)//'_mu.jpg'
       end if
     
-      sigma=volume_material_list(material_number)%sigma_m/mu0   ! found error 27/1/2015: was sigma_e...
+      sigma=volume_material_list(material_number)%sigma_m/(mu0*reduced_c_factor)   ! found error 27/1/2015: was sigma_e...
     
       CALL output_material_frequency_response(volume_material_list(material_number)%mu_S,	&
                                               sigma,fmin,fmax,fstep,local_file_unit,mu_filename)

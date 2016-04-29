@@ -172,7 +172,8 @@ PROCESS_INPUT_FILE/read_mode_stir_surface_list.o \
 PROCESS_INPUT_FILE/read_frequency_warp_flag.o \
 PROCESS_INPUT_FILE/read_frequency_scale_flag.o  \
 PROCESS_INPUT_FILE/read_wrapping_boundary_conditions.o \
-PROCESS_INPUT_FILE/read_random_number_seed.o
+PROCESS_INPUT_FILE/read_random_number_seed.o \
+PROCESS_INPUT_FILE/read_reduced_c.o
 
 F90_GENERAL_OBJS=  \
 F90_GENERAL/convert_case.o \
@@ -401,11 +402,13 @@ POST_PROCESSOR/Convert_Frequency_Domain_Volume_Field_Format.o \
 POST_PROCESSOR/Spatial_correlation.o \
 POST_PROCESSOR/Wigner_function.o \
 POST_PROCESSOR/sum_time_domain_data.o \
+POST_PROCESSOR/multiply_time_domain_data.o \
 POST_PROCESSOR/RMS_frequency_domain_data.o \
 POST_PROCESSOR/Reciprocal_frequency_domain_data.o \
 POST_PROCESSOR/Time_frequency_analysis.o \
 POST_PROCESSOR/Statistical_tools.o \
-POST_PROCESSOR/create_poynting_vector_plot.o
+POST_PROCESSOR/create_poynting_vector_plot.o \
+POST_PROCESSOR/create_time_domain_force_vector_animation.o
 
 OPTIMISATION_OBJS=  \
 OPTIMISATION/opt_module.o \

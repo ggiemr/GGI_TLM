@@ -118,6 +118,9 @@ sed -i -f sed_command ORIGINAL_FILE
 
 # run sed with action in command line (here replace in original file)
 sed -i s/OLD_TEXT/NEW_TEXT/g file.txt
+
+# replace tabs with spaces in file and replace in the original file
+sed -i 's/\t/    /g' file.txt
       
 ### Check the status of the process just finished
 RETURN_CODE=$?        

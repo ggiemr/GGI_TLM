@@ -22,7 +22,7 @@
 # DESCRIPTION
 #     Python code to automatically create GGI_TLM simulation documents
 #     run with the command:
-#     pvpython GGI_TLM_simulation_document.py
+#     pvpython GGI_TLM_document.py
 #    
 #     The code uses the PyRTF code by Simon Cusack which is under the GPL license
 #     

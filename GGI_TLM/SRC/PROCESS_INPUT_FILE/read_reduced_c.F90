@@ -15,28 +15,50 @@
 !    You should have received a copy of the GNU General Public License
 !    along with this program.  If not, see <http://www.gnu.org/licenses/>.   
 !
+! SUBROUTINE read_reduced_c_factor
 !
+! NAME
+!     read_reduced_c_factor
+!
+! DESCRIPTION
+!     read the reduced c factor to apply
+!
+! Example packet:
+!
+!reduced_c_factor
+!10                  (real)
+!
+! COMMENTS
+!     
+!
+! HISTORY
+!
+!     started 7/04/2016 CJS
+!
+!
+SUBROUTINE read_reduced_c_factor
 
+USE TLM_general
+USE file_information
+USE geometry
+USE constants
 
-MODULE constants
+IMPLICIT NONE
 
-  real*8,parameter :: small=1d-12
+! local variables
 
-  real*8,parameter :: large=1d12
+! START  
 
-  real*8,parameter :: pi=3.141592653589793d0
-  
-  real*8,parameter :: Z0=376.73031346177d0
-  
-  real*8,parameter :: Y0=1D0/Z0
-  
-  complex*16,parameter :: j=(0d0,1d0)
-  
-  real*8,parameter :: eps0=8.8541878176D-12
-  
-  real*8,parameter :: mu0=3.141592653589793d0*4D-7
+  CALL write_line('CALLED: read_reduced_c_factor',0,output_to_screen_flag)
 
-  real*8,parameter :: c0=2.99792458D8
+  read(input_file_unit,*,err=9000)reduced_c_factor
+
+  CALL write_line('FINISHED: read_reduced_c_factor',0,output_to_screen_flag)
   
+  RETURN
   
-END MODULE constants
+9000 CALL write_line('Error reading reduced c factor:',0,.TRUE.)
+     CALL write_error_line(input_file_unit)
+     STOP
+  
+END SUBROUTINE read_reduced_c_factor

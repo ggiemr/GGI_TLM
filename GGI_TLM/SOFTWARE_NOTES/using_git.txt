@@ -1,0 +1,84 @@
+Terminology:
+origin is the remote repository that you cloned from
+master is the cloned repository that you have locally
+
+To clone an existing repository:
+
+git clone git@128.243.70.77:UoN/ESA_SPICE_CABLE_MODELLING.git
+
+Creating a tag:
+git tag -a v1.4 -m "my version 1.4"
+
+to view all tags:
+git tag
+
+to push tags to the remote server:
+git push origin --tags
+
+
+to create a new branch:
+git branch testing
+
+to move to the new branch:
+git checkout testing
+
+(The two commands above can be combined with:
+git checkout -b testing
+)
+
+to move back to the original branch:
+git checkout master
+
+(Note that you should have committed changes in the old branch before
+going back to the master)
+
+to look at the branch structure and which branch you are working on:
+git log --oneline --decorate --graph --all
+(the branch labeled HEAD is the current branch)
+
+alternatively 
+git branch
+gives the existing branches and markes the current branch with *
+
+from the master branch we may merge any changes with
+git merge testing
+
+once merged the branch can be deleted with
+git branch -d testing
+
+If merging finds a conflict then this will have to be resolved before 
+the merge can be completed.
+The command
+git status 
+shows the files with unresolved conflicts at any point. 
+
+within the file there is a section where both versions of the unmerged 
+file are displayed - this must be resolved by editing the file
+
+once the conflict has been resolved then use
+git add file
+to indicate that theerge has been completed.
+
+see merged branches with
+git branch --merged
+
+and unmerged branches with 
+git branch --no-merged
+
+to get remote changes (without merging them)
+git fetch
+
+then merge with
+git merge
+
+Alternatively the command
+git pull
+does both these operations
+
+The commmand
+git rebase
+'flattens' the merged structure so that changes to one branch are added after
+ the changes to the other branch rather than the 'parallel' changes of merge.
+NOTE: Do not rebase commits that exist outside your repository.
+The effect of rebase is to pprovide a cleaner history of the developments.
+ 

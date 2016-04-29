@@ -642,6 +642,18 @@
 16/12/2015	CJS	Add a second surface roughness parameter for rectangular surfaces to control the spatial correlation
                         by specifying the triangulation edge length for the rectangular surface prior to distortion of the surface nodes
 			 
+20-21/1/2016	CJS	Make the Wigner function post process more efficient by reordering arrays, pre-calculating fourier coefficients
+                        and reducing file sizes.
+			Also make the visnd process operate on .gz files (not tested yet)
+
+7/4/2016	CJS	Add process to multiply time domain data
+
+7/4/2016	CJS	Allow small time discrepancy in sum/multiply_time_domain_data (less than dt)- this can occurr when
+                        combingin cell centre and cell face time domain quantities.
+
+7/4/2016	CJS	Add a 'reduced c' capability for lightning simulations etc
+
+			 
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE
 		- Start to implement and document all the Fieldsolve test cases : STARTED

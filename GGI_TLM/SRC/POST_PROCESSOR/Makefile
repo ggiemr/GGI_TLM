@@ -37,11 +37,13 @@ Convert_Frequency_Domain_Volume_Field_Format.o \
 Spatial_correlation.o \
 Wigner_function.o \
 sum_time_domain_data.o \
+multiply_time_domain_data.o \
 RMS_frequency_domain_data.o \
 Reciprocal_frequency_domain_data.o \
 Time_frequency_analysis.o \
 Statistical_tools.o \
-create_poynting_vector_plot.o
+create_poynting_vector_plot.o \
+create_time_domain_force_vector_animation.o
 
 default: $(POST_PROCESSOR_OBJS)
 

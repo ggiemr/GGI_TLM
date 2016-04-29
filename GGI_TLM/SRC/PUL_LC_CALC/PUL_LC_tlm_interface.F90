@@ -200,7 +200,7 @@ IMPLICIT NONE
   
   call dsvd_invert(pul_C,pul_LC_matdim,pul_LC_matdim,pul_L,pul_LC_matdim)
     
-  pul_L(:,:)=pul_L(:,:)*mu0*eps0  
+  pul_L(:,:)=pul_L(:,:)*(mu0*reduced_c_factor)*(eps0*reduced_c_factor)  
   
 !  write(*,*)'L(uH/m):'
 !  call write_matrix(pul_L,pul_LC_matdim,1e6,0)

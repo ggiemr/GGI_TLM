@@ -36,7 +36,7 @@
 ! HISTORY
 !
 !     started 19/11/2013 CJS
-!
+!     10/3/2016 CJS. Try to make the system work better for very large datasets
 !
 SUBROUTINE Time_frequency_analysis
 
@@ -80,7 +80,13 @@ IMPLICIT NONE
 
   character(len=256)	:: command
   
-  integer 	:: i,loop
+  integer 	:: i,loop,count
+  real*8	:: fstep_out
+  integer	:: ifstride
+  
+  real*8        :: sumsqr
+  character     :: ch
+  logical	:: plot_dB
   
 ! START
 
@@ -207,8 +213,26 @@ IMPLICIT NONE
 
   write(*,*)'FFT Fmin=',fmin,' Hz'
   write(*,*)'FFT Fmax=',fmax,' Hz'
+  write(*,*)'FFT delta f=',fstep,' Hz'
   write(*,*)'Number of samples in FFT=',n_frequencies
+
+! This ensures that we don't output too many samples if the frequency resolution from FFT is much smaller than
+! that requested  
+  fstep_out=(fmax_out-fmin_out)/n_frequencies_in_range
+  ifstride=NINT(fstep_out/fstep)
+  if (ifstride.LT.1) ifstride=1
+
+  write(*,*)'frequency output step (equivalent_n_frequencies_in_full_range/n_frequencies_in_range)',ifstride
   
+  plot_dB=.FALSE.
+  write(*,*)'plot in dB? (y/n)'
+  read(*,'(A)')ch
+  write(record_user_inputs_unit,'(A)')ch
+  CALL convert_to_lower_case(ch,1)
+  if (ch.eq.'y') then
+    plot_dB=.TRUE.
+  end if
+
 ! Open the output file 
   write(*,*)'Enter the time frequency output filename'
   read(*,'(A256)')filename
@@ -271,13 +295,31 @@ IMPLICIT NONE
     CALL FFT(x,n_frequencies)
   
 ! write the required FFT data into the output file
-    do frequency_loop=1,n_frequencies
+    do frequency_loop=1,n_frequencies,ifstride
   
       if ( (frequency(frequency_loop).GE.fmin_out).AND.(frequency(frequency_loop).LE.fmax_out) ) then
     
-        write(local_file_unit,8000)frequency(frequency_loop),time_window_centre,dble(x(frequency_loop)),	&
-                                   imag(x(frequency_loop)),abs(x(frequency_loop))
-8000  format(5E16.6)
+        sumsqr=0d0
+        count=0
+        do i=frequency_loop,min(frequency_loop+ifstride,n_frequencies)
+          count=count+1
+          sumsqr=sumsqr+(abs(x(i)))**2
+        end do
+        if (count.NE.0) then
+          sumsqr=sumsqr/count
+        end if
+
+! OLD        
+!        write(local_file_unit,8000)frequency(frequency_loop),time_window_centre,dble(x(frequency_loop)),	&
+!                                   imag(x(frequency_loop)),abs(x(frequency_loop))
+
+        if (plot_dB) then
+          write(local_file_unit,8000)frequency(frequency_loop),time_window_centre,10d0*log10(sumsqr)
+        else
+          write(local_file_unit,8000)frequency(frequency_loop),time_window_centre,sqrt(sumsqr)    
+        end if
+        
+8000  format(3E16.6)
       
       end if
     

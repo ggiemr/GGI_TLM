@@ -37,7 +37,9 @@
 !     16/01/2015 CJS Allow the plotting of a reduced set of data (useful for very large data sets)
 !     6/02/2015 CJS Change the order of writing points in the vtk file. This improves the look of
 !               correlation matrix visualisation especially. 
-!
+!     21/1/2016 CJS change to single precision...
+!     21/1/2016 CJS allow the code to operate on compressed (.gz) files
+!                   also fix a bug with column ranges.
 !
 SUBROUTINE Vis_nD(function_number)
 
@@ -76,21 +78,21 @@ integer	:: function_number
   
   integer,allocatable	:: column_list(:)
   
-  real*8,allocatable	:: data(:,:)
-  real*8,allocatable	:: max_data(:)
-  real*8,allocatable	:: min_data(:)
+  real,allocatable	:: data(:,:)
+  real,allocatable	:: max_data(:)
+  real,allocatable	:: min_data(:)
   
-  real*8		:: min_value,value_range,zrange
+  real		:: min_value,value_range,zrange
   
-  real*8		:: value(4)
-  real*8		:: new_value(4)
+  real		:: value(4)
+  real		:: new_value(4)
   integer		:: step(0:4)
   integer		:: n(0:4)
 
-  real*8,allocatable    :: x_values(:)
-  real*8,allocatable    :: y_values(:)
+  real,allocatable    :: x_values(:)
+  real,allocatable    :: y_values(:)
 
-  real*8,allocatable    :: plot_data(:,:)
+  real,allocatable    :: plot_data(:,:)
  
   integer		:: i1,i2,i3,i4
   integer		:: a1,a2,a3,a4
@@ -104,11 +106,17 @@ integer	:: function_number
   integer		:: element(4)
  
   integer		:: i
-  real*8		:: dx,dy,lx,ly
+  real		:: dx,dy,lx,ly
   
   integer 		:: num,den
     
   character		:: ch
+
+! compression stuff
+  logical	:: compression_flag
+  integer	:: len_filename
+  character(len=256)	:: gzfilename
+  character*3   :: extn
 
 ! START
 
@@ -129,10 +137,24 @@ integer	:: function_number
     GOTO 5
   end if
   write(record_user_inputs_unit,'(A)')trim(filename)
+
+! check for .gz extension which indicates a compressed file
+  compression_flag=.FALSE.
+  len_filename=LEN(trim(filename))
+  extn=filename(len_filename-2:len_filename)
+  if (extn.EQ.'.gz') then
+    compression_flag=.TRUE.
+  end if
   
 ! open and read the file
   
-  OPEN(unit=local_file_unit,file=filename)
+  if (compression_flag) then
+! We must give the filename without the .gz extension here
+    gzfilename=filename(1:len_filename-3)
+    CALL open_output_file_read(local_file_unit,gzfilename,compression_flag)
+  else
+    OPEN(unit=local_file_unit,file=filename)
+  end if
   
   CALL write_file_format_information(local_file_unit,n_lines)
   
@@ -165,8 +187,8 @@ integer	:: function_number
   ALLOCATE ( max_data(1:max_columns) )
   ALLOCATE ( min_data(1:max_columns) )
       
-  max_data(1:n_columns)=-1D30
-  min_data(1:n_columns)= 1D30
+  max_data(1:max_columns)=-1D30
+  min_data(1:max_columns)= 1D30
 
 ! read lines to ignore
   do i=1,first_line-1
@@ -185,9 +207,13 @@ integer	:: function_number
     end do
      
   end do ! next sample to read
-      
-  close(UNIT=local_file_unit)
 
+  if (compression_flag) then
+    CALL close_output_file(local_file_unit,filename2,compression_flag)
+  else
+    CLOSE(unit=local_file_unit)
+  end if
+ 
 ! Write column data ranges to the screen      
   write(*,*)'Number of data samples read:',n_samples
   write(*,*)'Data column ranges:'
@@ -302,7 +328,7 @@ integer	:: function_number
 ! Large x range
     write(*,*)'Number of plots in the large_x range is',n(3)
     
-    write(*,*)'Enter the fisrt plot of the xrange to include'
+    write(*,*)'Enter the first plot of the xrange to include'
     read(*,*)nplotmin(3)
     write(record_user_inputs_unit,*)nplotmin(3),' First plot of the xrange to include'
     
@@ -313,7 +339,7 @@ integer	:: function_number
 ! Large y range
     write(*,*)'Number of plots in the large_y range is',n(4)
     
-    write(*,*)'Enter the fisrt plot of the yrange to include'
+    write(*,*)'Enter the first plot of the yrange to include'
     read(*,*)nplotmin(4)
     write(record_user_inputs_unit,*)nplotmin(4),' First plot of the yrange to include'
     
@@ -540,14 +566,16 @@ END SUBROUTINE Vis_nD
 !    
 SUBROUTINE write_4D_vtk_data(nx,ny,x_values,y_values,data,min_value,value_range,zrange,filename)    
 
+  IMPLICIT NONE
+
   integer	::  nx,ny
   
-  real*8	:: x_values(1:nx)
-  real*8	:: y_values(1:ny)
+  real	:: x_values(1:nx)
+  real	:: y_values(1:ny)
   
-  real*8	:: data(1:nx,1:ny)
+  real	:: data(1:nx,1:ny)
   
-  real*8	:: min_value,value_range,zrange
+  real	:: min_value,value_range,zrange
   
   character*256 :: filename
 
@@ -589,7 +617,7 @@ SUBROUTINE write_4D_vtk_data(nx,ny,x_values,y_values,data,min_value,value_range,
     do iy=1,ny
       
       write(20,8000)x_values(ix),y_values(iy),(data(ix,iy)-min_value)*zrange/value_range
-8000  format(3E14.5)
+8000  format(3E12.4)
       count=count+1
       
     end do ! next iy
@@ -643,7 +671,7 @@ SUBROUTINE write_4D_vtk_data(nx,ny,x_values,y_values,data,min_value,value_range,
       write(20,8020)data(ix  ,iy  )
       count=count+1
       
-8020  format(E14.5)
+8020  format(E12.4)
 
     end do ! next iy
      
