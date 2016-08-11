@@ -477,13 +477,22 @@ IMPLICIT NONE
                        ( volume_animation(template_volume)%points(point+1,3)		&
                         -volume_animation(template_volume)%points(point+2,3) )**2 )
 
+! OLD PRESSURE CALCULATION
+!! Calculate the force (per unit area) vector on this cell 
+!! Force per unit length is F=IxB=dA*sigma ExB= dA*sigma*mu0 ExH
+!! then divide by dl to give a pressure
+!
+!      Ffield(1)=cell_size*mu0*sigma*(Efield(2)*Hfield(3)-Efield(3)*Hfield(2))
+!      Ffield(2)=cell_size*mu0*sigma*(Efield(3)*Hfield(1)-Efield(1)*Hfield(3))
+!      Ffield(3)=cell_size*mu0*sigma*(Efield(1)*Hfield(2)-Efield(2)*Hfield(1))
+
 ! Calculate the force (per unit area) vector on this cell 
 ! Force per unit length is F=IxB=dA*sigma ExB= dA*sigma*mu0 ExH
-! then divide by dl to give a pressure
+! then multiply by dl to give the force on the cell
 
-      Ffield(1)=cell_size*mu0*sigma*(Efield(2)*Hfield(3)-Efield(3)*Hfield(2))
-      Ffield(2)=cell_size*mu0*sigma*(Efield(3)*Hfield(1)-Efield(1)*Hfield(3))
-      Ffield(3)=cell_size*mu0*sigma*(Efield(1)*Hfield(2)-Efield(2)*Hfield(1))
+      Ffield(1)=(cell_size**3)*mu0*sigma*(Efield(2)*Hfield(3)-Efield(3)*Hfield(2))
+      Ffield(2)=(cell_size**3)*mu0*sigma*(Efield(3)*Hfield(1)-Efield(1)*Hfield(3))
+      Ffield(3)=(cell_size**3)*mu0*sigma*(Efield(1)*Hfield(2)-Efield(2)*Hfield(1))
             
       Fmagnitude=sqrt(Ffield(1)**2+Ffield(2)**2+Ffield(3)**2)
       Fmax=max(Fmax,Fmagnitude)
