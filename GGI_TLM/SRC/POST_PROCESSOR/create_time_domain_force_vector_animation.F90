@@ -586,7 +586,7 @@ IMPLICIT NONE
   end do ! next frame
   
   write(*,*)' '
-  write(*,*)'Maximum pressure was',Fmax,'N/m^2'
+  write(*,*)'Maximum force was',Fmax,'N'
   write(*,*)' '
   
   

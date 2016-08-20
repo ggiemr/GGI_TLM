@@ -319,11 +319,12 @@ IMPLICIT NONE
 8000 format(A,3F12.6)
 
     dxdt= r*cos(theta)*cos(phi)
-    dxdp=-r*sin(theta)*sin(phi)
+    dxdp=-r*sin(phi)
     dydt= r*cos(theta)*sin(phi)
-    dydp= r*sin(theta)*cos(phi)
+    dydp= r*cos(phi)
     dzdt=-r*sin(theta)
     dzdp=0d0
+    
     vx=huygens_surface%Etheta*dxdt+huygens_surface%Ephi*dxdp
     vy=huygens_surface%Etheta*dydt+huygens_surface%Ephi*dydp
     vz=huygens_surface%Etheta*dzdt+huygens_surface%Ephi*dzdp
