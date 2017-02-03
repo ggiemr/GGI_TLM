@@ -144,6 +144,9 @@ IMPLICIT NONE
  
   character(len=26)	:: volume_average_field_output_extn='.volume_average_field.tout'
   integer,parameter 	:: volume_average_field_output_unit=54
+ 
+  character(len=23)	:: volume_peak_field_output_extn='.volume_peak_field.tout'
+  integer,parameter 	:: volume_peak_field_output_unit=55
   
   character(len=19)	:: surface_field_output_extn='.surface_field.tout'
   integer,parameter 	:: surface_field_output_unit=60

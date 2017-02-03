@@ -1,5 +1,10 @@
 #!/bin/bash
 
+TEST_DATA_DIRECTORY=$( pwd )
+
+## Use the following line if you are running the GGI_TLM/TEST_DATA test cases
+#GGI_TLM_DIRECTORY=$( dirname ${TEST_DATA_DIRECTORY} )
+#
 ## If you are running anywhere else then GGI_TLM_DIRECTORY must be set appropriately so that the executables are in
 ## ${GGI_TLM_DIRECTORY}/bin
 ## EXAMPLE:
@@ -13,7 +18,6 @@ source ${GGI_TLM_DIRECTORY}/run_configuration_data
 
 EXECUTABLE_DIR="${GGI_TLM_DIRECTORY}/bin"
 SRC_DIR="${GGI_TLM_DIRECTORY}/SRC"
-TEST_DATA_DIRECTORY="${GGI_TLM_DIRECTORY}/TEST_DATA"
 
 MPI_SOLVER_NAME="GGI_TLM_MPI"
 
@@ -34,7 +38,6 @@ export SEQ_RUN_COMMAND
 
 echo "Automatic testing of GGI_TLM"
 echo " "
-
 
 FULL_TEST_CASE_LIST="
 OPTIMISATION_EXAMPLE
@@ -61,6 +64,7 @@ action=plot_ref NAME      : plot the results against reference results to screen
 action=plot_ref_jpg NAME  : plot the results against reference results to jpeg file
 action=reference  NAME    : update the reference results with the current set of results
 action=check_reference  NAME    : Check the reference results against the current set of results to see whether they are the same
+action=view_mesh  NAME     : View the computational mesh; volume materials, surface materials and cables.
 action=document  NAME     : Create a document in rtf format with details of the problem i.e. geometry, materials, cables, mesh and results
 action=save  NAME  TAG   : Create a directory RESULTS_TAG and save results, .inp file, .info file and any .rtf files into it.
 
@@ -142,7 +146,7 @@ else
     
   fi
   
-  rm progress
+  rm -f progress
   touch progress
   
   if [ "$ACTION" = "run_mpi" ] ; then
@@ -210,6 +214,10 @@ else
        
         ./run_automatic_test $ACTION $TEST_CASE
       
+      elif [ "$ACTION" = "view_mesh" ] ; then
+       
+        ./run_automatic_test $ACTION $TEST_CASE
+      
       elif [ "$ACTION" = "save" ] ; then
       
         TAG=$3
@@ -267,6 +275,7 @@ else
     
     fi
 
+# next test case in the list
   done
   
   if [ "$ACTION" != "clean" ] ; then
@@ -286,3 +295,4 @@ else
 fi
 
 # we have some arguments to run_automatic_test
+

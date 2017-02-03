@@ -73,6 +73,7 @@ IMPLICIT NONE
   n_far_field_surfaces=0
   n_output_volumes=0
   n_output_volume_averages=0
+  n_output_volume_peak=0
   
   bicubic_warp_flag=.FALSE.
   frequency_scale_flag=.FALSE.

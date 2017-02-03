@@ -153,6 +153,7 @@ action=plot_ref NAME      : plot the results against reference results to screen
 action=plot_ref_jpg NAME  : plot the results against reference results to jpeg file
 action=reference  NAME    : update the reference results with the current set of results
 action=check_reference  NAME    : Check the reference results against the current set of results to see whether they are the same
+action=view_mesh  NAME     : View the computational mesh; volume materials, surface materials and cables.
 action=document  NAME     : Create a document in rtf format with details of the problem i.e. geometry, materials, cables, mesh and results
 action=save  NAME  TAG   : Create a directory RESULTS_TAG and save results, .inp file, .info file and any .rtf files into it.
 
@@ -299,6 +300,10 @@ else
         ./run_automatic_test $ACTION $TEST_CASE
       
       elif [ "$ACTION" = "document" ] ; then
+       
+        ./run_automatic_test $ACTION $TEST_CASE
+      
+      elif [ "$ACTION" = "view_mesh" ] ; then
        
         ./run_automatic_test $ACTION $TEST_CASE
       

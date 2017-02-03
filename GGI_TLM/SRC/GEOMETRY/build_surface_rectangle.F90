@@ -88,9 +88,9 @@ real*8		:: edge_length
       if (edge_length.LT.dl/2d0) edge_length=dl
       
       nlx=2*NINT(lx/edge_length)  ! ensure that nlx is an even number
-      if (nlx.lt.2) nlx=2
+      if (nlx.lt.4) nlx=4
       nly=2*NINT(ly/edge_length)  ! ensure that nlx is an even number
-      if (nly.lt.2) nly=2
+      if (nly.lt.4) nly=4
       
       n_x=nlx
       n_y=nly

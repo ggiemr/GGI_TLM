@@ -28,6 +28,7 @@ read_output_point_list.o \
 read_output_surface_list.o \
 read_output_volume_list.o \
 read_output_volume_average_list.o \
+read_output_volume_peak_list.o \
 read_SAR_volume_list.o \
 read_output_time_information.o \
 read_outer_boundary_reflection_coefficient.o \

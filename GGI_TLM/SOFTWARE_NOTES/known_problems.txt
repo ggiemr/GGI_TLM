@@ -426,3 +426,5 @@ output point is 'inside' the PEC/PMC and sees no field.
      STARTED: this problem has been addressed and (maybe) solved but it needs proper testing.
 
 134  We need to include the compression of output files for all output types.
+
+135. Need to document that a factor of dt is removed from the Fourier Integral for frequency_output surfaces and volumes.

@@ -137,6 +137,30 @@ TYPE::output_volume_average_type
    
 END TYPE output_volume_average_type
 
+TYPE::output_volume_peak_type
+
+  integer 			:: volume_number
+  integer 			:: number_of_cells
+  type(ijk),allocatable		:: cell_list(:)
+  integer,allocatable		:: cell_output_field_number_list(:)
+  integer			:: field_component
+  real*8			:: value
+  
+  logical			:: specified_timestep_information
+  integer			:: first_timestep
+  integer			:: last_timestep
+  integer			:: timestep_interval
+  integer			:: number_of_output_timesteps
+  
+  logical			:: specified_time_information
+  real*8			:: first_time
+  real*8			:: last_time
+  real*8			:: time_interval
+  
+  integer			:: frame_number
+   
+END TYPE output_volume_peak_type
+
 TYPE::far_field_surface_type
 
   integer 			:: surface_number
@@ -324,6 +348,9 @@ type(output_volume_type),allocatable    :: output_volumes(:)
 
 integer				    		:: n_output_volume_averages
 type(output_volume_average_type),allocatable    :: output_volume_averages(:)
+
+integer				    		:: n_output_volume_peak
+type(output_volume_average_type),allocatable    :: output_volume_peak(:)
 
 integer			:: total_number_output_cells
 real*8,allocatable	:: cell_output_field(:,:)

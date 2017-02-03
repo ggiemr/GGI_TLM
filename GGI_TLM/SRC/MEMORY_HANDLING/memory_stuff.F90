@@ -880,6 +880,24 @@ integer	:: volume
     
   end if
   
+  if (allocated(output_volume_peak)) then
+  
+    do volume=1,n_output_volume_peak
+    
+      if (allocated(output_volume_peak(volume)%cell_list)) then
+        DEALLOCATE( output_volume_peak(volume)%cell_list )
+      end if
+      
+      if (allocated(output_volume_peak(volume)%cell_output_field_number_list)) then
+        DEALLOCATE( output_volume_peak(volume)%cell_output_field_number_list )
+      end if  
+      
+    end do ! next volume
+    
+    DEALLOCATE( output_volume_peak )
+    
+  end if
+  
   if (allocated(cell_output_field)) then
     DEALLOCATE( cell_output_field )
   end if

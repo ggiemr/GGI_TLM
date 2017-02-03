@@ -69,6 +69,8 @@ IMPLICIT NONE
   
   CALL set_output_volume_averages_in_mesh()
   
+  CALL set_output_volume_peak_in_mesh()
+  
   CALL set_mode_outputs_in_mesh()
   
   CALL set_frequency_output_surfaces_in_mesh()
@@ -133,6 +135,8 @@ IMPLICIT NONE
   
   CALL initialise_output_volume_averages()
   
+  CALL initialise_output_volume_peak()
+  
   CALL initialise_mode_outputs()
   
   CALL initialise_frequency_output_surfaces()
@@ -195,6 +199,8 @@ IMPLICIT NONE
   CALL cell_output_volumes()
 
   CALL cell_output_volume_averages()
+
+  CALL cell_output_volume_peak()
   
   CALL cell_output_frequency_output_volumes()
 
@@ -374,6 +380,13 @@ IMPLICIT NONE
   
     write (info_file_unit,'(A)')"Time domain field output averaged over a volume"
     CLOSE(unit=volume_average_field_output_unit)
+    
+  end if
+  
+  if (n_output_volume_peak.gt.0) then
+  
+    write (info_file_unit,'(A)')"Time domain field peak value over a volume"
+    CLOSE(unit=volume_peak_field_output_unit)
     
   end if
   

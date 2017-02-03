@@ -5,6 +5,7 @@ output_points.o \
 output_surfaces.o \
 output_volumes.o \
 output_volume_averages.o \
+output_volume_peak.o \
 output_modes.o \
 frequency_output_surfaces.o \
 frequency_output_volumes.o \

@@ -1,13 +1,31 @@
+###  THESE DIRECTORIES NEED TO BE SET FOR YOUR SYSTEM ###
+# note the MATERIAL_DIRECTORY and CABLE_DIRECTORY paths are used in the sed command and
+# require the usual '/' to be replaced by '\/' to avoid problems with sed 
+#
+# May 2013: SED COMMANDS NOW GENERATED AUTOMATICALLY...
+#
+#MATERIAL_DIRECTORY="\/home\/chris\/SOFTWARE\/GGI_TLM\/GGI_TLM\/TEST_DATA\/MATERIAL_DATA"
+#CABLE_DIRECTORY="\/home\/chris\/SOFTWARE\/GGI_TLM\/GGI_TLM\/TEST_DATA\/CABLE_DATA"
+#
+### NOTHING BELOW HERE SHOULD NEED TO BE CHANGED ###
+
+# These definitions fixed by IFlintoft for Ubuntu 14.04LTS 3/11/2014 see issues on github website
+#MATERIAL_DIRECTORY_STRING="${TEST_DATA_DIRECTORY}/MATERIAL_DATA"
+#MATERIAL_DIRECTORY="${MATERIAL_DIRECTORY_STRING//\//\/}"
+#
+#CABLE_DIRECTORY_STRING="${TEST_DATA_DIRECTORY}/CABLE_DATA"
+#CABLE_DIRECTORY="${CABLE_DIRECTORY_STRING//\//\/}"
+
+MATERIAL_DIRECTORY_STRING="${TEST_DATA_DIRECTORY}/MATERIAL_DATA"
+MATERIAL_DIRECTORY="${MATERIAL_DIRECTORY_STRING//\//\\/}"
+
+CABLE_DIRECTORY_STRING="${TEST_DATA_DIRECTORY}/CABLE_DATA"
+CABLE_DIRECTORY="${CABLE_DIRECTORY_STRING//\//\\/}"
+
 
 echo " "
 echo "Automatic testing of GGI_TLM"
 echo " "
-
-# Can set directory names for material and cable data if required
-# by un-commenting the two lines below...
-# Note the use of escape characters to avoid problems with sed
-#MATERIAL_DIRECTORY="\/home\/chris\/GGI_TLM\/GGI_TLM\/TEST_DATA\/MATERIAL_DATA"
-#CABLE_DIRECTORY="\/home\/chris\/GGI_TLM\/GGI_TLM\/TEST_DATA\/CABLE_DATA"
 
 CLEANING_LIST="\
 progress \
@@ -18,6 +36,7 @@ GGI_TLM_memory_usage.txt \
 *.plt \
 *vtk* \
 *.txt \
+*.info \
 *.jpeg \
 *.png \
 *.fout* \
@@ -55,6 +74,7 @@ if [ "$#" = "0" ] ; then
   echo "action=plot_ref_jpg NAME  : plot the results against reference results to jpeg file"
   echo "action=reference  NAME    : update the reference results with the current set of results"
   echo "action=check_reference  NAME    : Check the reference results against the current set of results to see whether they are the same"
+  echo "action=view_mesh  NAME     : View the computational mesh; volume materials, surface materials and cables."
   echo "action=document  NAME     : Create a document in rtf format with details of the problem i.e. geometry, materials, cables, mesh and results"
   echo "action=save  NAME  TAG   : Create a directory RESULTS_TAG and save results, .inp file, .info file and any .rtf files into it."
   echo " "
@@ -153,15 +173,11 @@ else
        rm -f $RUN_NAME.*
        
        echo "$RUN_NAME" > run_name.txt
-       
-
-# copy input file and all material, cable and mode files to the run directory
-       
-#OLD#       cp PROBLEM_SPECIFICATION_FILES/$RUN_NAME.inp ./$RUN_NAME.inp
 
        echo "{
               s/MATERIAL_DIRECTORY/${MATERIAL_DIRECTORY}/g
-              s/CABLE_DIRECTORY/${CABLE_DIRECTORY}/g" > sed_command
+              s/CABLE_DIRECTORY/${CABLE_DIRECTORY}/g
+	      " > sed_command
 
 # Add any parameter substitutions specified to the sed command
 # Read the parameter name and value from the file line by line
@@ -192,7 +208,9 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
        echo "	      }" >> sed_command
 
        sed -f sed_command PROBLEM_SPECIFICATION_FILES/$RUN_NAME.inp > ./$RUN_NAME.inp
-             
+
+# copy input file and all material, cable and mode files to the run directory
+       
        cp PROBLEM_SPECIFICATION_FILES/*.vmat .
        cp PROBLEM_SPECIFICATION_FILES/*.smat . 
        cp PROBLEM_SPECIFICATION_FILES/*.cable .
@@ -220,12 +238,45 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
          exit 1
        fi
 #       
+#   Check and plot geometry
        $SEQ_RUN_COMMAND $EXECUTABLE_DIR/GGI_TLM_model_checks < run_name.txt
        read LINE < $PROGRESS_FILENAME
        if [ "$LINE" = "FINISHED: GGI_TLM_model_checks" ] ; then
          echo "STATUS: $LINE"
        else
          echo "Failed: $TEST_CASE: GGI_TLM_model_checks"
+         exit 1
+       fi
+#
+#   Check and plot materials
+       echo "$RUN_NAME
+2      ! View volume material cells
+0      ! All materials
+4      ! View surface material faces
+0      ! All materials
+0      ! exit
+" > temp.txt
+       $SEQ_RUN_COMMAND $EXECUTABLE_DIR/GGI_TLM_material_model_checks < temp.txt
+       read LINE < $PROGRESS_FILENAME
+       if [ "$LINE" = "FINISHED: GGI_TLM_material_model_checks" ] ; then
+         echo "STATUS: $LINE"
+       else
+         echo "Failed: $TEST_CASE: GGI_TLM_material_model_checks"
+         exit 1
+       fi
+#
+#   Check and plot cables
+       echo "$RUN_NAME
+2      ! View cable routes (segment based)
+0      ! All cables
+0      ! exit
+" > temp.txt
+       $SEQ_RUN_COMMAND $EXECUTABLE_DIR/GGI_TLM_cable_model_checks < temp.txt
+       read LINE < $PROGRESS_FILENAME
+       if [ "$LINE" = "FINISHED: GGI_TLM_cable_model_checks" ] ; then
+         echo "STATUS: $LINE"
+       else
+         echo "Failed: $TEST_CASE: GGI_TLM_cable_model_checks"
          exit 1
        fi
 #       
@@ -318,7 +369,7 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
       
        RETURN_CODE=$?
        if [[ $RETURN_CODE != 0 ]] ; then
-         echo "$TEST_CASE: Exit from plot" >> progress
+         echo "$TEST_CASE: Exit from plot_ref" >> progress
 	 exit 1
        fi
        
@@ -344,7 +395,7 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
        echo "FINISHED: $TEST_CASE: reference" > ./progress
       
      elif [ "$ACTION" = "check_reference" ] ; then
-
+     
 # find all the files in the  PROBLEM_SPECIFICATION_FILES  directory ending in _ref. These are the reference files to check
 
       FILE_LIST=$( find ./PROBLEM_SPECIFICATION_FILES/ -name "*_ref" )
@@ -412,7 +463,15 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
         fi
 	
       fi
-      
+             
+     elif [ "$ACTION" = "view_mesh" ] ; then
+
+# Run paraview with a startup python script to load the volume material, surface material and cable mesh geometry files
+     
+       paraview --script=${SRC_DIR}/GGI_TLM_view_mesh.py &
+       
+       echo "FINISHED: $TEST_CASE: view_mesh" > ./progress
+             
      elif [ "$ACTION" = "document" ] ; then
 
 # Run python script to create the document
@@ -451,9 +510,9 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
        cp *.inp  RESULTS_$TAG
        cp *.info RESULTS_$TAG
        cp *.rtf  RESULTS_$TAG
-       
+                                 
        echo "FINISHED: $TEST_CASE: save" > ./progress
-             
+
      else 
      
        echo "Unknown action: $ACTION"      
@@ -467,5 +526,7 @@ fi
 #exit 0  ! this messes up the PARAMETERISED_FSS test case and isn't really needed anyway I don't think CJS 21/2/2014
 
 # we have some arguments to run_automatic_test
+
+
 
 

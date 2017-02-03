@@ -78,6 +78,11 @@ IMPLICIT NONE
     end do
   end do 
   
+! Test whether the conductivity is negative
+  if ( (fit_type.eq.dielectric_material).OR. (fit_type.eq.magnetic_material)) then 
+    if (filter_sigma(1).LT.0d0) stable_filter=.FALSE.
+  end if
+     
   do freq_loop=1,n_testing_frequencies
 
     if ( (fit_type.eq.dielectric_material).OR. (fit_type.eq.magnetic_material)) then 
@@ -97,6 +102,7 @@ IMPLICIT NONE
         stable_filter=.FALSE.
 	
       end if
+      
     else if (fit_type.eq.thin_layer) then 
         	  
 ! fill Z matrix 
@@ -225,6 +231,11 @@ IMPLICIT NONE
     end do
   end do 
   
+! Test whether the conductivity is negative
+  if ( (fit_type.eq.dielectric_material).OR. (fit_type.eq.magnetic_material)) then 
+    if (filter_sigma(1).LT.0d0) stable_filter=.FALSE.
+  end if
+   
   do freq_loop=1,n_testing_frequencies
 
     if ( (fit_type.eq.dielectric_material).OR. (fit_type.eq.magnetic_material)) then 
@@ -360,6 +371,11 @@ IMPLICIT NONE
       end if
     end do
   end do 
+  
+! Test whether the conductivity is negative
+  if ( (fit_type.eq.dielectric_material).OR. (fit_type.eq.magnetic_material)) then 
+    if (filter_sigma(1).LT.0d0) stable_filter=.FALSE.
+  end if
   
   do freq_loop=1,n_testing_frequencies
 

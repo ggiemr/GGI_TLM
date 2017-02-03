@@ -155,6 +155,7 @@ PROCESS_INPUT_FILE/read_output_point_list.o \
 PROCESS_INPUT_FILE/read_output_surface_list.o \
 PROCESS_INPUT_FILE/read_output_volume_list.o \
 PROCESS_INPUT_FILE/read_output_volume_average_list.o \
+PROCESS_INPUT_FILE/read_output_volume_peak_list.o \
 PROCESS_INPUT_FILE/read_SAR_volume_list.o \
 PROCESS_INPUT_FILE/read_output_time_information.o \
 PROCESS_INPUT_FILE/read_outer_boundary_reflection_coefficient.o \
@@ -337,6 +338,7 @@ OUTPUT/output_points.o \
 OUTPUT/output_surfaces.o \
 OUTPUT/output_volumes.o \
 OUTPUT/output_volume_averages.o \
+OUTPUT/output_volume_peak.o \
 OUTPUT/output_modes.o \
 OUTPUT/frequency_output_surfaces.o \
 OUTPUT/frequency_output_volumes.o \

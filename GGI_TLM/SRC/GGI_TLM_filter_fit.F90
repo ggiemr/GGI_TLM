@@ -47,7 +47,6 @@
 !     University of Nottingham
 !     Include general functions with no constraints other than pole stability 10/10/2013
 !
-!
   PROGRAM GGI_TLM_filter_fit
 !
        

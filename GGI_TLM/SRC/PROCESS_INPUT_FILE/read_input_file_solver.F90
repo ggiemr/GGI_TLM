@@ -108,6 +108,10 @@ character*256	:: input_line
     
       CALL read_output_volume_average_list()
      
+    else if (input_line.EQ.'output_volume_peak_list') then
+    
+      CALL read_output_volume_peak_list()
+     
     else if (input_line.EQ.'sar_volume_list') then
     
       CALL read_sar_volume_list()

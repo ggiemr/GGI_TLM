@@ -55,7 +55,7 @@ IMPLICIT NONE
        
 ! check whether the conductivity is positive
   if(filter_sigma(1).lt.0d0) then	
-!    write(*,*)'Stabilising sigma',filter_sigma(1)
+    write(*,*)'Stabilising sigma',filter_sigma(1)
 ! new estimate for conductivity
     filter_sigma(1)=-filter_sigma(1)/10d0
   end if

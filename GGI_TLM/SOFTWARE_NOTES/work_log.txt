@@ -653,7 +653,10 @@
 
 7/4/2016	CJS	Add a 'reduced c' capability for lightning simulations etc
 
+21/9/2016	CJS	Include a check for negative conductivity in the filter fitting process.
 			 
+3/2/2017        CJS     Add a new process 'view_mesh' to the run_automatic_test script
+
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE
 		- Start to implement and document all the Fieldsolve test cases : STARTED
