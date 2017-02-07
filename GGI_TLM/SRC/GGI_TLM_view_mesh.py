@@ -6,6 +6,23 @@ import time
 import glob
 
 # Add the surface mesh for each surface material
+bmesh_file=glob.glob("*.b_mesh.vtk.0")
+
+name="Outer boundary"
+
+print "Processing file" , bmesh_file , " name=" , name
+
+bmesh=LegacyVTKReader(guiName=name,FileNames=bmesh_file) 
+
+sDataRepresentation= GetDisplayProperties( bmesh ) 
+sDataRepresentation.Opacity = 1.0
+sDataRepresentation.Representation = 'Wireframe'
+
+sDataRepresentation.DiffuseColor = [1.0, 1.0, 1.0]	
+
+Show( bmesh )   
+
+# Add the surface mesh for each surface material
 
 surface_material_mesh_files= glob.glob("./*.smat_faces.vtk.*")
 nsurf=len(surface_material_mesh_files)
@@ -20,8 +37,6 @@ for surf in range (0,nsurf):
 	number_string=str(number)
 
 	smesh_file=glob.glob("*.smat_faces.vtk." +number_string)
-
-#	smesh=OpenDataFile(guiName=smesh_file,FileNames=[smesh_file]) 
 
         name="surface_material_"+number_string
 	
