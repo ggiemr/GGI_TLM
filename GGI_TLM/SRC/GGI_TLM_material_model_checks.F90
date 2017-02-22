@@ -133,8 +133,9 @@ IMPLICIT NONE
     write(*,*)'View volume material cells'
     
     write_all_material_info_to_file=.FALSE.
-    CALL plot_volume_material_cells(write_all_material_info_to_file)
-    
+    CALL plot_volume_material_cells(write_all_material_info_to_file)      
+    CALL plot_mesh_boundary()
+
   else if (option.EQ.3) then
   
     write(*,*)'View surface material frequency response'
@@ -148,6 +149,7 @@ IMPLICIT NONE
     
     write_all_material_info_to_file=.FALSE.
     CALL plot_surface_material_faces(write_all_material_info_to_file)
+    CALL plot_mesh_boundary()
 
   else if (option.EQ.5) then
   
@@ -156,6 +158,7 @@ IMPLICIT NONE
     write_all_material_info_to_file=.TRUE.
     CALL Volume_material_frequency_response(write_all_material_info_to_file)
     CALL plot_volume_material_cells(write_all_material_info_to_file)
+    CALL plot_mesh_boundary()
 
   else if (option.EQ.6) then
   
@@ -164,6 +167,7 @@ IMPLICIT NONE
     write_all_material_info_to_file=.TRUE.
     CALL Surface_material_frequency_response(write_all_material_info_to_file)
     CALL plot_surface_material_faces(write_all_material_info_to_file)
+    CALL plot_mesh_boundary()
 
   end if
   

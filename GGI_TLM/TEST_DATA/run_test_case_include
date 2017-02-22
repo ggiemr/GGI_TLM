@@ -67,6 +67,7 @@ if [ "$#" = "0" ] ; then
   echo "action=run_mpi np NAME    : run GGI_TLM_MPI on the test case NAME using mpi on np processors then post process results"
   echo "action=post_process NAME  : post process results"
   echo "action=clean NAME         : remove all existing results"
+  echo "action=clean_vtk NAME     : remove all vtk files "
   echo "action=clean_all NAME     : remove all existing results and saved results"
   echo "action=plot NAME          : plot the results to screen"
   echo "action=plot_jpg NAME      : plot the results to jpeg file"
@@ -74,7 +75,9 @@ if [ "$#" = "0" ] ; then
   echo "action=plot_ref_jpg NAME  : plot the results against reference results to jpeg file"
   echo "action=reference  NAME    : update the reference results with the current set of results"
   echo "action=check_reference  NAME    : Check the reference results against the current set of results to see whether they are the same"
-  echo "action=view_mesh  NAME     : View the computational mesh; volume materials, surface materials and cables."
+  echo "action=view_geometry  NAME     : View the geometry; volumes, surfaces, lines and points"
+  echo "action=view_meshed_geometry  NAME     : View the meshed geometry; volumes, surfaces, lines and points"
+  echo "action=view_mesh  NAME     : View the computational mesh; volume materials, surface materials and cables"
   echo "action=document  NAME     : Create a document in rtf format with details of the problem i.e. geometry, materials, cables, mesh and results"
   echo "action=save  NAME  TAG   : Create a directory RESULTS_TAG and save results, .inp file, .info file and any .rtf files into it."
   echo " "
@@ -238,48 +241,6 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
          exit 1
        fi
 #       
-#   Check and plot geometry
-       $SEQ_RUN_COMMAND $EXECUTABLE_DIR/GGI_TLM_model_checks < run_name.txt
-       read LINE < $PROGRESS_FILENAME
-       if [ "$LINE" = "FINISHED: GGI_TLM_model_checks" ] ; then
-         echo "STATUS: $LINE"
-       else
-         echo "Failed: $TEST_CASE: GGI_TLM_model_checks"
-         exit 1
-       fi
-#
-#   Check and plot materials
-       echo "$RUN_NAME
-2      ! View volume material cells
-0      ! All materials
-4      ! View surface material faces
-0      ! All materials
-0      ! exit
-" > temp.txt
-       $SEQ_RUN_COMMAND $EXECUTABLE_DIR/GGI_TLM_material_model_checks < temp.txt
-       read LINE < $PROGRESS_FILENAME
-       if [ "$LINE" = "FINISHED: GGI_TLM_material_model_checks" ] ; then
-         echo "STATUS: $LINE"
-       else
-         echo "Failed: $TEST_CASE: GGI_TLM_material_model_checks"
-         exit 1
-       fi
-#
-#   Check and plot cables
-       echo "$RUN_NAME
-2      ! View cable routes (segment based)
-0      ! All cables
-0      ! exit
-" > temp.txt
-       $SEQ_RUN_COMMAND $EXECUTABLE_DIR/GGI_TLM_cable_model_checks < temp.txt
-       read LINE < $PROGRESS_FILENAME
-       if [ "$LINE" = "FINISHED: GGI_TLM_cable_model_checks" ] ; then
-         echo "STATUS: $LINE"
-       else
-         echo "Failed: $TEST_CASE: GGI_TLM_cable_model_checks"
-         exit 1
-       fi
-#       
        echo "RUNNING: $RUN_COMMAND"
        $RUN_COMMAND < run_name.txt
        read LINE < $PROGRESS_FILENAME
@@ -316,6 +277,11 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
        rm -f $CLEANING_LIST
 # clean any existing output files     
        rm -f $RUN_NAME.*
+             
+     elif [ "$ACTION" = "clean_vtk" ] ; then
+
+# clean any vtk files
+       rm -f *vtk*
              
      elif [ "$ACTION" = "clean_all" ] ; then
 
@@ -464,9 +430,80 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
 	
       fi
              
-     elif [ "$ACTION" = "view_mesh" ] ; then
+     elif [ "$ACTION" = "view_geometry" ] ; then
+#       
+#   Check and plot geometry
+       $SEQ_RUN_COMMAND $EXECUTABLE_DIR/GGI_TLM_geometry_checks < run_name.txt
+       read LINE < $PROGRESS_FILENAME
+       if [ "$LINE" = "FINISHED: GGI_TLM_geometry_checks" ] ; then
+         echo "STATUS: $LINE"
+       else
+         echo "Failed: $TEST_CASE: GGI_TLM_geometry_checks"
+         exit 1
+       fi
+# Run paraview with a startup python script to load the volume, surface, line and point geometry files
 
+       echo "STARTING PARAVIEW....."
+     
+       paraview --script=${SRC_DIR}/GGI_TLM_view_geometry.py &
+       
+       echo "FINISHED: $TEST_CASE: view_geometry" > ./progress
+             
+     elif [ "$ACTION" = "view_meshed_geometry" ] ; then
+#       
+#   Check and plot the meshed geometry
+       $SEQ_RUN_COMMAND $EXECUTABLE_DIR/GGI_TLM_model_checks < run_name.txt
+       read LINE < $PROGRESS_FILENAME
+       if [ "$LINE" = "FINISHED: GGI_TLM_model_checks" ] ; then
+         echo "STATUS: $LINE"
+       else
+         echo "Failed: $TEST_CASE: GGI_TLM_model_checks"
+         exit 1
+       fi
+# Run paraview with a startup python script to load the volume, surface, line and point geometry files
+     
+       echo "STARTING PARAVIEW....."
+
+       paraview --script=${SRC_DIR}/GGI_TLM_view_meshed_geometry.py &
+       
+       echo "FINISHED: $TEST_CASE: view_geometry" > ./progress
+             
+     elif [ "$ACTION" = "view_mesh" ] ; then
+#
+#   Check and plot materials
+       echo "$RUN_NAME
+2      ! View volume material cells
+0      ! All materials
+4      ! View surface material faces
+0      ! All materials
+0      ! exit
+" > temp.txt
+       $SEQ_RUN_COMMAND $EXECUTABLE_DIR/GGI_TLM_material_model_checks < temp.txt
+       read LINE < $PROGRESS_FILENAME
+       if [ "$LINE" = "FINISHED: GGI_TLM_material_model_checks" ] ; then
+         echo "STATUS: $LINE"
+       else
+         echo "Failed: $TEST_CASE: GGI_TLM_material_model_checks"
+         exit 1
+       fi
+#
+#   Check and plot cables
+       echo "$RUN_NAME
+2      ! View cable routes (segment based)
+0      ! All cables
+0      ! exit
+" > temp.txt
+       $SEQ_RUN_COMMAND $EXECUTABLE_DIR/GGI_TLM_cable_model_checks < temp.txt
+       read LINE < $PROGRESS_FILENAME
+       if [ "$LINE" = "FINISHED: GGI_TLM_cable_model_checks" ] ; then
+         echo "STATUS: $LINE"
+       else
+         echo "Failed: $TEST_CASE: GGI_TLM_cable_model_checks"
+         exit 1
+       fi
 # Run paraview with a startup python script to load the volume material, surface material and cable mesh geometry files
+     
+       echo "STARTING PARAVIEW....."
      
        paraview --script=${SRC_DIR}/GGI_TLM_view_mesh.py &
        

@@ -5,7 +5,7 @@ import sys
 import time
 import glob
 
-# Add the outer boundary
+# Add the mesh boundary 
 bmesh_file=glob.glob("*.b_mesh.vtk.0")
 
 name="Outer boundary"
@@ -24,21 +24,21 @@ Show( bmesh )
 
 # Add the volume mesh for each volume material
 
-volume_material_mesh_files= glob.glob("./*.vmat_cells.vtk.*")
+volume_material_mesh_files= glob.glob("./*.v_mesh.vtk.*")
 nvol=len(volume_material_mesh_files)
 
-print "Number of volume materials=" , nvol
+print "Number of volumes=" , nvol
 
-# loop over the volumes and add the mesh image 
+# loop over the volumes and add gto the image 
 
 for vol in range (0,nvol):
 
 	number=vol+1
 	number_string=str(number)
 
-	vmesh_file=glob.glob("*.vmat_cells.vtk." +number_string)
+	vmesh_file=glob.glob("*.v_mesh.vtk." +number_string)
 
-        name="volume_material_"+number_string
+        name="volume_"+number_string
 	
 	print "Processing file" , vmesh_file , " name=" , name
 
@@ -53,24 +53,24 @@ for vol in range (0,nvol):
 	sDataRepresentation.DiffuseColor = [0.0, 0.0 , colour ]	
 
 	Show( vmesh )   
-	
+
 # Add the surface mesh for each surface material
 
-surface_material_mesh_files= glob.glob("./*.smat_faces.vtk.*")
+surface_material_mesh_files= glob.glob("./*.s_mesh.vtk.*")
 nsurf=len(surface_material_mesh_files)
 
-print "Number of surface materials=" , nsurf
+print "Number of surfaces=" , nsurf
 
-# loop over the surfaces and add the mesh image 
+# loop over the surfaces and add to the image 
 
 for surf in range (0,nsurf):
 
 	number=surf+1
 	number_string=str(number)
 
-	smesh_file=glob.glob("*.smat_faces.vtk." +number_string)
+	smesh_file=glob.glob("*.s_mesh.vtk." +number_string)
 
-        name="surface_material_"+number_string
+        name="surface_"+number_string
 	
 	print "Processing file" , smesh_file , " name=" , name
 
@@ -85,38 +85,72 @@ for surf in range (0,nsurf):
 	sDataRepresentation.DiffuseColor = [1.0, colour, 0.0]	
 
 	Show( smesh )   
+	
 
-# Add the cable mesh for each cable
+# Add the line meshetry
 
-cable_mesh_files= glob.glob("./*.c_mesh.vtk.*")
-ncables=len(cable_mesh_files)
+line_mesh_files= glob.glob("./*.l_mesh.vtk.*")
+nlines=len(line_mesh_files)
 
-print "Number of cables=" , ncables
+print "Number of lines=" , nlines
 
-# loop over the cables and add the mesh image 
+# loop over the lines and add to the image
 
-for cable in range (0,ncables):
+for line in range (0,nlines):
 
-	number=cable+1
+	number=line+1
 	number_string=str(number)
 
-	cmesh_file=glob.glob("*.c_mesh.vtk." +number_string)
+	lmesh_file=glob.glob("*.l_mesh.vtk." +number_string)
 
-        name="cable_"+number_string
+        name="line_"+number_string
 	
-	print "Processing file" , cmesh_file , " name=" , name
+	print "Processing file" , lmesh_file , " name=" , name
 
-	cmesh=LegacyVTKReader(guiName=name,FileNames=cmesh_file) 
+	lmesh=LegacyVTKReader(guiName=name,FileNames=lmesh_file) 
 	
-	sDataRepresentation= GetDisplayProperties( cmesh ) 
+	sDataRepresentation= GetDisplayProperties( lmesh ) 
 	sDataRepresentation.Opacity = 1.0
 	sDataRepresentation.Representation = 'Surface'
 
-	colour=float(cable+1)/float(ncables)
+	colour=float(line+1)/float(nlines)
 
 	sDataRepresentation.DiffuseColor = [ colour, 0.0, 0.0]	
 
-	Show( cmesh )   
+	Show( lmesh )   
+	
+
+# Add the point meshetry
+
+point_mesh_files= glob.glob("./*.p_mesh.vtk.*")
+npoints=len(point_mesh_files)
+
+print "Number of points=" , npoints
+
+# loop over the points and add to the image
+
+for point in range (0,npoints):
+
+	number=point+1
+	number_string=str(number)
+
+	pmesh_file=glob.glob("*.p_mesh.vtk." +number_string)
+
+        name="point_"+number_string
+	
+	print "Processing file" , pmesh_file , " name=" , name
+
+	pmesh=LegacyVTKReader(guiName=name,FileNames=pmesh_file) 
+	
+	sDataRepresentation= GetDisplayProperties( pmesh ) 
+	sDataRepresentation.Opacity = 1.0
+	sDataRepresentation.Representation = 'Surface'
+
+	colour=float(point+1)/float(npoints)
+
+	sDataRepresentation.DiffuseColor = [ colour, 0.0, 0.0]	
+
+	Show( pmesh )   
 	
 
 # set background colour to blue    		
