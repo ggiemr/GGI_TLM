@@ -313,6 +313,8 @@ IMPLICIT NONE
 ! set transfer impedance filters
         cable_geometry_list(cable_geometry_number)%filter_number(1,2)=3
         cable_geometry_list(cable_geometry_number)%filter_number(2,1)=3
+        
+! change the sign of the a coefficients of the transfer impedance filters
       
       end if
       

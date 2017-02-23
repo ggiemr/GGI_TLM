@@ -39,6 +39,7 @@
 ! HISTORY
 !
 !     started 19/09/2012 CJS
+!     Correct sign of transfer impedance for coax 22/2/2017
 !
 !
 SUBROUTINE read_cable_geometry_list
@@ -172,7 +173,22 @@ character(LEN=256) :: input_line
     end if
 
     close(UNIT=cable_geometry_file_unit)
-      
+    
+! correction for the transfer impedance for coaxial cables - sign needs to be reversed. 22/2/2017
+    if (cable_geometry_list(cable_geometry_number)%cable_geometry_type.EQ.cable_geometry_type_coaxial) then
+      cable_geometry_list(cable_geometry_number)%parameters(6)=    &
+       -cable_geometry_list(cable_geometry_number)%parameters(6)
+      cable_geometry_list(cable_geometry_number)%parameters(7)=    &
+       -cable_geometry_list(cable_geometry_number)%parameters(7)
+    end if
+    
+    if (cable_geometry_list(cable_geometry_number)%cable_geometry_type.EQ.cable_geometry_type_FD_coaxial) then
+      do i=0,cable_geometry_list(cable_geometry_number)%Sfilter(3)%a%order
+        cable_geometry_list(cable_geometry_number)%Sfilter(3)%a%coeff(i)=    &
+         -cable_geometry_list(cable_geometry_number)%Sfilter(3)%a%coeff(i)
+      end do
+    end if
+    
   end do ! next cable geometry
 
   CALL write_line('FINISHED: read_cable_geometry_list',0,output_to_screen_flag)

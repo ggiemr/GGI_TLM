@@ -428,3 +428,10 @@ output point is 'inside' the PEC/PMC and sees no field.
 134  We need to include the compression of output files for all output types.
 
 135. Need to document that a factor of dt is removed from the Fourier Integral for frequency_output surfaces and volumes.
+DONE
+
+136. Sign error in transfer impedance terms. 
+FIXED in read_cable_geometry_list.F90
+
+137. There is a problem when putting resistance on a cable shield in the junction formulation. The result is in error
+     FIXED 23/2/2017 see new test case COAX_TERMINATION_TEST.

@@ -32,6 +32,8 @@
 ! HISTORY
 !
 !     started 21/09/2012 CJS
+!     23/2/2017  CJS correct the addition of source resistance and voltage for coaxial cables taking proper account
+!                of the domain decomposition matrices. Before this didn't work for resitances on shield conductors.
 !
 !
 SUBROUTINE set_bundle_excitations()
@@ -48,6 +50,8 @@ IMPLICIT NONE
   integer	:: junction
   integer	:: cable_loop
   integer	:: cable_number
+  integer	:: cable_geometry_number
+  integer	:: cable_type_number
   integer	:: segment_cable_loop
   integer	:: cable_end
   integer	:: n_cables_found
@@ -60,6 +64,9 @@ IMPLICIT NONE
   integer	:: n_conductors,conductor
   integer	:: excitation_function_number
   real*8	:: Rsource
+  real*8	:: Rs1,Rs2
+  integer	:: function_number_1,function_number_2
+  integer       :: e1,e2
 
 ! START
 
@@ -80,9 +87,13 @@ IMPLICIT NONE
       cable_number=cable_junction_list(junction)%cable_list(cable_loop)
       cable_end=cable_junction_list(junction)%cable_end_list(cable_loop)
       n_conductors=cable_junction_list(junction)%n_external_conductors(cable_loop)
-  
+      
+      cable_geometry_number=cable_list(cable_number)%cable_geometry_number
+      cable_type_number=cable_geometry_list(cable_number)%cable_geometry_type
+      
       if (rank.eq.0) then	  
-        write(cable_info_file_unit,*)'Cable number',cable_number
+        write(cable_info_file_unit,*)'Cable number',cable_number,' cable geometry number=',cable_geometry_number,  &
+                                     ' cable type=',cable_type_number
       end if
       
 ! get the bundle segment for this cable end
@@ -130,27 +141,103 @@ IMPLICIT NONE
       end do
 
 1000 CONTINUE ! jump out of loop to here if cable is found      
-      do conductor=1,n_conductors
-      
-        excitation_function_number=cable_junction_list(junction)%excitation_function(cable_loop)%value(conductor)
-        Rsource=cable_junction_list(junction)%resistance(cable_loop)%value(conductor)
-	
-! set source function number in bundle_segment data structure	
-	bundle_segment_list(segment_number)%excitation_function(first_conductor+conductor)=excitation_function_number
 
-! set resistance value in bundle_segment data structure	
-	bundle_segment_list(segment_number)%R(first_conductor+conductor,first_conductor+conductor)=	&
-	    bundle_segment_list(segment_number)%R(first_conductor+conductor,first_conductor+conductor)+Rsource
+      if (    (cable_type_number.EQ.cable_geometry_type_coaxial)           &
+          .OR.(cable_type_number.EQ.cable_geometry_type_FD_coaxial) ) then
 
+! get the elements of the matrix we are dealing with
+        e1=first_conductor+1
+        e2=first_conductor+2
+
+! set source function numbers in bundle_segment data structure	
+        function_number_1=cable_junction_list(junction)%excitation_function(cable_loop)%value(1)
+        function_number_2=cable_junction_list(junction)%excitation_function(cable_loop)%value(2)
+        
         if (rank.eq.0) then	
-	  write(cable_info_file_unit,*)'Setting source function number ',excitation_function_number,	&
-	                               ' on conductor',first_conductor+conductor
-	  write(cable_info_file_unit,*)'Setting Resistance ',Rsource,	&
-	                               ' on conductor',first_conductor+conductor
+          write(cable_info_file_unit,*)'Coax cable source functions are:',function_number_1,function_number_1
 	end if
-	
-      end do ! next conductor in this cable 
+
+! Check for the case where we have two different sources on inner wire and shield - the process can't deal with this at the moment
+! as the sources have to be combined.
+        if ( (function_number_1.NE.0).AND.(function_number_2.NE.0) ) then
+        
+          if (function_number_1.EQ.function_number_2) then
+        
+	    bundle_segment_list(segment_number)%excitation_function(e1)=0
+	    bundle_segment_list(segment_number)%excitation_function(e2)=function_number_2
+        
+            if (rank.eq.0) then	
+              write(cable_info_file_unit,*)'Setting voltage source functions'
+              write(cable_info_file_unit,*)e1,bundle_segment_list(segment_number)%excitation_function(e1)
+              write(cable_info_file_unit,*)e2,bundle_segment_list(segment_number)%excitation_function(e2)
+	    end if
+          
+          else
+            write(*,*)'ERROR: we cannot have two different source functions on the inner wire and the shield of a coax cable'
+            write(*,*)'Junction number=',junction
+            write(*,*)'Cable number=',cable_number
+            write(*,*)'Cable end=',cable_end
+            STOP 1
+          end if
+        
+        else
+        
+	  bundle_segment_list(segment_number)%excitation_function(e1)=function_number_1-function_number_2
+	  bundle_segment_list(segment_number)%excitation_function(e2)=function_number_2
+        
+          if (rank.eq.0) then	
+            write(cable_info_file_unit,*)'Setting voltage source functions'
+            write(cable_info_file_unit,*)e1,bundle_segment_list(segment_number)%excitation_function(e1)
+            write(cable_info_file_unit,*)e2,bundle_segment_list(segment_number)%excitation_function(e2)
+	  end if
+          
+        end if
+        
+! set resistance values in bundle_segment data structure	
+        Rs1=cable_junction_list(junction)%resistance(cable_loop)%value(1)   ! value on wire
+        Rs2=cable_junction_list(junction)%resistance(cable_loop)%value(2)   ! value on shield
+        
+! We have to take into account the domain decomposition for coaxial cables here when we add the resistances        
+	bundle_segment_list(segment_number)%R(e1,e1)=bundle_segment_list(segment_number)%R(e1,e1)+Rs1+Rs2
+	bundle_segment_list(segment_number)%R(e1,e2)=bundle_segment_list(segment_number)%R(e1,e2)-Rs2
+	bundle_segment_list(segment_number)%R(e2,e1)=bundle_segment_list(segment_number)%R(e2,e1)-Rs2
+	bundle_segment_list(segment_number)%R(e2,e2)=bundle_segment_list(segment_number)%R(e2,e2)+Rs2
+        
+        if (rank.eq.0) then	
+          write(cable_info_file_unit,*)'Coax cable resistances are:',Rs1,Rs2
+	  write(cable_info_file_unit,*)'Setting R:'
+	  write(cable_info_file_unit,*)e1,e1,bundle_segment_list(segment_number)%R(e1,e1)
+ 	  write(cable_info_file_unit,*)e1,e2,bundle_segment_list(segment_number)%R(e1,e2)
+	  write(cable_info_file_unit,*)e2,e1,bundle_segment_list(segment_number)%R(e2,e1)
+	  write(cable_info_file_unit,*)e2,e2,bundle_segment_list(segment_number)%R(e2,e2)
+         
+	end if
+
+      else  ! not a coaxial cable
+
+        do conductor=1,n_conductors
       
+! set source function number in bundle_segment data structure	
+          excitation_function_number=cable_junction_list(junction)%excitation_function(cable_loop)%value(conductor)	
+	  bundle_segment_list(segment_number)%excitation_function(first_conductor+conductor)=excitation_function_number
+          
+! set resistance value in bundle_segment data structure	
+          Rsource=cable_junction_list(junction)%resistance(cable_loop)%value(conductor)
+
+	  bundle_segment_list(segment_number)%R(first_conductor+conductor,first_conductor+conductor)=	&
+	      bundle_segment_list(segment_number)%R(first_conductor+conductor,first_conductor+conductor)+Rsource
+
+          if (rank.eq.0) then	
+	    write(cable_info_file_unit,*)'Setting source function number ',excitation_function_number,	&
+	                                 ' on conductor',first_conductor+conductor
+	    write(cable_info_file_unit,*)'Setting Resistance ',Rsource,	&
+	                                 ' on conductor',first_conductor+conductor
+	  end if
+	
+        end do ! next conductor in this cable 
+      
+      end if   ! cable geometry type
+       
     end do ! next cable loop
   
   end do ! next junction

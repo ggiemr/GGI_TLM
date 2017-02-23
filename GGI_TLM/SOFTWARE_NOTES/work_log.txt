@@ -657,6 +657,10 @@
 			 
 3/2/2017        CJS     Add a new process 'view_mesh' to the run_automatic_test script
 
+22/2/2017       CJS     Sign error in transfer impedance terms. fixed in read_cable_geometry_list.F90
+
+23/2/2017       CJS     Correct resistances and voltage sources on coax shields. See new test case: COAX_TERMINATION_TEST
+
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE
 		- Start to implement and document all the Fieldsolve test cases : STARTED

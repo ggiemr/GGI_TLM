@@ -33,6 +33,7 @@
 !
 !     started 24/09/2012 CJS
 !             17/12/2012 CJS	implement junction loads
+!             23/2/2017 CJS    allow voltage sources to be reversed - indicated by negative source function number
 !
 !
 SUBROUTINE cell_centre_cable_junction(cell_centre_junction, Uxin,Uyin,Uzin ,Yxin,Yyin,Yzin , Ix,Iy,Iz)
@@ -184,14 +185,21 @@ IMPLICIT NONE
     
         Vf(row,face)=2d0*bundle_segment_list(segment)%Vlink(row)+2d0*bundle_segment_list(segment)%VLstub(row)
 	
-	excitation_function=bundle_segment_list(segment)%excitation_function(row)
+! excitation functions can be reversed (indicated by a negative sign) on cables
+	excitation_function=abs(bundle_segment_list(segment)%excitation_function(row))
 	
-	if (excitation_function.ne.0) then
+	if (excitation_function.GT.0) then
+        
 ! add source voltage
-
           Vf(row,face)=Vf(row,face)+excitation_functions(excitation_function)%value(timestep)	&
 	                           *bundle_segment_list(segment)%direction_sign_list(row)
-	  
+                                   
+        else if (excitation_function.LT.0) then
+        
+! subtract source voltage
+          Vf(row,face)=Vf(row,face)-excitation_functions(excitation_function)%value(timestep)	&
+	                           *bundle_segment_list(segment)%direction_sign_list(row)
+                                   
         end if ! source voltage present
 	
       end do ! next row

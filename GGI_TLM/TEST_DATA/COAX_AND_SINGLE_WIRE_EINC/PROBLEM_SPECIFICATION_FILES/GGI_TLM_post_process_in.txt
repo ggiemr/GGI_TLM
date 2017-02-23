@@ -1,0 +1,26 @@
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+coax_and_wire.cable_current.tout
+           1
+log
+   1E5 fmin
+   1E9 fmax
+            1000 n_frequencies
+source_current.fout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+coax_and_wire.excitation.tout
+           1
+log
+   1E5 fmin
+   1E9 fmax
+            1000 n_frequencies
+excitation.fout
+           6  POST PROCESSING OPTION: COMBINE FREQUENCY DOMAIN DATA
+source_current.fout
+           1
+excitation.fout
+           1
+   10.0000000000000000       constant, A source resistance
+   1.0000000000000000       constant, B
+   0.0000000000000000       constant, C
+normalised_source_voltage.fout
+           0  Post processing option: Quit

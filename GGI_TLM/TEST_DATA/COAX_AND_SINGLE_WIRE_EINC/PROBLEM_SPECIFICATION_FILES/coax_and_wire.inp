@@ -1,0 +1,161 @@
+# coax cable and single wire incident field excitation
+
+Mesh_outer_boundary_dimension
+-0.115 0.115 -0.115 0.115 -1.115 1.115
+
+Mesh_cell_dimension
+0.01
+
+
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+Surface_list
+1   Number of surfaces 
+1       SURFACE_NUMBER    # Huygens surface
+rectangular_block
+0.2 0.2 2.2   surface parameters 
+0.0 0.0 0.0    
+0.0 0.0 0.0
+
+Line_list
+6   Number of lines 
+1       LINE_NUMBER   end 1 termination
+straight_line2
+0.0 0.0 -1.0    0.0 -0.01 -1.0  ! line parameters 
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       LINE_NUMBER 
+straight_line2
+0.0 -0.01 -1.0  0.0 -0.01 1.0  ! coax
+0.0 0.0 0.0
+0.0 0.0 0.0
+3       LINE_NUMBER   end 2 termination
+straight_line2
+0.0 -0.01 1.0  0.0 0.0 1.0  ! line parameters 
+0.0 0.0 0.0
+0.0 0.0 0.0
+4       LINE_NUMBER   end 1 termination
+straight_line2
+0.0 0.0 -1.0    0.0 0.01 -1.0  ! line parameters 
+0.0 0.0 0.0
+0.0 0.0 0.0
+5       LINE_NUMBER 
+straight_line2
+0.0 0.01 -1.0  0.0 0.01 1.0  ! single wire
+0.0 0.0 0.0
+0.0 0.0 0.0
+6       LINE_NUMBER   end 2 termination
+straight_line2
+0.0 0.01 1.0  0.0 0.0 1.0  ! line parameters 
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+
+Point_list 
+2   Number of points (integer)
+1       POINT_NUMBER (integer)
+0.0 0.0 -1.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       POINT_NUMBER (integer)
+0.0 0.0 1.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Cable_geometry_list
+2  number of cable geometries
+1  CABLE GEOMETRY NUMBER, Cable geometry type (file name) follows:
+CABLE_DIRECTORY/RG58_coax
+2  CABLE GEOMETRY NUMBER, Cable geometry type (file name) follows:
+CABLE_DIRECTORY/0.5mm_single_wire
+
+cable_list
+2  number of cables
+1  CABLE NUMBER
+1    cable geometry number
+3    number of lines on cable route
+ 1 2 3     cable line list
+1    end 1 junction number
+2    end 2 junction number
+2  CABLE NUMBER
+2    cable geometry number
+3    number of lines on cable route
+4 5 6    cable line list
+1    end 1 junction number
+2    end 2 junction number
+
+Cable_output_list
+1  number of cable_outputs
+1  CABLE OUTPUT NUMBER
+1  cable number
+1  closest point number
+
+Cable_junction_list
+2    number of junctions
+1    JUNCTION NUMBER
+1    junction point 
+2    number of internal connection nodes (n_int)
+2    number of cables
+1 2   cable list
+1 1   corresponding cable end number list
+2   	Cable 1 number of external conductors (n_ext)
+1 0  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0 1
+0 0  	Cable 1 voltage source function list
+10.0 0.0 Cable 1 impedance list
+1   	Cable 2 number of external conductors (n_ext)
+1  	Cable 2 P matrix: matrix (n_int rows* n_ext columns)
+0
+0 	Cable 2 voltage source function list
+0.0 	Cable 2 impedance list
+1       Number of internal impedances
+1   INTERNAL IMPEDANCE NUMBER
+1 2 ! between internal conection nodes
+# Impedance filter function
+1.0e0	       # w normalisation constant
+0	       # a order
+10.0           # a coefficients - simple resistance here
+0	       # b order
+1.0	       # b coefficients
+2    JUNCTION NUMBER
+2    junction point 
+2    number of internal connection nodes (n_int)
+2    number of cables
+1 2   cable list
+2 2   corresponding cable end number list
+2   	Cable 1 number of external conductors (n_ext)
+1 0  	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
+0 1
+0 0  	Cable 1 voltage source function list
+10.0  0.0	Cable 1 impedance list
+1   	Cable 2 number of external conductors (n_ext)
+1  	Cable 2 P matrix: matrix (n_int rows* n_ext columns)
+0
+0 	Cable 2 voltage source function list
+0.0 	Cable 2 impedance list
+1       Number of internal impedances
+1   INTERNAL IMPEDANCE NUMBER
+1 2 ! between internal conection nodes
+# Impedance filter function
+1.0e0	       # w normalisation constant
+0	       # a order
+10.0           # a coefficients - simple resistance here
+0	       # b order
+1.0	       # b coefficients
+
+Excitation_function_list
+1            	! number of excitation functions
+1		! EXCITATION NUMBER
+gaussian
+1.0 5e-10 20e-10
+
+Huygens_surface
+1     surface number
+1     side of surface for excitation
+1     excitation function number
+90.0 -90.0  wave vector Theta and Phi 
+1.0 0.0  Polarisation theta and Phi
+
+Simulation_time
+1e-6
