@@ -109,6 +109,34 @@ IMPLICIT NONE
     
   end do ! next surface material
   
+! Check excitation volumes i.e. do the volumes exist?  
+  do i=1,n_excitation_volumes
+  
+    excitation_function=excitation_volumes(i)%excitation_function_number
+! note excitaion function can be 0 i.e. no excitation
+    if ( (excitation_function.gt.n_excitation_functions).OR.(excitation_function.lt.0) )then 
+    
+      CALL write_line('ERROR in excitation_volumes: excitation_function does not exist',0,.TRUE.)
+      CALL write_line_integer('Excitation volume number:',i,0,.TRUE.)
+      CALL write_line_integer('excitation function number:',excitation_function,0,.TRUE.)
+      CALL write_line_integer('Number of excitation functions=',n_excitation_functions,0,.TRUE.)
+      STOP
+
+    end if
+    
+    volume=excitation_volumes(i)%volume_number
+    if ( (volume.gt.n_volumes).OR.(volume.lt.1) )then
+    
+      CALL write_line('ERROR in excitation_volumes: volume does not exist',0,.TRUE.)
+      CALL write_line_integer('Excitation volume number:',i,0,.TRUE.)
+      CALL write_line_integer('volume number:',volume,0,.TRUE.)
+      CALL write_line_integer('Number of volumes=',n_volumes,0,.TRUE.)
+      STOP
+
+    end if
+    
+  end do ! next excitation volume 
+  
 ! Check excitation surfaces i.e. do the surfaces exist?  
   do i=1,n_excitation_surfaces
   

@@ -46,7 +46,7 @@ IMPLICIT NONE
 
 ! local variables
 
-  integer,parameter	:: number_of_options=51
+  integer,parameter	:: number_of_options=52
   integer	:: option
 
   character(len=256)	:: command
@@ -120,6 +120,7 @@ IMPLICIT NONE
   write(*,*)'49. Create Poynting Vector or real/ imag E or H vector plot'
   write(*,*)'50. Multiply Time Domain Data'
   write(*,*)'51. Create Time Domain Force Vector Animation in conducting volumes'
+  write(*,*)'52. create_surface_frequency_domain_plot'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -546,6 +547,14 @@ IMPLICIT NONE
     write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: CREATE TIME DOMAIN FORCE VECTOR ANIMATION'
     write(post_process_info_unit,*)'Create Time Domain Force Vector Animation in conducting volumes'
     CALL create_time_domain_force_vector_animation()
+    
+  else if (option.EQ.52) then
+  
+    write(*,*)'Create surface frequency domain plot'
+
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: CREATE SURFACE FREQUENCY DOMAIN PLOT'
+    write(post_process_info_unit,*)'Create surface frequency domain plot'
+    CALL create_surface_frequency_domain_plot()
       
   else
    

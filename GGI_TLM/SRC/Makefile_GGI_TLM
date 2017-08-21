@@ -144,6 +144,7 @@ PROCESS_INPUT_FILE/read_volume_material_list.o \
 PROCESS_INPUT_FILE/read_excitation_function_list.o \
 PROCESS_INPUT_FILE/read_excitation_point_list.o \
 PROCESS_INPUT_FILE/read_excitation_surface_list.o \
+PROCESS_INPUT_FILE/read_excitation_volume_list.o \
 PROCESS_INPUT_FILE/read_huygens_surface.o \
 PROCESS_INPUT_FILE/read_far_field_surface.o \
 PROCESS_INPUT_FILE/read_periodic_boundary_far_field_surface.o \
@@ -329,6 +330,7 @@ EXCITATION_OBJS=  \
 EXCITATION/excitation.o \
 EXCITATION/excitation_points.o \
 EXCITATION/excitation_surfaces.o \
+EXCITATION/excitation_volumes.o \
 EXCITATION/mode_excitation.o \
 EXCITATION/huygens_surface.o 
 
@@ -379,6 +381,7 @@ POST_PROCESSOR/create_surface_animation.o \
 POST_PROCESSOR/extract_mode.o \
 POST_PROCESSOR/create_frequency_domain_animation.o \
 POST_PROCESSOR/create_vector_surface_frequency_domain_animation.o \
+POST_PROCESSOR/create_surface_frequency_domain_plot.o \
 POST_PROCESSOR/create_vector_volume_frequency_domain_animation.o \
 POST_PROCESSOR/combine_frequency_domain_data.o \
 POST_PROCESSOR/sum_frequency_domain_data.o \

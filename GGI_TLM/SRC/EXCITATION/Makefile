@@ -3,6 +3,7 @@ EXCITATION_OBJS=  \
 excitation.o \
 excitation_points.o \
 excitation_surfaces.o \
+excitation_volumes.o \
 mode_excitation.o \
 huygens_surface.o 
 

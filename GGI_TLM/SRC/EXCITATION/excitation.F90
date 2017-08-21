@@ -61,7 +61,9 @@ IMPLICIT NONE
   CALL set_excitation_points_in_mesh()
   
   CALL set_excitation_surfaces_in_mesh()
-  
+    
+  CALL set_excitation_volumes_in_mesh()
+ 
   CALL set_huygens_surface_in_mesh()
 
   CALL set_mode_excitations_in_mesh()
@@ -122,6 +124,8 @@ IMPLICIT NONE
   CALL initialise_excitation_points()
 
   CALL initialise_excitation_surfaces()
+
+  CALL initialise_excitation_volumes()
 
   CALL initialise_huygens_surface()
 
@@ -562,6 +566,8 @@ IMPLICIT NONE
   CALL Point_excitation()
   
   CALL Surface_excitation()
+  
+  CALL Volume_excitation()
   
   CALL Huygens_surface_excitation()
   

@@ -134,3 +134,5 @@ else
 
 fi
 
+# read values from the last line of FILE into the variables f n re im mag magdb phase
+      read -r f n re im mag magdb phase < <(tail -n1 FILE)

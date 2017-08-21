@@ -55,6 +55,7 @@ IMPLICIT NONE
   n_excitation_functions=0
   n_excitation_points=0
   n_excitation_surfaces=0
+  n_excitation_volumes=0
   n_huygens_surfaces=0
   n_output_points=0
   n_output_surfaces=0

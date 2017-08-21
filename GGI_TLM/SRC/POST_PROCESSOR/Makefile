@@ -11,6 +11,7 @@ plot_frequency_domain_data.o \
 create_surface_animation.o \
 create_frequency_domain_animation.o \
 create_vector_surface_frequency_domain_animation.o \
+create_surface_frequency_domain_plot.o \
 create_vector_volume_frequency_domain_animation.o \
 extract_mode.o \
 combine_frequency_domain_data.o \

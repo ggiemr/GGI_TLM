@@ -1,4 +1,5 @@
 default: \
+rectangular_waveguide \
 cavity \
 mlayer \
 skin_depth \
@@ -8,6 +9,7 @@ cable_loss \
 transmission_line
 
 clean: \
+clean_rectangular_waveguide \
 clean_cavity \
 clean_mlayer \
 clean_skin_depth \
@@ -16,6 +18,8 @@ clean_rcs_sphere \
 clean_cable_loss \
 clean_transmission_line
 
+rectangular_waveguide:
+	( cd RECTANGULAR_WAVEGUIDE ; $(MAKE) )
 cavity:
 	( cd CAVITY ; $(MAKE) )
 mlayer:
@@ -31,6 +35,8 @@ cable_loss:
 transmission_line:
 	( cd TRANSMISSION_LINE ; $(MAKE) )
 #
+clean_rectangular_waveguide:
+	( cd RECTANGULAR_WAVEGUIDE ; make clean )
 clean_cavity:
 	( cd CAVITY ; make clean )
 clean_mlayer:
