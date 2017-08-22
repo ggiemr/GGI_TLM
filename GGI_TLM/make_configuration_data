@@ -4,7 +4,7 @@
 
 # 1. Name of fortran compiler. Try to use one that automatically links mpi eg mpif90.
 
-FC=mpif90.mpich2 
+FC=mpif90.mpich
 
 # 2. MPI_INCLUDE :This is the path to the file mpif.h 
 

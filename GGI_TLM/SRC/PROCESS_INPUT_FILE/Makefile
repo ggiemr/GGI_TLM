@@ -17,6 +17,7 @@ read_volume_material_list.o \
 read_excitation_function_list.o \
 read_excitation_point_list.o \
 read_excitation_surface_list.o \
+read_excitation_volume_list.o \
 read_huygens_surface.o \
 read_far_field_surface.o \
 read_periodic_boundary_far_field_surface.o \

@@ -81,6 +81,18 @@ TYPE::excitation_surface_type
    
 END TYPE excitation_surface_type
 
+TYPE::excitation_volume_type
+
+  integer			:: excitation_function_number
+  integer			:: volume_number
+  integer 			:: number_of_cells
+  type(cell_point),allocatable	:: cell_list(:)
+  integer,allocatable		:: cell_excitation_field_number_list(:)
+  integer			:: field_component
+  integer			:: source_type
+   
+END TYPE excitation_volume_type
+
 TYPE::huygens_surface_type
 
   integer		:: surface_number
@@ -163,6 +175,9 @@ END TYPE excitation_mode_type
   
   integer				     	:: n_excitation_surfaces
   type(excitation_surface_type),allocatable 	:: excitation_surfaces(:)
+  
+  integer				     	:: n_excitation_volumes
+  type(excitation_volume_type),allocatable 	:: excitation_volumes(:)
   
   integer					:: n_huygens_surfaces
   type(huygens_surface_type) 			:: huygens_surface

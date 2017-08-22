@@ -88,6 +88,10 @@ character*256	:: input_line
     
       CALL read_excitation_surface_list()
      
+    else if (input_line.EQ.'excitation_volume_list') then
+    
+      CALL read_excitation_volume_list()
+     
     else if (input_line.EQ.'huygens_surface') then
     
       CALL read_huygens_surface()

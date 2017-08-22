@@ -593,6 +593,7 @@ IMPLICIT NONE
 
   integer	:: excitation_number
   integer	:: surface
+  integer	:: volume
 
 ! START
 
@@ -638,6 +639,24 @@ IMPLICIT NONE
   
   end if
   
+  if ( allocated( excitation_volumes ) ) then
+  
+    do volume=1,n_excitation_volumes
+    
+      if ( allocated( excitation_volumes(volume)%cell_list ) ) then
+        DEALLOCATE( excitation_volumes(volume)%cell_list )
+      end if
+      
+      if ( allocated( excitation_volumes(volume)%cell_excitation_field_number_list ) ) then
+        DEALLOCATE( excitation_volumes(volume)%cell_excitation_field_number_list )
+      end if
+  
+    end do ! next volume
+  
+    DEALLOCATE( excitation_volumes )
+  
+  end if
+
   if (allocated( face_excitation_field )) then
     DEALLOCATE( face_excitation_field )
   end if
