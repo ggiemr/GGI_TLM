@@ -381,6 +381,7 @@ POST_PROCESSOR/create_surface_animation.o \
 POST_PROCESSOR/extract_mode.o \
 POST_PROCESSOR/create_frequency_domain_animation.o \
 POST_PROCESSOR/create_vector_surface_frequency_domain_animation.o \
+POST_PROCESSOR/create_surface_frequency_domain_plot.o \
 POST_PROCESSOR/create_vector_volume_frequency_domain_animation.o \
 POST_PROCESSOR/combine_frequency_domain_data.o \
 POST_PROCESSOR/sum_frequency_domain_data.o \
