@@ -264,7 +264,7 @@ IMPLICIT NONE
     volume_animation(surface)%min_data=1e30
     
 ! read data    
-    write(*,*)'Reading data'
+    write(*,*)'Reading data, number of cells ='
     do quad=1,n_cells
     
       read(local_file_unit,*)cx,cy,cz,re,im,mag

@@ -394,7 +394,7 @@ logical			:: exists
     Instruction="gzip -dc "//trim(gzfilename)//" > "//trim(filename)//"  &"
     call SYSTEM(Instruction)
 
-! open a connection to the pipe for writing
+! open a connection to the pipe for reading
     open(UNIT=file_unit,file=trim(filename),iostat=iostat,ACTION='READ')
     
   end if
