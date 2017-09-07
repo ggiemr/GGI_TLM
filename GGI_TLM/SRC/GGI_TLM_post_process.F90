@@ -109,7 +109,7 @@ IMPLICIT NONE
   write(*,*)'38. Visualise multi-dimensional data sets (up to 4D)'
   write(*,*)'39. Calculate the impulse response of a filter function'
   write(*,*)'40. S11 to VSWR'
-  write(*,*)'41. Convert Frequency Domain Volume Field Output to x y z Re{field} Im{field} format'
+  write(*,*)'41. Convert Frequency Domain Volume Field Output to x y z Re{field} Im{field} |field| format'
   write(*,*)'42. Calculate spatial correlation for 1D and 2D complex data sets'
   write(*,*)'43. Calculate and propagate Wigner function from complex spatial correlation data'
   write(*,*)'44. Sum Time Domain Data'

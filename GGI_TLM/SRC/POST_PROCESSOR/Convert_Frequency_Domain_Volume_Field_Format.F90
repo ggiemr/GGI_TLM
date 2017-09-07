@@ -31,6 +31,7 @@
 !     started 23/10/2014 CJS
 !     Fix problem when number of cells is not the same for all volumes... CJS 16/1/2015
 !     5/11/2015  CJS allow the process to work on compressed files
+!     7/9/2017  CJS add an output column for magnitude data
 !
 SUBROUTINE Convert_Frequency_Domain_Volume_Field_Format
 
@@ -281,9 +282,9 @@ TYPE(surface_animation_data),allocatable	:: volume_animation(:)
       y=y/8d0
       z=z/8d0
 
-       write(local_file_unit,8000)x,y,z,re,im
+       write(local_file_unit,8000)x,y,z,re,im,sqrt(re*re+im*im)
        
-8000  format(5E16.7)
+8000  format(6E16.7)
   
     end do ! next cell
  
