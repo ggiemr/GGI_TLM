@@ -46,7 +46,7 @@ IMPLICIT NONE
 
 ! local variables
 
-  integer,parameter	:: number_of_options=52
+  integer,parameter	:: number_of_options=53
   integer	:: option
 
   character(len=256)	:: command
@@ -120,7 +120,8 @@ IMPLICIT NONE
   write(*,*)'49. Create Poynting Vector or real/ imag E or H vector plot'
   write(*,*)'50. Multiply Time Domain Data'
   write(*,*)'51. Create Time Domain Force Vector Animation in conducting volumes'
-  write(*,*)'52. create_surface_frequency_domain_plot'
+  write(*,*)'52. Create_surface_frequency_domain_plot'
+  write(*,*)'53. Calculate filter impulse response'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -555,6 +556,14 @@ IMPLICIT NONE
     write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: CREATE SURFACE FREQUENCY DOMAIN PLOT'
     write(post_process_info_unit,*)'Create surface frequency domain plot'
     CALL create_surface_frequency_domain_plot()
+    
+  else if (option.EQ.53) then
+  
+    write(*,*)'Calculate filter impulse response'
+
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: CALCULATE FILTER IMPULSE RESPONSE'
+    write(post_process_info_unit,*)'Calculate filter impulse response'
+    CALL filter_impulse_response()
       
   else
    

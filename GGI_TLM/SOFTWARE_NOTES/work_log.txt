@@ -661,6 +661,9 @@
 
 23/2/2017       CJS     Correct resistances and voltage sources on coax shields. See new test case: COAX_TERMINATION_TEST
 
+1/1/2018        CJS     Implement a post process to calculate a filter impulse response
+
+
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE
 		- Start to implement and document all the Fieldsolve test cases : STARTED

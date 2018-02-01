@@ -99,9 +99,12 @@ IMPLICIT NONE
 ! open the material filter file  
   OPEN(unit=filter_file_unit,file=filename)
   
-  write(filter_file_unit,'(A)')trim(header_string)
-
-  write(filter_file_unit,*)frequency(1),frequency(n_values),' # frequency range of validity'
+  if (fit_type.NE.general) then  
+  
+    write(filter_file_unit,'(A)')trim(header_string)
+    write(filter_file_unit,*)frequency(1),frequency(n_values),' # frequency range of validity'
+    
+  end if
   
   if (fit_type.eq.dielectric_material) then 
     
@@ -141,7 +144,7 @@ IMPLICIT NONE
         
   else if (fit_type.eq.general) then  
     
-    write(filter_file_unit,'(A)')'# General filter'
+!    write(filter_file_unit,'(A)')'# General filter'
     CALL write_Sfilter(filter_S(1),filter_file_unit)
    
   end if

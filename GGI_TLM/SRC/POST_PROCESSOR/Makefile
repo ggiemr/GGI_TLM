@@ -44,7 +44,8 @@ Reciprocal_frequency_domain_data.o \
 Time_frequency_analysis.o \
 Statistical_tools.o \
 create_poynting_vector_plot.o \
-create_time_domain_force_vector_animation.o
+create_time_domain_force_vector_animation.o \
+filter_impulse_response.o
 
 default: $(POST_PROCESSOR_OBJS)
 

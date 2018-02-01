@@ -2,9 +2,9 @@
 # This file contains all the configuration specifications for your system.
 # You should not have to edit any other files in order to make GGI_TLM 
 
-# 1. Name of fortran compiler. Try to use one that automatically links mpi eg mpif90.
+# 1. Name of fortran compiler. Try to use one that automatically links mpi eg mpif90.mpich2
 
-FC=mpif90.mpich
+FC=mpif90
 
 # 2. MPI_INCLUDE :This is the path to the file mpif.h 
 

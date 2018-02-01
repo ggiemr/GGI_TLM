@@ -413,7 +413,8 @@ POST_PROCESSOR/Reciprocal_frequency_domain_data.o \
 POST_PROCESSOR/Time_frequency_analysis.o \
 POST_PROCESSOR/Statistical_tools.o \
 POST_PROCESSOR/create_poynting_vector_plot.o \
-POST_PROCESSOR/create_time_domain_force_vector_animation.o
+POST_PROCESSOR/create_time_domain_force_vector_animation.o \
+POST_PROCESSOR/filter_impulse_response.o
 
 OPTIMISATION_OBJS=  \
 OPTIMISATION/opt_module.o \

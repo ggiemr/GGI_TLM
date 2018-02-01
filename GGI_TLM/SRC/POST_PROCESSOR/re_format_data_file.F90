@@ -118,7 +118,7 @@ integer	:: function_number
   read(*,*)first_line
   write(record_user_inputs_unit,*)first_line,' First line of the data file to process'
   
-  write(*,*)'Enter the first line of the data file to process or 0 to read the whole file'
+  write(*,*)'Enter the last line of the data file to process or 0 to read the whole file'
   read(*,*)last_line
   write(record_user_inputs_unit,*)last_line,' Last line of the data file to process or 0 to read the whole file'
   
