@@ -53,7 +53,7 @@ IMPLICIT NONE
 
   integer			:: timestep,n_timesteps
   real*8			:: f_input
-
+  
 ! START
 
 ! Allocate and read the time domain input data
@@ -68,6 +68,7 @@ IMPLICIT NONE
   
 ! Allocate and read the filter function to apply
 
+  write(*,*)'Enter the filename for the filter function'
   read(*,'(A)')filter_file_name
   write(record_user_inputs_unit,'(A)')trim(filter_file_name)
 
