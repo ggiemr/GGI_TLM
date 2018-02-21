@@ -200,6 +200,9 @@ IMPLICIT NONE
   
   write(*,*)'Minimum data value=',fmin
   write(*,*)'Maximum data value=',fmax
+  
+  fmin=fmin-abs(fmin)*0.000001d0
+  fmax=fmax+abs(fmax)*0.000001d0
 
 
   write(*,*)'Enter the number of bins for the distribution data'
@@ -230,7 +233,7 @@ IMPLICIT NONE
     
     bx1=int(dble(nbins)*(f(sample)-fmin)/(fmax-fmin))+1
     if ((bx1.ge.1).and.(bx1.le.nbins))then
-      binx1(1:bx1)=binx1(1:bx1)+1
+      binx1(bx1)=binx1(bx1)+1
     else
       write(*,*)'Bin out of range',bx1,nbins
     end if
