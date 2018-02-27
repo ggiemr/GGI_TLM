@@ -45,7 +45,8 @@ Time_frequency_analysis.o \
 Statistical_tools.o \
 create_poynting_vector_plot.o \
 create_time_domain_force_vector_animation.o \
-filter_impulse_response.o
+filter_impulse_response.o \
+create_filter_function.o
 
 default: $(POST_PROCESSOR_OBJS)
 

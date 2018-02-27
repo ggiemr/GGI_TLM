@@ -663,6 +663,8 @@
 
 1/1/2018        CJS     Implement a post process to calculate a filter impulse response
 
+27/2/2018       CJS     Add the capability to generate filter functions for low pass and high pass butterworth filters
+                        also fix array bounds error in cavity mode calculation
 
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE

@@ -66,6 +66,7 @@ IMPLICIT NONE
   logical		:: file_exists
 
   character(len=256)	:: command
+  character*3	        :: freq_range_type
   
 ! START
 
@@ -134,6 +135,17 @@ IMPLICIT NONE
   if (ch.eq.'y') then
     plot_dB=.TRUE.
   end if
+  
+  write(*,*)'Enter the frequency range type (log or lin)'
+  read(*,'(A3)')freq_range_type
+  CALL convert_to_lower_case(freq_range_type,3)
+  
+  if ( (freq_range_type.NE.'log').AND.(freq_range_type.NE.'lin') ) then
+    write(*,*)"Frequency range type should be 'log' or 'lin'"
+    STOP
+  end if
+  
+  write(record_user_inputs_unit,'(A3)')freq_range_type
 
   write(*,*)'Enter the label for the y axis'
   read(*,'(A)')y_label
@@ -173,6 +185,8 @@ IMPLICIT NONE
       write(local_file_unit,'(A)')'set y2label "Phase (radians)"'
 
     end if
+  
+    if (freq_range_type.EQ.'log')write(local_file_unit,'(A)')'set logscale x'
   
     write(local_file_unit,'(A)')'set xlabel "Frequency (Hz)"'
     write(local_file_unit,'(A,A,A)')'set ylabel "',trim(y_label),'"'
@@ -225,6 +239,8 @@ IMPLICIT NONE
       write(local_file_unit,'(A)')'set term jpeg'
       write(local_file_unit,'(A)')'set output "frequency_domain_data_plot_dB.jpeg"'   
     end if
+  
+    if (freq_range_type.EQ.'log')write(local_file_unit,'(A)')'set logscale x'
     
     write(local_file_unit,'(A)')'set xlabel "Frequency (Hz)"'
     write(local_file_unit,'(A,A,A)')'set ylabel "',trim(y_label),' (dB)"'

@@ -46,7 +46,7 @@ IMPLICIT NONE
 
 ! local variables
 
-  integer,parameter	:: number_of_options=53
+  integer,parameter	:: number_of_options=54
   integer	:: option
 
   character(len=256)	:: command
@@ -122,6 +122,7 @@ IMPLICIT NONE
   write(*,*)'51. Create Time Domain Force Vector Animation in conducting volumes'
   write(*,*)'52. Create_surface_frequency_domain_plot'
   write(*,*)'53. Calculate filter impulse response'
+  write(*,*)'54. Create filter function (LPF, HPF)'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -564,6 +565,14 @@ IMPLICIT NONE
     write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: CALCULATE FILTER IMPULSE RESPONSE'
     write(post_process_info_unit,*)'Calculate filter impulse response'
     CALL filter_impulse_response()
+    
+  else if (option.EQ.54) then
+  
+    write(*,*)'Create filter function (LPF, HPF)'
+
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: CREATE FILTER FUNCTION (LPF, HPF)'
+    write(post_process_info_unit,*)'Create filter function (LPF, HPF)'
+    CALL create_filter_function()
       
   else
    

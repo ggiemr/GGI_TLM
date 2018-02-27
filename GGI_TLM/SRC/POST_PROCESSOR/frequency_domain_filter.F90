@@ -73,6 +73,7 @@ IMPLICIT NONE
   
 ! Allocate and read the filter function to apply
 
+  write(*,*)'Enter the filename for the filter function'
   read(*,'(A)')filter_file_name
 
   open(UNIT=local_file_unit, 					    &

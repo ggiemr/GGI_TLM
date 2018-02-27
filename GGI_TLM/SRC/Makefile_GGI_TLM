@@ -414,7 +414,9 @@ POST_PROCESSOR/Time_frequency_analysis.o \
 POST_PROCESSOR/Statistical_tools.o \
 POST_PROCESSOR/create_poynting_vector_plot.o \
 POST_PROCESSOR/create_time_domain_force_vector_animation.o \
-POST_PROCESSOR/filter_impulse_response.o
+POST_PROCESSOR/filter_impulse_response.o \
+POST_PROCESSOR/create_filter_function.o
+
 
 OPTIMISATION_OBJS=  \
 OPTIMISATION/opt_module.o \

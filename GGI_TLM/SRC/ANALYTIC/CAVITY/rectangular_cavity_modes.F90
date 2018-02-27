@@ -45,7 +45,7 @@ IMPLICIT NONE
   
   integer nf,i,ii
   real*8  fswap
-  integer iswap(2)
+  integer iswap(3)
   
   real*8,allocatable :: f(:)
   integer, allocatable :: mnp(:,:)
