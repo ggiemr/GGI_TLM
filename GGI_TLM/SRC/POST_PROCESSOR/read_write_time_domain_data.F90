@@ -73,8 +73,8 @@ integer	:: function_number
   read(*,'(A256)')filename
   inquire(file=trim(filename),exist=file_exists)
   if (.NOT.file_exists) then
-    write(*,*)'Error file does not exist'
-    GOTO 5
+    write(*,*)'Error file does not exist:',trim(filename)
+    STOP
   end if
   write(record_user_inputs_unit,'(A)')trim(filename)
   
