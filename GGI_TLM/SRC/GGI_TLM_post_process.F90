@@ -46,7 +46,7 @@ IMPLICIT NONE
 
 ! local variables
 
-  integer,parameter	:: number_of_options=54
+  integer,parameter	:: number_of_options=55
   integer	:: option
 
   character(len=256)	:: command
@@ -123,6 +123,7 @@ IMPLICIT NONE
   write(*,*)'52. Create_surface_frequency_domain_plot'
   write(*,*)'53. Calculate filter impulse response'
   write(*,*)'54. Create filter function (LPF, HPF)'
+  write(*,*)'55. interpolate function(s)'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -573,6 +574,14 @@ IMPLICIT NONE
     write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: CREATE FILTER FUNCTION (LPF, HPF)'
     write(post_process_info_unit,*)'Create filter function (LPF, HPF)'
     CALL create_filter_function()
+    
+  else if (option.EQ.55) then
+  
+    write(*,*)'Interpolate function(s)'
+
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: INTERPOLATE FUNCTION(S)'
+    write(post_process_info_unit,*)'Interpolate function(s)'
+    CALL interpolate()
       
   else
    
