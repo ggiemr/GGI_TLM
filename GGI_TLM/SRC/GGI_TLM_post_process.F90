@@ -46,7 +46,7 @@ IMPLICIT NONE
 
 ! local variables
 
-  integer,parameter	:: number_of_options=55
+  integer,parameter	:: number_of_options=56
   integer	:: option
 
   character(len=256)	:: command
@@ -124,6 +124,7 @@ IMPLICIT NONE
   write(*,*)'53. Calculate filter impulse response'
   write(*,*)'54. Create filter function (LPF, HPF)'
   write(*,*)'55. interpolate function(s)'
+  write(*,*)'56. Subtract d.c. from Time Domain Data'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -582,6 +583,14 @@ IMPLICIT NONE
     write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: INTERPOLATE FUNCTION(S)'
     write(post_process_info_unit,*)'Interpolate function(s)'
     CALL interpolate()
+    
+  else if (option.EQ.56) then
+  
+    write(*,*)'Subtract d.c. from time domain data'
+
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: SUBTRACT D.C. FROM TIME DOMAIN DATA'
+    write(post_process_info_unit,*)'Subtract d.c. from time domain data'
+    CALL subtract_dc()
       
   else
    
