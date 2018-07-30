@@ -665,6 +665,8 @@
 
 27/2/2018       CJS     Add the capability to generate filter functions for low pass and high pass butterworth filters
                         also fix array bounds error in cavity mode calculation
+                        
+25/7/2018       CJS     Fix bug in set_bundle_excitations, line 92:  cable_type_number was found incorrectly from cable_number not cable geometry_number
 
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE

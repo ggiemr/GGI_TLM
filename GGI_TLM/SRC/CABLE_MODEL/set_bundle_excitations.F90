@@ -89,7 +89,7 @@ IMPLICIT NONE
       n_conductors=cable_junction_list(junction)%n_external_conductors(cable_loop)
       
       cable_geometry_number=cable_list(cable_number)%cable_geometry_number
-      cable_type_number=cable_geometry_list(cable_number)%cable_geometry_type
+      cable_type_number=cable_geometry_list(cable_geometry_number)%cable_geometry_type
       
       if (rank.eq.0) then	  
         write(cable_info_file_unit,*)'Cable number',cable_number,' cable geometry number=',cable_geometry_number,  &

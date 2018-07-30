@@ -270,7 +270,7 @@ IMPLICIT NONE
   else if ( (ch.eq.'z').OR.(ch.eq.'Z') ) then
     Zfilter_flag=.TRUE.
   else
-    write(*,*)"Response should be 'u' or 'n'"
+    write(*,*)"Response should be 's' or 'z'"
     STOP
   end if
   write(record_user_inputs_unit,'(A)')ch
