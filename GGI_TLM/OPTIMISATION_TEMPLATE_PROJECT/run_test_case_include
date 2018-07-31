@@ -510,6 +510,58 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
        echo "FINISHED: $TEST_CASE: view_mesh" > ./progress
              
      elif [ "$ACTION" = "document" ] ; then
+       
+#   Check and plot geometry
+       $SEQ_RUN_COMMAND $EXECUTABLE_DIR/GGI_TLM_geometry_checks < run_name.txt
+       read LINE < $PROGRESS_FILENAME
+       if [ "$LINE" = "FINISHED: GGI_TLM_geometry_checks" ] ; then
+         echo "STATUS: $LINE"
+       else
+         echo "Failed: $TEST_CASE: GGI_TLM_geometry_checks"
+         exit 1
+       fi
+       
+#   Check and plot the meshed geometry
+       $SEQ_RUN_COMMAND $EXECUTABLE_DIR/GGI_TLM_model_checks < run_name.txt
+       read LINE < $PROGRESS_FILENAME
+       if [ "$LINE" = "FINISHED: GGI_TLM_model_checks" ] ; then
+         echo "STATUS: $LINE"
+       else
+         echo "Failed: $TEST_CASE: GGI_TLM_model_checks"
+         exit 1
+       fi
+
+#   Check and plot materials
+       echo "$RUN_NAME
+2      ! View volume material cells
+0      ! All materials
+4      ! View surface material faces
+0      ! All materials
+0      ! exit
+" > temp.txt
+       $SEQ_RUN_COMMAND $EXECUTABLE_DIR/GGI_TLM_material_model_checks < temp.txt
+       read LINE < $PROGRESS_FILENAME
+       if [ "$LINE" = "FINISHED: GGI_TLM_material_model_checks" ] ; then
+         echo "STATUS: $LINE"
+       else
+         echo "Failed: $TEST_CASE: GGI_TLM_material_model_checks"
+         exit 1
+       fi
+#
+#   Check and plot cables
+       echo "$RUN_NAME
+2      ! View cable routes (segment based)
+0      ! All cables
+0      ! exit
+" > temp.txt
+       $SEQ_RUN_COMMAND $EXECUTABLE_DIR/GGI_TLM_cable_model_checks < temp.txt
+       read LINE < $PROGRESS_FILENAME
+       if [ "$LINE" = "FINISHED: GGI_TLM_cable_model_checks" ] ; then
+         echo "STATUS: $LINE"
+       else
+         echo "Failed: $TEST_CASE: GGI_TLM_cable_model_checks"
+         exit 1
+       fi
 
 # Run python script to create the document
      
