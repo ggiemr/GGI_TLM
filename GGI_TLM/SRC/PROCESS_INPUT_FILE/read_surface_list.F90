@@ -161,6 +161,10 @@ logical	:: file_exists
       n_params=3
       problem_surfaces(surface_number)%surface_type=surface_type_split_ring
      
+    else if (input_line.eq.'helix') then
+      n_params=6
+      problem_surfaces(surface_number)%surface_type=surface_type_helix
+     
     else if (input_line.eq.'triangulated_surface') then
     
       n_params=2

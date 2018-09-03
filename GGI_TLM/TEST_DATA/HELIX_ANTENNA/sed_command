@@ -1,0 +1,5 @@
+{
+              s/MATERIAL_DIRECTORY/\/home\/chris\/GGI_TLM\/GGI_TLM\/TEST_DATA\/MATERIAL_DATA/g
+              s/CABLE_DIRECTORY/\/home\/chris\/GGI_TLM\/GGI_TLM\/TEST_DATA\/CABLE_DATA/g
+	      
+	      }

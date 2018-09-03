@@ -110,6 +110,10 @@ integer	:: surface_number
     else if (problem_surfaces(surface_number)%surface_type.EQ.surface_type_split_ring) then
       
       CALL build_surface_split_ring(surface_number)
+
+    else if (problem_surfaces(surface_number)%surface_type.EQ.surface_type_helix) then
+      
+      CALL build_surface_helix(surface_number)
       
     else if (problem_surfaces(surface_number)%surface_type.EQ.surface_type_triangulated_surface) then
       

@@ -181,8 +181,11 @@ else
               s/MATERIAL_DIRECTORY/${MATERIAL_DIRECTORY}/g
               s/CABLE_DIRECTORY/${CABLE_DIRECTORY}/g
 	      " > sed_command
-
 # Add any parameter substitutions specified to the sed command
+
+       rm -f derived_parameters.txt
+       touch derived_parameters.txt
+       
 # Read the parameter name and value from the file line by line
        while IFS== read  PARAMETER VALUE
        do           
@@ -203,14 +206,61 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
 	   read VALUE < random_number.dat
 	   
 	 fi
+         
+# This process searches for a square bracket indicating an expression or derived parameter
+         TEST_STRING="["
+         if test "${VALUE#*$TEST_STRING}" != "$VALUE" ; then
+              
+#           echo "Found derived value: $VALUE"  
+# add derived value to the derived parameter list
+       
+           echo "${PARAMETER}=${VALUE}" >> derived_parameters.txt
+    
+         else
+         
+# add line to sed command        
+           echo "s/${PARAMETER}/${VALUE}/g" >> sed_command
+          
+         fi
         
-         echo "s/${PARAMETER}/${VALUE}/g" >> sed_command
-            
        done < PROBLEM_SPECIFICATION_FILES/parameter_definition.dat
        
        echo "	      }" >> sed_command
+       
+# Apply the sed command to the derived parameters list
 
+       sed -i -f sed_command derived_parameters.txt
+       
+#       echo "Derived parameters:"
+#       echo "______________________________________"       
+#       cat derived_parameters.txt
+       
+# Loop through the derived parameter list evaluating the derived parameters
+
+       echo "{" > sed_command2
+       
+       while IFS== read  PARAMETER VALUE
+       do           
+       
+# strip the square brackets from the value to give an arithmetic expression
+
+         a=$( echo $VALUE | sed  -e 's/\[//g' -e 's/\]//g')
+         echo expression: $a
+# evaluate the expression using awk
+
+         echo $PARAMETER | awk 'BEGIN {result='$a'}{printf"'$PARAMETER'=%e \n",result}'
+         RESULT_VALUE=$( echo '' | awk 'BEGIN {result='$a'}{printf"%e \n",result}' )
+# add line to sed command
+         echo "s/${PARAMETER}/${RESULT_VALUE}/g" >> sed_command2
+                            
+       done < derived_parameters.txt
+       echo "}" >> sed_command2
+            
+# Apply the intial sed command to the input file
        sed -f sed_command PROBLEM_SPECIFICATION_FILES/$RUN_NAME.inp > ./$RUN_NAME.inp
+
+# Apply the derived parameter sed command to the input file
+       sed -i -f sed_command2 ./$RUN_NAME.inp       
 
 # copy input file and all material, cable and mode files to the run directory
        
@@ -462,7 +512,9 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
        fi
 # Run paraview with a startup python script to load the volume, surface, line and point geometry files
      
+       echo " "
        echo "STARTING PARAVIEW....."
+       echo " "
 
        paraview --script=${SRC_DIR}/GGI_TLM_view_meshed_geometry.py &
        
@@ -503,7 +555,9 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
        fi
 # Run paraview with a startup python script to load the volume material, surface material and cable mesh geometry files
      
+       echo " "
        echo "STARTING PARAVIEW....."
+       echo " "
      
        paraview --script=${SRC_DIR}/GGI_TLM_view_mesh.py &
        

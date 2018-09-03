@@ -22,6 +22,7 @@ build_surface_quad.o \
 build_surface_triangle.o \
 build_surface_annulus.o \
 build_surface_split_ring.o \
+build_surface_helix.o \
 build_surface_triangulated_surface.o \
 build_surface_vtk_triangulated_surface.o \
 build_surface_stl_triangulated_surface.o \

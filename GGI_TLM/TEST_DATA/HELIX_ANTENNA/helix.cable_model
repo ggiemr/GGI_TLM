@@ -1,0 +1,589 @@
+ BUNDLE SEGMENT LIST
+          20  ! NUMBER OF BUNDLE SEGMENTS
+      22      22      17       3      22      22      17       7 ! cell_point1, cell_point2
+           1  ! n_cables
+           1  ! cable number
+           1  ! n_conductors
+           0  ! n_filters
+           1  ! direction sign
+           1  ! bundle_segment_geometry
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   0.0000000000000000       ! R(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           0  ! excitation_function(i)
+           0  ! filter_number(i,j)
+      22      22      17       7      22      22      17       6 ! cell_point1, cell_point2
+           1  ! n_cables
+           1  ! cable number
+           1  ! n_conductors
+           0  ! n_filters
+          -1  ! direction sign
+           1  ! bundle_segment_geometry
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   0.0000000000000000       ! R(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           0  ! excitation_function(i)
+           0  ! filter_number(i,j)
+      22      22      18       3      22      22      18       7 ! cell_point1, cell_point2
+           1  ! n_cables
+           1  ! cable number
+           1  ! n_conductors
+           0  ! n_filters
+           1  ! direction sign
+           1  ! bundle_segment_geometry
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   0.0000000000000000       ! R(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           0  ! excitation_function(i)
+           0  ! filter_number(i,j)
+      22      22      18       7      22      22      18       6 ! cell_point1, cell_point2
+           1  ! n_cables
+           1  ! cable number
+           1  ! n_conductors
+           0  ! n_filters
+          -1  ! direction sign
+           1  ! bundle_segment_geometry
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   0.0000000000000000       ! R(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           0  ! excitation_function(i)
+           0  ! filter_number(i,j)
+      22      22      19       3      22      22      19       7 ! cell_point1, cell_point2
+           1  ! n_cables
+           1  ! cable number
+           1  ! n_conductors
+           0  ! n_filters
+           1  ! direction sign
+           1  ! bundle_segment_geometry
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   0.0000000000000000       ! R(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           0  ! excitation_function(i)
+           0  ! filter_number(i,j)
+      22      22      19       7      22      22      19       6 ! cell_point1, cell_point2
+           1  ! n_cables
+           1  ! cable number
+           1  ! n_conductors
+           0  ! n_filters
+          -1  ! direction sign
+           1  ! bundle_segment_geometry
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   0.0000000000000000       ! R(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           0  ! excitation_function(i)
+           0  ! filter_number(i,j)
+      22      22      20       3      22      22      20       7 ! cell_point1, cell_point2
+           1  ! n_cables
+           1  ! cable number
+           1  ! n_conductors
+           0  ! n_filters
+           1  ! direction sign
+           1  ! bundle_segment_geometry
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   0.0000000000000000       ! R(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           0  ! excitation_function(i)
+           0  ! filter_number(i,j)
+      22      22      20       7      22      22      20       6 ! cell_point1, cell_point2
+           1  ! n_cables
+           1  ! cable number
+           1  ! n_conductors
+           0  ! n_filters
+          -1  ! direction sign
+           1  ! bundle_segment_geometry
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   0.0000000000000000       ! R(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           0  ! excitation_function(i)
+           0  ! filter_number(i,j)
+      22      22      21       3      22      22      21       7 ! cell_point1, cell_point2
+           1  ! n_cables
+           1  ! cable number
+           1  ! n_conductors
+           0  ! n_filters
+           1  ! direction sign
+           1  ! bundle_segment_geometry
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   0.0000000000000000       ! R(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           0  ! excitation_function(i)
+           0  ! filter_number(i,j)
+      22      22      21       7      22      22      21       6 ! cell_point1, cell_point2
+           1  ! n_cables
+           1  ! cable number
+           1  ! n_conductors
+           0  ! n_filters
+          -1  ! direction sign
+           1  ! bundle_segment_geometry
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   0.0000000000000000       ! R(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           0  ! excitation_function(i)
+           0  ! filter_number(i,j)
+      22      22      22       3      22      22      22       7 ! cell_point1, cell_point2
+           1  ! n_cables
+           1  ! cable number
+           1  ! n_conductors
+           0  ! n_filters
+           1  ! direction sign
+           1  ! bundle_segment_geometry
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   25.000000000000000       ! R(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           1  ! excitation_function(i)
+           0  ! filter_number(i,j)
+      22      22      22       7      22      22      22       6 ! cell_point1, cell_point2
+           1  ! n_cables
+           2  ! cable number
+           1  ! n_conductors
+           0  ! n_filters
+          -1  ! direction sign
+           2  ! bundle_segment_geometry
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   25.000000000000000       ! R(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           1  ! excitation_function(i)
+           0  ! filter_number(i,j)
+      22      22      23       3      22      22      23       7 ! cell_point1, cell_point2
+           1  ! n_cables
+           2  ! cable number
+           1  ! n_conductors
+           0  ! n_filters
+           1  ! direction sign
+           2  ! bundle_segment_geometry
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   0.0000000000000000       ! R(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           0  ! excitation_function(i)
+           0  ! filter_number(i,j)
+      22      22      23       7      22      22      23       6 ! cell_point1, cell_point2
+           1  ! n_cables
+           2  ! cable number
+           1  ! n_conductors
+           0  ! n_filters
+          -1  ! direction sign
+           2  ! bundle_segment_geometry
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   0.0000000000000000       ! R(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           0  ! excitation_function(i)
+           0  ! filter_number(i,j)
+      22      22      24       3      22      22      24       7 ! cell_point1, cell_point2
+           1  ! n_cables
+           2  ! cable number
+           1  ! n_conductors
+           0  ! n_filters
+           1  ! direction sign
+           2  ! bundle_segment_geometry
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   0.0000000000000000       ! R(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           0  ! excitation_function(i)
+           0  ! filter_number(i,j)
+      22      22      24       7      22      22      24       6 ! cell_point1, cell_point2
+           1  ! n_cables
+           2  ! cable number
+           1  ! n_conductors
+           0  ! n_filters
+          -1  ! direction sign
+           2  ! bundle_segment_geometry
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   0.0000000000000000       ! R(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           0  ! excitation_function(i)
+           0  ! filter_number(i,j)
+      22      22      25       3      22      22      25       7 ! cell_point1, cell_point2
+           1  ! n_cables
+           2  ! cable number
+           1  ! n_conductors
+           0  ! n_filters
+           1  ! direction sign
+           2  ! bundle_segment_geometry
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   0.0000000000000000       ! R(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           0  ! excitation_function(i)
+           0  ! filter_number(i,j)
+      22      22      25       7      22      22      25       6 ! cell_point1, cell_point2
+           1  ! n_cables
+           2  ! cable number
+           1  ! n_conductors
+           0  ! n_filters
+          -1  ! direction sign
+           2  ! bundle_segment_geometry
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   0.0000000000000000       ! R(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           0  ! excitation_function(i)
+           0  ! filter_number(i,j)
+      22      22      26       3      22      22      26       7 ! cell_point1, cell_point2
+           1  ! n_cables
+           2  ! cable number
+           1  ! n_conductors
+           0  ! n_filters
+           1  ! direction sign
+           2  ! bundle_segment_geometry
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   0.0000000000000000       ! R(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           0  ! excitation_function(i)
+           0  ! filter_number(i,j)
+      22      22      26       7      22      22      26       6 ! cell_point1, cell_point2
+           1  ! n_cables
+           2  ! cable number
+           1  ! n_conductors
+           0  ! n_filters
+          -1  ! direction sign
+           2  ! bundle_segment_geometry
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   0.0000000000000000       ! R(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           0  ! excitation_function(i)
+           0  ! filter_number(i,j)
+ BUNDLE SEGMENT GEOMETRY LIST
+           2  ! NUMBER OF BUNDLE SEGMENT GEOMETRIES
+           1  ! n_cables
+           1  ! cable number
+           1  ! n_conductors
+   0.0000000000000000        0.0000000000000000        1.0000000000000000E-003   2.0000000000000000E-003  conductor x, y, r, ri
+   2.1210000000000005E-003  ! cable_bundle_radius
+  0.27000000000000002       ! TLM_cell_equivalent_radius
+  0.25000000000000000       ! TLM_reference_radius_rL
+  0.29160000000000003       ! TLM_reference_radius_rC
+           0  ! n_filters
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   0.0000000000000000       ! R(i,j)
+   170.14370197056499       ! Zlink(i,j)
+   5.8773847542884713E-003  ! Ylink(i,j)
+   491.97323415617734       ! ZLstub(i,j)
+   1.5103072364374321E-003  ! Yf(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           0  ! filter_number(i,j)
+           1  ! n_cables
+           2  ! cable number
+           1  ! n_conductors
+   0.0000000000000000        0.0000000000000000        1.0000000000000000E-003   2.0000000000000000E-003  conductor x, y, r, ri
+   2.1210000000000005E-003  ! cable_bundle_radius
+  0.27000000000000002       ! TLM_cell_equivalent_radius
+  0.25000000000000000       ! TLM_reference_radius_rL
+  0.29160000000000003       ! TLM_reference_radius_rC
+           0  ! n_filters
+   2.7607304589311180E-007  ! L(i,j)
+   2.4506056596195589E-012  ! C(i,j)
+   0.0000000000000000       ! R(i,j)
+   170.14370197056499       ! Zlink(i,j)
+   5.8773847542884713E-003  ! Ylink(i,j)
+   491.97323415617734       ! ZLstub(i,j)
+   1.5103072364374321E-003  ! Yf(i,j)
+           1  ! Tv(i,j)
+           1  ! Ti(i,j)
+           0  ! SC(i)
+           0  ! filter_number(i,j)
+ CELL_CENTRE_JUNCTION_LIST
+          10  ! NUMBER OF CELL CENTRE JUNCTIONS
+      22      22      17       7 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+       6 ! n_segments 
+       0       0       1       0       0       2 ! segment data (1:6)
+       0       0       1       0       0       1       0 ! n_external conductor data (1:7)
+       0 !number_of_cable_junctions 
+  1
+  1
+       0 !number_of_internal impedance filters 
+      22      22      18       7 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+       6 ! n_segments 
+       0       0       3       0       0       4 ! segment data (1:6)
+       0       0       1       0       0       1       0 ! n_external conductor data (1:7)
+       0 !number_of_cable_junctions 
+  1
+  1
+       0 !number_of_internal impedance filters 
+      22      22      19       7 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+       6 ! n_segments 
+       0       0       5       0       0       6 ! segment data (1:6)
+       0       0       1       0       0       1       0 ! n_external conductor data (1:7)
+       0 !number_of_cable_junctions 
+  1
+  1
+       0 !number_of_internal impedance filters 
+      22      22      20       7 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+       6 ! n_segments 
+       0       0       7       0       0       8 ! segment data (1:6)
+       0       0       1       0       0       1       0 ! n_external conductor data (1:7)
+       0 !number_of_cable_junctions 
+  1
+  1
+       0 !number_of_internal impedance filters 
+      22      22      21       7 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+       6 ! n_segments 
+       0       0       9       0       0      10 ! segment data (1:6)
+       0       0       1       0       0       1       0 ! n_external conductor data (1:7)
+       0 !number_of_cable_junctions 
+  1
+  1
+       0 !number_of_internal impedance filters 
+      22      22      22       7 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+       6 ! n_segments 
+       0       0      11       0       0      12 ! segment data (1:6)
+       0       0       1       0       0       1       0 ! n_external conductor data (1:7)
+       1 !number_of_cable_junctions 
+       2
+  1
+  1
+       0 !number_of_internal impedance filters 
+      22      22      23       7 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+       6 ! n_segments 
+       0       0      13       0       0      14 ! segment data (1:6)
+       0       0       1       0       0       1       0 ! n_external conductor data (1:7)
+       0 !number_of_cable_junctions 
+  1
+  1
+       0 !number_of_internal impedance filters 
+      22      22      24       7 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+       6 ! n_segments 
+       0       0      15       0       0      16 ! segment data (1:6)
+       0       0       1       0       0       1       0 ! n_external conductor data (1:7)
+       0 !number_of_cable_junctions 
+  1
+  1
+       0 !number_of_internal impedance filters 
+      22      22      25       7 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+       6 ! n_segments 
+       0       0      17       0       0      18 ! segment data (1:6)
+       0       0       1       0       0       1       0 ! n_external conductor data (1:7)
+       0 !number_of_cable_junctions 
+  1
+  1
+       0 !number_of_internal impedance filters 
+      22      22      26       7 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+       6 ! n_segments 
+       0       0      19       0       0      20 ! segment data (1:6)
+       0       0       1       0       0       1       0 ! n_external conductor data (1:7)
+       0 !number_of_cable_junctions 
+  1
+  1
+       0 !number_of_internal impedance filters 
+ FACE_JUNCTION_LIST
+          11  ! NUMBER OF FACE JUNCTIONS
+      22      22      17       3 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+      -1 ! Boundary condition data 
+       2 ! n_segments 
+       0       1 ! segment data (1:2)
+       0       1       0 ! n_external conductor data (1:3)
+  1
+       0 !number_of_internal impedance filters 
+      22      22      18       3 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+       0 ! Boundary condition data 
+       2 ! n_segments 
+       2       3 ! segment data (1:2)
+       1       1       0 ! n_external conductor data (1:3)
+  1
+  1
+       0 !number_of_internal impedance filters 
+      22      22      19       3 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+       0 ! Boundary condition data 
+       2 ! n_segments 
+       4       5 ! segment data (1:2)
+       1       1       0 ! n_external conductor data (1:3)
+  1
+  1
+       0 !number_of_internal impedance filters 
+      22      22      20       3 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+       0 ! Boundary condition data 
+       2 ! n_segments 
+       6       7 ! segment data (1:2)
+       1       1       0 ! n_external conductor data (1:3)
+  1
+  1
+       0 !number_of_internal impedance filters 
+      22      22      21       3 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+       0 ! Boundary condition data 
+       2 ! n_segments 
+       8       9 ! segment data (1:2)
+       1       1       0 ! n_external conductor data (1:3)
+  1
+  1
+       0 !number_of_internal impedance filters 
+      22      22      22       3 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+       0 ! Boundary condition data 
+       2 ! n_segments 
+      10      11 ! segment data (1:2)
+       1       1       0 ! n_external conductor data (1:3)
+  1
+  1
+       0 !number_of_internal impedance filters 
+      22      22      23       3 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+       0 ! Boundary condition data 
+       2 ! n_segments 
+      12      13 ! segment data (1:2)
+       1       1       0 ! n_external conductor data (1:3)
+  1
+  1
+       0 !number_of_internal impedance filters 
+      22      22      24       3 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+       0 ! Boundary condition data 
+       2 ! n_segments 
+      14      15 ! segment data (1:2)
+       1       1       0 ! n_external conductor data (1:3)
+  1
+  1
+       0 !number_of_internal impedance filters 
+      22      22      25       3 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+       0 ! Boundary condition data 
+       2 ! n_segments 
+      16      17 ! segment data (1:2)
+       1       1       0 ! n_external conductor data (1:3)
+  1
+  1
+       0 !number_of_internal impedance filters 
+      22      22      26       3 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+       0 ! Boundary condition data 
+       2 ! n_segments 
+      18      19 ! segment data (1:2)
+       1       1       0 ! n_external conductor data (1:3)
+  1
+  1
+       0 !number_of_internal impedance filters 
+      22      22      27       3 ! ix,iy,iz,face
+       1 ! n_internal_connection_nodes
+      -1 ! Boundary condition data 
+       2 ! n_segments 
+      20       0 ! segment data (1:2)
+       1       0       0 ! n_external conductor data (1:3)
+  1
+       0 !number_of_internal impedance filters 
+ CABLE_OUTPUT_LIST
+           1  ! NUMBER OF CABLE OUTPUTS
+           1  ! cable_number
+           2  !  closest_point_number
+          11  ! bundle_segment_number 
+      22      22      22       7 ! cell_point
+           1  ! n_conductors 
+           1  ! conductor list 
+ CABLE_GEOMETRY_LIST
+           1  ! NUMBER OF CABLE GEOMETRIES
+ cylindrical
+           1
+           1
+           0
+           1
+           0
+   0.0000000000000000     
+   0.0000000000000000     
+   1.0000000000000000E-003
+   2.0000000000000000E-003
+   1.0000000000000000     
+   2.0200000000000001E-003
+   1.0000000000000000E-003
+   2.0000000000000000E-003
+   1.0000000000000000     
+           3
+   1.0000000000000000E-003   2.0000000000000000E-003   1.0000000000000000     
+           0
+           1
+           1
+   0.0000000000000000     
+   0.0000000000000000     
+           0
+ CABLE_LIST
+           2  ! NUMBER OF CABLES
+           1
+           1
+           1
+           1
+           2
+          11
+          22          22          17           3          22          22          17           7          22          22          17           7          22          22          17           6          22          22          18           3          22          22          18           7          22          22          18           7          22          22          18           6          22          22          19           3          22          22          19           7          22          22          19           7          22          22          19           6          22          22          20           3          22          22          20           7          22          22          20           7          22          22          20           6          22          22          21           3          22          22          21           7          22          22          21           7          22          22          21           6          22          22          22           3          22          22          22           7
+           1          -1           1          -1           1          -1           1          -1           1          -1           1
+           1           2           3           4           5           6           7           8           9          10          11
+           1
+           1
+           2
+           2
+           3
+           9
+          22          22          22           7          22          22          22           6          22          22          23           3          22          22          23           7          22          22          23           7          22          22          23           6          22          22          24           3          22          22          24           7          22          22          24           7          22          22          24           6          22          22          25           3          22          22          25           7          22          22          25           7          22          22          25           6          22          22          26           3          22          22          26           7          22          22          26           7          22          22          26           6
+          -1           1          -1           1          -1           1          -1           1          -1
+          12          13          14          15          16          17          18          19          20

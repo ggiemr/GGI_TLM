@@ -196,6 +196,7 @@ END TYPE point_type
   integer,parameter	:: surface_type_stl_triangulated_surface=15
   integer,parameter 	:: surface_type_annulus=16
   integer,parameter 	:: surface_type_split_ring=17
+  integer,parameter 	:: surface_type_helix=18
 
 ! LINE OBJECT TYPES
 

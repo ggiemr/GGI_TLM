@@ -1,0 +1,6 @@
+#dl=1.0
+#end_point_x=0.0
+#end_point_y=0.0
+#end_point_z=5.0
+#obxy=[#end_point_z*2.0+#dl/2.0]
+#obz=[#end_point_z*2.0]

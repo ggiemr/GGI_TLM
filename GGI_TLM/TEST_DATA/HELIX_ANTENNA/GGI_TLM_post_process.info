@@ -1,0 +1,31 @@
+#START OF POST_PROCESSING DESCRIPTION
+ Fourier transform
+ 	Time domain data filename:helix.excitation.tout
+ 	Time domain output point:           1
+ 	Linear frequency scale:
+ 	Fmin=   10000.000000000000       Hz
+ 	Fmax=   60000000.000000000       Hz
+ 	n_frequencies=         600
+ 	Frequency domain output data filename:helix.excitation.fout
+ Fourier transform
+ 	Time domain data filename:helix.cable_current.tout
+ 	Time domain output point:           1
+ 	Linear frequency scale:
+ 	Fmin=   10000.000000000000       Hz
+ 	Fmax=   60000000.000000000       Hz
+ 	n_frequencies=         600
+ 	Frequency domain output data filename:helix.cable_current.fout
+ Combine frequency domain data: S(f)=A f1(f)/(B f2(f))+C
+ File for f1 data:
+ 	Frequency domain data filename:helix.excitation.fout
+ 	Frequency domain output point:           1
+ File for f2 data:
+ 	Frequency domain data filename:helix.cable_current.fout
+ 	Frequency domain output point:           1
+   2.0000000000000000       constant, A
+   1.0000000000000000       constant, B
+  -50.000000000000000       constant, C
+ 	Frequency domain output data filename:helix.impedance.fout
+ Generate far field plot data
+ Create vector surface frequency domain animation
+#END OF POST_PROCESSING DESCRIPTION

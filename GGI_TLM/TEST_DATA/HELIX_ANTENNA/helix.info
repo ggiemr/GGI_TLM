@@ -1,0 +1,108 @@
+ ____________________________________________________
+ 
+ #START OF VOLUME MATERIAL DESCRIPTION
+ 
+ Number of volume materials=           1
+ 
+ 
+ volume material_number :            1
+ Material type: DISPERSIVE
+ Material name: epsr=1.5
+Number of geometric volumes=         1
+Total number of material cells=          1280
+ 
+ #END OF VOLUME MATERIAL DESCRIPTION
+ ____________________________________________________
+ 
+ #START OF SURFACE MATERIAL DESCRIPTION
+ 
+ Number of surface materials=           1
+ 
+ 
+ Surface material_number :            1
+ Material type: PEC
+Number of geometric surfaces=         4
+Total number of material faces=            94
+ 
+ #END OF SURFACE MATERIAL DESCRIPTION
+ Number of Frequency Output Surfaces=           2
+ Frequency Output Surface number           1  Number of cell_faces=        1764
+ Frequency Output Surface number           2  Number of cell_faces=        1764
+  ____________________________________________________
+ 
+ Setting cell update codes
+ Number of special cells      1280
+ Total number of cable cells        10
+ Total number of excitation cells         0
+ Total number of output cells         1
+  ____________________________________________________
+ 
+ Setting face update codes
+Number of special faces      8803
+Total number of cable faces        11
+Total number of excitation faces         0
+Total number of output faces      8700
+ ____________________________________________________
+ 
+ #START OF MESH DESCRIPTION
+ 
+ Cell size, dl=  0.50000000000000000       m
+ 
+ Nx=          42
+ Ny=          42
+ Nz=          42
+ 
+ Total number of cells=       74088
+ 
+ Outer boundary reflection coefficients
+R_xmin=  0.0000 R_xmax  0.0000
+R_ymin=  0.0000 R_ymax  0.0000
+R_zmin=  0.0000 R_zmax  0.0000
+ 
+ #END OF MESH DESCRIPTION
+ ____________________________________________________
+ 
+ #START OF RUN INFORMATION
+ 
+ GGI_TLM version:1.2.2
+ GGI_TLM date   :20th March 2018
+ GGI_TLM compilation date:Tue May  1 16:13:19 BST 2018
+ 
+ Timestep=   8.3391023799538011E-010  seconds
+ 
+ Number of timesteps=        1199
+ 
+ Number of processes=            1
+ 
+ bicubic_warp_flag=  F
+ frequency_scale_flag=  F
+ frequency_scale=    1.0000000000000000     
+ 
+ GGI_TLM solution Started:
+ Date:01/05/2018
+ Time:17:06:52.344
+ 
+
+Memory Usage:
+
+  PID %CPU %MEM   RSS    VSZ COMMAND
+16502  0.0  0.1 12620  28904 GGI_TLM_SEQ
+
+
+ 
+ TLM solution Finished:
+ Date:01/05/2018
+ Time:17:07:03.639
+ 
+Run time:     00:00:11
+ 
+Run time per timestep:   0.94E-02 seconds
+ 
+ #END OF RUN INFORMATION
+ 
+#START OF OUTPUT INFORMATION
+Time domain field output at a point
+Time domain field output over a surface
+Frequency domain field over a surface
+Time domain cable current output
+#END OF OUTPUT INFORMATION
