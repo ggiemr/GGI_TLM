@@ -222,7 +222,7 @@ logical	:: file_exists
       
       if (.NOT.file_exists) then
 ! error - no triangulated surface file exists
-        goto 9060
+        goto 9070
       end if
 	      
     else
@@ -242,17 +242,17 @@ logical	:: file_exists
     problem_surfaces(surface_number)%roughness_flag=.FALSE.
     problem_surfaces(surface_number)%roughness_p1=0d0
     problem_surfaces(surface_number)%roughness_p2=0d0
-    read(input_file_unit,'(A17)',end=9070)input_line
+    read(input_file_unit,'(A17)',end=9100)input_line
     CALL convert_to_lower_case(input_line,256)
     
     if (input_line.EQ.'surface_roughness') then
       problem_surfaces(surface_number)%roughness_flag=.TRUE.
       if (problem_surfaces(surface_number)%surface_type.EQ.surface_type_sphere) then
 ! read a single roughness parameter
-        read(input_file_unit,*,end=9070)problem_surfaces(surface_number)%roughness_p1
+        read(input_file_unit,*,end=9100)problem_surfaces(surface_number)%roughness_p1
       else
 ! read two roughness parameters
-        read(input_file_unit,*,end=9070)problem_surfaces(surface_number)%roughness_p1,  &
+        read(input_file_unit,*,end=9100)problem_surfaces(surface_number)%roughness_p1,  &
 	                                problem_surfaces(surface_number)%roughness_p2
       end if
     else
@@ -315,6 +315,11 @@ logical	:: file_exists
      STOP
   
 9070 CALL write_line('Error in read_Surface_list_packet_data',0,.TRUE.)
+     CALL write_line('stl format triangulated surface file not found',0,.TRUE.)
+     CALL write_line(trim(problem_surfaces(surface_number)%filename),0,.TRUE.)
+     STOP
+  
+9100 CALL write_line('Error in read_Surface_list_packet_data',0,.TRUE.)
      STOP
   
 END SUBROUTINE read_surface_list
