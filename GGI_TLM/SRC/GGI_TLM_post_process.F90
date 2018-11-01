@@ -46,7 +46,7 @@ IMPLICIT NONE
 
 ! local variables
 
-  integer,parameter	:: number_of_options=56
+  integer,parameter	:: number_of_options=57
   integer	:: option
 
   character(len=256)	:: command
@@ -125,6 +125,7 @@ IMPLICIT NONE
   write(*,*)'54. Create filter function (LPF, HPF)'
   write(*,*)'55. interpolate function(s)'
   write(*,*)'56. Subtract d.c. from Time Domain Data'
+  write(*,*)'57. Multiply Frequency domain Data'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -591,6 +592,14 @@ IMPLICIT NONE
     write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: SUBTRACT D.C. FROM TIME DOMAIN DATA'
     write(post_process_info_unit,*)'Subtract d.c. from time domain data'
     CALL subtract_dc()
+    
+  else if (option.EQ.57) then
+
+    write(*,*)'Scale Frequency Domain Data'
+    
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: SCALE FREQUENCY DOMAIN DATA'
+    write(post_process_info_unit,*)'Scale Frequency Domain Data'
+    CALL Scale_Frequency_Domain_Data()
       
   else
    

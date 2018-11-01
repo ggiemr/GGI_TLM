@@ -53,7 +53,7 @@ IMPLICIT NONE
 !  write(*,*)'Rciprocal Frequency domain data'
   
   write(*,*)' '
-  write(*,*)'Result=1/fn )'
+  write(*,*)'Result=1/fn'
   write(*,*)' '
   write(*,*)'where fn is a frequency domain quantity'
   write(*,*)' '

@@ -176,6 +176,7 @@ END TYPE point_type
   integer,parameter 	  :: volume_type_pyramid=7
   integer,parameter 	  :: volume_type_pyramid_ram=8
   integer,parameter	  :: volume_type_tet_mesh=9
+  integer,parameter	  :: volume_type_fill_surface=10
 
 ! SURFACE OBJECT TYPES
 

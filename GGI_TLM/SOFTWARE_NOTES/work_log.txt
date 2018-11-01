@@ -668,6 +668,8 @@
                         
 25/7/2018       CJS     Fix bug in set_bundle_excitations, line 92:  cable_type_number was found incorrectly from cable_number not cable geometry_number
 
+1/11/2018       CJS     Allow volumes to be created by filling surfaces
+
 Next stages:  	
 		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE
 		- Start to implement and document all the Fieldsolve test cases : STARTED

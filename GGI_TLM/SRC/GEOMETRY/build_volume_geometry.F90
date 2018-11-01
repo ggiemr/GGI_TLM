@@ -87,7 +87,11 @@ integer	:: volume_number
       
       CALL build_volume_tet_mesh(volume_number)
        
-    else ! volume type not yet defined
+    else if (problem_volumes(volume_number)%volume_type.EQ.volume_type_fill_surface) then 
+    
+      problem_volumes(volume_number)%number_of_tets=0
+      
+    else  ! volume type not yet defined
     
       GOTO 9000
       

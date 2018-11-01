@@ -152,9 +152,15 @@ IMPLICIT NONE
 ! set random polarisation
   
       CALL random_number(a)
-      b=sqrt(1d0-a*a)
-      huygens_surface%Etheta=a
-      huygens_surface%Ephi=b
+! NEW: convert a to an angle between 0 and 2pi then set Etheta, Ephi as cos and sin of this angle
+      a=a*2d0*pi
+      huygens_surface%Etheta=cos(a)
+      huygens_surface%Ephi=sin(a)
+      
+! OLD: Etheta, Ephi in first quadrant only
+!      b=sqrt(1d0-a*a)
+!      huygens_surface%Etheta=a
+!      huygens_surface%Ephi=b
       
     else
 ! this is not a face junction so go back as if the extra line had not been read

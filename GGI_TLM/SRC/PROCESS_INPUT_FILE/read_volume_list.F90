@@ -49,6 +49,7 @@
 ! HISTORY
 !
 !     started 29/08/2012 CJS
+!     1/11/2018 CJS:  Allow volumes to be created by filling surfaces
 !
 !
 SUBROUTINE read_volume_list
@@ -148,6 +149,10 @@ logical	:: file_exists
 ! error - no tet volume mesh file exists
         goto 9050
       end if
+
+    else if (input_line.eq.'fill_surface') then
+      n_params=1
+      problem_volumes(volume_number)%volume_type=volume_type_fill_surface
       	      
     else
     

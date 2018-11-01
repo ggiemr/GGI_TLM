@@ -37,6 +37,7 @@
 ! HISTORY
 !
 !     started 6/08/2012 CJS
+!     1/11/2018 CJS:  Allow volumes to be created by filling surfaces
 !
 !
 PROGRAM GGI_TLM_model_builder
@@ -72,9 +73,9 @@ IMPLICIT NONE
 
 ! BUILD GEOMETRY
   
-  CALL build_volume_geometry()
-  
   CALL build_surface_geometry()
+  
+  CALL build_volume_geometry()
   
   CALL build_line_geometry()
   
@@ -82,9 +83,9 @@ IMPLICIT NONE
 
 ! BUILD MESH
   
-  CALL build_volume_mesh()
+  CALL build_surface_mesh()  ! Changed the order here as a volume may be a filled surface
   
-  CALL build_surface_mesh()
+  CALL build_volume_mesh()
   
   CALL build_line_mesh()
   

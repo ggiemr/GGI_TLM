@@ -57,7 +57,7 @@ integer	:: number_of_tets
 
     number_of_tets=problem_volumes(volume_number)%number_of_tets
 
-    if (number_of_tets.gt.0) then
+    if (number_of_tets.GT.0) then
 
 ! open and write triangulated volume to vtk format file
       CALL open_vtk_file(tet_volume_file_unit,tet_volume_file_extension,volume_number) 

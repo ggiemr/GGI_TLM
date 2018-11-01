@@ -48,7 +48,8 @@ create_time_domain_force_vector_animation.o \
 filter_impulse_response.o \
 create_filter_function.o \
 interpolate.o \
-subtract_dc.o
+subtract_dc.o \
+Scale_frequency_domain_data.o
 
 default: $(POST_PROCESSOR_OBJS)
 
