@@ -33,6 +33,7 @@
 !
 SUBROUTINE generate_far_field_plot
 
+USE constants
 USE post_process
 USE file_information
 
@@ -79,6 +80,10 @@ IMPLICIT NONE
   real*8	:: rmin,rmax
   
   real*8	:: x,y,z,r
+  
+  real*8        :: Ptot,dtheta,dphi,Pave
+  
+  character*32 :: field_name
 
 ! START
 
@@ -109,6 +114,14 @@ IMPLICIT NONE
   end if
 
   write(record_user_inputs_unit,*)op_type,' Output type'
+  
+  if (op_type.EQ.op_type_E_theta) then
+    field_name='Far_field_E_theta'
+  else if (op_type.EQ.op_type_E_phi) then
+    field_name='Far_field_E_phi'
+  else
+    field_name='Far_field_E_total'
+  end if
 
 ! READ THE FAR FIELD FILE
 
@@ -155,6 +168,47 @@ IMPLICIT NONE
   write(*,*)'Maximum far field value read from file :',max_E
   write(*,*)'Minimum far field value read from file :',min_E
   
+! Integrate the total radiated power so that we can normalise the field to give dBi.
+
+  Ptot=0d0
+  
+  do theta_loop=1,n_theta-1
+
+    do phi_loop=1,n_phi-1
+    
+      dtheta=(theta(theta_loop+1)-theta(theta_loop))*pi/180d0
+      dphi=(phi(phi_loop+1)-phi(phi_loop))*pi/180d0
+      
+      Pave=(E(theta_loop,phi_loop)**2+E(theta_loop+1,phi_loop)**2+    &
+            E(theta_loop,phi_loop+1)**2+E(theta_loop+1,phi_loop+1)**2)/4d0
+      
+      Ptot=Ptot+Pave*dtheta*dphi*sin( (theta(theta_loop+1)+theta(theta_loop))*pi/360d0 )
+      
+    end do
+    
+  end do
+    
+  Ptot=Ptot/(4d0*pi)
+  
+  write(*,*)'Ptot=',Ptot
+  
+  if (Ptot.NE.0d0) then 
+    E(:,:)=E(:,:)/sqrt(Ptot)   
+  end if   
+  
+  min_E=1d30
+  max_E=0d0
+  
+  do theta_loop=1,n_theta
+    do phi_loop=1,n_phi      
+      min_E=min(min_E,E(theta_loop,phi_loop))
+      max_E=max(max_E,E(theta_loop,phi_loop))      
+    end do   
+  end do
+  
+  write(*,*)'Maximum far field value scaled to isotropic radiator :',max_E
+  write(*,*)'Minimum far field value scaled to isotropic radiator :',min_E
+  
   write(*,*)'Enter scale for far field (log or lin)'
   read(*,'(A3)')scale_string
   write(record_user_inputs_unit,'(A3)')trim(scale_string)
@@ -174,8 +228,18 @@ IMPLICIT NONE
   CALL convert_to_lower_case(scale_string,3)
   if (ch.eq.'y') then
     normalise=.TRUE.
+    if (scale_string(1:3).eq.'log') then
+      field_name=trim(field_name)//'(dB)'
+    else if (scale_string(1:3).eq.'lin') then
+      field_name=trim(field_name)//'(V/m)'
+    end if
   else
     normalise=.FALSE.
+    if (scale_string(1:3).eq.'log') then
+      field_name=trim(field_name)//'(dBi)'
+    else if (scale_string(1:3).eq.'lin') then
+      field_name=trim(field_name)//'(V/m)'
+    end if
   end if
 
 ! normalise and logscale if required
@@ -319,7 +383,7 @@ IMPLICIT NONE
 
 ! write point based data
     write(local_file_unit,'(A,I10)')'POINT_DATA ',n_points
-    write(local_file_unit,'(A)')'SCALARS Field_on_cells float 1'
+    write(local_file_unit,'(A,A,A)')'SCALARS ',trim(field_name),' float 1'
     write(local_file_unit,'(A)')'LOOKUP_TABLE field_on_cells_table'
 
     point=0
