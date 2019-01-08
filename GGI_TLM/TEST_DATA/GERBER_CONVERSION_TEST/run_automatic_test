@@ -1,0 +1,44 @@
+echo " "
+echo "Automatic testing of GGI_TLM_gerber_to_stl"
+echo " "
+ 
+if [ "$#" = "0" ] ; then
+
+  echo "Run using the following form:"
+  echo " "
+  echo "run_automatic_test action"
+  echo " "
+  echo "action is the process to run:"
+  echo "action=run            : run GGI_TLM_gerber_to_stl"
+  echo "action=clean          : remove all results files"
+  
+else
+
+# set defaults...
+  ACTION=$1
+
+  if grep -q run <<<"$ACTION" ; then
+  
+    echo "Running GGI_TLM_gerber_to_stl"
+  
+    GGI_TLM_gerber_to_stl example1.gbr 0.0001
+    paraview example1.gbr.stl
+#
+    GGI_TLM_gerber_to_stl example2.gbr 0.000025
+    paraview example2.gbr.stl
+#
+    GGI_TLM_gerber_to_stl example3.gbr 0.00005
+    paraview example3.gbr.stl
+    
+  elif grep -q clean <<<"$ACTION"  ; then
+  
+    rm *.stl
+    
+  fi
+    
+fi
+
+
+
+
+

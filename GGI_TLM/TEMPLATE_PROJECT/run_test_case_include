@@ -30,6 +30,7 @@ echo " "
 CLEANING_LIST="\
 progress \
 sed_command \
+sed_command2 \
 GGI_TLM_memory_usage.txt \
 *.dat \
 *.pvsm \

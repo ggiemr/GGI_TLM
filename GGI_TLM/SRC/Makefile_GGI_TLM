@@ -74,6 +74,8 @@ SOLVER_NAME=GGI_TLM
 
 POST_PROCESSOR_NAME=GGI_TLM_post_process
 
+GERBER_CONVERSION_NAME=GGI_TLM_gerber_to_stl
+
 #_____________________________________________________________
 
 CONSTANTS_OBJS=  \
@@ -113,7 +115,8 @@ TLM_MODULES/Geometry_Modules.o \
 TLM_MODULES/pul_LC_Modules.o \
 TLM_MODULES/Filter_fit_modules.o \
 TLM_MODULES/File_information.o \
-TLM_MODULES/post_process_modules.o
+TLM_MODULES/post_process_modules.o \
+TLM_MODULES/gerber_convert_modules.o
 
 # make MODULE_OBJS available to all Makefiles 
 export MODULE_OBJS
@@ -430,6 +433,17 @@ OPTIMISATION/opt_bisect.o \
 OPTIMISATION/opt_simplex.o \
 OPTIMISATION/map.o
 
+GERBER_CONVERSION_OBJS=  \
+GERBER_CONVERSION/flash.o  \
+GERBER_CONVERSION/set_aperture.o \
+GERBER_CONVERSION/line.o \
+GERBER_CONVERSION/set_aperture_pattern.o \
+GERBER_CONVERSION/read_coordinate_and_operation.o   \
+GERBER_CONVERSION/set_region.o \
+GERBER_CONVERSION/read_format_scale_dcode.o  \
+GERBER_CONVERSION/triangulate_surface.o \
+GERBER_CONVERSION/read_numbers.o
+
 OBJS= \
 $(CONSTANTS_OBJS) \
 $(MODULE_OBJS) \
@@ -447,7 +461,8 @@ $(MATERIAL_OBJS) \
 $(EXCITATION_OBJS) \
 $(OUTPUT_OBJS) \
 $(TLM_SOLVER_OBJS) \
-$(POST_PROCESSOR_OBJS) 
+$(POST_PROCESSOR_OBJS) \
+$(GERBER_CONVERSION_OBJS)
 
 ifeq ($(PARALLEL_MODE),MPI)
 	MODE=MPI
@@ -505,6 +520,7 @@ MAKE_output \
 MAKE_tlm_solver \
 MAKE_post_processor \
 MAKE_optimisation \
+MAKE_gerber_conversion \
 MAKE_analytic \
 $(MODEL_BUILDER_NAME) \
 $(CABLE_MODEL_BUILDER_NAME) \
@@ -516,6 +532,7 @@ $(SOLVER_NAME) \
 $(FILTER_FIT_NAME) \
 $(FILTER_FORMAT_CONVERT_NAME) \
 $(POST_PROCESSOR_NAME) \
+$(GERBER_CONVERSION_NAME) \
 RUN_SCRIPT \
 COPY_RENAME_SCRIPT \
 WRITE_SEQ_VERSION
@@ -574,6 +591,7 @@ clean:
 	( cd TLM_SOLVER ; make clean )
 	( cd POST_PROCESSOR ; make clean )
 	( cd OPTIMISATION ; make clean )
+	( cd GERBER_CONVERSION ; make clean )
 	( cd ANALYTIC ; make clean )
 
 clean_all:
@@ -621,6 +639,10 @@ $(SOLVER_NAME): $(SOLVER_NAME).F90 $(OBJS)
 $(POST_PROCESSOR_NAME): $(POST_PROCESSOR_NAME).F90 $(OBJS)
 	$(FC) $(FLAGS) -o $(POST_PROCESSOR_NAME) $(POST_PROCESSOR_NAME).F90 $(OBJS) $(LIBS)
 	mv $(POST_PROCESSOR_NAME) $(EXECUTABLE_DIR)
+# 
+$(GERBER_CONVERSION_NAME): $(GERBER_CONVERSION_NAME).F90 $(OBJS)
+	$(FC) $(FLAGS) -o $(GERBER_CONVERSION_NAME) $(GERBER_CONVERSION_NAME).F90 $(OBJS) $(LIBS)
+	mv $(GERBER_CONVERSION_NAME) $(EXECUTABLE_DIR)
 # 
 RUN_SCRIPT: run_GGI_TLM
 	cat ../run_configuration_data run_GGI_TLM > $(EXECUTABLE_DIR)/run_GGI_TLM
@@ -717,6 +739,10 @@ MAKE_tlm_solver:
 # make POST_PROCESSOR
 MAKE_post_processor:
 	( cd POST_PROCESSOR ; $(MAKE) )
+	
+# make GERBER_CONVERSION
+MAKE_gerber_conversion:
+	( cd GERBER_CONVERSION ; $(MAKE) )
 	
 # make OPTIMISATION
 MAKE_optimisation:

@@ -1,0 +1,16 @@
+# model of FR4 at 60GHz
+60e9 60e9  # frequency range of validity
+# permittivity filter
+1.0e8 # wnormalisation constant
+0   # a order
+4.6 # a coefficients
+0   # b order
+1.0 # b coefficients
+0.1534 # electric conductivity
+# permeability filter
+1.0e8 # wnormalisation constant
+0   # a order
+1.0 # a coefficients
+0   # b order
+1.0  # b coefficients
+0.0  # magnetic conductivity
