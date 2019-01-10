@@ -490,6 +490,7 @@ MAKE_output \
 MAKE_tlm_solver \
 MAKE_post_processor \
 MAKE_optimisation \
+MAKE_gerber_conversion \
 $(SOLVER_NAME) \
 WRITE_MPI_VERSION
 
