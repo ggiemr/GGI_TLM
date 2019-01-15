@@ -160,7 +160,9 @@ IMPLICIT NONE
 ! faces normal to x i.e. the y z plane
   do cz=nz1,nz2
     do cy=1,ny
-      do cx=2,nx
+      do cx=1,nx
+      
+       if (cx.NE.1) then
             
         face_number=face_number+1
 	
@@ -395,15 +397,12 @@ IMPLICIT NONE
 	  end if		
 	
 	end if
-		
-      end do  ! next x cell
-    end do    ! next y cell
-  end do      ! next z cell
+
+       end if  ! cx.NE.1
   
 ! faces normal to y i.e. the x z plane
-  do cz=nz1,nz2
-    do cy=2,ny
-      do cx=1,nx
+      
+       if (cy.NE.1) then
  	
         face_number=face_number+1
 	
@@ -644,24 +643,12 @@ IMPLICIT NONE
 	  end if ! output
 	
 	end if ! special cell_face
-            
-      end do  ! next x cell
-    end do    ! next y cell
-  end do      ! next z cell
+	            
+       end if  ! cy.NE.1
+      
+       if (cz.NE.1) then
   
 ! faces normal to z i.e. the x y plane
-
-  if (rank.eq.0) then
-    first_nz=2
-  else
-    first_nz=nz1
-  end if
-  
-  last_nz=nz2
-
-  do cz=first_nz,last_nz
-    do cy=1,ny
-      do cx=1,nx
       	
         face_number=face_number+1
 	
@@ -900,6 +887,8 @@ IMPLICIT NONE
 	  end if
 	
 	end if
+	
+       end if
             
       end do  ! next x cell
     end do    ! next y cell

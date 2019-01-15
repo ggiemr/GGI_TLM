@@ -327,145 +327,128 @@ IMPLICIT NONE
 ! faces normal to x i.e. the y z plane
   do cz=nz1,nz2
     do cy=1,ny
-      do cx=2,nx
-            
-        face_number=face_number+1	
-	
-	if ( (local_surface_material(cx,cy,cz,face_xmin).NE.0).OR.	&
-	     (local_surface_cable(cx,cy,cz,face_xmin).NE.0).OR.	&
-	     (local_surface_excitation(cx,cy,cz,face_xmin).NE.0).OR.	&
-	     (local_surface_output(cx,cy,cz,face_xmin).NE.0) ) then
-	     
-	  special_face_count=special_face_count+1
-
-! Check for circumstances that cannot be modelled correctly at the moment
-          if ( (local_surface_material(cx,cy,cz,face_xmin).NE.0).AND.	&
-	       (local_surface_excitation(cx,cy,cz,face_xmin).NE.0)   ) then	    
-            excitation_in_material_flag=.TRUE.
-	  end if
-	
-	end if
-	
-	if (local_surface_cable(cx,cy,cz,face_xmin).NE.0) then
-	
-	  total_number_cable_faces=total_number_cable_faces+1
-	  
-	end if
-	
-	if (local_surface_excitation(cx,cy,cz,face_xmin).NE.0) then
-	
-	  total_number_excitation_faces=total_number_excitation_faces+1
-	  
-	end if
-	
-	if (local_surface_output(cx,cy,cz,face_xmin).NE.0) then
-	
-	  total_number_output_faces=total_number_output_faces+1
-	  
-	end if
-
-      end do  ! next x cell
-    end do    ! next y cell
-  end do      ! next z cell
-  
-! faces normal to y i.e. the x z plane
-  do cz=nz1,nz2
-    do cy=2,ny
       do cx=1,nx
       
-        face_number=face_number+1	
+        if (cx.NE.1) then
+            
+          face_number=face_number+1	
 	
-	if ( (local_surface_material(cx,cy,cz,face_ymin).NE.0).OR.	&
-	     (local_surface_cable(cx,cy,cz,face_ymin).NE.0).OR.	&
-	     (local_surface_excitation(cx,cy,cz,face_ymin).NE.0).OR.	&
-	     (local_surface_output(cx,cy,cz,face_ymin).NE.0) ) then
+	  if ( (local_surface_material(cx,cy,cz,face_xmin).NE.0).OR.	&
+	       (local_surface_cable(cx,cy,cz,face_xmin).NE.0).OR.	&
+	       (local_surface_excitation(cx,cy,cz,face_xmin).NE.0).OR.	&
+	       (local_surface_output(cx,cy,cz,face_xmin).NE.0) ) then
 	     
-	  special_face_count=special_face_count+1
+	    special_face_count=special_face_count+1
 
 ! Check for circumstances that cannot be modelled correctly at the moment
-          if ( (local_surface_material(cx,cy,cz,face_ymin).NE.0).AND.	&
-	       (local_surface_excitation(cx,cy,cz,face_ymin).NE.0)   ) then	    
-            excitation_in_material_flag=.TRUE.
+            if ( (local_surface_material(cx,cy,cz,face_xmin).NE.0).AND.	&
+	         (local_surface_excitation(cx,cy,cz,face_xmin).NE.0)   ) then	    
+              excitation_in_material_flag=.TRUE.
+	    end if
+	
+	  end if
+	 
+	  if (local_surface_cable(cx,cy,cz,face_xmin).NE.0) then
+	
+	    total_number_cable_faces=total_number_cable_faces+1
+	  
 	  end if
 	
-	end if
+	  if (local_surface_excitation(cx,cy,cz,face_xmin).NE.0) then
 	
-	if (local_surface_cable(cx,cy,cz,face_ymin).NE.0) then
-	
-	  total_number_cable_faces=total_number_cable_faces+1
+	    total_number_excitation_faces=total_number_excitation_faces+1
 	  
-	end if
+	  end if
 	
-	if (local_surface_excitation(cx,cy,cz,face_ymin).NE.0) then
+	  if (local_surface_output(cx,cy,cz,face_xmin).NE.0) then
 	
-	  total_number_excitation_faces=total_number_excitation_faces+1
+	    total_number_output_faces=total_number_output_faces+1
 	  
-	end if
+	  end if
+  
+        end if  ! cx.NE.1
+  
+! faces normal to y i.e. the x z plane
+      
+        if (cy.NE.1) then
+       
+          face_number=face_number+1	
 	
-	if (local_surface_output(cx,cy,cz,face_ymin).NE.0) then
+	  if ( (local_surface_material(cx,cy,cz,face_ymin).NE.0).OR.	&
+	       (local_surface_cable(cx,cy,cz,face_ymin).NE.0).OR.	&
+	       (local_surface_excitation(cx,cy,cz,face_ymin).NE.0).OR.	&
+	       (local_surface_output(cx,cy,cz,face_ymin).NE.0) ) then
+	     
+	    special_face_count=special_face_count+1
+
+! Check for circumstances that cannot be modelled correctly at the moment
+            if ( (local_surface_material(cx,cy,cz,face_ymin).NE.0).AND.	&
+	         (local_surface_excitation(cx,cy,cz,face_ymin).NE.0)   ) then	    
+              excitation_in_material_flag=.TRUE.
+	    end if
 	
-	  total_number_output_faces=total_number_output_faces+1
+	  end if
+	 
+	  if (local_surface_cable(cx,cy,cz,face_ymin).NE.0) then
+	
+	    total_number_cable_faces=total_number_cable_faces+1
 	  
-	end if
+	  end if
+	
+	  if (local_surface_excitation(cx,cy,cz,face_ymin).NE.0) then
+	
+	    total_number_excitation_faces=total_number_excitation_faces+1
+	  
+	  end if
+	
+   	  if (local_surface_output(cx,cy,cz,face_ymin).NE.0) then
+	
+	    total_number_output_faces=total_number_output_faces+1
+	  
+	  end if
 	            
-      end do  ! next x cell
-    end do    ! next y cell
-  end do      ! next z cell
+        end if  ! cy.NE.1
+      
+        if (cz.NE.1) then
   
 ! faces normal to z i.e. the x y plane
 
-  if (rank.eq.0) then
-    first_nz=2
-  else
-    first_nz=nz1
-  end if
-  
-  last_nz=nz2
-    
-!  if (rank.eq.np-1) then
-!    last_nz=nz
-!  else
-!    last_nz=nz2+1
-!  end if
-
-  do cz=first_nz,last_nz
-    do cy=1,ny
-      do cx=1,nx
-      	
-        face_number=face_number+1	
+          face_number=face_number+1	
 	
-	if ( (local_surface_material(cx,cy,cz,face_zmin).NE.0).OR.	&
-	     (local_surface_cable(cx,cy,cz,face_zmin).NE.0).OR.	&
-	     (local_surface_excitation(cx,cy,cz,face_zmin).NE.0).OR.	&
-	     (local_surface_output(cx,cy,cz,face_zmin).NE.0) ) then
+	  if ( (local_surface_material(cx,cy,cz,face_zmin).NE.0).OR.	&
+	       (local_surface_cable(cx,cy,cz,face_zmin).NE.0).OR.	&
+	       (local_surface_excitation(cx,cy,cz,face_zmin).NE.0).OR.	&
+	       (local_surface_output(cx,cy,cz,face_zmin).NE.0) ) then
 	     
-	  special_face_count=special_face_count+1
+	    special_face_count=special_face_count+1
 
 ! Check for circumstances that cannot be modelled correctly at the moment
-          if ( (local_surface_material(cx,cy,cz,face_zmin).NE.0).AND.	&
-	       (local_surface_excitation(cx,cy,cz,face_zmin).NE.0)   ) then	    
-            excitation_in_material_flag=.TRUE.
+            if ( (local_surface_material(cx,cy,cz,face_zmin).NE.0).AND.	&
+	         (local_surface_excitation(cx,cy,cz,face_zmin).NE.0)   ) then	    
+              excitation_in_material_flag=.TRUE.
+	    end if
+	
 	  end if
 	
-	end if
+	  if (local_surface_cable(cx,cy,cz,face_zmin).NE.0) then
 	
-	if (local_surface_cable(cx,cy,cz,face_zmin).NE.0) then
-	
-	  total_number_cable_faces=total_number_cable_faces+1
+	    total_number_cable_faces=total_number_cable_faces+1
 	  
-	end if
+	  end if
 	
-	if (local_surface_excitation(cx,cy,cz,face_zmin).NE.0) then
+	  if (local_surface_excitation(cx,cy,cz,face_zmin).NE.0) then
 	
-	  total_number_excitation_faces=total_number_excitation_faces+1
+	    total_number_excitation_faces=total_number_excitation_faces+1
 	  
-	end if
+	  end if
 	
-	if (local_surface_output(cx,cy,cz,face_zmin).NE.0) then
+	  if (local_surface_output(cx,cy,cz,face_zmin).NE.0) then
 	
-	  total_number_output_faces=total_number_output_faces+1
+	    total_number_output_faces=total_number_output_faces+1
 	  
-	end if
+	  end if
+            
+         end if   ! cz.NE.1
             
       end do  ! next x cell
     end do    ! next y cell
@@ -519,170 +502,153 @@ IMPLICIT NONE
 ! faces normal to x i.e. the y z plane
   do cz=nz1,nz2
     do cy=1,ny
-      do cx=2,nx
-            
-        face_number=face_number+1	
-	
-	if ( (local_surface_material(cx,cy,cz,face_xmin).NE.0).OR.	&
-	     (local_surface_cable(cx,cy,cz,face_xmin).NE.0).OR.	&
-	     (local_surface_excitation(cx,cy,cz,face_xmin).NE.0).OR.	&
-	     (local_surface_output(cx,cy,cz,face_xmin).NE.0) ) then
-	     
-	  special_face_count=special_face_count+1
-			     
-	  face_update_code(face_number)=special_face_count
-	
-	end if
-	
-	if (local_surface_material(cx,cy,cz,face_xmin).NE.0) then
-	
-	  face_update_code_to_material_data(special_face_count,1)=local_surface_material(cx,cy,cz,face_xmin)
-	  face_update_code_to_material_data(special_face_count,3)=face_xmin
-	  
-	end if
-	
-	if (local_surface_cable(cx,cy,cz,face_xmin).NE.0) then
-	
-	  total_number_cable_faces=total_number_cable_faces+1
-	  face_update_code_to_cable_number(special_face_count)=local_surface_cable(cx,cy,cz,face_xmin)
-	  
-	end if
-	
-	if (local_surface_excitation(cx,cy,cz,face_xmin).NE.0) then
-	
-	  total_number_excitation_faces=total_number_excitation_faces+1
-	  local_surface_excitation(cx,cy,cz,face_xmin)=total_number_excitation_faces
-	  face_update_code_to_excitation_number(special_face_count)=1
-	  
-	end if
-	
-	if (local_surface_output(cx,cy,cz,face_xmin).NE.0) then
-	
-	  total_number_output_faces=total_number_output_faces+1
-	  local_surface_output(cx,cy,cz,face_xmin)=total_number_output_faces
-	  face_update_code_to_output_number(special_face_count)=1
-	  
-	end if
-		
-      end do  ! next x cell
-    end do    ! next y cell
-  end do      ! next z cell
-  
-! faces normal to y i.e. the x z plane
-  do cz=nz1,nz2
-    do cy=2,ny
       do cx=1,nx
       
-        face_number=face_number+1	
+        if (cx.NE.1) then
+            
+          face_number=face_number+1	
 	
-	if ( (local_surface_material(cx,cy,cz,face_ymin).NE.0).OR.	&
-	     (local_surface_cable(cx,cy,cz,face_ymin).NE.0).OR.	&
-	     (local_surface_excitation(cx,cy,cz,face_ymin).NE.0).OR.	&
-	     (local_surface_output(cx,cy,cz,face_ymin).NE.0) ) then
+	  if ( (local_surface_material(cx,cy,cz,face_xmin).NE.0).OR.	&
+	       (local_surface_cable(cx,cy,cz,face_xmin).NE.0).OR.	&
+	       (local_surface_excitation(cx,cy,cz,face_xmin).NE.0).OR.	&
+	       (local_surface_output(cx,cy,cz,face_xmin).NE.0) ) then
 	     
-	  special_face_count=special_face_count+1
+	    special_face_count=special_face_count+1
 			     
-	  face_update_code(face_number)=special_face_count
+	    face_update_code(face_number)=special_face_count
 	
-	end if
+	  end if
 	
-	if (local_surface_material(cx,cy,cz,face_ymin).NE.0) then
+	  if (local_surface_material(cx,cy,cz,face_xmin).NE.0) then
 	
-	  face_update_code_to_material_data(special_face_count,1)=local_surface_material(cx,cy,cz,face_ymin)
-	  face_update_code_to_material_data(special_face_count,3)=face_ymin
+	    face_update_code_to_material_data(special_face_count,1)=local_surface_material(cx,cy,cz,face_xmin)
+	    face_update_code_to_material_data(special_face_count,3)=face_xmin
 	  
-	end if
+	  end if
 	
-	if (local_surface_cable(cx,cy,cz,face_ymin).NE.0) then
+	  if (local_surface_cable(cx,cy,cz,face_xmin).NE.0) then
 	
-	  total_number_cable_faces=total_number_cable_faces+1
-	  face_update_code_to_cable_number(special_face_count)=local_surface_cable(cx,cy,cz,face_ymin)
+	    total_number_cable_faces=total_number_cable_faces+1
+	    face_update_code_to_cable_number(special_face_count)=local_surface_cable(cx,cy,cz,face_xmin)
 	  
-	end if
+	  end if
 	
-	if (local_surface_excitation(cx,cy,cz,face_ymin).NE.0) then
+	  if (local_surface_excitation(cx,cy,cz,face_xmin).NE.0) then
 	
-	  total_number_excitation_faces=total_number_excitation_faces+1
-	  local_surface_excitation(cx,cy,cz,face_ymin)=total_number_excitation_faces
-	  face_update_code_to_excitation_number(special_face_count)=1
+	    total_number_excitation_faces=total_number_excitation_faces+1
+	    local_surface_excitation(cx,cy,cz,face_xmin)=total_number_excitation_faces
+	    face_update_code_to_excitation_number(special_face_count)=1
 	  
-	end if
+	  end if
 	
-	if (local_surface_output(cx,cy,cz,face_ymin).NE.0) then
+	  if (local_surface_output(cx,cy,cz,face_xmin).NE.0) then
 	
-	  total_number_output_faces=total_number_output_faces+1
-	  local_surface_output(cx,cy,cz,face_ymin)=total_number_output_faces
-	  face_update_code_to_output_number(special_face_count)=1
+	    total_number_output_faces=total_number_output_faces+1
+	    local_surface_output(cx,cy,cz,face_xmin)=total_number_output_faces
+	    face_update_code_to_output_number(special_face_count)=1
 	  
-	end if
-	            
-      end do  ! next x cell
-    end do    ! next y cell
-  end do      ! next z cell
+	  end if
+		
+        end if  ! cx.NE.1
+  
+! faces normal to y i.e. the x z plane
+       
+        if (cy.NE.1) then
+      
+          face_number=face_number+1	
+	
+	  if ( (local_surface_material(cx,cy,cz,face_ymin).NE.0).OR.	&
+	       (local_surface_cable(cx,cy,cz,face_ymin).NE.0).OR.	&
+	       (local_surface_excitation(cx,cy,cz,face_ymin).NE.0).OR.	&
+	       (local_surface_output(cx,cy,cz,face_ymin).NE.0) ) then
+	     
+	    special_face_count=special_face_count+1
+			     
+	    face_update_code(face_number)=special_face_count
+	  
+	  end if
+	
+	  if (local_surface_material(cx,cy,cz,face_ymin).NE.0) then
+	
+	    face_update_code_to_material_data(special_face_count,1)=local_surface_material(cx,cy,cz,face_ymin)
+	    face_update_code_to_material_data(special_face_count,3)=face_ymin
+	  
+	  end if
+	
+	  if (local_surface_cable(cx,cy,cz,face_ymin).NE.0) then
+	
+	    total_number_cable_faces=total_number_cable_faces+1
+	    face_update_code_to_cable_number(special_face_count)=local_surface_cable(cx,cy,cz,face_ymin)
+	  
+	  end if
+	
+	  if (local_surface_excitation(cx,cy,cz,face_ymin).NE.0) then
+	
+	    total_number_excitation_faces=total_number_excitation_faces+1
+	    local_surface_excitation(cx,cy,cz,face_ymin)=total_number_excitation_faces
+	    face_update_code_to_excitation_number(special_face_count)=1
+	  
+	  end if
+	
+	  if (local_surface_output(cx,cy,cz,face_ymin).NE.0) then
+	
+	    total_number_output_faces=total_number_output_faces+1
+	    local_surface_output(cx,cy,cz,face_ymin)=total_number_output_faces
+	    face_update_code_to_output_number(special_face_count)=1
+	  
+	  end if
+		
+        end if  ! cy.NE.1
   
 ! faces normal to z i.e. the x y plane
-
-  if (rank.eq.0) then
-    first_nz=2
-  else
-    first_nz=nz1
-  end if
-  
-  last_nz=nz2
-    
-!  if (rank.eq.np-1) then
-!    last_nz=nz
-!  else
-!    last_nz=nz2+1
-!  end if
-
-  do cz=first_nz,last_nz
-    do cy=1,ny
-      do cx=1,nx
+       
+        if (cz.NE.1) then
       	
-        face_number=face_number+1	
+          face_number=face_number+1	
 	
-	if ( (local_surface_material(cx,cy,cz,face_zmin).NE.0).OR.	&
-	     (local_surface_cable(cx,cy,cz,face_zmin).NE.0).OR.	&
-	     (local_surface_excitation(cx,cy,cz,face_zmin).NE.0).OR.	&
-	     (local_surface_output(cx,cy,cz,face_zmin).NE.0) ) then
+	  if ( (local_surface_material(cx,cy,cz,face_zmin).NE.0).OR.	&
+	       (local_surface_cable(cx,cy,cz,face_zmin).NE.0).OR.	&
+	       (local_surface_excitation(cx,cy,cz,face_zmin).NE.0).OR.	&
+	       (local_surface_output(cx,cy,cz,face_zmin).NE.0) ) then
 	     
-	  special_face_count=special_face_count+1
+	    special_face_count=special_face_count+1
 			     
-	  face_update_code(face_number)=special_face_count
+	    face_update_code(face_number)=special_face_count
 	
-	end if
+	  end if
 	
-	if (local_surface_material(cx,cy,cz,face_zmin).NE.0) then
+	  if (local_surface_material(cx,cy,cz,face_zmin).NE.0) then
 	
-	  face_update_code_to_material_data(special_face_count,1)=local_surface_material(cx,cy,cz,face_zmin)
-	  face_update_code_to_material_data(special_face_count,3)=face_zmin
+	    face_update_code_to_material_data(special_face_count,1)=local_surface_material(cx,cy,cz,face_zmin)
+	    face_update_code_to_material_data(special_face_count,3)=face_zmin
   
-	end if
+	  end if
 	
-	if (local_surface_cable(cx,cy,cz,face_zmin).NE.0) then
+	  if (local_surface_cable(cx,cy,cz,face_zmin).NE.0) then
 	
-	  total_number_cable_faces=total_number_cable_faces+1
-	  face_update_code_to_cable_number(special_face_count)=local_surface_cable(cx,cy,cz,face_zmin)
+	    total_number_cable_faces=total_number_cable_faces+1
+	    face_update_code_to_cable_number(special_face_count)=local_surface_cable(cx,cy,cz,face_zmin)
 	  
-	end if
+	  end if
 	
-	if (local_surface_excitation(cx,cy,cz,face_zmin).NE.0) then
+	  if (local_surface_excitation(cx,cy,cz,face_zmin).NE.0) then
 	
-	  total_number_excitation_faces=total_number_excitation_faces+1
-	  local_surface_excitation(cx,cy,cz,face_zmin)=total_number_excitation_faces
-	  face_update_code_to_excitation_number(special_face_count)=1
+	    total_number_excitation_faces=total_number_excitation_faces+1
+	    local_surface_excitation(cx,cy,cz,face_zmin)=total_number_excitation_faces
+	    face_update_code_to_excitation_number(special_face_count)=1
 	  
-	end if
+	  end if
 	
-	if (local_surface_output(cx,cy,cz,face_zmin).NE.0) then
+	  if (local_surface_output(cx,cy,cz,face_zmin).NE.0) then
 	
-	  total_number_output_faces=total_number_output_faces+1
-	  local_surface_output(cx,cy,cz,face_zmin)=total_number_output_faces
-	  face_update_code_to_output_number(special_face_count)=1
+	    total_number_output_faces=total_number_output_faces+1
+	    local_surface_output(cx,cy,cz,face_zmin)=total_number_output_faces
+	    face_update_code_to_output_number(special_face_count)=1
 	  
-	end if
-            
+	  end if
+        
+        end if  ! cz.NE.1
+       
       end do  ! next x cell
     end do    ! next y cell
   end do      ! next z cell

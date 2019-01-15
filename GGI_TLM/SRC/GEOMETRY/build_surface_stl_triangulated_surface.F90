@@ -54,6 +54,7 @@
 ! HISTORY
 !
 !     started 2/12/2014 CJS based on build_surface_vtk_triangulated_surface
+!     7/1/2019 CJS correct reversal of surface normal by changing the triangle vertex order
 !
 !
 SUBROUTINE build_surface_stl_triangulated_surface(surface_number)
@@ -237,8 +238,8 @@ character*256 	:: ipline
       problem_surfaces(surface_number)%triangle_list(triangle)%vertex(3)=triangle_point3
     else                               ! reverse orientation
       problem_surfaces(surface_number)%triangle_list(triangle)%vertex(1)=triangle_point1
-      problem_surfaces(surface_number)%triangle_list(triangle)%vertex(2)=triangle_point2
-      problem_surfaces(surface_number)%triangle_list(triangle)%vertex(3)=triangle_point3 
+      problem_surfaces(surface_number)%triangle_list(triangle)%vertex(2)=triangle_point3
+      problem_surfaces(surface_number)%triangle_list(triangle)%vertex(3)=triangle_point2 
     end if
 
 ! read two lines
