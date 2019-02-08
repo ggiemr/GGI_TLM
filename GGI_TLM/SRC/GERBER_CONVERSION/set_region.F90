@@ -132,38 +132,46 @@ do while (len_q.GE.1)
   iy=q(len_Q,2)
   p(ix,iy)=n1
   
-! remove this point from the kist
+! remove this point from the list
   len_Q=len_Q-1
   
 ! examine the surrounding points and add to the queue 
-  if ( (ix-1.GE.1).AND.(p(ix-1,iy).EQ.n0) ) then
-    len_Q=len_Q+1
-    if(len_Q.GT.nx*ny) GOTO 9000
-    q(len_Q,1)=ix-1
-    q(len_Q,2)=iy
+  if ((ix-1).GE.1) then
+    if (p(ix-1,iy).EQ.n0) then
+      len_Q=len_Q+1
+      if(len_Q.GT.nx*ny) GOTO 9000
+      q(len_Q,1)=ix-1
+      q(len_Q,2)=iy
+    end if
   end if
   
-  if ( (ix+1.LE.nx).AND.(p(ix+1,iy).EQ.n0) ) then
-    len_Q=len_Q+1
-    if(len_Q.GT.nx*ny) GOTO 9000
-    q(len_Q,1)=ix+1
-    q(len_Q,2)=iy
+  if ((ix+1).LE.nx) then
+    if (p(ix+1,iy).EQ.n0) then
+      len_Q=len_Q+1
+      if(len_Q.GT.nx*ny) GOTO 9000
+      q(len_Q,1)=ix+1
+      q(len_Q,2)=iy
+    end if
   end if
   
-  if ( (iy-1.GE.1).AND.(p(ix,iy-1).EQ.n0) ) then
-    len_Q=len_Q+1
-    if(len_Q.GT.nx*ny) GOTO 9000
-    q(len_Q,1)=ix
-    q(len_Q,2)=iy-1
+  if ((iy-1).GE.1) then
+    if (p(ix,iy-1).EQ.n0) then
+      len_Q=len_Q+1
+      if(len_Q.GT.nx*ny) GOTO 9000
+      q(len_Q,1)=ix
+      q(len_Q,2)=iy-1
+    end if
   end if
   
-  if ( (iy+1.LE.ny).AND.(p(ix,iy+1).EQ.n0) ) then
-    len_Q=len_Q+1
-    if(len_Q.GT.nx*ny) GOTO 9000
-    q(len_Q,1)=ix
-    q(len_Q,2)=iy+1
+  if ((iy+1).LE.ny) then
+    if (p(ix,iy+1).EQ.n0) then
+      len_Q=len_Q+1
+      if(len_Q.GT.nx*ny) GOTO 9000
+      q(len_Q,1)=ix
+      q(len_Q,2)=iy+1
+    end if
   end if
-
+ 
 end do
 
 RETURN

@@ -30,11 +30,15 @@
 !     started 10/12/19 CJS
 !     
 !
-SUBROUTINE set_aperture_pattern()
+SUBROUTINE set_aperture_pattern(rloop)
 
 USE gerber
 
 IMPLICIT NONE
+
+! local_variables
+
+integer :: rloop
 
 integer iax,iay
 real*8  :: lx,ly,rx,ry
@@ -51,12 +55,14 @@ real*8,parameter :: pi=3.1415926535d0
 
 ! START
 
+! only set the aperture on the second time through
+  if (rloop.eq.1) RETURN
+
   if (allocated( ap )) Deallocate( ap )
 
   anx=NINT( 0.5d0*Asize(aperture)/dl )+1
   any=NINT( 0.5d0*Asize(aperture)/dl )+1
  
-  write(*,*)'Aperture radius is:',Aparams(aperture,1)
   write(*,*)'Aperture size is:',Asize(aperture)
   write(*,*)'dl=',dl
   write(*,*)'anx=',anx,' any=',any

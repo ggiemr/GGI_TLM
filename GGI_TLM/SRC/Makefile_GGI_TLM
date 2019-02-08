@@ -116,7 +116,8 @@ TLM_MODULES/pul_LC_Modules.o \
 TLM_MODULES/Filter_fit_modules.o \
 TLM_MODULES/File_information.o \
 TLM_MODULES/post_process_modules.o \
-TLM_MODULES/gerber_convert_modules.o
+TLM_MODULES/gerber_convert_modules.o \
+TLM_MODULES/expression.o
 
 # make MODULE_OBJS available to all Makefiles 
 export MODULE_OBJS
@@ -437,6 +438,8 @@ GERBER_CONVERSION_OBJS=  \
 GERBER_CONVERSION/flash.o  \
 GERBER_CONVERSION/set_aperture.o \
 GERBER_CONVERSION/line.o \
+GERBER_CONVERSION/aperture_macro.o \
+GERBER_CONVERSION/set_aperture_macro_pattern.o \
 GERBER_CONVERSION/set_aperture_pattern.o \
 GERBER_CONVERSION/read_coordinate_and_operation.o   \
 GERBER_CONVERSION/set_region.o \

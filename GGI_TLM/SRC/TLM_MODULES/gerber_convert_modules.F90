@@ -37,7 +37,10 @@ IMPLICIT NONE
 
 integer,parameter :: line_length=1000
 integer,parameter :: maxDcodes=100
-integer,parameter :: maxAparams=4
+integer,parameter :: maxAparams=10                ! note, this includes aperture macros
+integer,parameter :: maxAM=10                     ! maximum number of aperture macros
+integer,parameter :: maxAM_primitives=100         ! maximum number aperture macro primitives
+integer,parameter :: maxAM_modifiers=100          ! maximum number of modifiers in an aperture macro primitive
 
 integer,parameter :: linear=1
 integer,parameter :: clockwise=2
@@ -67,6 +70,9 @@ integer   :: Dcode(1:maxDcodes)
 character :: Atype(1:maxDcodes)
 real*8    :: Aparams(1:maxDcodes,1:maxAparams)
 real*8    :: Asize(1:maxDcodes)
+integer   :: A_AMnumber(1:maxDcodes)
+integer   :: A_nvars(1:maxDcodes)
+character*256    :: Avars(1:maxDcodes,1:maxAparams)
 
 integer :: aperture
 logical :: region
@@ -77,7 +83,7 @@ integer :: quadrant_mode
 
 integer :: polarity
 
-real*8 :: xmin,xmax,ymin,ymax,dframe
+real*8 :: xmin,xmax,ymin,ymax,dframe,max_Asize
 integer :: nx,ny
 real*8 :: dl
 integer,allocatable :: p(:,:)
@@ -95,9 +101,24 @@ integer :: n_triangles
 real*8,allocatable  :: node_list(:,:)
 integer,allocatable :: triangle_to_node_list(:,:)
 
+! Aperture macro data
+
+integer       :: n_AM
+character*256 :: AMname(1:maxAM)
+integer       :: total_AM_primitives
+integer       :: AM_n_primitives(1:maxAM)
+integer       :: AM_to_primitive_list(1:maxAM,1:maxAM_primitives)
+integer       :: AM_primitive_number(1:maxAM_primitives)
+integer       :: n_AM_modifiers(1:maxAM_primitives)
+character*256 :: AM_modifiers(1:maxAM_primitives,1:maxAM_modifiers)
+
+
 logical :: verbose=.TRUE.
 
 logical :: AMflag=.FALSE.
+logical :: AMflag_outline=.FALSE.
+logical :: AMflag_Moire=.FALSE.
+logical :: AMflag_thermal=.FALSE.
 logical :: ABflag=.FALSE.
 logical :: LMflag=.FALSE.
 logical :: LRflag=.FALSE.

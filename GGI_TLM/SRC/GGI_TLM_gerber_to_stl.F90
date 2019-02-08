@@ -50,6 +50,7 @@ character(LEN=line_length) :: line
 character(LEN=line_length) :: temp_line
 character :: ch
 character :: endchar
+integer   :: first_search_char
 integer :: ll,le,ll2
 
 real*8 :: x,y,r,t,xi,yj     ! coordinates
@@ -76,6 +77,7 @@ integer :: yfnd=6
 integer :: i
 character(len=256) :: ipfilename
 character(len=256) :: arg
+logical :: DL_SET
 
 ! output filename
 character(len=256) :: opfilename
@@ -98,17 +100,20 @@ character(len=256) :: opfilename
   i = 2
   CALL get_command_argument(i, arg)
   if (len_trim(arg).eq.0) then
-    write(*,*)'Please provide dl as the second command line argument'
-    read(arg,*)dl
-    STOP
-  end if
+    write(*,*)'No dl has been set. This will be now be set automatically...'
+    dl=0d0
+    DL_SET=.FALSE.
+  else
   
-  read(arg,*)dl
-  if (dl.LE.0d0) then
-    write(*,*)'Error: dl<= 0'
-    STOP
+    read(arg,*)dl
+    if (dl.LE.0d0) then
+      write(*,*)'Error: dl<= 0'
+      STOP
+    end if
+    write(*,*)'Setting dl=',dl
+    DL_SET=.TRUE.
+    
   end if
-  write(*,*)'Setting dl=',dl
   
   xmin= 1D30
   xmax=-1D30
@@ -119,6 +124,23 @@ character(len=256) :: opfilename
   
 ! no Dcodes specified initially
     nDcodes=0
+    Dcode(1:maxDcodes)=0
+    Atype(1:maxDcodes)=''
+    Aparams(1:maxDcodes,1:maxAparams)=0d0
+    Asize(1:maxDcodes)=0d0
+    A_AMnumber(1:maxDcodes)=0
+    A_nvars(1:maxDcodes)=0
+    Avars(1:maxDcodes,1:maxAparams)=''
+  
+! no aperture macros specified initially
+    n_AM=0
+    AMname(1:maxAM)=''
+    total_AM_primitives=0
+    AM_n_primitives(1:maxAM)=0
+    AM_to_primitive_list(1:maxAM,1:maxAM_primitives)=0
+    AM_primitive_number(1:maxAM_primitives)=0
+    n_AM_modifiers(1:maxAM_primitives)=0
+    AM_modifiers(1:maxAM_primitives,1:maxAM_modifiers)=''
   
 ! initial coordinate
     x=0d0
@@ -164,6 +186,7 @@ character(len=256) :: opfilename
 ! this is a block so read until the end of the block i.e. '*'  
         endchar='*'         
       end if
+      first_search_char=2   ! when we look for the end char, start looking from character 2
       
 5     CONTINUE
       
@@ -171,12 +194,13 @@ character(len=256) :: opfilename
       
 !      write(*,*)line_in(2:ll),' looking for:',endchar,' index=',index(line_in(2:ll),endchar)  
           
-      if(index(line_in(2:ll),endchar).EQ.0) then
+      if(index(line_in(first_search_char:ll),endchar).EQ.0) then
       
 ! end character not found so add this line to the string and read the next line 
         line(pos:pos+ll-1)=line_in(1:ll)
         pos=pos+ll
         read(10,'(A)',END=1000)line_in
+        first_search_char=1   ! when we look for the end char, start looking from character 1 as we have read a new line
         GOTO 5
         
       else
@@ -212,7 +236,7 @@ character(len=256) :: opfilename
     
       else if (line(1:3).EQ.'%AD') then
       
-        CALL read_Dcode(line,s,nDcodes,maxDcodes,maxAparams,Dcode,Atype,Aparams,Asize)
+        CALL read_Dcode(line)
     
       else if (line(1:6).EQ.'%LPD*%') then
        
@@ -226,7 +250,7 @@ character(len=256) :: opfilename
     
       else if (line(1:3).EQ.'%AM') then
       
-        AMflag=.TRUE.
+        CALL read_Aperture_Macro(line,n_AM)
     
       else if (line(1:3).EQ.'%AB') then
       
@@ -379,7 +403,11 @@ character(len=256) :: opfilename
           
           CALL set_aperture(line,pos,nDcodes,maxDcodes,Dcode,aperture)
           
-          CALL set_aperture_pattern()
+          if (Atype(aperture).NE.'M') then
+            CALL set_aperture_pattern(rloop)
+          else
+            CALL set_aperture_macro_pattern(rloop)
+          end if
         
         else if (line(pos:pos).EQ.'X') then
 
@@ -460,10 +488,16 @@ character(len=256) :: opfilename
 1000 CONTINUE
 
     if (rloop.EQ.1) then
+    
+      max_Asize=0d0
+      do i=1,nDcodes
+        max_Asize=max(Asize(i),max_Asize)
+      end do
   
       write(*,*)'Xmin=',xmin,' Xmax=',xmax
       write(*,*)'Ymin=',ymin,' Ymax=',ymax    
-      dframe=abs(xmax-xmin)*0.125+abs(ymax-ymin)*0.125
+      write(*,*)'Max aperture size=',max_Asize
+      dframe=max_Asize+abs(xmax-xmin)*0.05+abs(ymax-ymin)*0.05
       xmin=xmin-dframe
       xmax=xmax+dframe
       ymin=ymin-dframe
@@ -471,6 +505,11 @@ character(len=256) :: opfilename
       write(*,*)'Add a frame...'
       write(*,*)'Xmin=',xmin,' Xmax=',xmax
       write(*,*)'Ymin=',ymin,' Ymax=',ymax    
+      
+      if (.NOT.DL_SET) then
+! set dl related to the average edge length of the whole PCB design
+        dl=(abs(xmax-xmin)+abs(ymax-ymin))/2000d0
+      end if
       
       nx=NINT((xmax-xmin)/dl)
       ny=NINT((ymax-ymin)/dl)
@@ -535,7 +574,12 @@ character(len=256) :: opfilename
   write(*,*)
 
   if (AMflag) then
+  
     write(*,*)'WARNING: AM command not processed (Aperture Macro)'
+    if (AMflag_outline) write(*,*)'Outline primitive not processes'
+    if (AMflag_Moire) write(*,*)'Outline Moire not processes'
+    if (AMflag_thermal) write(*,*)'Outline thermal not processes'
+
   end if
 
   if (ABflag) then
@@ -573,7 +617,19 @@ character(len=256) :: opfilename
   if (TDflag) then
     write(*,*)'WARNING: TD command not processed (Attribute Delete)'
   end if
-
+  
+  write(*,*)'_______________________________________________________________'
+  write(*,*)''
+  write(*,*)'stl filename is:',trim(opfilename)
+  write(*,*)''
+  write(*,*)'stl file generated with dl set to ',dl,'m'
+  write(*,*)''
+  write(*,*)'If the resolution of the stl file is not sufficient then r-run'    
+  write(*,*)'with dl set as the second command line argument e.g.'    
+  write(*,*)'GGI_TLM_gerber_to_stl ',trim(ipfilename),' ',dl/2d0
+  write(*,*)'_______________________________________________________________'
+  write(*,*)''
+  
   CALL write_progress('FINISHED: GGI_TLM_gerber_to_stl')
 
   STOP

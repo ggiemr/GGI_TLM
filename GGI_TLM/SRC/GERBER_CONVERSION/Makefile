@@ -2,6 +2,8 @@ GERBER_CONVERSION_OBJS=  \
 flash.o  \
 set_aperture.o \
 line.o \
+aperture_macro.o \
+set_aperture_macro_pattern.o \
 set_aperture_pattern.o \
 read_coordinate_and_operation.o   \
 set_region.o \

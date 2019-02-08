@@ -12,7 +12,8 @@ pul_LC_Modules.o \
 Filter_fit_modules.o \
 File_information.o \
 post_process_modules.o \
-gerber_convert_modules.o
+gerber_convert_modules.o \
+expression.o
 
 default: $(MODULE_OBJS)
 
