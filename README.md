@@ -1,6 +1,8 @@
 
 Time Domain Electromagnetic Field Simulation using the Transmission Line Modelling (TLM) method
 
+The version includes a link to ngspice for the simulation of lumped circuit elements.
+
 Version number: 1.4.1
 Date: 15th January 2019
 
