@@ -55,6 +55,7 @@
 !    2/12/2013 		CJS: Implement anisotropic impedance boundary conditions
 !     allow hard and soft sources 12/2/2014 CJS
 !     3/12/2014 Implement a lumped element diode model 
+!    11/03/2019		CJS: Implement SPICE circuit model link
 !
 !
 SUBROUTINE connect
@@ -315,7 +316,10 @@ IMPLICIT NONE
 	      pol=3
               call surface_material_update(V(Vz_xmax,cx-1,cy,cz),Z0,V(Vz_xmin,cx,cy,cz),Z0,	&
 	                                   Vz_max,Vz_min,material_number,pol,reverse_material,surface_filter_number+1)	
+	  
+	    else if (material_type.EQ.surface_material_type_SPICE) then	 
 	    
+            
 	    end if	  
 	    
 	  end if	  
@@ -559,6 +563,8 @@ IMPLICIT NONE
               pol=3
               call surface_material_update(V(Vz_ymax,cx,cy-1,cz),Z0,V(Vz_ymin,cx,cy,cz),Z0,	&
 	                                   Vz_max,Vz_min,material_number,pol,reverse_material,surface_filter_number+1)	
+	  
+	    else if (material_type.EQ.surface_material_type_SPICE) then	 
 					       	  
 	    end if
 	    
@@ -803,6 +809,8 @@ IMPLICIT NONE
               pol=2
               call surface_material_update(V(Vy_zmax,cx,cy,cz-1),Z0,V(Vy_zmin,cx,cy,cz),Z0,	&
 	                                   Vy_max,Vy_min,material_number,pol,reverse_material,surface_filter_number+1)	
+	  
+	    else if (material_type.EQ.surface_material_type_SPICE) then	 
 	  
 	    end if
 	    

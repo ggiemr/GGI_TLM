@@ -46,6 +46,14 @@ export LIBS
 export FC
 export EXECUTABLE_DIR
 
+# the following are required for the ngspice link
+
+ifeq ($(NGSPICE),TRUE)
+	INCLUDE_NGSPICE=TRUE
+	export LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib
+	NGSPICE_LINK_LIBS=-lngspice -lpthread -ldl
+	MAKE_NGSPICE_LINK=MAKE_ngspice_link
+endif
 #_____________________________________________________________
 
 # get the compilation date
@@ -490,6 +498,7 @@ MAKE_filter_fit \
 MAKE_materials \
 MAKE_excitation \
 MAKE_output \
+$(MAKE_NGSPICE_LINK) \
 MAKE_tlm_solver \
 MAKE_post_processor \
 MAKE_optimisation \
@@ -516,6 +525,7 @@ MAKE_file_handling \
 MAKE_memory_handling \
 MAKE_mesh \
 MAKE_cable_model \
+$(MAKE_NGSPICE_LINK) \
 MAKE_pul_lc_calc \
 MAKE_filter_fit \
 MAKE_materials \
@@ -556,6 +566,9 @@ write_error:
 	@echo ""
 	@echo " to make the sequential solver code and all other supporting codes"
 	@echo " make -f Makefile_GGI_TLM PARALLEL_MODE=SEQ"
+	@echo ""
+	@echo " to make the sequential solver code including the NGspice link and all other supporting codes"
+	@echo " make -f Makefile_GGI_TLM PARALLEL_MODE=SEQ NGSPICE=TRUE"
 	@echo ""
 	@echo " to clean everything except executables"
 	@echo " make -f Makefile_GGI_TLM clean "
@@ -637,7 +650,7 @@ $(FILTER_FORMAT_CONVERT_NAME): $(FILTER_FORMAT_CONVERT_NAME).F90 $(OBJS)
 # 
 $(SOLVER_NAME): $(SOLVER_NAME).F90 $(OBJS)
 	echo "GGI_TLM_compilation_date='$(COMPILATION_DATE)' " > compilation_date.inc 
-	$(FC) $(FLAGS)  -o $(SOLVER_NAME) $(SOLVER_NAME).F90 $(OBJS) $(LIBS)
+	$(FC) $(FLAGS)  -o $(SOLVER_NAME) $(SOLVER_NAME).F90 $(OBJS) $(LIBS) $(NGSPICE_LINK_LIBS)
 	mv $(SOLVER_NAME) $(EXECUTABLE_DIR)/$(SOLVER_NAME)_$(MODE)
 # 
 $(POST_PROCESSOR_NAME): $(POST_PROCESSOR_NAME).F90 $(OBJS)
@@ -735,6 +748,10 @@ MAKE_excitation:
 # make OUTPUT
 MAKE_output:
 	( cd OUTPUT ; $(MAKE) )
+
+# make NGSPICE_LINK
+MAKE_ngspice_link:
+	( cd NGSPICE_LINK ; $(MAKE) )
 
 # make TLM_SOLVER
 MAKE_tlm_solver:

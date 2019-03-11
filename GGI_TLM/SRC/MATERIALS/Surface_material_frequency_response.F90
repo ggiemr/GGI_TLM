@@ -31,7 +31,8 @@
 !
 !     started 07/11/2012 CJS
 !    3/09/2014		CJS: Implement simple diode impedance boundary conditions
-!     17/10/2014 CJS - add write_all_material_info_to_file flag - eliminates the need for user input in this case
+!    17/10/2014         CJS: add write_all_material_info_to_file flag - eliminates the need for user input in this case
+!    11/03/2019		CJS: Implement SPICE circuit model link
 !
 
 SUBROUTINE surface_material_frequency_response(write_all_material_info_to_file)
@@ -119,8 +120,12 @@ IMPLICIT NONE
   
     else if (surface_material_list(material_number)%type.EQ.surface_material_type_DIODE) then
   
-      write(*,*)'Material number',material_number,' is DIODE'
+      write(*,*)'Material number',material_number,' is a DIODE'
+    
+    else if (surface_material_list(material_number)%type.EQ.surface_material_type_SPICE) then
   
+      write(*,*)'Material number',material_number,' is a SPICE circuit model'
+ 
     else if ( (surface_material_list(material_number)%type.EQ.surface_material_type_DISPERSIVE).OR. 	&
               (surface_material_list(material_number)%type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE) )then
     

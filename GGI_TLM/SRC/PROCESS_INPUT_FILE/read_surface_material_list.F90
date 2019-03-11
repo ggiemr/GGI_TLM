@@ -46,6 +46,13 @@
 !1       number of surfaces
 !7       surface list
 !1       surface orientation list
+!4       SURFACE MATERIAL NUMBER 
+!SPICE
+!1            # ngspice circuit node number in the Spice_circuit_TEMPLATE.cir file for the port (note, assume port voltage is referenced to node zero)
+!-x           # port direction, infinite impedance in the orthogonal direction
+!1       number of surfaces
+!7       surface list
+!1       surface orientation list
 !
 ! COMMENTS
 !     
@@ -55,6 +62,7 @@
 !    started 14/08/2012 CJS
 !    2/12/2013 		CJS: Implement anisotropic impedance boundary conditions
 !    3/09/2014		CJS: Implement simple diode impedance boundary conditions
+!    11/03/2019		CJS: Implement SPICE circuit model link
 !
 !
 SUBROUTINE read_surface_material_list
@@ -291,12 +299,39 @@ logical	:: file_exists
 	  
 	write(*,*)'Diode direction shoule be -x, +x, -y, +y, -z or +z'
 	STOP
+	  	  
+      end if
+      
+      surface_material_list(surface_material_number)%diode_sign=-1
+      if (surface_material_list(surface_material_number)%Diode_direction(1:1).EQ.'-') then
+        surface_material_list(surface_material_number)%diode_sign=+1
+      end if  
+   
+    else if (material_name.eq.'spice') then
+    
+      surface_material_list(surface_material_number)%type=surface_material_type_SPICE
+
+! read spice circuit model parameters      
+     read(input_file_unit,*,err=9005)surface_material_list(surface_material_number)%Spice_circuit_file_node
+				     
+     read(input_file_unit,'(A2)',err=9005)surface_material_list(surface_material_number)%Spice_port_direction
+     
+! check direction is OK
+     if ( (surface_material_list(surface_material_number)%Spice_port_direction.NE.'-x').AND.	&
+          (surface_material_list(surface_material_number)%Spice_port_direction.NE.'+x').AND. &
+          (surface_material_list(surface_material_number)%Spice_port_direction.NE.'-y').AND.	&
+          (surface_material_list(surface_material_number)%Spice_port_direction.NE.'+y').AND. &
+          (surface_material_list(surface_material_number)%Spice_port_direction.NE.'-z').AND.	&
+          (surface_material_list(surface_material_number)%Spice_port_direction.NE.'+z') ) then
+	  
+	write(*,*)'Spice_port direction shoule be -x, +x, -y, +y, -z or +z'
+	STOP
 	  
       end if
       
-      surface_material_list(surface_material_number)%Diode_sign=-1
-      if (surface_material_list(surface_material_number)%Diode_direction(1:1).EQ.'-') then
-        surface_material_list(surface_material_number)%Diode_sign=+1
+      surface_material_list(surface_material_number)%Spice_port_sign=-1
+      if (surface_material_list(surface_material_number)%Spice_port_direction(1:1).EQ.'-') then
+        surface_material_list(surface_material_number)%Spice_port_sign=+1
       end if  
             
     else

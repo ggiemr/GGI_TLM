@@ -99,6 +99,7 @@ END MODULE TLM_volume_materials
 !
 !    started 10/08/2012 CJS
 !    2/12/2013 		CJS: Implement anisotropic impedance boundary conditions
+!    11/03/2019		CJS: Implement SPICE circuit model link
 !
 !
 MODULE TLM_surface_materials
@@ -132,6 +133,10 @@ TYPE::surface_material_type
   REAL*8 		:: Diode_Cj_f
   TYPE(Sfilter)		:: Diode_Cj_S
   TYPE(Zfilter)		:: Diode_Cj_Z
+  
+  integer		:: Spice_circuit_file_node
+  integer		:: Spice_port_sign
+  character*2		:: Spice_port_direction
    
 END TYPE surface_material_type
 
@@ -146,6 +151,8 @@ END TYPE surface_material_type
   integer,parameter	:: surface_material_type_ANISOTROPIC_DISPERSIVE=5
   
   integer,parameter	:: surface_material_type_DIODE=6
+  
+  integer,parameter	:: surface_material_type_SPICE=7
 
   integer				  :: n_surface_materials
   type(surface_material_type),allocatable :: surface_material_list(:)

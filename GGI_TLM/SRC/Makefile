@@ -16,6 +16,9 @@ SHELL = /bin/sh
 # for sequential solver and all supporting codes
 # 'make PARALLEL_MODE=SEQ'
 #
+# GGI_TLM can be linked with ngspice by adding NGSPICE=TRUE e.g.
+# 'make PARALLEL_MODE=SEQ NGSPICE=TRUE'
+#
 # 'make clean' cleans everything except executables
 # 'make clean_all' cleans everything including executables
 #
@@ -54,13 +57,13 @@ ifeq ($(PARALLEL_MODE),MPI)
 action1:
 	@echo "Explicitly make MPI, last make MPI"
 	@echo "LAST_MAKE=$(LAST_MAKE)"
-        make -f Makefile_GGI_TLM PARALLEL_MODE=MPI
+        make -f Makefile_GGI_TLM PARALLEL_MODE=MPI NGSPICE=$(NGSPICE)
   else
 action2:
 	@echo "Explicitly make MPI, last make *not* MPI"
 	@echo "LAST_MAKE=$(LAST_MAKE)"
 	make -f Makefile_GGI_TLM clean
-	make -f Makefile_GGI_TLM PARALLEL_MODE=MPI
+	make -f Makefile_GGI_TLM PARALLEL_MODE=MPI NGSPICE=$(NGSPICE)
   endif
   
 else ifeq ($(PARALLEL_MODE),SEQ)
@@ -71,15 +74,15 @@ else ifeq ($(PARALLEL_MODE),SEQ)
 action3:
 	@echo "Explicitly make SEQ, last make SEQ"
 	@echo "LAST_MAKE=$(LAST_MAKE)"
-	@echo "Issuing command: make -f Makefile_GGI_TLM PARALLEL_MODE=SEQ"
-	make -f Makefile_GGI_TLM PARALLEL_MODE=SEQ
+	@echo "Issuing command: make -f Makefile_GGI_TLM PARALLEL_MODE=SEQ NGSPICE=$(NGSPICE)"
+	make -f Makefile_GGI_TLM PARALLEL_MODE=SEQ NGSPICE=$(NGSPICE)
   else
 action4:
 	@echo "Explicitly make SEQ, last make *not* SEQ"
 	@echo "LAST_MAKE=$(LAST_MAKE)"
 	@echo "Issuing command: make -f Makefile_GGI_TLM clean"
 	make -f Makefile_GGI_TLM clean
-	make -f Makefile_GGI_TLM PARALLEL_MODE=SEQ
+	make -f Makefile_GGI_TLM PARALLEL_MODE=SEQ NGSPICE=$(NGSPICE)
   endif
 else
 #
@@ -89,27 +92,27 @@ else
 action5:
 	@echo "re-make MPI"
 	@echo "LAST_MAKE=$(LAST_MAKE)"
-	make -f Makefile_GGI_TLM PARALLEL_MODE=MPI
+	make -f Makefile_GGI_TLM PARALLEL_MODE=MPI NGSPICE=$(NGSPICE)
   else ifeq ($(LAST_MAKE),SEQ)
 action6:
 	@echo "re-make SEQ"
 	@echo "LAST_MAKE=$(LAST_MAKE)"
-	make -f Makefile_GGI_TLM PARALLEL_MODE=SEQ
+	make -f Makefile_GGI_TLM PARALLEL_MODE=SEQ NGSPICE=$(NGSPICE)
   else 
 action7:
 	@echo "make SEQ as default"
 	@echo "LAST_MAKE=${LAST_MAKE}"
 	make -f Makefile_GGI_TLM clean
-	make -f Makefile_GGI_TLM PARALLEL_MODE=SEQ
+	make -f Makefile_GGI_TLM PARALLEL_MODE=SEQ NGSPICE=$(NGSPICE)
   endif
 
 endif
 
 all:
 	make -f Makefile_GGI_TLM clean
-	make -f Makefile_GGI_TLM PARALLEL_MODE=MPI
+	make -f Makefile_GGI_TLM PARALLEL_MODE=MPI NGSPICE=$(NGSPICE)
 	make -f Makefile_GGI_TLM clean
-	make -f Makefile_GGI_TLM PARALLEL_MODE=SEQ
+	make -f Makefile_GGI_TLM PARALLEL_MODE=SEQ NGSPICE=$(NGSPICE)
 
 clean:
 	make -f Makefile_GGI_TLM clean

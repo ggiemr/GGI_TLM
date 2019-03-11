@@ -104,7 +104,7 @@ integer :: loop
               
             end if  !.NOT.max_y
           
-          end do   ! (.NOT.max_x).AND.(.NOT.max_y) 
+          end do   ! (.NOT.max_x).OR.(.NOT.max_y) 
       
           if (loop.EQ.2) then
 ! add the two triangles defining this rectangle to the node_list and the triangle_to_node_list
@@ -166,6 +166,9 @@ integer :: loop
 ! put the renumbered pixel values back as they were before
       do ix2=1,nx
         do iy2=1,ny
+          if (p(ix2,iy2).EQ.1) then
+            write(*,*)'Error in triangulate surface: unfilled cell',ix2,iy2
+          end if
           if (p(ix2,iy2).EQ.2) p(ix2,iy2)=1
         end do
       end do

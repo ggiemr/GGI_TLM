@@ -41,6 +41,7 @@
 !                  proper account of non-symmetric materials and surface normals
 !     frequency warping included 12/02/2013 CJS
 !    2/12/2013 		CJS: Implement anisotropic impedance boundary conditions
+!    11/03/2019		CJS: Implement SPICE circuit model link
 !
 !
 SUBROUTINE set_surface_material_mesh
@@ -101,6 +102,8 @@ IMPLICIT NONE
         write(info_file_unit,*)'Material type: FREE_SPACE'
       else if (surface_material_list(material_number)%type.EQ.surface_material_type_DIODE) then
         write(info_file_unit,*)'Material type: DIODE'
+      else if (surface_material_list(material_number)%type.EQ.surface_material_type_SPICE) then
+        write(info_file_unit,*)'Material type: SPICE circuit model'
       else if (surface_material_list(material_number)%type.EQ.surface_material_type_DISPERSIVE) then
         write(info_file_unit,*)'Material type: DISPERSIVE'
         write(info_file_unit,*)'Material name: ',trim(surface_material_list(material_number)%name)
@@ -305,20 +308,7 @@ IMPLICIT NONE
                      surface_material_list(material_number)%Diode_Cj_f, 	&
                      surface_material_list(material_number)%Diode_Cj_Z    )
 		     
-!      write(*,*)'Diode capacitance filter'
-!      write(*,*)'Sfilter'
-!      write(*,*)'a0=',surface_material_list(material_number)%Diode_Cj_S%a%coeff(0)   
-!      write(*,*)'b0=',surface_material_list(material_number)%Diode_Cj_S%b%coeff(0)   
-!      write(*,*)'b1=',surface_material_list(material_number)%Diode_Cj_S%b%coeff(1)   
-!      
-!      write(*,*)'Zfilter'
-!      write(*,*)'Zf=',surface_material_list(material_number)%Diode_Cj_f   
-!      write(*,*)'a0=',surface_material_list(material_number)%Diode_Cj_Z%a%coeff(0)   
-!      write(*,*)'a1=',surface_material_list(material_number)%Diode_Cj_Z%a%coeff(1)   
-!      write(*,*)'b0=',surface_material_list(material_number)%Diode_Cj_Z%b%coeff(0)   
-!      write(*,*)'b1=',surface_material_list(material_number)%Diode_Cj_Z%b%coeff(1)   
-		     
-    end if ! material type is dispersive
+    end if ! material type is dispersive or diode
     
   end do ! next material to set
 

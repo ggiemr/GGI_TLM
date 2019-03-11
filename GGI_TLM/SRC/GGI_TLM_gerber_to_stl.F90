@@ -328,7 +328,7 @@ character(len=256) :: opfilename
 ! If a contour has been specified then go through the fill procedure and then transfer the region array to the pixel array
             CALL set_region(reg,p,nx,ny,polarity)
           end if
-        
+       
           pos=pos+3
           region=.FALSE.
           write(*,*)'Setting interpolation region=FALSE'
