@@ -179,6 +179,10 @@ character*256	:: input_line
     else if (input_line.EQ.'random_number_seed') then
     
       CALL read_random_number_seed()
+            
+    else if (input_line.EQ.'ngspice_timestep_factor') then
+    
+      CALL read_ngspice_timestep_factor()
       
     end if
     

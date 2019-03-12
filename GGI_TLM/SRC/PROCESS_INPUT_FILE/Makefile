@@ -48,7 +48,8 @@ read_frequency_warp_flag.o \
 read_frequency_scale_flag.o \
 read_wrapping_boundary_conditions.o \
 read_random_number_seed.o \
-read_reduced_c.o
+read_reduced_c.o \
+read_ngspice_timestep_factor.o
 
 default: $(PROCESS_INPUT_FILE_OBJS)
 

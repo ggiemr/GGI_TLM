@@ -45,6 +45,7 @@ GGI_TLM_memory_usage.txt \
 *.vmat \
 *.smat \
 *.cable \
+*.cir \
 *.mode \
 *.fd_* \
 *.jpg \
@@ -269,6 +270,7 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
        cp PROBLEM_SPECIFICATION_FILES/*.smat . 
        cp PROBLEM_SPECIFICATION_FILES/*.cable .
        cp PROBLEM_SPECIFICATION_FILES/*.mode .
+       cp PROBLEM_SPECIFICATION_FILES/*.cir .
 
 # copy any additional files required which may not be specified in a standard format
        

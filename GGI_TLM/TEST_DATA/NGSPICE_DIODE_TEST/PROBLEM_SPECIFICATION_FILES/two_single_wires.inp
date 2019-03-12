@@ -40,7 +40,21 @@ PEC
 2       SURFACE MATERIAL NUMBER 
 SPICE        
 1            # ngspice circuit node number in the Spice_circuit_TEMPLATE.cir file for the port (note, assume port voltage is referenced to node zero)
--x           # port direction, infinite impedance in the orthogonal direction
++x           # port direction, infinite impedance in the orthogonal direction
+1       number of surfaces
+3       surface list
+1       surface orientation list
+
+#Surface_material_list
+2   Number of surface materials 
+1       SURFACE MATERIAL NUMBER 
+PEC
+1       number of surfaces
+2        surface list
+1        surface orientation list
+2       SURFACE MATERIAL NUMBER 
+DISPERSIVE        
+Rsheet=100
 1       number of surfaces
 3       surface list
 1       surface orientation list

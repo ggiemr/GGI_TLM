@@ -6,8 +6,8 @@ test circuit file for circuit elements to be embedded in GGI_TLM
 * The voltage transferred in V(1)
 *
 * Voltage source with series resistance: equivalent circuit of TLM link
-Vtlm2  1002   0   DC  0.0
-Rtlm2  1002   1   #Z0_TLM
+Vtlm1  1002   0   DC  0.0
+Rtlm1  1002   1   #Z0_TLM
 * 
 * Model of impedance to be included in the GGI_TLM simulation
 Diode  1003   1   Dmod

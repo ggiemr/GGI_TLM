@@ -266,6 +266,7 @@ ng_initdata(pvecinfoall intdata, int ident, void* userdata)
     
     if (initdata_done) return 0;
 
+    printf("\n");
     printf("****************************\n");
     printf("**  ngspice initdata  **\n");
     printf("****************************\n");
@@ -310,9 +311,9 @@ ng_initdata(pvecinfoall intdata, int ident, void* userdata)
         
         /* find the location of V(1) */
         
-        if (cieq(intdata->vecs[i]->vecname, "V(2)")) {
+        if (cieq(intdata->vecs[i]->vecname, "V(1)")) {
             vecgetnumber = i;
-            printf("Found node 2 output, vector element is %d \n", i);
+            printf("Found node 1 output, vector element is %d \n", i);
           }
         /* find the location of the time data */
         

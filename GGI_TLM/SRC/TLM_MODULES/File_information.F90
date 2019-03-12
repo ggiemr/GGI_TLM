@@ -109,6 +109,9 @@ IMPLICIT NONE
   
   integer,parameter	:: mode_file_unit=24
   
+  integer,parameter	:: ngspice_TEMPLATE_circuit_file_unit=25
+  integer,parameter	:: ngspice_circuit_file_unit=26
+  
   character(len=5)	:: mesh_file_extension='.mesh'
   integer,parameter	:: mesh_file_unit=30
   
@@ -188,7 +191,7 @@ IMPLICIT NONE
   character(len=7)	:: record_user_inputs_extn='_in.txt'
   integer,parameter 	:: record_user_inputs_unit=80
   
-   integer,parameter 	:: post_process_info_unit=81
+  integer,parameter 	:: post_process_info_unit=81
  
   integer,parameter 	:: local_file_unit=90
   integer,parameter 	:: local_file_unit2=91

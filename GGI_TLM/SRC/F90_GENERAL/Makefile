@@ -5,7 +5,8 @@ strip_filename.o \
 read_write_subroutines.o \
 error_subroutines.o \
 add_integer_to_filename.o \
-write_time.o
+write_time.o \
+replace_in_string.o
 
 default: $(F90_GENERAL_OBJS)
 

@@ -66,6 +66,8 @@ IMPLICIT NONE
   integer	:: number_of_warnings
   
   logical	:: periodic_boundary
+  
+  logical	:: run_ngspice
 
 ! number of cells in x, y and z directions  
   integer 	:: nx,ny,nz
@@ -194,7 +196,8 @@ IMPLICIT NONE
   real*8	:: Max_cable_bundle_diameter_factor
   
   logical	:: set_random_number_seed
-  
+   
+  real*8	:: ngspice_timestep_factor=100d0
   
 END MODULE TLM_general
 !

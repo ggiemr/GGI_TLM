@@ -101,6 +101,11 @@ IMPLICIT NONE
     write(info_file_unit,*)'frequency_scale_flag= ',frequency_scale_flag
     write(info_file_unit,*)'frequency_scale= ',frequency_scale
     write(info_file_unit,*)''
+    if (run_ngspice) then
+      write(info_file_unit,*)'Include link to ngspice'
+      write(info_file_unit,*)'ngspice_timestep_reduction_factor=',ngspice_timestep_factor
+      write(info_file_unit,*)''
+    end if
     write(info_file_unit,*)'GGI_TLM solution Started:'
     call write_date_and_time(info_file_unit)
     write(info_file_unit,*)'' 
@@ -109,6 +114,17 @@ IMPLICIT NONE
     write(*,*)'TLM solution Started:'
     call write_date_and_time(0)
     write(*,*)'' 
+    
+  end if
+  
+  if ( run_ngspice )  then    
+  
+    if (np.gt.1) then 	 
+      write(*,*)'We cannot run GGI_TLM with ngspice in parallel at the moment...'
+      STOP 1
+    end if
+    
+    CALL initialise_ngspice()
     
   end if
 
@@ -224,6 +240,21 @@ IMPLICIT NONE
     end if
     
     CALL mode_stir_surfaces()
+    
+    if ( run_ngspice )  then    
+! run ngspice up to a breakpoint at the current time (the link between ngspice and GGI_TLM happens during the connect process)
+      
+!      write(*,*)
+!      write(*,*)'ngspice_init_connect'
+      
+      CALL ngspice_init_connect()
+      
+!      write(*,*)
+!      write(*,*)'unpdate_ngspice, time=',time
+
+      CALL update_ngspice(time)
+      
+    end if
 
     CALL connect()
   

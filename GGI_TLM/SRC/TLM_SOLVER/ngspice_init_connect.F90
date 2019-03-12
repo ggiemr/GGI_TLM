@@ -15,50 +15,26 @@
 !    You should have received a copy of the GNU General Public License
 !    along with this program.  If not, see <http://www.gnu.org/licenses/>.   
 !
-! SUBROUTINE connect
+! SUBROUTINE ngspice_init_connect
 !
 ! NAME
-!     connect
+!     ngspice_init_connect
 !
 ! DESCRIPTION
-!     Loop over mesh and carry out the connection process.
-!     faces normal to x are done first then those normal to y 
-!     then those normal to z
-!
-!     All connections are applied on the xmin, ymin, zmin side of the cell,
-!     A negative material number indicates that a material should be reveresed
-!
-!     Field outputs are saved on both sides of a face
-!     Face output fields are calculated from incident and scattered voltage pulses
-!     so as to be compatible with any materials or excitations present on the face
-!     
-!     The connection process applied is that approriate for free space,
-!     PEC, PMC or thin layer material as appropriate
-!
-!     Thinking about applying Huygens surfaces separately on the two sides of a surface - not yet done
-!     and still needs to be worked out properly. Some of the data structures are in place...
+!     Loop over mesh and link GGI_TLM voltage pulses to the ngspice solution
 !
 !     
 ! COMMENTS
-!     Include a check for materials/ outputs at this stage,
-!     Implementation of thin layer materials is included here and
-!     Field output also becomes straightforward if recorded at this time
+!     The loop structure must be exactly the same as connect
 !     
+!     **** WE NEED TO ELIMINIATE UNUSED VARAIBLES ****
 !
 ! HISTORY
 !
-!     started 14/08/2012 CJS
-!     Take account of surface normal and reverse surface material if required 11/09/2012 CJS
-!     Add output on faces 13/09/2012 CJS
-!     Start to include excitations on surfaces 18/09/2012 CJS
-!     parallel 23/11/2012 CJS
-!    2/12/2013 		CJS: Implement anisotropic impedance boundary conditions
-!     allow hard and soft sources 12/2/2014 CJS
-!     3/12/2014 Implement a lumped element diode model 
-!    11/03/2019		CJS: Implement SPICE circuit model link
+!     started  12/03/2019		CJS: Implement SPICE circuit model link
 !
 !
-SUBROUTINE connect
+SUBROUTINE ngspice_init_connect
 
 USE TLM_general
 USE TLM_excitation
@@ -67,11 +43,15 @@ USE TLM_surface_materials
 USE mesh
 USE constants
 USE file_information
+USE iso_c_binding
 USE ngspice_F90
 
 IMPLICIT NONE
 
 ! local variables
+ 
+integer ( c_int ) :: istat
+character*80 :: command_string
 
   integer cx,cy,cz
   integer face_number
@@ -153,55 +133,52 @@ IMPLICIT NONE
   
 ! START
   
-  CALL write_line('CALLED: connect',0,timestepping_output_to_screen_flag)
-                
-! Check for any additional processes at each face and if there are:
-! Add any thin layer models
-! Save any requested outputs
+  CALL write_line('CALLED: ngspice_init_connect',0,timestepping_output_to_screen_flag)
+	
+! Initial loop through the mesh getting the incident voltages for the ngspice solution
 
   face_number=0
-  excitation_face_number=0
-  output_face_number=0
   
 ! faces normal to x i.e. the y z plane
   do cz=nz1,nz2
     do cy=1,ny
       do cx=1,nx
       
-       if (cx.NE.1) then
+        if (cx.NE.1) then
             
-        face_number=face_number+1
+          face_number=face_number+1
             
-#include "connect_normal_to_x.F90"            
+#include "ngspice_connect_normal_to_x.F90"            
 
-       end if  ! cx.NE.1
+        end if  ! cx.NE.1
   
 ! faces normal to y i.e. the x z plane
       
-       if (cy.NE.1) then
+        if (cy.NE.1) then
  	
-        face_number=face_number+1
+          face_number=face_number+1
             
-#include "connect_normal_to_y.F90"            
+#include "ngspice_connect_normal_to_y.F90"            
 	            
-       end if  ! cy.NE.1
+        end if  ! cy.NE.1
       
-       if (cz.NE.1) then
+        if (cz.NE.1) then
   
 ! faces normal to z i.e. the x y plane
       	
-        face_number=face_number+1
+          face_number=face_number+1
             
-#include "connect_normal_to_z.F90"            
+#include "ngspice_connect_normal_to_z.F90"            
 	
-       end if
+        end if
             
       end do  ! next x cell
     end do    ! next y cell
   end do      ! next z cell
+          
   
-  CALL write_line('FINISHED: connect',0,timestepping_output_to_screen_flag)
+  CALL write_line('FINISHED: ngspice_init_connect',0,timestepping_output_to_screen_flag)
 
   RETURN
 
-END SUBROUTINE connect
+END SUBROUTINE ngspice_init_connect

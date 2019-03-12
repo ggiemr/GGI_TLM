@@ -1,3 +1,37 @@
+!
+!    GGI_TLM Time domain electromagnetic field solver based on the TLM method
+!    Copyright (C) 2013  Chris Smartt
+!
+!    This program is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation, either version 3 of the License, or
+!    (at your option) any later version.
+!
+!    This program is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+!
+!    You should have received a copy of the GNU General Public License
+!    along with this program.  If not, see <http://www.gnu.org/licenses/>.   
+!
+! MODULE ngspice_F90
+! SUBROUTINE initialise_ngspice
+! SUBROUTINE update_ngspice
+!
+! NAME
+!     
+!
+! DESCRIPTION
+!     
+!     
+! COMMENTS
+!     We have hardwired the maximum number of ngpsice nodes linked to the GGI_TLM solution to be 100
+!
+! HISTORY
+!
+!     started 12/03/2019 CJS
+!
 MODULE ngspice_F90
 
 USE iso_c_binding
@@ -30,13 +64,13 @@ IMPLICIT NONE
   end interface
 
   interface
-    function ngspice_wrapper_step ( last_time, last_V, n_nodes, node_list, V_array_F90 ) bind ( c )
+    function ngspice_wrapper_step ( last_time, last_V, n_ngspice_nodes, ngspice_node_list, V_ngspice_array_F90 ) bind ( c )
       use iso_c_binding
       real ( c_double ) :: last_time
       real ( c_double ) :: last_V       
-      integer ( c_int ) :: n_nodes
-      integer ( c_int ) :: node_list(100)
-      real ( c_double ) :: V_array_F90(100)
+      integer ( c_int ) :: n_ngspice_nodes
+      integer ( c_int ) :: ngspice_node_list(100)
+      real ( c_double ) :: V_ngspice_array_F90(100)
       integer ( c_int ) :: ngspice_wrapper_step
     end function ngspice_wrapper_step
   end interface
@@ -59,38 +93,35 @@ IMPLICIT NONE
     END FUNCTION ngSpice_Command    
   END INTERFACE
 
+real ( c_double ) :: ngspice_break_time
+real ( c_double ) :: t_ngspice_F90
+real ( c_double ) :: V_ngspice_F90
+integer ( c_int ) :: n_ngspice_nodes
+integer ( c_int ) :: ngspice_node_list(100)
+real ( c_double ) :: V_ngspice_array_F90(100)
+
+real*8            :: t_eps
+
 END MODULE ngspice_F90
 !
 ! ________________________________________________________________________________
 !  
 !
-SUBROUTINE run_ngspice_TLM
+SUBROUTINE initialise_ngspice
 
-! fortran test program to interface a 1D TLM solver with ngspice
-! The 1D TLM solver simulates a transmission line between a source and a lumped circuit
-! i.e. it is a terminated transmission line
+! Initialise the ngspice circuit simulation which runs alongside GGI_TLM
 
+USE constants
 USE iso_c_binding
 USE ngspice_F90
+USE TLM_general
+USE File_information
 
 IMPLICIT NONE
 
 ! ngspice link variables
-
+ 
 integer ( c_int ) :: istat
-
-real ( c_double ) :: break_time
-real ( c_double ) :: t_F90
-real ( c_double ) :: V_F90
-integer ( c_int ) :: n_nodes
-integer ( c_int ) :: node_list(100)
-real ( c_double ) :: V_array_F90(100)
-INTEGER(kind=C_INT) :: ret
-character*80 :: command_string
-
-! timestepping
-real ( c_double ) :: dt,tmax,eps,time
-integer :: nt,i,iz,nodeloop,opnode
 
 ! circuit file construction stuff
 
@@ -98,79 +129,27 @@ character(LEN=256) :: line
 character(LEN=256) :: Z0_string
 character(LEN=256) :: dt_string
 character(LEN=256) :: tmax_string
-
-! local TLM stuff
-
-real( c_double )  :: dl    ! TLM cell dimension
-integer :: nz    ! Number of TLM cells
-real( c_double )  :: Z0    ! TLM transmission line impedance
-real( c_double )  :: c0    ! TLM transmission line velocity
-
-real( c_double )  :: Zs    ! source impedance
-real( c_double )  :: Vs    ! source voltage
-
-real( c_double ),allocatable :: Vli(:)
-real( c_double ),allocatable :: Vlr(:)
-real( c_double ),allocatable :: Vri(:)
-real( c_double ),allocatable :: Vrr(:)
-
-real( c_double ) :: V,V1,Vnz
   
 ! START
 
-! set up TLM
+CALL write_line('CALLED: initialise_ngspice',0,output_to_screen_flag)
 
-dl=0.01d0     ! 1cm mesh
-nz=133        ! number of cells=133 i.e. a 1.33m transmission line
+! set the impedance for the ngspice - GGI_TLM link. This is half the TLM link line impedance
+write(Z0_string,'(ES16.6)')Z0/2d0
 
-Z0=635d0      ! characteristic impedance of the transmission line 
-c0=2.0d8      ! velocity of waves on the transmission line 
+! set the ngspice timestep to something much less than the TLM timestep, defined by the ngspice_timestep_factor
+write(dt_string,'(ES16.6)')dt/ngspice_timestep_factor   
 
-dt=dl/c0      ! TLM timestep
+! Set the maximum time for the ngspice solution - add an extra bit of time to avoid problems with numerical precision
+write(tmax_string,'(ES16.6)')simulation_time*1.0001d0 +dt 
 
-eps=dt/100d0  ! small time period wrt dt used to determine when to stop the ngspice solution
+! Read the template circuit file and include the parameters relating to this GGI_TLM solution
 
-!nt=2000       ! number of TLM timesteps
-nt=2000       ! number of TLM timesteps
-
-tmax=nt*dt    ! maximum time
-
-Zs=100d0       !`source resistance
-
-Vs=1d0        ! source voltage
-
-write(*,*)'dl  =',dl
-write(*,*)'nz  =',nz
-write(*,*)'len =',nz*dl
-write(*,*)'Z0  =',Z0
-write(*,*)'c0  =',c0
-write(*,*)'dt  =',dt
-write(*,*)'nt  =',nt
-write(*,*)'tmax=',tmax
-write(*,*)'Zs  =',Zs
-write(*,*)'Vs  =',Vs
-
-ALLOCATE( Vli(1:nz) )
-ALLOCATE( Vlr(1:nz) )
-ALLOCATE( Vri(1:nz) )
-ALLOCATE( Vrr(1:nz) )
-
-Vli(1:nz)=0d0
-Vlr(1:nz)=0d0
-Vri(1:nz)=0d0
-Vrr(1:nz)=0d0
-
-write(*,*)'Create the Spice_circuit.cir file from the template'
-
-write(Z0_string,'(ES16.6)')Z0
-write(dt_string,'(ES16.6)')dt/20d0            ! set the ngspice timestep to something much less than the TLM timestep
-write(tmax_string,'(ES16.6)')tmax*1.001d0 +dt ! add an extra bit of time to avoid problems with numerical precision
-
-open(unit=30,file='Spice_circuit_TEMPLATE.cir',status='OLD',ERR=9000)
-open(unit=31,file='Spice_circuit.cir')
+open(unit=ngspice_TEMPLATE_circuit_file_unit,file='Spice_circuit_TEMPLATE.cir',status='OLD',ERR=9000)
+open(unit=ngspice_circuit_file_unit,file='Spice_circuit.cir')
 
 10 CONTINUE
-  read(30,'(A256)',ERR=9010,END=1000)line
+  read(ngspice_TEMPLATE_circuit_file_unit,'(A256)',ERR=9010,END=1000)line
   
 ! look for the string '#Z0_TLM' and replace with Z0
   CALL replace_in_string(line,'#Z0_TLM',Z0_string)
@@ -181,16 +160,16 @@ open(unit=31,file='Spice_circuit.cir')
 ! look for the string '#tmax_ngspice' and replace with tmax
   CALL replace_in_string(line,'#tmax_ngspice',tmax_string)
   
-  write(31,'(A)')trim(line)
+  write(ngspice_circuit_file_unit,'(A)')trim(line)
   
   GOTO 10  ! read next line
 
 1000 CONTINUE ! jump here when we have reached the end of the input file
 
-close(unit=30)
-close(unit=31)
+close(unit=ngspice_TEMPLATE_circuit_file_unit)
+close(unit=ngspice_circuit_file_unit)
 
-write(*,*)'CALLING ngspice_wrapper_load_circuit'
+! Initialise the ngspice solution
 
 ! The c function needs to be edited to include the following:
 ! TLM characteristic impedance
@@ -199,115 +178,18 @@ write(*,*)'CALLING ngspice_wrapper_load_circuit'
 
 istat = ngspice_wrapper_load_circuit( )
 
-write(*,*)'Exit status',istat
+!write(*,*)'Exit status',istat
 
-n_nodes=0   ! the number of nodes linking TLM and ngspice is not known until the first initdata function call so
-            ! set to zero for now.
+! the number of nodes linking TLM and ngspice is not known until 
+! the first initdata function call so set to zero for now
 
-open(unit=10,file='TLM_solution.dat')
+n_ngspice_nodes=0   
 
-t_F90=0d0  ! initial time
+t_eps=0.5d0*dt/ngspice_timestep_factor 
 
-! loop over TLM timestep
-do i=1,nt
+CALL write_line('FINISHED: Initialise_ngspice',0,output_to_screen_flag)
 
-! SCATTERING PROCESS
-
-! Internal TLM scatter inside cells 
-  do iz=1,nz
-
-    V=(2d0*Vli(iz)/Z0+2d0*Vri(iz)/Z0)/(1d0/Z0+1d0/Z0)
-    Vlr(iz)=V-Vli(iz)
-    Vrr(iz)=V-Vri(iz)
-    
-  end do
-  
-! UPDATE THE NGSPICE CIRCUIT SOLUTION
-! work out the next time to halt the ngspice solution and write the breakpoint to ngspice
-
-  break_time=dt*dble(i)
-  
-! Transfer the TLM incident voltage pulse(s) to the ngspice circuit
-  do nodeloop=1,n_nodes
-  
-    opnode=node_list(nodeloop)
-    
-    if (opnode.EQ.1) then
-! source end model
-      command_string=''
-      write(command_string,'(A,ES16.6)')"alter vtlm1 = ",2d0*Vlr(1)
-      istat = ngSpice_Command(trim(command_string)//C_NULL_CHAR);
-!      write(*,*)trim(command_string)
-      
-    else if (opnode.EQ.2) then
-! load end model    
-      command_string=''
-      write(command_string,'(A,ES16.6)')"alter vtlm2 = ",2d0*Vrr(nz)
-      istat = ngSpice_Command(trim(command_string)//C_NULL_CHAR);
-!      write(*,*)trim(command_string)
-      
-    end if
-    
-  end do
-
-! single step through the ngspice solution until the time is greater than or equal to the next break time
-  do while((break_time-t_F90).GT.eps) 
-  
-    istat = ngspice_wrapper_step(t_F90,V_F90,n_nodes,node_list,V_array_F90)
-    
-  end do
-  
-! Transfer the ngspice voltage(s) to the TLM solution   
-  do nodeloop=1,n_nodes
-  
-    opnode=node_list(nodeloop)
-    
-    if (opnode.EQ.1) then
-      V1=V_array_F90(nodeloop)
-!      write(*,*)'V1 =',V1
-    else if (opnode.EQ.2) then
-      Vnz=V_array_F90(nodeloop)
-!      write(*,*)'Vnz=',Vnz,V_F90
-    end if
-    
-  end do
-
-! CONNECT PROCESS (INCLUDING TERMINATION CONDITIONS)
-
-  time=(i-1)*dt
-
-! TLM connect at source end - this requires the link to ngspice
-  
-  Vli(1)=V1-Vlr(1)
-
-! Internal TLM connection between cells  
-  do iz=1,nz-1
-
-    V=(2d0*Vrr(iz)/Z0+2d0*Vlr(iz+1)/Z0)/(1d0/Z0+1d0/Z0)
-    Vri(iz)=V-Vrr(iz)
-    Vli(iz+1)=V-Vlr(iz+1)
-    
-  end do
-
-! TLM connect at load end - this requires the link to ngspice
-  
-! connect at the load end using ngspice voltage
-  Vri(nz)=Vnz-Vrr(nz)
-
-! write voltages at the source and load end to file    
-  write(*,*)(i-1)*dt,V1,Vnz
-  write(10,*)(i-1)*dt,V1,Vnz
-
-end do
-
-close(unit=10)
-
-DEALLOCATE( Vli )
-DEALLOCATE( Vlr )
-DEALLOCATE( Vri )
-DEALLOCATE( Vrr )
-
-STOP 0
+RETURN
 
 9000 write(*,*)'ERROR: cannot open the template circuit file: Spice_circuit_TEMPLATE.cir'
 STOP 1
@@ -315,56 +197,50 @@ STOP 1
 9010 write(*,*)'ERROR reading template circuit file: Spice_circuit_TEMPLATE.cir'
 STOP 1
 
-END SUBROUTINE run_ngspice_TLM
+END SUBROUTINE initialise_ngspice
 !
-! ______________________________________________________________________________
+! ________________________________________________________________________________
+!  
 !
-!
-SUBROUTINE replace_in_string(line,find_string,replace_string)
+SUBROUTINE update_ngspice( tlm_time )
+
+! fortran test program to interface a 1D TLM solver with ngspice
+! The 1D TLM solver simulates a transmission line between a source and a lumped circuit
+! i.e. it is a terminated transmission line
+
+USE constants
+USE iso_c_binding
+USE ngspice_F90
+USE TLM_general
+USE File_information
 
 IMPLICIT NONE
 
-character(LEN=256),INTENT(INOUT) :: line
-character(LEN=*),INTENT(IN)      :: find_string
-character(LEN=256),INTENT(IN)    :: replace_string
+real*8 :: tlm_time
 
-! local variables
+! ngspice link variables
 
-integer :: found_pos
-integer :: len_line
-integer :: len_found
-character(LEN=256) :: left_string
-character(LEN=256) :: right_string
-character(LEN=256) :: opline
+integer ( c_int ) :: istat
 
+  
 ! START
-
-!write(*,*)''
-!write(*,*)'CALLED:replace_in_string'
-!write(*,*)'LINE   :',trim(line)
-!write(*,*)'FIND   :',trim(find_string)
-!write(*,*)'REPLACE:',trim(replace_string)
-
-len_line=len(trim(line))
-len_found=len(trim(find_string))
-found_pos=index(line,trim(find_string))
-
-do while (found_pos.NE.0) 
-
-! replace the found string with the replace string
-  left_string=''
-  left_string=line(1:found_pos-1)
-  right_string=''
-  right_string=line(found_pos+len_found:len_line)
   
-  opline=''
-  opline=trim(left_string)//trim(replace_string)//trim(right_string)
-  
-  line=''
-  line=opline
-  
-  found_pos=index(line,trim(find_string))
+! UPDATE THE NGSPICE CIRCUIT SOLUTION
+! work out the next time to halt the ngspice solution and write the breakpoint to ngspice
 
-end do
+  ngspice_break_time=tlm_time
 
-END SUBROUTINE replace_in_string
+!  write(*,*)'CALLED update_ngspice, time=',t_ngspice_F90,' ngspice_break_time=',ngspice_break_time
+
+! single step through the ngspice solution until the time is greater than or equal to the next break time
+  do while((ngspice_break_time-t_ngspice_F90).GT.t_eps) 
+  
+    istat = ngspice_wrapper_step(t_ngspice_F90,V_ngspice_F90,n_ngspice_nodes,ngspice_node_list,V_ngspice_array_F90)
+    
+  end do
+  
+!  write(*,*)'istat=',istat,' tout',t_ngspice_F90,' Vout',V_ngspice_F90,n_ngspice_nodes,ngspice_node_list(1),V_ngspice_array_F90(1)
+  
+RETURN
+
+END SUBROUTINE update_ngspice

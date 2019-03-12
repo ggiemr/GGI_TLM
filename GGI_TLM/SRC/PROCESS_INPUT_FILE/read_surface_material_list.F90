@@ -312,27 +312,29 @@ logical	:: file_exists
       surface_material_list(surface_material_number)%type=surface_material_type_SPICE
 
 ! read spice circuit model parameters      
-     read(input_file_unit,*,err=9005)surface_material_list(surface_material_number)%Spice_circuit_file_node
+      read(input_file_unit,*,err=9005)surface_material_list(surface_material_number)%Spice_circuit_file_node
 				     
-     read(input_file_unit,'(A2)',err=9005)surface_material_list(surface_material_number)%Spice_port_direction
+      read(input_file_unit,'(A2)',err=9005)surface_material_list(surface_material_number)%Spice_port_direction
      
 ! check direction is OK
-     if ( (surface_material_list(surface_material_number)%Spice_port_direction.NE.'-x').AND.	&
-          (surface_material_list(surface_material_number)%Spice_port_direction.NE.'+x').AND. &
-          (surface_material_list(surface_material_number)%Spice_port_direction.NE.'-y').AND.	&
-          (surface_material_list(surface_material_number)%Spice_port_direction.NE.'+y').AND. &
-          (surface_material_list(surface_material_number)%Spice_port_direction.NE.'-z').AND.	&
-          (surface_material_list(surface_material_number)%Spice_port_direction.NE.'+z') ) then
+      if ( (surface_material_list(surface_material_number)%Spice_port_direction.NE.'-x').AND.	&
+           (surface_material_list(surface_material_number)%Spice_port_direction.NE.'+x').AND. &
+           (surface_material_list(surface_material_number)%Spice_port_direction.NE.'-y').AND.	&
+           (surface_material_list(surface_material_number)%Spice_port_direction.NE.'+y').AND. &
+           (surface_material_list(surface_material_number)%Spice_port_direction.NE.'-z').AND.	&
+           (surface_material_list(surface_material_number)%Spice_port_direction.NE.'+z') ) then
 	  
-	write(*,*)'Spice_port direction shoule be -x, +x, -y, +y, -z or +z'
-	STOP
+	 write(*,*)'Spice_port direction shoule be -x, +x, -y, +y, -z or +z'
+	 STOP
 	  
-      end if
+       end if
       
       surface_material_list(surface_material_number)%Spice_port_sign=-1
       if (surface_material_list(surface_material_number)%Spice_port_direction(1:1).EQ.'-') then
         surface_material_list(surface_material_number)%Spice_port_sign=+1
       end if  
+      
+      run_ngspice=.TRUE.
             
     else
 ! not a recognised material type so an error

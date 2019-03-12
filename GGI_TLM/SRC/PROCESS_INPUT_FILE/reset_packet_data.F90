@@ -106,6 +106,8 @@ IMPLICIT NONE
   Inductance_equivalent_radius_factor =1d0/1.08D0
   
   Max_cable_bundle_diameter_factor    =0.67d0
+  
+  run_ngspice=.FALSE.
 
   CALL write_line('FINISHED: reset_packet_data',0,output_to_screen_flag)
   
