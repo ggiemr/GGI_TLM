@@ -59,6 +59,7 @@ IMPLICIT NONE
   n_huygens_surfaces=0
   n_output_points=0
   n_output_surfaces=0
+  n_ngspice_output_nodes=0
   n_volumes=0
   n_surfaces=0
   n_lines=0

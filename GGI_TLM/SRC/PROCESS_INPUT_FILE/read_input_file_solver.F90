@@ -100,10 +100,14 @@ character*256	:: input_line
     
       CALL read_output_point_list()
      
+    else if (input_line.EQ.'ngspice_node_output_list') then
+    
+      CALL read_ngspice_output_node_list()
+      
     else if (input_line.EQ.'output_surface_list') then
     
       CALL read_output_surface_list()
-     
+    
     else if (input_line.EQ.'output_volume_list') then
     
       CALL read_output_volume_list()

@@ -29,22 +29,30 @@
   
 ! Transfer the TLM incident voltage pulse(s) to the ngspice circuit
 
-! **** HARD WIRED FOR CONNECTION TO NGSPICE NODE 1 ****
-
                  command_string=''
                  Vspice=sign*(V(Vx_zmin,cx,cy,cz)+V(Vx_zmax,cx,cy,cz-1))
                  if (abs(Vspice).LT.small) Vspice=0d0
-                 write(command_string,'(A,ES16.6)')"alter vtlm1 = ",Vspice
-                 istat = ngSpice_Command(trim(command_string)//C_NULL_CHAR); 
+
+! Build the command string including the spice node number                 
+                 write(command_string,'(A10,I0,A3,ES16.6)')"alter vtlm",spice_node," = ",Vspice
                  
-!                 write(*,*)
-!                 write(*,*)"ngspice command:",trim(command_string)
-             	      
+                 istat = ngSpice_Command(trim(command_string)//C_NULL_CHAR); 
+                              	      
                end if
 	      
 	       if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-y').OR.	&
 	           (surface_material_list(material_number)%Spice_port_direction.EQ.'+y') ) then
-                  
+                    
+! Transfer the TLM incident voltage pulse(s) to the ngspice circuit
+
+                 command_string=''
+                 Vspice=sign*(V(Vy_zmin,cx,cy,cz)+V(Vy_zmax,cx,cy,cz-1))
+                 if (abs(Vspice).LT.small) Vspice=0d0
+
+! Build the command string including the spice node number                 
+                 write(command_string,'(A10,I0,A3,ES16.6)')"alter vtlm",spice_node," = ",Vspice
+                 
+                 istat = ngSpice_Command(trim(command_string)//C_NULL_CHAR); 
                 
                end if
 	    

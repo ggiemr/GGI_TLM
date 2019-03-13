@@ -266,10 +266,10 @@ ng_initdata(pvecinfoall intdata, int ident, void* userdata)
     
     if (initdata_done) return 0;
 
-    printf("\n");
+/*    printf("\n");
     printf("****************************\n");
     printf("**  ngspice initdata  **\n");
-    printf("****************************\n");
+    printf("****************************\n"); */
 
 /* Reset the arrays which hold node data to be passed between ngspice and GGI_TLM these are nodes less than 100 */    
     for (inode = 0; inode<100 ; inode++) {
@@ -282,7 +282,7 @@ ng_initdata(pvecinfoall intdata, int ident, void* userdata)
     
     for (i = 0; i < vn; i++) {
 
-        printf("Vector: %s\n", intdata->vecs[i]->vecname); 
+     /*   printf("Vector: %s\n", intdata->vecs[i]->vecname);  */
         
         /* look for a sub-string between brackets - this is a node number  */
         
@@ -302,8 +302,8 @@ ng_initdata(pvecinfoall intdata, int ident, void* userdata)
         chnumber[ich] = '\0';
         node_number=atoi(chnumber);
     
-        if ( node_number > 0 && node_number < 100 ) {
-          printf("Found output at node: %d, vector element is %d \n", node_number,i);
+        if ( node_number > 0 && node_number < 101 ) {
+      /*     printf("Found output at node: %d, vector element is %d \n", node_number,i); */
           v_present[n_nodes][1]=node_number;
           v_present[n_nodes][2]=i;
           n_nodes++;
@@ -313,12 +313,12 @@ ng_initdata(pvecinfoall intdata, int ident, void* userdata)
         
         if (cieq(intdata->vecs[i]->vecname, "V(1)")) {
             vecgetnumber = i;
-            printf("Found node 1 output, vector element is %d \n", i);
+        /*       printf("Found node 1 output, vector element is %d \n", i); */
           }
         /* find the location of the time data */
         
         if (cieq(intdata->vecs[i]->vecname, "time")) {
-            printf("Found time output, vector element is %d \n", i);
+       /*         printf("Found time output, vector element is %d \n", i); */
             vecgettime = i;
           }
     }

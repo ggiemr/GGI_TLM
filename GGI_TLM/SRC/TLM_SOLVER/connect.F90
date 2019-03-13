@@ -127,6 +127,9 @@ IMPLICIT NONE
   
   real*8	:: field(6)
   
+! ngspice link variables
+  integer       :: opnode
+  
 ! Excitation parameters  
     
   integer excitation_number

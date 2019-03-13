@@ -99,6 +99,8 @@ real ( c_double ) :: V_ngspice_F90
 integer ( c_int ) :: n_ngspice_nodes
 integer ( c_int ) :: ngspice_node_list(100)
 real ( c_double ) :: V_ngspice_array_F90(100)
+integer :: ngspice_node_to_V_ngspice_array_list(100)
+logical :: set_ngspice_node_to_V_ngspice_array_list
 
 real*8            :: t_eps
 
@@ -187,6 +189,11 @@ n_ngspice_nodes=0
 
 t_eps=0.5d0*dt/ngspice_timestep_factor 
 
+set_ngspice_node_to_V_ngspice_array_list=.FALSE.
+ngspice_node_list(:)=0
+V_ngspice_array_F90(:)=0d0
+ngspice_node_to_V_ngspice_array_list(:)=0
+
 CALL write_line('FINISHED: Initialise_ngspice',0,output_to_screen_flag)
 
 RETURN
@@ -222,6 +229,7 @@ real*8 :: tlm_time
 
 integer ( c_int ) :: istat
 
+integer :: spice_node,i
   
 ! START
   
@@ -238,6 +246,20 @@ integer ( c_int ) :: istat
     istat = ngspice_wrapper_step(t_ngspice_F90,V_ngspice_F90,n_ngspice_nodes,ngspice_node_list,V_ngspice_array_F90)
     
   end do
+    
+  if (.NOT.set_ngspice_node_to_V_ngspice_array_list) then
+! set the array which points from 
+
+    do i=1,n_ngspice_nodes  ! loop over the elements of the voltage output array
+      spice_node=ngspice_node_list(i)
+      
+! loop over the     
+      ngspice_node_to_V_ngspice_array_list(spice_node)=i
+      
+    end do
+    set_ngspice_node_to_V_ngspice_array_list=.TRUE.
+    
+  end if
   
 !  write(*,*)'istat=',istat,' tout',t_ngspice_F90,' Vout',V_ngspice_F90,n_ngspice_nodes,ngspice_node_list(1),V_ngspice_array_F90(1)
   

@@ -26,6 +26,7 @@ read_frequency_output_surface.o \
 read_frequency_output_volume.o \
 read_frequency_domain_power_surface.o \
 read_output_point_list.o \
+read_ngspice_output_node_list.o \
 read_output_surface_list.o \
 read_output_volume_list.o \
 read_output_volume_average_list.o \

@@ -135,6 +135,57 @@
        
               end if
 	  
+	    else if (material_type.EQ.surface_material_type_SPICE) then	 
+                  
+              spice_node=surface_material_list(material_number)%Spice_circuit_file_node
+
+! connection process using the ngspice node voltage
+              sign=surface_material_list(material_number)%Spice_port_sign
+
+	      if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-y').OR.	&
+	          (surface_material_list(material_number)%Spice_port_direction.EQ.'+y') ) then
+             
+! get the ngspice node voltage. The voltage to use is found in the list ngspice_node_to_V_ngspice_array_list(100)
+                opnode=ngspice_node_to_V_ngspice_array_list(spice_node)
+                
+                if ( (opnode.LT.1).OR.(opnode.GT.100) ) then
+                  write(*,*)'Ngspice output node is out of range (1-100)',opnode
+                  STOP
+                end if
+                Vspice=sign*V_ngspice_array_F90(opnode)   
+                
+		Vy_min=Vspice
+		Vy_max=Vspice
+	      
+	      else ! spice circuit port is not is this direction so do free space update for x polarisation
+	      
+                Vy_min=V(Vy_xmin,cx,cy,cz)  + V(Vy_xmax,cx-1,cy,cz)
+	        Vy_max=Vy_min
+
+              end if
+	      
+	      if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-z').OR.	&
+	          (surface_material_list(material_number)%Spice_port_direction.EQ.'+z') ) then
+                              
+! get the ngspice node voltage. The voltage to use is found in the list ngspice_node_to_V_ngspice_array_list(100)
+                opnode=ngspice_node_to_V_ngspice_array_list(spice_node)
+                
+                if ( (opnode.LT.1).OR.(opnode.GT.100) ) then
+                  write(*,*)'Ngspice output node is out of range (1-100)',opnode
+                  STOP
+                end if
+                Vspice=sign*V_ngspice_array_F90(opnode)   
+                
+                Vz_min=Vspice
+		Vz_max=Vspice
+
+	      else ! spice circuit port is not is this direction so do free space update for y polarisation
+	      
+                Vz_min=V(Vz_xmin,cx,cy,cz)  +  V(Vz_xmax,cx-1,cy,cz)
+	        Vz_max=Vz_min
+                
+              end if
+	  
 	    else if ( (material_type.EQ.surface_material_type_DISPERSIVE).OR.			&
 	              (material_type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE) ) then
 	    

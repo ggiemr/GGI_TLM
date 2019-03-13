@@ -124,10 +124,11 @@ IMPLICIT NONE
 
 ! START
 
-  
   CALL write_line('CALLED: initialise_outputs',0,output_to_screen_flag)
   
   CALL initialise_output_points()
+  
+  CALL initialise_ngspice_output_nodes()
   
   CALL initialise_output_surfaces()
   
@@ -262,6 +263,8 @@ IMPLICIT NONE
   
   CALL face_output_RCS()
 
+  CALL write_ngspice_output_nodes()
+
   CALL write_line('FINISHED: face_output',0,timestepping_output_to_screen_flag)
 
   RETURN
@@ -359,6 +362,13 @@ IMPLICIT NONE
     
     write (info_file_unit,'(A)')"Time domain field output at a point"   
     CLOSE(unit=field_output_unit)
+    
+  end if
+  
+  if (n_ngspice_output_nodes.GT.0) then
+    
+    write (info_file_unit,'(A)')"Time domain ngspice output node voltages"   
+    CLOSE(unit=ngspice_output_unit)
     
   end if
   

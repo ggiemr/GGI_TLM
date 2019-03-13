@@ -13,78 +13,71 @@ LC_correction_type_subtract_cell_inductance
 #LC_correction_type_geometry_scale
 
 Surface_list
-3   Number of surfaces 
-1       SURFACE_NUMBER    # Huygens surface
-rectangular_block2
--#HS_XY -#HS_XY -#HS_Z   #HS_XY #HS_XY #HS_Z  surface parameters 
-0.0 0.0 0.0    
-0.0 0.0 0.0
-2       surface_number ! PEC strip
+4   Number of surfaces 
+1       surface_number ! PEC strip
 zplane
--#WDS -#DL2 #WIRE_Z     #WDS #DL2  #WIRE_Z    surface parameters (n*real)
+-#WDS -#DL2 -#WIRE_Z     #WDS #DL2 -#WIRE_Z    surface parameters (n*real)
 0.0 0.0 0.0
 0.0 0.0 0.0
-3       surface_number ! diode
+2       surface_number ! source
+zplane
+-#DL2 -#DL2 -#WIRE_Z    #DL2  #DL2 -#WIRE_Z   surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+3       surface_number ! PEC strip
+zplane
+-#WDS -#DL2 #WIRE_Z     #WDS #DL2 #WIRE_Z    surface parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+4       surface_number ! diode
 zplane
 -#DL2 -#DL2 #WIRE_Z    #DL2  #DL2 #WIRE_Z   surface parameters (n*real)
 0.0 0.0 0.0
 0.0 0.0 0.0
 
 Surface_material_list
-2   Number of surface materials 
+3   Number of surface materials 
 1       SURFACE MATERIAL NUMBER 
 PEC
-1       number of surfaces
-2        surface list
-1        surface orientation list
+2       number of surfaces
+1 3        surface list
+1 1       surface orientation list
 2       SURFACE MATERIAL NUMBER 
 SPICE        
 1            # ngspice circuit node number in the Spice_circuit_TEMPLATE.cir file for the port (note, assume port voltage is referenced to node zero)
 +x           # port direction, infinite impedance in the orthogonal direction
 1       number of surfaces
-3       surface list
+2       surface list
 1       surface orientation list
-
-#Surface_material_list
-2   Number of surface materials 
-1       SURFACE MATERIAL NUMBER 
-PEC
+3       SURFACE MATERIAL NUMBER 
+SPICE        
+2            # ngspice circuit node number in the Spice_circuit_TEMPLATE.cir file for the port (note, assume port voltage is referenced to node zero)
++x           # port direction, infinite impedance in the orthogonal direction
 1       number of surfaces
-2        surface list
-1        surface orientation list
-2       SURFACE MATERIAL NUMBER 
-DISPERSIVE        
-Rsheet=100
-1       number of surfaces
-3       surface list
+4       surface list
 1       surface orientation list
 
 Line_list
-3   Number of lines 
+2   Number of lines 
 1       LINE_NUMBER 
 straight_line2
--#WS 0.0 -1.0    -#WS 0.0 #WIRE_Z  ! wire 1
+-#WS 0.0 -#WIRE_Z    -#WS 0.0 #WIRE_Z  ! wire 1
 0.0 0.0 0.0
 0.0 0.0 0.0
 2       LINE_NUMBER 
 straight_line2
-#WS 0.0 -1.0     #WS 0.0 #WIRE_Z  ! wire 2
-0.0 0.0 0.0
-0.0 0.0 0.0
-3       LINE_NUMBER   end 1 termination
-straight_line2
--#WS 0.0 -1.0    #WS 0.0 -1.0  ! end 1
+#WS 0.0 -#WIRE_Z     #WS 0.0 #WIRE_Z  ! wire 2
 0.0 0.0 0.0
 0.0 0.0 0.0
 
 Point_list 
 7   Number of points (integer)
 1       POINT_NUMBER (integer)
--#WS 0.0 -1.0    point coordinates (n*real)
+-#WS 0.0 -#WIRE_Z    point coordinates (n*real)
 0.0 0.0 0.0
 0.0 0.0 0.0
 2       POINT_NUMBER (integer)
-#WS 0.0 -1.0    point coordinates (n*real)
+#WS 0.0 -#WIRE_Z    point coordinates (n*real)
 0.0 0.0 0.0
 0.0 0.0 0.0
 3       POINT_NUMBER (integer)
@@ -96,7 +89,7 @@ Point_list
 0.0 0.0 0.0
 0.0 0.0 0.0
 5       POINT_NUMBER (integer)
-0.0 0.0 -1.0    point coordinates (n*real)
+0.0 0.0 -#WIRE_Z    point coordinates (n*real)
 0.0 0.0 0.0
 0.0 0.0 0.0
 6       POINT_NUMBER (integer)
@@ -116,16 +109,12 @@ Ez
 centre
 
 Cable_geometry_list
-3  number of cable geometries
+1  number of cable geometries
 1  CABLE GEOMETRY NUMBER, Cable geometry type (file name) follows:
 CABLE_DIRECTORY/0.1mm_single_wire
-2  CABLE GEOMETRY NUMBER, Cable geometry type (file name) follows:
-CABLE_DIRECTORY/0.1mm_single_wire
-3  CABLE GEOMETRY NUMBER, Cable geometry type (file name) follows:
-CABLE_DIRECTORY/1mm_single_wire
 
 cable_list
-3  number of cables
+2  number of cables
 1  CABLE NUMBER             # wire 1
 1    cable geometry number
 1    number of lines on cable route
@@ -133,56 +122,46 @@ cable_list
 1    end 1 junction number
 3    end 2 junction number
 2  CABLE NUMBER             # wire 2
-2    cable geometry number
+1    cable geometry number
 1    number of lines on cable route
 2    cable line list
 2    end 1 junction number
 4    end 2 junction number
-3  CABLE NUMBER             # end 1
-3    cable geometry number
-1    number of lines on cable route
-3    cable line list
-1    end 1 junction number
-2    end 2 junction number
 
 Cable_output_list
 1  number of cable_outputs
 1  CABLE OUTPUT NUMBER
-3  cable number
-5  closest point number
+1  cable number
+1  closest point number
 
 Cable_junction_list
 4    number of junctions
 1    JUNCTION NUMBER
 1    junction point 
 1    number of internal connection nodes (n_int)
-2    number of cables
-1 3   cable list
-1 1   corresponding cable end number list
+1    number of cables
+1   cable list
+1   corresponding cable end number list
 1   	Cable 1 number of external conductors (n_ext)
 1   	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
-1   	Cable 1 voltage source function list
-#RS2    Cable 1 impedance list
-1   	Cable 3 number of external conductors (n_ext)
-1  	Cable 3 P matrix: matrix (n_int rows* n_ext columns)
-0 	Cable 3 voltage source function list
-0.0 	Cable 3 impedance list
+0   	Cable 1 voltage source function list
+0.0     Cable 1 impedance list
 0	Number of internal impedances
+FACE
+-1
 2    JUNCTION NUMBER
 2    junction point 
 1    number of internal connection nodes (n_int)
-2    number of cables
-2 3     cable list
-1 2    corresponding cable end number list
-1   	Cable 3 number of external conductors (n_ext)
-1   	Cable 3 P matrix: matrix (n_int rows* n_ext columns)
-2 	Cable 3 voltage source function list
-#RS2 	Cable 3 impedance list
+1    number of cables
+2      cable list
+1      corresponding cable end number list
 1   	Cable 2 number of external conductors (n_ext)
 1   	Cable 2 P matrix: matrix (n_int rows* n_ext columns)
 0 	Cable 2 voltage source function list
 0.0 	Cable 2 impedance list
 0	Number of internal impedances
+FACE
+-1
 3    JUNCTION NUMBER
 3    junction point 
 1    number of internal connection nodes (n_int)
@@ -192,7 +171,7 @@ Cable_junction_list
 1   	Cable 1 number of external conductors (n_ext)
 1   	Cable 1 P matrix: matrix (n_int rows* n_ext columns)
 0   	Cable 1 voltage source function list
-#RL2 	Cable 1 impedance list
+0.0 	Cable 1 impedance list
 0	Number of internal impedances
 FACE
 -1
@@ -205,41 +184,17 @@ FACE
 1   	Cable 2 number of external conductors (n_ext)
 1   	Cable 2 P matrix: matrix (n_int rows* n_ext columns)
 0 	Cable 2 voltage source function list
-#RL2 	Cable 2 impedance list
+0.0 	Cable 2 impedance list
 0	Number of internal impedances
 FACE
 -1
 
-#Excitation_function_list
-2            	! number of excitation functions
-1		! EXCITATION NUMBER
-gaussian
-1.0 5e-10 20e-10
-2		! EXCITATION NUMBER
-gaussian_step
-1.0 5e-10 20e-10
-
-Excitation_function_list
-2              ! number of excitations
-1              ! EXCITATION NUMBER
-PROBLEM_SPECIFICATION_FILES/excitation_file.dat
-0   ! number of lines at the top of the file to ignore
-1   ! time data column
-2   ! function data column
-0.5 0.0
-2              ! EXCITATION NUMBER
-PROBLEM_SPECIFICATION_FILES/excitation_file.dat
-0   ! number of lines at the top of the file to ignore
-1   ! time data column
-2   ! function data column
--0.5 0.0
-
-#Huygens_surface
-0     surface number   ! surface 0 is the outer boundary
-1     side of surface for excitation
-1     excitation function number
-90.0 90.0  wave vector Theta and Phi 
-1.0 0.0  Polarisation theta and Phi
+ngspice_node_output_list
+2   # number of ngspice output nodes
+1   # NGSPICE OUTPUT NUMBER
+1   # ngspice node number
+2   # NGSPICE OUTPUT NUMBER
+2   # ngspice node number
 
 Simulation_time
 1e-7

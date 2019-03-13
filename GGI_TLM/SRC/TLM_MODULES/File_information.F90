@@ -187,6 +187,9 @@ IMPLICIT NONE
   
   character(len=18)	:: PB_far_field_time_output_extn='.PB_far_field.tout'
   integer,parameter 	:: PB_far_field_time_output_unit=72
+ 
+  character(len=13)	:: ngspice_output_extn='.ngspice.tout'
+  integer,parameter 	:: ngspice_output_unit=73
   
   character(len=7)	:: record_user_inputs_extn='_in.txt'
   integer,parameter 	:: record_user_inputs_unit=80

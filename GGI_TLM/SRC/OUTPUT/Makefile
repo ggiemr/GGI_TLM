@@ -7,6 +7,7 @@ output_volumes.o \
 output_volume_averages.o \
 output_volume_peak.o \
 output_modes.o \
+output_ngspice_nodes.o \
 frequency_output_surfaces.o \
 frequency_output_volumes.o \
 frequency_domain_power_surfaces.o \

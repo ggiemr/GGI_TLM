@@ -55,81 +55,16 @@ character*80 :: command_string
 
   integer cx,cy,cz
   integer face_number
-  
-  real*8 Vx,Vy,Vz
-  
-  real*8 Vx_min,Vy_min,Vz_min
-  real*8 Vx_max,Vy_max,Vz_max
-  
-  real*8 Ix_min,Iy_min,Iz_min
-  real*8 Ix_max,Iy_max,Iz_max
-  
-  integer	:: first_nz,last_nz
-  integer	:: pol
-
-! diode update variables  
-  real*8	:: Is,nVt,Rs,Vd,Id,Zc,Vc,Ic
-  integer	:: sign,diode_filter_number
-  
+    
 ! Spice circuit simulation link update vcariables
   real*8        :: Vspice
   integer       :: spice_node
+  integer       :: sign
    
 ! Material update parameters  
   integer material_type
   integer material_number
   logical reverse_material
-  integer surface_filter_number
- 
-! Output parameters  
-  
-  integer output_number
-  logical min_face_output
-  
-  integer output_face_number
-  real*8 Vx_positive_y1,Vx_negative_y1
-  real*8 Vx_positive_z1,Vx_negative_z1
-  
-  real*8 Vy_positive_x1,Vy_negative_x1
-  real*8 Vy_positive_z1,Vy_negative_z1
-  
-  real*8 Vz_positive_x1,Vz_negative_x1
-  real*8 Vz_positive_y1,Vz_negative_y1
-  
-  real*8 Vx_positive_y2,Vx_negative_y2
-  real*8 Vx_positive_z2,Vx_negative_z2
-  
-  real*8 Vy_positive_x2,Vy_negative_x2
-  real*8 Vy_positive_z2,Vy_negative_z2
-  
-  real*8 Vz_positive_x2,Vz_negative_x2
-  real*8 Vz_positive_y2,Vz_negative_y2
-  
-  real*8	:: field(6)
-  
-! Excitation parameters  
-    
-  integer excitation_number
-  integer excitation_face_number
-  real*8	:: field_min(6)
-  real*8	:: field_max(6)
-  
-  real*8	:: Js_min(3)
-  real*8	:: Js_max(3)
-  real*8	:: Ms_min(3)
-  real*8	:: Ms_max(3)
-  
-  real*8	:: Is_min(3)
-  real*8	:: Is_max(3)
-  
-  integer	:: hard_source_factor_min(6)
-  integer	:: hard_source_factor_max(6)
-  
-  logical min_face_excitation
-  
-! Cable parameters  
-    
-  integer cable_face_junction_number
   
 ! START
   

@@ -146,10 +146,14 @@
 	      if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-x').OR.	&
 	          (surface_material_list(material_number)%Spice_port_direction.EQ.'+x') ) then
              
-! get the ngspice node voltage ***** HARD WIRED FOR NODE 1 FOR NOW *******
-                Vspice=sign*V_ngspice_array_F90(1)   
+! get the ngspice node voltage. The voltage to use is found in the list ngspice_node_to_V_ngspice_array_list(100)
+                opnode=ngspice_node_to_V_ngspice_array_list(spice_node)
                 
-!                write(*,*)'Vspice=',Vspice
+                if ( (opnode.LT.1).OR.(opnode.GT.100) ) then
+                  write(*,*)'Ngspice output node is out of range (1-100)',opnode
+                  STOP
+                end if
+                Vspice=sign*V_ngspice_array_F90(opnode)   
                 
 		Vx_min=Vspice
 		Vx_max=Vspice
@@ -163,8 +167,15 @@
 	      
 	      if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-y').OR.	&
 	          (surface_material_list(material_number)%Spice_port_direction.EQ.'+y') ) then
-                  
-                Vspice=0d0  ! ******* TO BE REMOVED ********* short circuit for now
+                              
+! get the ngspice node voltage. The voltage to use is found in the list ngspice_node_to_V_ngspice_array_list(100)
+                opnode=ngspice_node_to_V_ngspice_array_list(spice_node)
+                
+                if ( (opnode.LT.1).OR.(opnode.GT.100) ) then
+                  write(*,*)'Ngspice output node is out of range (1-100)',opnode
+                  STOP
+                end if
+                Vspice=sign*V_ngspice_array_F90(opnode)   
                 
                 Vy_min=Vspice
 		Vy_max=Vspice

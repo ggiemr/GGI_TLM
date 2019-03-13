@@ -1,3 +1,13 @@
+          1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+two_single_wires.ngspice.tout
+           1
+source_voltage.tout
+          1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+two_single_wires.ngspice.tout
+           2
+load_voltage.tout
+           0  POST PROCESSING OPTION: QUIT
+           
           44  POST PROCESSING OPTION: SUM TIME DOMAIN DATA
            2  number of functions to sum
 two_single_wires.cable_current.tout

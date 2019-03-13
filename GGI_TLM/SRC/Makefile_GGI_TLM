@@ -165,6 +165,7 @@ PROCESS_INPUT_FILE/read_frequency_output_surface.o \
 PROCESS_INPUT_FILE/read_frequency_output_volume.o \
 PROCESS_INPUT_FILE/read_frequency_domain_power_surface.o \
 PROCESS_INPUT_FILE/read_output_point_list.o \
+PROCESS_INPUT_FILE/read_ngspice_output_node_list.o \
 PROCESS_INPUT_FILE/read_output_surface_list.o \
 PROCESS_INPUT_FILE/read_output_volume_list.o \
 PROCESS_INPUT_FILE/read_output_volume_average_list.o \
@@ -357,6 +358,7 @@ OUTPUT/output_volumes.o \
 OUTPUT/output_volume_averages.o \
 OUTPUT/output_volume_peak.o \
 OUTPUT/output_modes.o \
+OUTPUT/output_ngspice_nodes.o \
 OUTPUT/frequency_output_surfaces.o \
 OUTPUT/frequency_output_volumes.o \
 OUTPUT/frequency_domain_power_surfaces.o \

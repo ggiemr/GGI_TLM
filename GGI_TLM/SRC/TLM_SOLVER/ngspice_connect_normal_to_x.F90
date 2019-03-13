@@ -18,9 +18,40 @@
 	  if (material_type.NE.0) then ! not free space scatter
 	
 	  
-            if (material_type.EQ.surface_material_type_SPICE) then	 
+            if (material_type.EQ.surface_material_type_SPICE) then	
+             
+	      if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-y').OR.	&
+	          (surface_material_list(material_number)%Spice_port_direction.EQ.'+y') ) then
+  
+! Transfer the TLM incident voltage pulse(s) to the ngspice circuit
+
+                 command_string=''
+                 Vspice=sign*(V(Vy_xmin,cx,cy,cz)  + V(Vy_xmax,cx-1,cy,cz))
+                 if (abs(Vspice).LT.small) Vspice=0d0
+
+! Build the command string including the spice node number                 
+                 write(command_string,'(A10,I0,A3,ES16.6)')"alter vtlm",spice_node," = ",Vspice
+                 
+                 istat = ngSpice_Command(trim(command_string)//C_NULL_CHAR); 
+                              	      
+               end if
 	    
-            
+ 	      if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-z').OR.  &
+	          (surface_material_list(material_number)%Spice_port_direction.EQ.'+z') ) then
+  
+! Transfer the TLM incident voltage pulse(s) to the ngspice circuit
+
+                 command_string=''
+                 Vspice=sign*(V(Vz_xmin,cx,cy,cz)  +  V(Vz_xmax,cx-1,cy,cz))
+                 if (abs(Vspice).LT.small) Vspice=0d0
+
+! Build the command string including the spice node number                 
+                 write(command_string,'(A10,I0,A3,ES16.6)')"alter vtlm",spice_node," = ",Vspice
+                 
+                 istat = ngSpice_Command(trim(command_string)//C_NULL_CHAR); 
+                              	      
+               end if
+           
 	    end if  ! Spice link
 	    
 	  end if  ! not free space scatter
