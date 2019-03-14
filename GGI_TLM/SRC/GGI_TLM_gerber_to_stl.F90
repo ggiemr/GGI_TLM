@@ -25,7 +25,7 @@
 !     
 ! COMMENTS
 !     This process does not include some of the more complex aspects of the gerber format
-!     such as aperture macros so may require further development to convert some gerber files
+!     so may require further development to convert some gerber files
 !     correctly. The 'image' defined by the gerber file is built on a cartesian grid of specified
 !     resolution then this cartesian pixelated image is converted to stl format. The resolution of
 !     the cartesian grid should be higher than the discretisation of the subsequent GGI_TLM simulation

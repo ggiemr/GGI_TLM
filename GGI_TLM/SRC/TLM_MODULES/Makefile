@@ -13,7 +13,8 @@ Filter_fit_modules.o \
 File_information.o \
 post_process_modules.o \
 gerber_convert_modules.o \
-expression.o
+expression.o \
+PCB_simulation_setup_modules.o
 
 default: $(MODULE_OBJS)
 
