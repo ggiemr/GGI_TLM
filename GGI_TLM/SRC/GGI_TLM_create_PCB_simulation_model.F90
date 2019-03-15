@@ -57,8 +57,11 @@ character(LEN=256) :: opfilename
 
   n_gerber_files=0
   n_surfaces=0
+  n_surface_materials=0
+  n_PEC_surfaces=0
   n_volumes=0
-  
+  tot_n_ngspice_nodes=0
+ 
 !1a. Open the file containing the PCB simulation specifications
 
   write(*,*)'Enter the input filename for the PCB simulation specifications'
@@ -90,13 +93,17 @@ character(LEN=256) :: opfilename
 !3a. Specift dielectric (xmin,ymin,zmin), (xmax,ymax,zmax) position in space and add to the Volume_list 
 !3b. Choose a volume material file and add dielectric layers to the Volume_material_list 
 
-!  CALL add_dielectric_layers()
+  CALL add_dielectric_layers()
 
 !4. Add vias as required
 !4a. Read each via position (x,y,zmin,zmax) and add to the Surface_list
 !4b. Add vias to the Surface_material_list as PEC
+  
+  ALLOCATE( material_mesh(1:7,1:mesh_nx+1,1:mesh_ny+1,1:mesh_nz+1) )  ! add an extra node on each dimension
+  
+  material_mesh(:,:,:,:)=0  ! reset the mesh
 
-!  CALL add_vias()
+  CALL add_vias()
 
 !5. Add components as required
 !5a. Read component type 
@@ -109,21 +116,35 @@ character(LEN=256) :: opfilename
 !5g. Write the component ngspice link surfaces to the Surface_material_list and set to type SPICE
 !5h. Choose volume material files as required and add dielectric materials to the Volume_material_list 
 
-!  CALL add_components()
+  CALL add_components()
 
 !6. Specify additional components 
 !6a. Specify heatsink geometries as required and add to the Surface_list
 !6b. Write the heatsink surfaces to the Surface_material_list and set as PEC
 
-!  CALL specify_additional_components()
+  CALL specify_additional_components()
+  
+!7 write the stl file for all PEC elements: vias, connections from PCB to Ngpsice link ports and additional components
 
-!7 close files and finish 
+  CALL mesh_to_stl()
+
+!8 write the template GGI_TLM input file
+
+  CALL write_GGI_TLM_input_file()
+
+!9 write the template Spice_circuit_TEMPLATE.cir file
+
+  CALL write_Spice_input_file()
+
+!10 close files and finish 
 
   CLOSE(UNIT=10)
   
   CLOSE(UNIT=20)
   
   CLOSE(UNIT=30)
+  
+  DEALLOCATE( material_mesh )
   
   CALL write_progress('FINISHED: GGI_TLM_create_PCB_simulation_model')
 

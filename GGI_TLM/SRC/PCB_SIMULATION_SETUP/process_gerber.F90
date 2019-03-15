@@ -69,6 +69,18 @@ logical :: file_exists
 
 read(10,*)dl
 
+read(10,*) xmin,ymin,zmin,xmax,ymax,zmax     ! TLM problem space dimensions
+
+! calculate the number of cells in each direction
+mesh_nx=NINT((xmax-xmin)/dl)
+mesh_ny=NINT((ymax-ymin)/dl)
+mesh_nz=NINT((zmax-zmin)/dl)
+
+! adjust max dimensions to ensure there is an integer number of cells in each direction
+xmax=xmin+mesh_nx*dl
+ymax=ymin+mesh_ny*dl
+zmax=zmin+mesh_nz*dl
+
 read(10,*)n_gerber_files
 write(*,*)'Number of gerber files=',n_gerber_files
 
@@ -96,18 +108,27 @@ do i=1,n_gerber_files
   write(*,*)'Running gerber to stl command:',trim(command)
   CALL execute_command_line (trim(command), exitstat=iout)
   print *, "Exit status of GGI_TLM_gerber_to_stl was ", iout 
+  
+  n_surfaces=n_surfaces+1
 
 !2b. Read the z position for the layer
   read(10,*)gerber_z_offset(i)
-
+  surface_z_offset(n_surfaces)=gerber_z_offset(i)
+  
 !2c. Add the layer to the Surface_list
-  surface_type(i)=surface_type_stl
-  surface_filename(i)=trim(gerber_filename(i))//'.stl'
+
+  surface_type(n_surfaces)=surface_type_stl
+  surface_filename(n_surfaces)=trim(gerber_filename(i))//'.stl'
 
 !2d. Add the layer to the Sufrace_material_list as PEC to the Surface_list
 
-!2d. Add the layer to the Sufrace_material_list as PEC
-
+  if (n_PEC_surfaces.EQ.0) then
+    n_surface_materials=n_surface_materials+1  
+    surface_material_type(n_surface_materials)=surface_material_type_PEC
+    n_PEC_surfaces=n_PEC_surfaces+1
+  end if
+  PEC_surface_list(n_PEC_surfaces)=n_surfaces
+  PEC_surface_orientation_list(n_PEC_surfaces)=1
 end do
 
 RETURN  

@@ -36,25 +36,113 @@ IMPLICIT NONE
 
 SAVE
 
+! Mesh stuff
+
 real*8             :: dl     ! cell size for TLM solution
+
+real*8             :: xmin,xmax,ymin,ymax,zmin,zmax     ! TLM problem space dimensions
+
+integer            :: mesh_nx,mesh_ny,mesh_nz                          ! number of cells in each direction
+
+! Mesh
+
+integer,allocatable :: material_mesh(:,:,:,:)
+
+integer,parameter :: centre=1
+integer,parameter :: face_xmin=2
+integer,parameter :: face_xmax=3
+integer,parameter :: face_ymin=4
+integer,parameter :: face_ymax=5
+integer,parameter :: face_zmin=6
+integer,parameter :: face_zmax=7
+
+! Gerber file stuff
 
 integer,parameter  :: max_gerber_files=20
 integer            :: n_gerber_files
 character(LEN=256) :: gerber_filename(max_gerber_files)
 real*8             :: gerber_z_offset(max_gerber_files)
 
+! Surface geometry stuff
+
 integer,parameter  :: max_surfaces=100
 integer            :: n_surfaces
 integer            :: surface_type(max_surfaces)
 character(LEN=256) :: surface_filename(max_surfaces)
+real*8             :: surface_z_offset(max_surfaces)
+real*8             :: surface_parameters(max_surfaces,1:6)
 
 integer,parameter  :: surface_type_stl=1
+integer,parameter  :: surface_type_zplane=2
+
+! Surface material stuff
+
+integer,parameter  :: max_surface_materials=100
+integer            :: n_surface_materials
+integer            :: surface_material_type(max_surface_materials)
+
+integer            :: surface_material_to_surface_list(max_surface_materials)         
+
+integer,parameter  :: surface_material_type_PEC=1
+integer,parameter  :: surface_material_type_SPICE=2
+
+integer,parameter  :: max_PEC_surfaces=100
+integer            :: n_PEC_surfaces
+integer            :: PEC_surface_list(max_PEC_surfaces)
+integer            :: PEC_surface_orientation_list(max_PEC_surfaces)
+
+integer            :: SPICE_node_list(max_surface_materials)         
+character(LEN=2)   :: SPICE_port_direction_list(max_surface_materials)
+
+Character(LEN=34)  :: terminal_connection_geometry_filename='component_terminal_connections.stl'
+
+! Volume geometry stuff
 
 integer,parameter  :: max_volumes=100
 integer            :: n_volumes
 integer            :: volume_type(max_volumes)
 
 integer,parameter  :: volume_type_rectangular_block2=1
+
+
+! Volume material stuff
+
+
+! Dielectric stuff
+
+integer :: n_dielectrics
+
+! Via stuff
+
+integer :: n_vias
+
+! lumped component stuff
+
+integer,parameter :: max_lumped_components=100
+integer,parameter :: max_ngspice_nodes=2
+integer,parameter :: max_ngspice_ports=3  ! number of nodes+1
+
+integer,parameter :: component_type_one_port_model=1
+integer,parameter :: component_type_two_port_model=2
+
+integer :: n_lumped_components
+integer :: lumped_component_type(max_lumped_components)
+
+integer :: ngspice_n_ports(max_lumped_components)
+
+integer :: ngspice_n_terminals(max_lumped_components)
+real*8  :: ngspice_terminal_list(max_lumped_components,max_ngspice_ports,3)
+
+integer :: tot_n_ngspice_nodes
+integer :: ngspice_n_nodes(max_lumped_components)
+integer :: ngspice_node_list(max_lumped_components,max_ngspice_nodes)
+
+real*8  :: z_position(max_lumped_components)
+
+! additional component stuff
+
+integer :: n_additional_components
+
 
 
 END MODULE PCB_simulation

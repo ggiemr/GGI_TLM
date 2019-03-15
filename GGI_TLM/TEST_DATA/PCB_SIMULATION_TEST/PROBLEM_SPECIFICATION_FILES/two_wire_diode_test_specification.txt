@@ -1,0 +1,24 @@
+two_wire_diode_test.inp
+0.001  # dl: cell size for the TLM solution
+-0.06 -0.02 -0.01   0.06 0.02 0.04  # TLM problem space dimensions: xmin,ymin,zmin,xmax,ymax,zmax     
+1      # Number of gerber files to include
+two_track.gbr
+0.002    # z position for the layer specified in this gerber file
+0      # Number of dielectric layers
+0      # Number of vias
+2      # Number of lumped components
+1      # COMPONENT NUMBER
+one_port_model  # Component type for component 1
+1      # Number of ports
+1      # Ngspice node number for port 1
+-0.05  0.005 0.002  # connection point coordinates for connection number 1, port 1
+-0.05 -0.005 0.002  # connection point coordinates for connection number 2, reference for port 1
+0.004     # z offset for component
+2      # COMPONENT NUMBER
+one_port_model  # Component type for component 2
+1      # Number of ports
+2      # Ngspice node number for port 1
+0.05  0.005 0.002  # connection point coordinates for connection number 1, port 1
+0.05 -0.005 0.002  # connection point coordinates for connection number 2, reference for port 1
+0.004     # z position for component 
+0        # Number of additional components (heatsinks etc)

@@ -467,7 +467,15 @@ GERBER_CONVERSION/triangulate_surface.o \
 GERBER_CONVERSION/read_numbers.o
 
 PCB_SIMULATION_SETUP_OBJS= \
-PCB_SIMULATION_SETUP/process_gerber.o
+PCB_SIMULATION_SETUP/process_gerber.o  \
+PCB_SIMULATION_SETUP/add_additional_components.o   \
+PCB_SIMULATION_SETUP/add_vias.o  \
+PCB_SIMULATION_SETUP/add_components.o  \
+PCB_SIMULATION_SETUP/add_dielectric_layers.o  \
+PCB_SIMULATION_SETUP/circuit_geometry.o  \
+PCB_SIMULATION_SETUP/write_GGI_TLM_input_file.o  \
+PCB_SIMULATION_SETUP/write_Spice_input_file.o
+
 
 OBJS= \
 $(CONSTANTS_OBJS) \

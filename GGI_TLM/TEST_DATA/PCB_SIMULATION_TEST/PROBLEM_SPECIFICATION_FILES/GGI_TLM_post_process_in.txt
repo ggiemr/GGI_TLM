@@ -1,20 +1,9 @@
           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
-two_single_wires.ngspice.tout
+two_wire_diode_test.ngspice.tout
            1
 source_voltage.tout
           1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
-two_single_wires.ngspice.tout
+two_wire_diode_test.ngspice.tout
            2
 load_voltage.tout
-           0  POST PROCESSING OPTION: QUIT
-           
-          44  POST PROCESSING OPTION: SUM TIME DOMAIN DATA
-           2  number of functions to sum
-two_single_wires.cable_current.tout
-           1
-   100.000000000000000       Multiplication_factor for this function
-two_single_wires.excitation.tout
-           1
-   2.0000000000000000       Multiplication_factor for this function
-source_voltage.tout
            0  POST PROCESSING OPTION: QUIT
