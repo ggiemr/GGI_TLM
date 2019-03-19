@@ -67,4 +67,5 @@ ngspice_node_output_list
 2   # ngspice node number
 
 Simulation_time
-1e-7
+1e-8
+

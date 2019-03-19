@@ -1,0 +1,8 @@
+
+CURRENT_DIRECTORY=$( pwd )
+
+TEST_CASE_LIST=$( basename ${CURRENT_DIRECTORY} )
+
+COPY_COMMAND='cp PROBLEM_SPECIFICATION_FILES/*.stl .'
+# run the default test case sequence
+source ../run_test_case_include

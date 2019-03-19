@@ -50,6 +50,8 @@ integer :: ngspice_reference_node
 integer :: ngspice_link_node
 integer :: ngspice_model_internal_node
 
+character(LEN=256) :: line
+
 ! START
 
   write(30,'(A)')'Ngspice template file for GGI_TLM - ngspice linked simulation'
@@ -76,6 +78,23 @@ integer :: ngspice_model_internal_node
     write(30,'(A)')'* Model to be included in the GGI_TLM simulation'
   
   end do ! next ngspice node linked to GGI_TLM
+
+! Additional text from the GGI_TLM_create_PCB_simulation_model input file
+
+10  read(10,'(A)',END=1000,ERR=1000)line
+  
+    if(  index(line,'* START of Ngspice').EQ.0 ) GOTO 10    
+
+20  read(10,'(A)',END=1000,ERR=1000)line
+  
+    if ( index(line,'* END of Ngspice').EQ.0 ) then
+    
+      write(30,'(A)')trim(line)   
+      GOTO 20
+      
+    end if
+    
+1000 CONTINUE
   
   write(30,'(A)')'*'
   write(30,'(A)')'* Control for transient simulation'

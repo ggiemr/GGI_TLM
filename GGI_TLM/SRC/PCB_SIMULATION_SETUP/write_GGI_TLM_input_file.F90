@@ -42,6 +42,7 @@ IMPLICIT NONE
 ! local variables
 
 integer :: i,ii
+character(LEN=256) :: line
 
 ! START
 
@@ -98,7 +99,7 @@ integer :: i,ii
       
   end do ! next surface
 
-! surface materials
+! surface materials* START of GGI_TLM
 
   write(20,*)
   write(20,'(A)')'Surface_material_list'
@@ -154,6 +155,22 @@ integer :: i,ii
 
 ! volume materials
 
+! Additional text from the GGI_TLM_create_PCB_simulation_model input file
+
+10  read(10,'(A)',END=1000,ERR=1000)line
+  
+    if( index(line,'* START of GGI_TLM').EQ.0 ) GOTO 10    
+
+20  read(10,'(A)',END=1000,ERR=1000)line
+  
+    if ( index(line,'* END of GGI_TLM').EQ.0 ) then
+    
+      write(20,'(A)')trim(line)
+      GOTO 20
+    
+    end if
+    
+1000 CONTINUE
 
   write(*,*)'FINISHED: write_GGI_TLM_input_file'
 
