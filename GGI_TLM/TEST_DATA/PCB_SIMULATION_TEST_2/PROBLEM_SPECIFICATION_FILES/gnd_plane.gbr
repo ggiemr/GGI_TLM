@@ -1,0 +1,9 @@
+G04 Ground plane for three_conductor_PCB*
+%FSLAX32Y32*%
+%MOMM*%
+%ADD10R,1.00X20.0*%
+D10*
+G01*
+X-05500Y00000D02*
+X05500Y00000D01*
+M02*

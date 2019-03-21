@@ -41,12 +41,52 @@ IMPLICIT NONE
 
 ! local variables
 
+character(LEN=256) :: material_name
+
+real :: dxmin,dxmax,dymin,dymax,dzmin,dzmax
+
 integer :: i
 
 ! START
 
   read(10,*)n_dielectrics
+  
+  do i=1,n_dielectrics
+    
+    read(10,*)dxmin,dymin,dzmin,dxmax,dymax,dzmax
+  
+    read(10,'(A)')material_name
 
+! Add the dielectric block to the volume geometry list
+
+    n_volumes=n_volumes+1
+    
+    if(n_volumes.GT.max_volumes) then
+    
+      write(*,*)'ERROR in GGI_TLM_create_PCB_simulation_model: maximum number of volumes exceeded'
+      write(*,*)'Maximum number of volumes is set to ',max_volumes
+      write(*,*)'in /GGI_TLM/SRC/TLM_MODULES/PCB_simulation_setup_modules.F90'
+      STOP 1
+    
+    end if
+
+    volume_type(n_volumes)=volume_type_rectangular_block2
+    
+    volume_parameters(n_volumes,1)=dxmin
+    volume_parameters(n_volumes,2)=dymin
+    volume_parameters(n_volumes,3)=dzmin
+    volume_parameters(n_volumes,4)=dxmax
+    volume_parameters(n_volumes,5)=dymax
+    volume_parameters(n_volumes,6)=dzmax
+    
+! Volume material stuff
+
+    n_volume_materials=n_volume_materials+1
+    volume_material_type(n_volume_materials)=volume_material_type_DISPERSIVE
+    volume_material_name(n_volume_materials)=trim(material_name)
+    volume_material_to_volume_list(n_volume_materials)=n_volumes         
+
+  end do
 
 RETURN  
   

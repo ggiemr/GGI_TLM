@@ -92,7 +92,7 @@ character(LEN=256) :: line
    
     else
     
-      write(*,*)'ERROR: Unknown surface geometry type',surface_type_stl
+      write(*,*)'ERROR: Unknown surface geometry type',surface_type(i)
       STOP 1
       
     end if
@@ -153,7 +153,56 @@ character(LEN=256) :: line
 
 ! volume geometry
 
-! volume materials
+  write(20,*)
+  write(20,'(A)')'volume_list'
+  write(20,'(I6,A22)')n_volumes,'  # Number of volumes'
+  
+  do i=1,n_volumes
+    
+    write(20,'(I6,A18)')i,'  # volume NUMBER'
+  
+    if (volume_type(i).EQ.volume_type_rectangular_block2) then
+    
+      write(20,'(A)')'Rectangular_block2'
+      write(20,'(6ES16.6)')(volume_parameters(i,ii),ii=1,6)
+      write(20,'(3ES16.6)')0.0,0.0,0.0
+      write(20,'(3ES16.6)')0.0,0.0,0.0
+         
+    else
+    
+      write(*,*)'ERROR: Unknown volume geometry type',volume_type(i)
+      STOP 1
+      
+    end if
+      
+  end do ! next volume
+
+! volume materials* START of GGI_TLM
+
+  write(20,*)
+  write(20,'(A)')'volume_material_list'
+  write(20,'(I6,A31)')n_volume_materials,'  # Number of volume materials'
+  
+  do i=1,n_volume_materials
+  
+    write(20,'(I6,A27)')i,'  # volume MATERIAL NUMBER'
+    
+    if ( volume_material_type(i).EQ.volume_material_type_DISPERSIVE ) then
+    
+      write(20,'(A10)')'DISPERSIVE'
+      write(20,'(A)')trim(volume_material_name(i))
+      write(20,'(A)')'     1  # Number of volumes'
+      write(20,'(I6,A18)')volume_material_to_volume_list(i),'  # volume number'
+    
+    else
+    
+      write(*,*)'ERROR: unknown volume material type:',volume_material_type(i)
+      STOP 1
+       
+    end if
+    
+  end do ! next volume material
+
 
 ! Additional text from the GGI_TLM_create_PCB_simulation_model input file
 

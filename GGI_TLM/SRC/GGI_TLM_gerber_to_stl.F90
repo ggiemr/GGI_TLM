@@ -624,7 +624,7 @@ character(len=256) :: opfilename
   write(*,*)''
   write(*,*)'stl file generated with dl set to ',dl,'m'
   write(*,*)''
-  write(*,*)'If the resolution of the stl file is not sufficient then r-run'    
+  write(*,*)'If the resolution of the stl file is not sufficient then re-run'    
   write(*,*)'with dl set as the second command line argument e.g.'    
   write(*,*)'GGI_TLM_gerber_to_stl ',trim(ipfilename),' ',dl/2d0
   write(*,*)'_______________________________________________________________'

@@ -42,10 +42,35 @@ IMPLICIT NONE
 ! local variables
 
 integer :: i
+real*8  :: vxmin,vymin,vzmin        ! minimum coordinates of via
+real*8  :: vxmax,vymax,vzmax        ! maximum coordinates of via
 
 ! START
 
+  write(*,*)'CALLED: add_vias'
+
   read(10,*)n_vias
+  
+  do i=1,n_vias
+   
+    read(10,*)vxmin,vymin,vzmin,vzmax 
+    
+    vxmax=vxmin
+    vymax=vymin
+    
+    write(*,*)'min coordinate of via:'
+    write(*,*)vxmin,vymin,vzmin
+    write(*,*)'max coordinate of via:'
+    write(*,*)vxmax,vymax,vzmax
+
+! Set the cells in the mesh. Note that we offset the z coordinates slightly in case the z value is on a cell face 
+! this leads to ambiguity as to which cell the end point is situated in
+
+    CALL set_terminal_connection_cells(vxmin,vymin,vzmin+dl/20,vxmax,vymax,vzmax-dl/20)
+
+  end do
+
+  write(*,*)'FINISHED: add_vias'
 
 RETURN  
   

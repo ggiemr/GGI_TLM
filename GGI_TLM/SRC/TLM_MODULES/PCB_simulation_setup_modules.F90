@@ -101,12 +101,19 @@ Character(LEN=34)  :: terminal_connection_geometry_filename='component_terminal_
 integer,parameter  :: max_volumes=100
 integer            :: n_volumes
 integer            :: volume_type(max_volumes)
-
 integer,parameter  :: volume_type_rectangular_block2=1
+real*8             :: volume_parameters(max_volumes,1:6)
 
 
 ! Volume material stuff
 
+integer             :: n_volume_materials
+
+integer             :: volume_material_type(max_volumes)
+integer,parameter   :: volume_material_type_DISPERSIVE=1
+
+character(LEN=256)  :: volume_material_name(max_volumes)
+integer             :: volume_material_to_volume_list(max_volumes)         
 
 ! Dielectric stuff
 
@@ -138,6 +145,15 @@ integer :: ngspice_n_nodes(max_lumped_components)
 integer :: ngspice_node_list(max_lumped_components,max_ngspice_nodes)
 
 real*8  :: z_position(max_lumped_components)
+
+integer :: package_type(max_lumped_components)
+
+integer,parameter :: package_type_none=0
+integer,parameter :: package_type_rectangular_block=1
+integer,parameter :: package_type_cylinder=2
+
+real*8  :: package_parameters(max_lumped_components,1:6)
+real*8  :: package_orientation(max_lumped_components)
 
 ! additional component stuff
 

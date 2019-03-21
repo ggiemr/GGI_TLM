@@ -85,7 +85,7 @@ read(10,*)n_gerber_files
 write(*,*)'Number of gerber files=',n_gerber_files
 
 if (n_gerber_files.GT.max_gerber_files) then
-  write(*,*)'ERROR in GGI_TLM_create_PCB_simulation_model: maximum number of gerber files exceede'
+  write(*,*)'ERROR in GGI_TLM_create_PCB_simulation_model: maximum number of gerber files exceeded'
   write(*,*)'Maximum number of gerber files is set to ',max_gerber_files
   write(*,*)'in /GGI_TLM/SRC/TLM_MODULES/PCB_simulation_setup_modules.F90'
   STOP
@@ -125,8 +125,8 @@ do i=1,n_gerber_files
   if (n_PEC_surfaces.EQ.0) then
     n_surface_materials=n_surface_materials+1  
     surface_material_type(n_surface_materials)=surface_material_type_PEC
-    n_PEC_surfaces=n_PEC_surfaces+1
   end if
+  n_PEC_surfaces=n_PEC_surfaces+1
   PEC_surface_list(n_PEC_surfaces)=n_surfaces
   PEC_surface_orientation_list(n_PEC_surfaces)=1
 end do

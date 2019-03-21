@@ -111,7 +111,7 @@ integer :: dslot
 
 ! set the slots in the heatsink to free space
 
-      wr=(lx-nslots*wr)/dble(nslots+1)
+      wr=(lx-nslots*ws)/dble(nslots+1)
       if (wr.LT.0d0) then
         write(*,*)'ERROR: width of ribs in heatsink is less than zero'
         write(*,*)'wr=',wr

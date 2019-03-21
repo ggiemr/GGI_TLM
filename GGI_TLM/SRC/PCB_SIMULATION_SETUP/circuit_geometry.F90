@@ -91,33 +91,33 @@ integer :: i
   ix=ix1
   iy=iy1
   iz=iz1
-  write(*,*)'Setting cell:',ix,iy,iz
+  write(*,*)'Setting first cell:',ix,iy,iz
   material_mesh(centre,ix,iy,iz)=1
   
 ! Move in the z direction first
 
   do i=1,nz
     iz=iz+dz
-    write(*,*)'Setting cell:',ix,iy,iz
+!    write(*,*)'Setting cell:',ix,iy,iz
     material_mesh(centre,ix,iy,iz)=1
   end do
 
 ! move in y
   do i=1,ny
     iy=iy+dy
-    write(*,*)'Setting cell:',ix,iy,iz
+!    write(*,*)'Setting cell:',ix,iy,iz
     material_mesh(centre,ix,iy,iz)=1
   end do
 
 ! move in x
   do i=1,nx
     ix=ix+dx
-    write(*,*)'Setting cell:',ix,iy,iz
-    material_mesh(centre,ix,iy,iz)=1
+!    write(*,*)'Setting cell:',ix,iy,iz
+!    material_mesh(centre,ix,iy,iz)=1
   end do
   
 ! set the last cell
-    write(*,*)'Setting cell:',ix2,iy2,iz2
+    write(*,*)'Setting last cell:',ix2,iy2,iz2
   material_mesh(centre,ix2,iy2,iz2)=1
 
 RETURN  

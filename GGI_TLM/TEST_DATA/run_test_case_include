@@ -50,6 +50,7 @@ GGI_TLM_memory_usage.txt \
 *.fd_* \
 *.jpg \
 *.msh \
+*.stl \
 *.avi \
 *.info \
 IELF_value.out \
