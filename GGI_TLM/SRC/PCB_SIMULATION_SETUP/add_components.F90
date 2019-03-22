@@ -177,6 +177,20 @@ character(LEN=256) :: material_name
     
 ! calculate the position of the centre of the active element face
       sz=z_position(i)
+      
+! work out the best direction for the internal layout of the device based on the largest dimension between terminals
+      dz=0                 ! Assume the active elements are normal to z
+      dx=0
+      dy=0
+      
+      if (lx.GT.ly) then
+        dx=1
+      else
+        dy=1
+      end if 
+      
+      write(*,*)'Component direction dx,dy,dz:'
+      write(*,*)dx,dy,dz
 
 ! Add the active element, single TLM face patch to the surface list
   
@@ -203,7 +217,13 @@ character(LEN=256) :: material_name
     
       surface_material_to_surface_list(n_surface_materials)=n_surfaces
       SPICE_node_list(n_surface_materials)=ngspice_node_list(i,1)     
-      SPICE_port_direction_list(n_surface_materials)='-y'         ! ****** PORT DIRECTION TO BE GENERALISED ******
+
+
+      if (dy.NE.0) then
+        SPICE_port_direction_list(n_surface_materials)='-y'        ! ****** PORT DIRECTION TO BE GENERALISED ******
+      else
+        SPICE_port_direction_list(n_surface_materials)='-x'        ! ****** PORT DIRECTION TO BE GENERALISED ******
+      end if  
 
 ! Set the cells from each terminal to the active element cell to PEC
       do ii=1,ngspice_n_terminals(i)

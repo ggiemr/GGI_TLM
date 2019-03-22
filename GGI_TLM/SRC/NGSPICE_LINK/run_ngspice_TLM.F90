@@ -152,7 +152,7 @@ open(unit=ngspice_circuit_file_unit,file='Spice_circuit.cir')
 
 10 CONTINUE
   read(ngspice_TEMPLATE_circuit_file_unit,'(A256)',ERR=9010,END=1000)line
-  
+    
 ! look for the string '#Z0_TLM' and replace with Z0
   CALL replace_in_string(line,'#Z0_TLM',Z0_string)
   
@@ -163,7 +163,7 @@ open(unit=ngspice_circuit_file_unit,file='Spice_circuit.cir')
   CALL replace_in_string(line,'#tmax_ngspice',tmax_string)
   
   write(ngspice_circuit_file_unit,'(A)')trim(line)
-  
+    
   GOTO 10  ! read next line
 
 1000 CONTINUE ! jump here when we have reached the end of the input file

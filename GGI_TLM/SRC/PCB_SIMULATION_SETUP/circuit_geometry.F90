@@ -86,6 +86,7 @@ integer :: i
   write(*,*)'ix1=',ix1,' iy1=',iy1,' iz1=',iz1
   write(*,*)'ix2=',ix2,' iy2=',iy2,' iz2=',iz2
   write(*,*)'dx =',dx, ' dy =',dy ,' dz =',dz
+  write(*,*)'nx =',nx, ' ny =',ny ,' nz =',nz
   
 ! set the first cell
   ix=ix1
@@ -113,7 +114,7 @@ integer :: i
   do i=1,nx
     ix=ix+dx
 !    write(*,*)'Setting cell:',ix,iy,iz
-!    material_mesh(centre,ix,iy,iz)=1
+    material_mesh(centre,ix,iy,iz)=1
   end do
   
 ! set the last cell

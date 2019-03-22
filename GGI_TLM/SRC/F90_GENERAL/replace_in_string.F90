@@ -40,6 +40,7 @@ do while (found_pos.NE.0)
   
   line=''
   line=opline
+  len_line=len(trim(line))
   
   found_pos=index(line,trim(find_string))
 
