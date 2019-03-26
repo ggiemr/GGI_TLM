@@ -73,7 +73,9 @@ real*8             :: surface_z_offset(max_surfaces)
 real*8             :: surface_parameters(max_surfaces,1:6)
 
 integer,parameter  :: surface_type_stl=1
-integer,parameter  :: surface_type_zplane=2
+integer,parameter  :: surface_type_xplane=2
+integer,parameter  :: surface_type_yplane=3
+integer,parameter  :: surface_type_zplane=4
 
 ! Surface material stuff
 

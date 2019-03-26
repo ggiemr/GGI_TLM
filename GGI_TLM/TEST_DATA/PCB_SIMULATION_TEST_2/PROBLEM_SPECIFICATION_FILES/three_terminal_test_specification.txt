@@ -25,6 +25,7 @@ two_port_model  # Component type for component 1
 rectangular      # package type
 -0.0015 -0.006 0.0   0.0015   0.006 0.015              # package parameters. Material filename follows (without .vmat extension)
 component_case
+0          # Number of PEC surfaces
 2      # COMPONENT NUMBER
 two_port_model  # Component type for component 2
 2      # Number of ports
@@ -37,10 +38,13 @@ two_port_model  # Component type for component 2
 rectangular      # package type
 -0.0015 -0.006 0.0   0.0015   0.006 0.015              # package parameters. Material filename follows (without .vmat extension)
 component_case
+0          # Number of PEC surfaces
 1        # Number of additional components (heatsinks etc)
 heatsink
 -0.05 -0.01 -0.015    0.05 0.01 -0.0015  # outer dimensions of the heatsink
 12                                      # number of slots
+y                                        # slot width direction
+zmin                                     # slot depth direction (face from which slots are cut)
 0.006                                   # width of slots 
 0.01                                    # depth of slots
 * START of GGI_TLM input file text *

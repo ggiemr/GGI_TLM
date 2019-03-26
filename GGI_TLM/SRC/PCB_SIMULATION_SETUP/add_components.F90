@@ -55,8 +55,15 @@ integer :: dx,dy,dz        ! direction of multi-port device
 real*8  :: sxp(5),syp(5),szp(5)     ! coordinates of two port device cell centres
 integer :: ixp(5),iyp(5),izp(5)     ! centre cells of two port device cell centres
 
+integer :: nterminals
+real*8  :: term_cx(3),term_cy(3),term_cz(3) ! coordinates of device internal termination cells
+
 integer :: component_number
 character(LEN=256) :: line
+
+integer            :: nPEC
+character(LEN=4)   :: PEC_face
+integer            :: connecting_terminal
 
 character(LEN=256) :: material_name
 
@@ -174,6 +181,8 @@ character(LEN=256) :: material_name
     if (ngspice_n_terminals(i).EQ.2) then
     
 ! **** TWO TERMINAL DEVICE ****
+
+      nterminals=2
     
 ! calculate the position of the centre of the active element face
       sz=z_position(i)
@@ -217,12 +226,19 @@ character(LEN=256) :: material_name
     
       surface_material_to_surface_list(n_surface_materials)=n_surfaces
       SPICE_node_list(n_surface_materials)=ngspice_node_list(i,1)     
-
+      
+      term_cx(1:2)=sx    ! set internal terminal coordinates to the centre for now. offsets to be added...
+      term_cy(1:2)=sy
+      term_cz(1:2)=sz
 
       if (dy.NE.0) then
         SPICE_port_direction_list(n_surface_materials)='-y'        ! ****** PORT DIRECTION TO BE GENERALISED ******
+        term_cy(1)=term_cy(1)-dl
+        term_cy(2)=term_cy(2)+dl
       else
         SPICE_port_direction_list(n_surface_materials)='-x'        ! ****** PORT DIRECTION TO BE GENERALISED ******
+        term_cx(1)=term_cx(1)-dl
+        term_cx(2)=term_cx(2)+dl
       end if  
 
 ! Set the cells from each terminal to the active element cell to PEC
@@ -244,6 +260,8 @@ character(LEN=256) :: material_name
     else if (ngspice_n_terminals(i).EQ.3) then
     
 ! **** THREE TERMINAL DEVICE ****
+
+      nterminals=3
     
 ! calculate the position of the centre of the device
       sz=z_position(i)
@@ -348,7 +366,11 @@ character(LEN=256) :: material_name
         else if (ii.eq.3) then
           cell=5
         end if
-    
+        
+        term_cx(ii)=sxp(cell)
+        term_cy(ii)=syp(cell)
+        term_cz(ii)=szp(cell)
+
         write(*,*)'Add terminal connection cells:'
         write(*,'(3es16.6)')ngspice_terminal_list(i,ii,1),ngspice_terminal_list(i,ii,2),ngspice_terminal_list(i,ii,3)
         write(*,'(3es16.6)')sxp(cell),syp(cell),szp(cell)
@@ -406,6 +428,107 @@ character(LEN=256) :: material_name
       volume_parameters(n_volumes,4)=package_parameters(i,4)+sx
       volume_parameters(n_volumes,5)=package_parameters(i,5)+sy
       volume_parameters(n_volumes,6)=package_parameters(i,6)+sz
+      
+! read the number of PEC surfaces on the package
+      
+      read(10,*)nPEC
+      
+      do ii=1,nPEC
+      
+        n_surfaces=n_surfaces+1
+        
+        surface_type(n_surfaces)=surface_type_zplane
+                
+        surface_parameters(n_surfaces,1)=package_parameters(i,1)+sx
+        surface_parameters(n_surfaces,2)=package_parameters(i,2)+sy
+        surface_parameters(n_surfaces,3)=package_parameters(i,3)+sz 
+        surface_parameters(n_surfaces,4)=package_parameters(i,4)+sx
+        surface_parameters(n_surfaces,5)=package_parameters(i,5)+sy
+        surface_parameters(n_surfaces,6)=package_parameters(i,6)+sz 
+
+! Add the active element material of type 'SPICE' to the surface material list
+
+        n_surface_materials=n_surface_materials+1  
+    
+        surface_material_type(n_surface_materials)=surface_material_type_PEC 
+        surface_material_to_surface_list(n_surface_materials)=n_surfaces
+
+! read the surface name and the port number to connect to       
+        read(10,'(A)')line
+        
+        PEC_face(1:4)=line(1:4)
+        
+        if      (PEC_face(1:4).EQ.'xmin') then
+        
+          surface_type(n_surfaces)=surface_type_xplane
+          surface_parameters(n_surfaces,4)=surface_parameters(n_surfaces,1)  ! set xmax to xmin
+          
+        else if (PEC_face(1:4).EQ.'xmax') then
+        
+          surface_type(n_surfaces)=surface_type_xplane
+          surface_parameters(n_surfaces,1)=surface_parameters(n_surfaces,4)  ! set xmin to xmax
+        
+        else if (PEC_face(1:4).EQ.'ymin') then
+        
+          surface_type(n_surfaces)=surface_type_yplane
+          surface_parameters(n_surfaces,5)=surface_parameters(n_surfaces,2)  ! set ymax to ymin
+        
+        else if (PEC_face(1:4).EQ.'ymax') then
+        
+          surface_type(n_surfaces)=surface_type_yplane
+          surface_parameters(n_surfaces,2)=surface_parameters(n_surfaces,5)  ! set ymin to ymax
+        
+        else if (PEC_face(1:4).EQ.'zmin') then
+        
+          surface_type(n_surfaces)=surface_type_zplane
+          surface_parameters(n_surfaces,6)=surface_parameters(n_surfaces,3)  ! set zmax to zmin
+        
+        else if (PEC_face(1:4).EQ.'zmax') then
+        
+          surface_type(n_surfaces)=surface_type_zplane
+          surface_parameters(n_surfaces,3)=surface_parameters(n_surfaces,6)  ! set zmin to zmax
+        
+        else
+        
+          write(*,*)'ERROR: unknown PEC face:',PEC_face
+          STOP 1
+          
+        end if
+        
+        line(1:4)='    '
+        read(line,*,ERR=9000)connecting_terminal
+        
+        if ( (connecting_terminal.LT.0).OR.(connecting_terminal.GT.nterminals) ) then
+          write(*,*)'ERROR: connecting terminal number incorrect for the device'
+          write(*,*)'Number of terminals on device=',nterminals
+          write(*,*)'Connecting terminal          =',connecting_terminal
+        end if
+        
+        if (connecting_terminal.GT.0) then
+        
+          if      ( (PEC_face(1:4).EQ.'xmin').OR.(PEC_face(1:4).EQ.'xmax') ) then
+        
+            CALL set_terminal_connection_cells(  &
+              surface_parameters(n_surfaces,1),term_cy(connecting_terminal),term_cz(connecting_terminal)    &
+             ,term_cx(connecting_terminal),term_cy(connecting_terminal),term_cz(connecting_terminal)      )
+                                             
+          else if ( (PEC_face(1:4).EQ.'ymin').OR.(PEC_face(1:4).EQ.'ymax') ) then
+        
+            CALL set_terminal_connection_cells(  &
+               term_cx(connecting_terminal),surface_parameters(n_surfaces,2),term_cz(connecting_terminal)    &
+              ,term_cx(connecting_terminal),term_cy(connecting_terminal),term_cz(connecting_terminal) )
+                                             
+          else if ( (PEC_face(1:4).EQ.'zmin').OR.(PEC_face(1:4).EQ.'zmax') ) then
+        
+            CALL set_terminal_connection_cells(  &
+               term_cx(connecting_terminal),term_cy(connecting_terminal),surface_parameters(n_surfaces,3)    &
+               ,term_cx(connecting_terminal),term_cy(connecting_terminal),term_cz(connecting_terminal) )
+        
+          end if 
+        
+        end if 
+          
+      end do ! next PEC surface
     
 ! Volume material stuff
 
@@ -440,7 +563,10 @@ character(LEN=256) :: material_name
   surface_material_type(n_surface_materials)=surface_material_type_PEC  
   surface_material_to_surface_list(n_surface_materials)=n_surfaces
   
-
 RETURN  
+
+9000 write(*,*)'ERROR reading the connecting terminal number for the PEC face'
+     write(*,*)'LINE:',trim(line)
+     STOP 1
   
 END SUBROUTINE add_components

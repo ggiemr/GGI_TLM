@@ -29,6 +29,6 @@ Rl2      2002   0   100.0
 
 *
 * Control for transient simulation
-.TRAN #dt_ngspice  #tmax_ngspice  #dt_ngspice
+.TRAN #dt_ngspice  #tmax_ngspice  #dt_ngspice  UIC
 *
 .END

@@ -59,6 +59,12 @@ PEC
      4  # Surface number
      1  # Surface orientation list
 
+volume_list
+     0   # Number of volumes
+
+volume_material_list
+     0   # Number of volume materials
+
 ngspice_node_output_list
 2   # number of ngspice output nodes
 1   # NGSPICE OUTPUT NUMBER

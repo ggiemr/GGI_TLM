@@ -83,6 +83,20 @@ character(LEN=256) :: line
       write(20,'(3ES16.6)')0.0,0.0,0.0
       write(20,'(3ES16.6)')0.0,0.0,surface_z_offset(i)
       
+    else if (surface_type(i).EQ.surface_type_xplane) then
+    
+      write(20,'(A)')'xplane'
+      write(20,'(6ES16.6)')(surface_parameters(i,ii),ii=1,6)
+      write(20,'(3ES16.6)')0.0,0.0,0.0
+      write(20,'(3ES16.6)')0.0,0.0,0.0
+      
+    else if (surface_type(i).EQ.surface_type_yplane) then
+    
+      write(20,'(A)')'yplane'
+      write(20,'(6ES16.6)')(surface_parameters(i,ii),ii=1,6)
+      write(20,'(3ES16.6)')0.0,0.0,0.0
+      write(20,'(3ES16.6)')0.0,0.0,0.0
+      
     else if (surface_type(i).EQ.surface_type_zplane) then
     
       write(20,'(A)')'zplane'

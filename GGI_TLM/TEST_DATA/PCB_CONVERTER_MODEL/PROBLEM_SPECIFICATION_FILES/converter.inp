@@ -58,28 +58,28 @@ PEC
      2  # SURFACE MATERIAL NUMBER
 SPICE
      1  # Ngspice node number
--y  # Port direction
+-x  # Port direction
      1  # Number of surfaces
      3  # Surface number
      1  # Surface orientation list
      3  # SURFACE MATERIAL NUMBER
 SPICE
      1  # Ngspice node number
--y  # Port direction
+-x  # Port direction
      1  # Number of surfaces
      4  # Surface number
      1  # Surface orientation list
      4  # SURFACE MATERIAL NUMBER
 SPICE
      1  # Ngspice node number
--y  # Port direction
+-x  # Port direction
      1  # Number of surfaces
      5  # Surface number
      1  # Surface orientation list
      5  # SURFACE MATERIAL NUMBER
 SPICE
      1  # Ngspice node number
--y  # Port direction
+-x  # Port direction
      1  # Number of surfaces
      6  # Surface number
      1  # Surface orientation list
