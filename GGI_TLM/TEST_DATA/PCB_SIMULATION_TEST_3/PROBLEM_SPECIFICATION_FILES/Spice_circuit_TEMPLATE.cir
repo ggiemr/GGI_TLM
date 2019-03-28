@@ -7,10 +7,10 @@ Ngspice template file for GGI_TLM - ngspice linked simulation
  Rtlm1        1001           1  #Z0_TLM
 * 
 * Model to be included in the GGI_TLM simulation
-* GGI_TLM link port    2 using nodes    2 and   0
+* GGI_TLM link port    2 using nodes    2 and   1
 *
 * Voltage source with series resistance: equivalent circuit of TLM link
- Vtlm2        1002           0  DC  0.0
+ Vtlm2        1002           1  DC  0.0
  Rtlm2        1002           2  #Z0_TLM
 * 
 * Model to be included in the GGI_TLM simulation
@@ -21,10 +21,10 @@ Ngspice template file for GGI_TLM - ngspice linked simulation
  Rtlm3        1003           3  #Z0_TLM
 * 
 * Model to be included in the GGI_TLM simulation
-* GGI_TLM link port    4 using nodes    4 and   0
+* GGI_TLM link port    4 using nodes    4 and   3
 *
 * Voltage source with series resistance: equivalent circuit of TLM link
- Vtlm4        1004           0  DC  0.0
+ Vtlm4        1004           3  DC  0.0
  Rtlm4        1004           4  #Z0_TLM
 * 
 * Model to be included in the GGI_TLM simulation
@@ -37,7 +37,7 @@ Vs1     2001   0   EXP( 0.0     1.0    0.000000E+00    2.000000E-010    1.200000
 * Model to be included in the GGI_TLM simulation for port 2, connected to node 2
 * in this case a voltage source with series resistance
 Rs2     2002   2   100.0
-Vs2     2002   0   EXP( 0.0     1.0    0.000000E+00    2.000000E-010    1.200000E-09    2.000000E-010 )
+Vs2     2002   1   EXP( 0.0     1.0    0.000000E+00    2.000000E-010    1.200000E-09    2.000000E-010 )
 *
 *
 * Model to be included in the GGI_TLM simulation for port 3, connected to node 3
@@ -48,7 +48,7 @@ Rl3      2003   0   100.0
 * Model to be included in the GGI_TLM simulation for port 4, connected to node 4
 * in this case a diode with series resistance
 Diode4   2004   4   Dmod
-Rl4      2004   0   100.0
+Rl4      2004   3   100.0
 *
 .model DMOD D ( is=1e-12 )
 *

@@ -1,0 +1,5 @@
+cp source_voltage1.tout PROBLEM_SPECIFICATION_FILES/source_voltage1.tout_ref
+cp load_voltage1.tout PROBLEM_SPECIFICATION_FILES/load_voltage1.tout_ref
+cp source_voltage2.tout PROBLEM_SPECIFICATION_FILES/source_voltage2.tout_ref
+cp load_voltage2.tout PROBLEM_SPECIFICATION_FILES/load_voltage2.tout_ref
+

@@ -47,7 +47,7 @@ character*20 :: GGI_TLM_voltage_source_name
 character*20 :: GGI_TLM_resistance_name
 
 integer :: ngspice_reference_node
-integer :: ngspice_link_node
+integer :: ngspice_link_node1,ngspice_link_node2
 integer :: ngspice_model_internal_node
 
 character(LEN=256) :: line
@@ -59,25 +59,28 @@ character(LEN=256) :: line
   
   ngspice_reference_node=0
   
-  do i=1,tot_n_ngspice_nodes
+  do i=1,tot_n_ngspice_ports
   
-! ***** NEED TO KEEP TABS ON NGSPICE NODE NUMBERS - ASSUMED TO BE NUMBERED IN ORDER FOR NOW ****
-    ngspice_link_node=i
+! Each port is a link between Ngspice and GGI_TLM
+
+    ngspice_link_node1=ngspice_port_to_node_list(i,1)
+    ngspice_link_node2=ngspice_port_to_node_list(i,2)
+    
     ngspice_model_internal_node=1000+i
     
-    write(30,'(A28,I6)')'* GGI_TLM link through node ',i
+    write(30,'(A20,I4,A13,I4,A4,I4)')'* GGI_TLM link port ',i,' using nodes ',ngspice_link_node1,' and',ngspice_link_node2
     
     write(GGI_TLM_voltage_source_name,'(A4,I0)'),'Vtlm',i
     write(GGI_TLM_resistance_name,'(A4,I0)'),'Rtlm',i
     
     write(30,'(A)')'*'
     write(30,'(A)')'* Voltage source with series resistance: equivalent circuit of TLM link'
-    write(30,*)trim(GGI_TLM_voltage_source_name), ngspice_model_internal_node, ngspice_reference_node, ' DC  0.0'
-    write(30,*)trim(GGI_TLM_resistance_name)    , ngspice_model_internal_node, ngspice_link_node,      ' #Z0_TLM'
+    write(30,*)trim(GGI_TLM_voltage_source_name), ngspice_model_internal_node, ngspice_link_node2, ' DC  0.0'
+    write(30,*)trim(GGI_TLM_resistance_name)    , ngspice_model_internal_node, ngspice_link_node1,      ' #Z0_TLM'
     write(30,'(A)')'* '
     write(30,'(A)')'* Model to be included in the GGI_TLM simulation'
   
-  end do ! next ngspice node linked to GGI_TLM
+  end do ! next GGI_TLM port linked to ngspice
 
 ! Additional text from the GGI_TLM_create_PCB_simulation_model input file
 

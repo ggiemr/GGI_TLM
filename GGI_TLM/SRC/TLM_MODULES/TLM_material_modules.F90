@@ -134,7 +134,8 @@ TYPE::surface_material_type
   TYPE(Sfilter)		:: Diode_Cj_S
   TYPE(Zfilter)		:: Diode_Cj_Z
   
-  integer		:: Spice_circuit_file_node
+  integer		:: Spice_circuit_file_port
+  integer		:: Spice_circuit_file_nodes(2)
   integer		:: Spice_port_sign
   character*2		:: Spice_port_direction
    

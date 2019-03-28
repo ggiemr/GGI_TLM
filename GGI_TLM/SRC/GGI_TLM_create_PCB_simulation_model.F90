@@ -62,7 +62,8 @@ character(LEN=256) :: opfilename
   n_volumes=0
   n_volume_materials=0
   tot_n_ngspice_nodes=0
- 
+  tot_n_ngspice_ports=0
+  
 !1a. Open the file containing the PCB simulation specifications
 
   write(*,*)'Enter the input filename for the PCB simulation specifications'

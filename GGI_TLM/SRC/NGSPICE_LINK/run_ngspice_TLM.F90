@@ -39,9 +39,10 @@ USE iso_c_binding
 IMPLICIT NONE
 
   interface
-    function ngspice_wrapper_load_circuit (  ) bind ( c )
+    function ngspice_wrapper_load_circuit ( ngspice_error_flag ) bind ( c )
       use iso_c_binding       
       integer ( c_int ) :: ngspice_wrapper_load_circuit
+      logical (C_bool)  :: ngspice_error_flag
     end function ngspice_wrapper_load_circuit
   end interface
 
@@ -101,6 +102,7 @@ integer ( c_int ) :: ngspice_node_list(100)
 real ( c_double ) :: V_ngspice_array_F90(100)
 integer :: ngspice_node_to_V_ngspice_array_list(100)
 logical :: set_ngspice_node_to_V_ngspice_array_list
+logical (C_bool)  :: ngspice_error_flag
 
 real*8            :: t_eps
 
@@ -171,16 +173,26 @@ open(unit=ngspice_circuit_file_unit,file='Spice_circuit.cir')
 close(unit=ngspice_TEMPLATE_circuit_file_unit)
 close(unit=ngspice_circuit_file_unit)
 
-! Initialise the ngspice solution
+write(*,*)' Initialise the ngspice solution'
 
 ! The c function needs to be edited to include the following:
 ! TLM characteristic impedance
 ! TLM load circuit element(s)
 ! Transient solution tmax and timestep (.tran) 
 
-istat = ngspice_wrapper_load_circuit( )
+ngspice_error_flag=.FALSE.
 
-!write(*,*)'Exit status',istat
+istat = ngspice_wrapper_load_circuit( ngspice_error_flag )
+
+write(*,*)'Exit status',istat
+if(istat.NE.0) then
+  write(*,*)'ERROR initialising Ngspice solution, istat=',istat
+  STOP 1
+end if
+if (ngspice_error_flag) then
+  write(*,*)'ERROR found in circuit file'
+  STOP 1
+end if
 
 ! the number of nodes linking TLM and ngspice is not known until 
 ! the first initdata function call so set to zero for now
@@ -244,6 +256,11 @@ integer :: spice_node,i
   do while((ngspice_break_time-t_ngspice_F90).GT.t_eps) 
   
     istat = ngspice_wrapper_step(t_ngspice_F90,V_ngspice_F90,n_ngspice_nodes,ngspice_node_list,V_ngspice_array_F90)
+    
+    if (istat.NE.0) then
+      write(*,*)'ERROR stepping Ngspice solution'
+      STOP 1
+    end if
     
   end do
     

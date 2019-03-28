@@ -92,8 +92,9 @@ IMPLICIT NONE
   integer	:: sign,diode_filter_number
   
 ! Spice circuit simulation link update vcariables
-  real*8        :: Vspice
-  integer       :: spice_node
+  real*8        :: Vspice,Vspice1,Vspice2
+  integer       :: spice_node1,spice_node2
+  integer       :: spice_port
    
 ! Material update parameters  
   integer material_type
@@ -128,7 +129,7 @@ IMPLICIT NONE
   real*8	:: field(6)
   
 ! ngspice link variables
-  integer       :: opnode
+  integer       :: opnode1,opnode2
   
 ! Excitation parameters  
     

@@ -41,14 +41,16 @@ PEC
  1 # Surface orientation list
      2  # SURFACE MATERIAL NUMBER
 SPICE
-     1  # Ngspice node number
+     1  # Ngspice port number
+     1     0  # Ngspice node numbers
 -y  # Port direction
      1  # Number of surfaces
      2  # Surface number
      1  # Surface orientation list
      3  # SURFACE MATERIAL NUMBER
 SPICE
-     2  # Ngspice node number
+     2  # Ngspice port number
+     2     0  # Ngspice node numbers
 -y  # Port direction
      1  # Number of surfaces
      3  # Surface number

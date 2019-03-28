@@ -67,7 +67,7 @@ character*256	:: input_line
   
   if ( allocated( ngspice_output_nodes ) ) GOTO 9000
   
-  allocate ( ngspice_output_nodes(1:n_ngspice_output_nodes) )
+  allocate ( ngspice_output_nodes(1:n_ngspice_output_nodes,2) )
 
   do output_number=1,n_ngspice_output_nodes
   
@@ -75,8 +75,23 @@ character*256	:: input_line
     
     read(input_file_unit,*,err=9005)read_number
     if (read_number.ne.output_number) goto 9010
+          
+      read(input_file_unit,'(A)')input_line  ! read the nodes for this ngspice output
+      
+      ngspice_output_nodes(output_number,1)=0
+      ngspice_output_nodes(output_number,2)=0
+      
+      read(input_line,*,ERR=100)ngspice_output_nodes(output_number,1),  &
+                                ngspice_output_nodes(output_number,2)
+      GOTO 110   ! node numbers read OK
+      
+100   CONTINUE
+
+! Read only a single node for this port i.e. the reference node is node zero
+      read(input_line,*,ERR=9020)ngspice_output_nodes(output_number,1)
+
+110   CONTINUE
     
-    read(input_file_unit,*,err=9005)ngspice_output_nodes(output_number)
         
   end do ! next output point
 
@@ -95,6 +110,10 @@ character*256	:: input_line
      
 9010 CALL write_line('Error reading ngspice_output_node_list packet',0,.TRUE.)
      CALL write_line('output nodes should be numbered in order',0,.TRUE.)
+     CALL write_error_line(input_file_unit)
+     STOP
+
+9020 CALL write_line('Error reading the Ngspice output node numbers',0,.TRUE.)
      CALL write_error_line(input_file_unit)
      STOP
      

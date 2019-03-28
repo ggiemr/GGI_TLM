@@ -93,7 +93,8 @@ integer            :: n_PEC_surfaces
 integer            :: PEC_surface_list(max_PEC_surfaces)
 integer            :: PEC_surface_orientation_list(max_PEC_surfaces)
 
-integer            :: SPICE_node_list(max_surface_materials)         
+integer            :: SPICE_port_list(max_surface_materials)         
+integer            :: SPICE_node_list(max_surface_materials,2)         
 character(LEN=2)   :: SPICE_port_direction_list(max_surface_materials)
 
 Character(LEN=34)  :: terminal_connection_geometry_filename='component_terminal_connections.stl'
@@ -129,7 +130,8 @@ integer :: n_vias
 
 integer,parameter :: max_lumped_components=100
 integer,parameter :: max_ngspice_nodes=2
-integer,parameter :: max_ngspice_ports=3  ! number of nodes+1
+integer,parameter :: max_ngspice_terminals=3  ! number of nodes+1
+integer,parameter :: max_ngspice_ports=200    ! twice the number of lumped components
 
 integer,parameter :: component_type_one_port_model=1
 integer,parameter :: component_type_two_port_model=2
@@ -140,15 +142,20 @@ integer :: lumped_component_type(max_lumped_components)
 integer :: ngspice_n_ports(max_lumped_components)
 
 integer :: ngspice_n_terminals(max_lumped_components)
-real*8  :: ngspice_terminal_list(max_lumped_components,max_ngspice_ports,3)
+real*8  :: ngspice_terminal_list(max_lumped_components,max_ngspice_terminals,3)
 
 integer :: tot_n_ngspice_nodes
 integer :: ngspice_n_nodes(max_lumped_components)
-integer :: ngspice_node_list(max_lumped_components,max_ngspice_nodes)
+integer :: ngspice_node_list(max_lumped_components,max_ngspice_nodes,2)
+integer :: ngspice_port_list(max_lumped_components,max_ngspice_nodes)
 
 real*8  :: z_position(max_lumped_components)
 
 integer :: package_type(max_lumped_components)
+
+! port information
+integer :: tot_n_ngspice_ports
+integer :: ngspice_port_to_node_list(max_ngspice_ports,2)
 
 integer,parameter :: package_type_none=0
 integer,parameter :: package_type_rectangular_block=1

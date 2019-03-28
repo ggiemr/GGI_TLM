@@ -1,5 +1,5 @@
 Mesh_outer_boundary_dimension
-   -6.000000E-02    6.000000E-02   -2.000000E-02    2.000000E-02   -2.000000E-02    4.000000E-02
+   -6.000000E-02    6.000000E-02   -1.500000E-02    1.500000E-02   -1.000000E-02    1.000000E-02
 
 Mesh_cell_dimension
     1.000000E-03
@@ -66,7 +66,7 @@ SPICE
      3  # SURFACE MATERIAL NUMBER
 SPICE
      2  # Ngspice port number
-     2     0  # Ngspice node numbers
+     2     1  # Ngspice node numbers
 -y  # Port direction
      1  # Number of surfaces
      4  # Surface number
@@ -82,7 +82,7 @@ SPICE
      5  # SURFACE MATERIAL NUMBER
 SPICE
      4  # Ngspice port number
-     4     0  # Ngspice node numbers
+     4     3  # Ngspice node numbers
 -y  # Port direction
      1  # Number of surfaces
      6  # Surface number
@@ -94,51 +94,31 @@ PEC
      1  # Surface orientation list
 
 volume_list
-     3   # Number of volumes
+     1   # Number of volumes
      1   # volume NUMBER
 Rectangular_block2
    -5.500000E-02   -1.000000E-02    0.000000E+00    5.500000E-02    1.000000E-02    2.000000E-03
     0.000000E+00    0.000000E+00    0.000000E+00
     0.000000E+00    0.000000E+00    0.000000E+00
-     2   # volume NUMBER
-Rectangular_block2
-   -5.200000E-02   -5.500000E-03    4.500000E-03   -4.900000E-02    6.500000E-03    1.950000E-02
-    0.000000E+00    0.000000E+00    0.000000E+00
-    0.000000E+00    0.000000E+00    0.000000E+00
-     3   # volume NUMBER
-Rectangular_block2
-    4.900000E-02   -5.500000E-03    4.500000E-03    5.200000E-02    6.500000E-03    1.950000E-02
-    0.000000E+00    0.000000E+00    0.000000E+00
-    0.000000E+00    0.000000E+00    0.000000E+00
 
 volume_material_list
-     3   # Number of volume materials
+     1   # Number of volume materials
      1   # volume MATERIAL NUMBER
 DISPERSIVE
 FR4
      1  # Number of volumes
      1   # volume number
-     2   # volume MATERIAL NUMBER
-DISPERSIVE
-component_case
-     1  # Number of volumes
-     2   # volume number
-     3   # volume MATERIAL NUMBER
-DISPERSIVE
-component_case
-     1  # Number of volumes
-     3   # volume number
 
 ngspice_node_output_list
-4   # number of ngspice output nodes
-1   # NGSPICE OUTPUT NUMBER
-1   # ngspice node number
-2   # NGSPICE OUTPUT NUMBER
-3   # ngspice node number
-3   # NGSPICE OUTPUT NUMBER
-2   # ngspice node number
-4   # NGSPICE OUTPUT NUMBER
-4   # ngspice node number
+4    # number of ngspice output nodes
+1    # NGSPICE OUTPUT NUMBER
+1  0 # ngspice node numbers
+2    # NGSPICE OUTPUT NUMBER
+3  0  # ngspice node number
+3    # NGSPICE OUTPUT NUMBER
+2  1 # ngspice node numbers
+4    # NGSPICE OUTPUT NUMBER
+4  3 # ngspice node number
 
 Simulation_time
 1e-8

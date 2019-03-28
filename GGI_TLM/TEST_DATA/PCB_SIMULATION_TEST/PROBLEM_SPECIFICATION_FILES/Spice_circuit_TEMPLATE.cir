@@ -1,13 +1,13 @@
 Ngspice template file for GGI_TLM - ngspice linked simulation
 *
-* GGI_TLM link through node      1
+* GGI_TLM link port    1 using nodes    1 and   0
 *
 * Voltage source with series resistance: equivalent circuit of TLM link
  Vtlm1        1001           0  DC  0.0
  Rtlm1        1001           1  #Z0_TLM
 * 
 * Model to be included in the GGI_TLM simulation
-* GGI_TLM link through node      2
+* GGI_TLM link port    2 using nodes    2 and   0
 *
 * Voltage source with series resistance: equivalent circuit of TLM link
  Vtlm2        1002           0  DC  0.0

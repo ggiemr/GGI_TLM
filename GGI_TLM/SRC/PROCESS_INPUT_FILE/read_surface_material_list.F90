@@ -312,8 +312,27 @@ logical	:: file_exists
       surface_material_list(surface_material_number)%type=surface_material_type_SPICE
 
 ! read spice circuit model parameters      
-      read(input_file_unit,*,err=9005)surface_material_list(surface_material_number)%Spice_circuit_file_node
-				     
+
+! read the Ngspice node(s) for this surface 
+
+      read(input_file_unit,*,err=9005)surface_material_list(surface_material_number)%Spice_circuit_file_port
+      
+      read(input_file_unit,'(A)')input_line  ! read the nodes for this port
+      
+      surface_material_list(surface_material_number)%Spice_circuit_file_nodes(1)=0
+      surface_material_list(surface_material_number)%Spice_circuit_file_nodes(2)=0
+      
+      read(input_line,*,ERR=100)surface_material_list(surface_material_number)%Spice_circuit_file_nodes(1),  &
+                                surface_material_list(surface_material_number)%Spice_circuit_file_nodes(2)
+      GOTO 110   ! node numbers read OK
+      
+100   CONTINUE
+
+! Read only a single node for this port i.e. the reference node is node zero
+      read(input_line,*,ERR=9060)surface_material_list(surface_material_number)%Spice_circuit_file_nodes(1)
+
+110   CONTINUE
+    		     
       read(input_file_unit,'(A2)',err=9005)surface_material_list(surface_material_number)%Spice_port_direction
      
 ! check direction is OK
@@ -391,6 +410,9 @@ logical	:: file_exists
   
 9050 CALL write_line('Error reading surface_material_list_packet_data',0,.TRUE.)
      CALL write_line('Surface orientation should be +1 or -1',0,.TRUE.)
+     STOP
+
+9060 CALL write_line('Error reading the Ngspice node numbers for the surface',0,.TRUE.)
      STOP
     
 END SUBROUTINE read_surface_material_list

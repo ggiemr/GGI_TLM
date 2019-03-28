@@ -33,6 +33,7 @@ double v_dat[100];
 static bool has_break = false;
 void alterp(int sig);
 static bool errorflag = false;
+static bool errorflagcjs = false;
 
 #ifndef _MSC_VER
 pthread_t mainthread;
@@ -62,7 +63,7 @@ cieq(register char *p, register char *s);
 int
 ciprefix(const char *p, const char *s);
 
-int ngspice_wrapper_load_circuit(  )
+int ngspice_wrapper_load_circuit(  bool *error  )
 {
     int ret, i;
     char **circarray;
@@ -70,22 +71,24 @@ int ngspice_wrapper_load_circuit(  )
 #ifndef _MSC_VER
     mainthread = pthread_self();
 #endif // _MSC_VER    
-    
-    ret = ngSpice_Init(ng_getchar, ng_getstat, ng_exit,  ng_data, ng_initdata, ng_thread_runs, NULL);
 
+    printf("**  ngspice init          **\n");
+        
+    ret = ngSpice_Init(ng_getchar, ng_getstat, ng_exit,  ng_data, ng_initdata, ng_thread_runs, NULL);
+    
     printf("Init thread returned: %d\n", ret);
 
-    printf("****************************\n");
     printf("**  ngspice load circuit  **\n");
-    printf("****************************\n");
     
     ret = ngSpice_Command("source ./Spice_circuit.cir");
     
 #ifndef _MSC_VER
     mainthread = pthread_self();
 #endif // _MSC_VER    
+            
+    *error=errorflagcjs;
 
-    printf("\n** Finished: ngspice loadcircuit **\n");
+    printf("\n** Finished: ngspice loadcircuit. Error flag: %d  **\n",errorflagcjs);
         
     return ret;
 }
@@ -196,10 +199,16 @@ preceded by token stdout, same with stderr.*/
 int
 ng_getchar(char* outputreturn, int ident, void* userdata)
 {
-/*     printf("%s\n", outputreturn); */
+  /*   printf("%s\n", outputreturn);  */
+     
     /* setting a flag if an error message occurred */
-    if (ciprefix("stderr Error:", outputreturn))
+    
+    if (ciprefix("stderr Error:", outputreturn)){
         errorflag = true;
+        errorflagcjs = true;}
+        
+    if (ciprefix("stdout Error", outputreturn))
+         errorflagcjs = true;
     return 0;
 }
 

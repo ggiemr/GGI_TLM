@@ -109,12 +109,30 @@ character(LEN=256) :: material_name
     
     tot_n_ngspice_nodes=tot_n_ngspice_nodes+ngspice_n_nodes(i)
     
-    do ii=1,ngspice_n_nodes(i)
+    do ii=1,ngspice_n_ports(i)
     
-      read(10,*)ngspice_node_list(i,ii)
+      tot_n_ngspice_ports=tot_n_ngspice_ports+1
+      
+      read(10,'(A)')line  ! read the nodes for this port
+      
+      ngspice_node_list(i,ii,1)=0
+      ngspice_node_list(i,ii,2)=0
+      ngspice_port_list(i,ii)=tot_n_ngspice_ports
+      
+      read(line,*,ERR=100)ngspice_node_list(i,ii,1),ngspice_node_list(i,ii,2)
+      GOTO 110   ! node numbers read OK
+      
+100   CONTINUE
+
+! Read only a single node for this port i.e. the reference node is node zero
+      read(line,*,ERR=9010)ngspice_node_list(i,ii,1)
+
+110   CONTINUE
     
-      write(*,*)'node',ii,' ngspice node number:',ngspice_node_list(i,ii)
-    
+      write(*,*)'port',ii,' ngspice node numbers:',ngspice_node_list(i,ii,1),ngspice_node_list(i,ii,2)
+      ngspice_port_to_node_list(tot_n_ngspice_ports,1)=ngspice_node_list(i,ii,1)
+      ngspice_port_to_node_list(tot_n_ngspice_ports,2)=ngspice_node_list(i,ii,2)
+      
     end do
     
     ngspice_n_terminals(i)=ngspice_n_ports(i)+1  ! number of terminals equal to number of ngspice ports +1
@@ -225,7 +243,9 @@ character(LEN=256) :: material_name
       surface_material_type(n_surface_materials)=surface_material_type_SPICE  
     
       surface_material_to_surface_list(n_surface_materials)=n_surfaces
-      SPICE_node_list(n_surface_materials)=ngspice_node_list(i,1)     
+      SPICE_node_list(n_surface_materials,1)=ngspice_node_list(i,1,1)     
+      SPICE_node_list(n_surface_materials,2)=ngspice_node_list(i,1,2)     
+      SPICE_port_list(n_surface_materials)=ngspice_port_list(i,1)
       
       term_cx(1:2)=sx    ! set internal terminal coordinates to the centre for now. offsets to be added...
       term_cy(1:2)=sy
@@ -347,8 +367,12 @@ character(LEN=256) :: material_name
         surface_material_type(n_surface_materials)=surface_material_type_SPICE  
     
         surface_material_to_surface_list(n_surface_materials)=n_surfaces
-        SPICE_node_list(n_surface_materials)=ngspice_node_list(i,ii)      
-        if (dy.NE.0) then
+        
+        SPICE_node_list(n_surface_materials,1)=ngspice_node_list(i,ii,1)     
+        SPICE_node_list(n_surface_materials,2)=ngspice_node_list(i,ii,2)     
+        SPICE_port_list(n_surface_materials)=ngspice_port_list(i,ii)
+        
+       if (dy.NE.0) then
           SPICE_port_direction_list(n_surface_materials)='-y'        ! ****** PORT DIRECTION TO BE GENERALISED ******
         else
           SPICE_port_direction_list(n_surface_materials)='-x'        ! ****** PORT DIRECTION TO BE GENERALISED ******
@@ -566,6 +590,10 @@ character(LEN=256) :: material_name
 RETURN  
 
 9000 write(*,*)'ERROR reading the connecting terminal number for the PEC face'
+     write(*,*)'LINE:',trim(line)
+     STOP 1
+
+9010 write(*,*)'ERROR reading the Ngspice node numbers for the port'
      write(*,*)'LINE:',trim(line)
      STOP 1
   

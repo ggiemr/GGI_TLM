@@ -18,7 +18,8 @@
 	  if (material_type.NE.0) then ! not free space scatter
 		  
             if (material_type.EQ.surface_material_type_SPICE) then	 
-              spice_node=surface_material_list(material_number)%Spice_circuit_file_node
+                                        
+              spice_port=surface_material_list(material_number)%Spice_circuit_file_port
 
 ! connection process using the ngspice node voltage
 
@@ -34,8 +35,8 @@
                  if (abs(Vspice).LT.small) Vspice=0d0
 
 ! Build the command string including the spice node number                 
-                 write(command_string,'(A10,I0,A3,ES16.6)')"alter vtlm",spice_node," = ",Vspice
-                 
+                 write(command_string,'(A10,I0,A3,ES16.6)')"alter vtlm",spice_port," = ",Vspice
+                  
                  istat = ngSpice_Command(trim(command_string)//C_NULL_CHAR); 
                               	      
                end if
@@ -50,10 +51,13 @@
                  if (abs(Vspice).LT.small) Vspice=0d0
 
 ! Build the command string including the spice node number                 
-                 write(command_string,'(A10,I0,A3,ES16.6)')"alter vtlm",spice_node," = ",Vspice
+                 write(command_string,'(A10,I0,A3,ES16.6)')"alter vtlm",spice_port," = ",Vspice
                  
                  istat = ngSpice_Command(trim(command_string)//C_NULL_CHAR); 
-                
+                 
+! ****** DEBUGGING OUTPUT TO BE REMOVED ********                
+!                 write(*,*)'GGI_TLM to Spice: port',spice_port,' Vspice=',Vspice
+
                end if
 	    
             

@@ -91,9 +91,9 @@ IMPLICIT NONE
 ! local variables
 
   integer 	:: ngspice_output_node
-  integer 	:: spice_node
-  integer 	:: opnode
-  real*8        :: value
+  integer 	:: spice_node1,spice_node2
+  integer 	:: opnode1,opnode2
+  real*8        :: value,value1,value2
 
 ! START
   
@@ -103,16 +103,54 @@ IMPLICIT NONE
   
     do ngspice_output_node=1,n_ngspice_output_nodes
     
-       spice_node=ngspice_output_nodes(ngspice_output_node)
+       spice_node1=ngspice_output_nodes(ngspice_output_node,1)
+       spice_node2=ngspice_output_nodes(ngspice_output_node,2)
        
-       opnode=ngspice_node_to_V_ngspice_array_list(spice_node)
+       if ( (spice_node1.LT.0).OR.(spice_node1.GT.100) ) then
+          write(*,*)'Ngspice output node1 is out of range (0-100)',spice_node1
+          STOP
+       end if
                 
-       if ( (opnode.LT.1).OR.(opnode.GT.100) ) then
-          write(*,*)'Ngspice output node is out of range (1-100)',opnode
+       if ( (spice_node2.LT.0).OR.(spice_node2.GT.100) ) then
+          write(*,*)'Ngspice output node2 is out of range (0-100)',spice_node2
+          STOP
+       end if
+      
+       if (spice_node1.NE.0) then         
+         opnode1=ngspice_node_to_V_ngspice_array_list(spice_node1)
+       else
+         opnode1=0
+       end if
+      
+       if (spice_node2.NE.0) then         
+         opnode2=ngspice_node_to_V_ngspice_array_list(spice_node2)
+       else
+         opnode2=0
+       end if
+                
+       if ( (opnode1.LT.0).OR.(opnode1.GT.100) ) then
+          write(*,*)'Ngspice output node1 is out of range (0-100)',opnode1
+          STOP
+       end if
+                
+       if ( (opnode2.LT.0).OR.(opnode2.GT.100) ) then
+          write(*,*)'Ngspice output node2 is out of range (0-100)',opnode2
           STOP
        end if
        
-       value=V_ngspice_array_F90(opnode)   
+       if (opnode1.NE.0) then
+         value1=V_ngspice_array_F90(opnode1)   
+       else
+         value1=0d0
+       end if
+       
+       if (opnode2.NE.0) then
+         value2=V_ngspice_array_F90(opnode2)   
+       else
+         value2=0d0
+       end if
+       
+       value=value1-value2
        
        if ( abs(value).lt.1D-30 )value=0d0
 

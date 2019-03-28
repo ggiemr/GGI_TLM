@@ -14,6 +14,22 @@ if [[ "$ACTION" = "run_mpi" || "$ACTION" = "run_seq" ]] ; then
 
   cd PROBLEM_SPECIFICATION_FILES
   GGI_TLM_create_PCB_simulation_model < GGI_TLM_create_PCB_simulation_model_in.txt
+      
+  RETURN_CODE=$?
+  
+  if [[ $RETURN_CODE != 0 ]] ; then
+  
+      echo "$TEST_CASE: GGI_TLM_create_PCB_simulation_model ***** FAILED *****" 
+      echo "$TEST_CASE: GGI_TLM_create_PCB_simulation_model ***** FAILED *****" >> progress
+      exit 1
+      
+  else
+    
+      echo "$TEST_CASE: GGI_TLM_create_PCB_simulation_model FINISHED CORRECTLY"  
+      echo "$TEST_CASE: GGI_TLM_create_PCB_simulation_model FINISHED CORRECTLY" >> progress   
+        
+  fi
+
   cd ..
 
   echo "Finished the GGI_TLM_create_PCB_simulation_model process"

@@ -19,6 +19,12 @@
 	
 	  
             if (material_type.EQ.surface_material_type_SPICE) then
+            
+              spice_port=surface_material_list(material_number)%Spice_circuit_file_port
+
+! connection process using the ngspice node voltage
+
+              sign=surface_material_list(material_number)%Spice_port_sign
             	 
 	      if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-x').OR.	&
 	          (surface_material_list(material_number)%Spice_port_direction.EQ.'+x') ) then
@@ -30,7 +36,7 @@
                  if (abs(Vspice).LT.small) Vspice=0d0
 
 ! Build the command string including the spice node number                 
-                 write(command_string,'(A10,I0,A3,ES16.6)')"alter vtlm",spice_node," = ",Vspice
+                 write(command_string,'(A10,I0,A3,ES16.6)')"alter vtlm",spice_port," = ",Vspice
                  
                  istat = ngSpice_Command(trim(command_string)//C_NULL_CHAR); 
                               	      
@@ -46,7 +52,7 @@
                  if (abs(Vspice).LT.small) Vspice=0d0
 
 ! Build the command string including the spice node number                 
-                 write(command_string,'(A10,I0,A3,ES16.6)')"alter vtlm",spice_node," = ",Vspice
+                 write(command_string,'(A10,I0,A3,ES16.6)')"alter vtlm",spice_port," = ",Vspice
                  
                  istat = ngSpice_Command(trim(command_string)//C_NULL_CHAR); 
                               	      

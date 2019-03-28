@@ -137,7 +137,8 @@
 	  
 	    else if (material_type.EQ.surface_material_type_SPICE) then	 
                   
-              spice_node=surface_material_list(material_number)%Spice_circuit_file_node
+              spice_node1=surface_material_list(material_number)%Spice_circuit_file_nodes(1)
+              spice_node2=surface_material_list(material_number)%Spice_circuit_file_nodes(2)
 
 ! connection process using the ngspice node voltage
               sign=surface_material_list(material_number)%Spice_port_sign
@@ -146,13 +147,30 @@
 	          (surface_material_list(material_number)%Spice_port_direction.EQ.'+y') ) then
              
 ! get the ngspice node voltage. The voltage to use is found in the list ngspice_node_to_V_ngspice_array_list(100)
-                opnode=ngspice_node_to_V_ngspice_array_list(spice_node)
+                opnode1=ngspice_node_to_V_ngspice_array_list(spice_node1)
+                opnode2=ngspice_node_to_V_ngspice_array_list(spice_node2)
                 
-                if ( (opnode.LT.1).OR.(opnode.GT.100) ) then
-                  write(*,*)'Ngspice output node is out of range (1-100)',opnode
+                if ( (opnode1.LT.0).OR.(opnode1.GT.100) ) then
+                  write(*,*)'Ngspice output node1 is out of range (0-100)',opnode1
                   STOP
                 end if
-                Vspice=sign*V_ngspice_array_F90(opnode)   
+                if ( (opnode2.LT.0).OR.(opnode2.GT.100) ) then
+                  write(*,*)'Ngspice output node2 is out of range (0-100)',opnode2
+                  STOP
+                end if
+                
+                if (opnode1.NE.0) then
+                  Vspice1=sign*V_ngspice_array_F90(opnode1) 
+                else
+                  Vspice1=0d0
+                end if 
+                
+                if (opnode2.NE.0) then
+                  Vspice2=V_ngspice_array_F90(opnode2) 
+                else
+                  Vspice2=0d0
+                end if 
+                Vspice=sign*(Vspice1-Vspice2)    
                 
 		Vy_min=Vspice
 		Vy_max=Vspice
@@ -168,13 +186,30 @@
 	          (surface_material_list(material_number)%Spice_port_direction.EQ.'+z') ) then
                               
 ! get the ngspice node voltage. The voltage to use is found in the list ngspice_node_to_V_ngspice_array_list(100)
-                opnode=ngspice_node_to_V_ngspice_array_list(spice_node)
+                opnode1=ngspice_node_to_V_ngspice_array_list(spice_node1)
+                opnode2=ngspice_node_to_V_ngspice_array_list(spice_node2)
                 
-                if ( (opnode.LT.1).OR.(opnode.GT.100) ) then
-                  write(*,*)'Ngspice output node is out of range (1-100)',opnode
+                if ( (opnode1.LT.0).OR.(opnode1.GT.100) ) then
+                  write(*,*)'Ngspice output node1 is out of range (0-100)',opnode1
                   STOP
                 end if
-                Vspice=sign*V_ngspice_array_F90(opnode)   
+                if ( (opnode2.LT.0).OR.(opnode2.GT.100) ) then
+                  write(*,*)'Ngspice output node2 is out of range (0-100)',opnode2
+                  STOP
+                end if
+                
+                if (opnode1.NE.0) then
+                  Vspice1=sign*V_ngspice_array_F90(opnode1) 
+                else
+                  Vspice1=0d0
+                end if 
+                
+                if (opnode2.NE.0) then
+                  Vspice2=V_ngspice_array_F90(opnode2) 
+                else
+                  Vspice2=0d0
+                end if 
+                Vspice=sign*(Vspice1-Vspice2)    
                 
                 Vz_min=Vspice
 		Vz_max=Vspice

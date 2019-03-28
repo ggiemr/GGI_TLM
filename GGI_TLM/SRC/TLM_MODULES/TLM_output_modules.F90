@@ -338,7 +338,7 @@ TYPE::output_mode_type
 END TYPE output_mode_type
   
 integer				    	:: n_ngspice_output_nodes
-integer,allocatable             	:: ngspice_output_nodes(:)
+integer,allocatable             	:: ngspice_output_nodes(:,:)
   
 integer				    	:: n_output_points
 type(output_point_type),allocatable    	:: output_points(:)

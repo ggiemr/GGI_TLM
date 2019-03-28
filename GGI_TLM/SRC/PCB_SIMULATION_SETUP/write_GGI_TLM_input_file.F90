@@ -149,7 +149,8 @@ character(LEN=256) :: line
     else if ( surface_material_type(i).EQ.surface_material_type_SPICE ) then
     
       write(20,'(A5)')'SPICE'
-      write(20,'(I6,A23)')SPICE_node_list(i),'  # Ngspice node number'
+      write(20,'(I6,A23)')SPICE_port_list(i),'  # Ngspice port number'
+      write(20,'(2I6,A24)')SPICE_node_list(i,1),SPICE_node_list(i,2),'  # Ngspice node numbers'
       write(20,'(A2,A18)')SPICE_port_direction_list(i),'  # Port direction'
       
       write(20,'(A)')'     1  # Number of surfaces'

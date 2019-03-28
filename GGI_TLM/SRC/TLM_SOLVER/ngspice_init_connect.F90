@@ -57,9 +57,10 @@ character*80 :: command_string
   integer face_number
     
 ! Spice circuit simulation link update vcariables
-  real*8        :: Vspice
-  integer       :: spice_node
   integer       :: sign
+  real*8        :: Vspice,Vspice1,Vspice2
+  integer       :: spice_node1,spice_node2
+  integer       :: spice_port
    
 ! Material update parameters  
   integer material_type

@@ -1,6 +1,6 @@
 three_terminal_test.inp
 0.001  # dl: cell size for the TLM solution
--0.06 -0.02 -0.02   0.06 0.02 0.04  # TLM problem space dimensions: xmin,ymin,zmin,xmax,ymax,zmax     
+-0.06 -0.015 -0.01   0.06 0.015 0.01  # TLM problem space dimensions: xmin,ymin,zmin,xmax,ymax,zmax     
 2      # Number of gerber files to include
 three_track.gbr
 0.002    # z position for the layer specified in this gerber file
@@ -10,55 +10,42 @@ gnd_plane.gbr
 -0.055 -0.01 0.0    0.055 0.01 0.002  # outer dimensions of the dielectric layer. Material filename follows (without .vmat extension)
 FR4
 2      # Number of vias
--0.045 0.0   0.0 0.002      # via x and y coordinates then zmin and zmax for z directed via
- 0.045 0.0   0.0 0.002      # via x and y coordinates then zmin and zmax for z directed via
+-0.045 -0.005   0.0 0.002      # via x and y coordinates then zmin and zmax for z directed via
+ 0.045 -0.005   0.0 0.002      # via x and y coordinates then zmin and zmax for z directed via
 2      # Number of lumped components
 1      # COMPONENT NUMBER
 two_port_model  # Component type for component 1
 2      # Number of ports
-1      # Ngspice node number for port 1
-2      # Ngspice node number for port 2
+1  0   # Ngspice node numbers for port 1
+2  1   # Ngspice node numbers for port 2
 -0.05  0.005 0.002  # connection point coordinates for connection number 1, port 1: note coordinate numbering; end, centre, end
 -0.05  0.000 0.002  # connection point coordinates for connection number 3, reference for ports 1 and 2
 -0.05 -0.005 0.002  # connection point coordinates for connection number 2, port 2
 0.004     # z position for component
-rectangular      # package type
--0.0015 -0.006 0.0   0.0015   0.006 0.015              # package parameters. Material filename follows (without .vmat extension)
-component_case
-0          # Number of PEC surfaces
+none      # package type
 2      # COMPONENT NUMBER
 two_port_model  # Component type for component 2
 2      # Number of ports
-3      # Ngspice node number for port 1
-4      # Ngspice node number for port 2
+3  0   # Ngspice node number for port 1
+4  3   # Ngspice node number for port 2
 0.05  0.005 0.002  # connection point coordinates for connection number 1, port 1: note coordinate numbering; end, centre, end
 0.05  0.000 0.002  # connection point coordinates for connection number 3, reference for ports 1 and 2
 0.05 -0.005 0.002  # connection point coordinates for connection number 2, port 2
 0.004     # z position for component 
-rectangular      # package type
--0.0015 -0.006 0.0   0.0015   0.006 0.015              # package parameters. Material filename follows (without .vmat extension)
-component_case
-0          # Number of PEC surfaces
-1        # Number of additional components (heatsinks etc)
-heatsink
--0.05 -0.01 -0.015    0.05 0.01 -0.0015  # outer dimensions of the heatsink
-12                                      # number of slots
-y                                        # slot width direction
-zmin                                     # slot depth direction (face from which slots are cut)
-0.006                                   # width of slots 
-0.01                                    # depth of slots
+none      # package type
+0        # Number of additional components (heatsinks etc)
 * START of GGI_TLM input file text *
 
 ngspice_node_output_list
-4   # number of ngspice output nodes
-1   # NGSPICE OUTPUT NUMBER
-1   # ngspice node number
-2   # NGSPICE OUTPUT NUMBER
-3   # ngspice node number
-3   # NGSPICE OUTPUT NUMBER
-2   # ngspice node number
-4   # NGSPICE OUTPUT NUMBER
-4   # ngspice node number
+4    # number of ngspice output nodes
+1    # NGSPICE OUTPUT NUMBER
+1  0 # ngspice node numbers
+2    # NGSPICE OUTPUT NUMBER
+3  0  # ngspice node number
+3    # NGSPICE OUTPUT NUMBER
+2  1 # ngspice node numbers
+4    # NGSPICE OUTPUT NUMBER
+4  3 # ngspice node number
 
 Simulation_time
 1e-8
@@ -75,7 +62,7 @@ Vs1     2001   0   EXP( 0.0     1.0    0.000000E+00    2.000000E-010    1.200000
 * Model to be included in the GGI_TLM simulation for port 2, connected to node 2
 * in this case a voltage source with series resistance
 Rs2     2002   2   100.0
-Vs2     2002   0   EXP( 0.0     1.0    0.000000E+00    2.000000E-010    1.200000E-09    2.000000E-010 )
+Vs2     2002   1   EXP( 0.0     1.0    0.000000E+00    2.000000E-010    1.200000E-09    2.000000E-010 )
 * 
 * 
 * Model to be included in the GGI_TLM simulation for port 3, connected to node 3
@@ -86,7 +73,7 @@ Rl3      2003   0   100.0
 * Model to be included in the GGI_TLM simulation for port 4, connected to node 4
 * in this case a diode with series resistance
 Diode4   2004   4   Dmod
-Rl4      2004   0   100.0
+Rl4      2004   3   100.0
 *
 .model DMOD D ( is=1e-12 )
 *
