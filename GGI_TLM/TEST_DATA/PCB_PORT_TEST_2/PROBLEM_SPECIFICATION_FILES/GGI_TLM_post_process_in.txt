@@ -1,0 +1,13 @@
+          1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+two_wire_diode_test.ngspice.tout
+           1
+source_voltage.tout
+          1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+two_wire_diode_test.ngspice.tout
+           2
+load_voltage.tout
+          1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+two_wire_diode_test.ngspice.tout
+           3
+v3.tout
+           0  POST PROCESSING OPTION: QUIT

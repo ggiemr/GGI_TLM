@@ -1,0 +1,72 @@
+two_wire_diode_test.inp
+0.001  # dl: cell size for the TLM solution
+-0.02 -0.012 -0.01   0.02 0.012 0.01  # TLM problem space dimensions: xmin,ymin,zmin,xmax,ymax,zmax     
+1      # Number of gerber files to include
+two_track.gbr
+0.002    # z position for the layer specified in this gerber file
+0      # Number of dielectric layers
+0      # Number of vias
+2      # Number of lumped components
+1      # COMPONENT NUMBER
+one_port_model  # Component type for component 1
+1      # Number of ports
+1   0   # Ngspice node numbers for port 1
+-0.015  0.005 0.002  # connection point coordinates for connection number 1, port 1
+-0.015 -0.005 0.002  # connection point coordinates for connection number 2, reference for port 1
+0.004     # z offset for component
+none      # package type
+2      # COMPONENT NUMBER
+one_port_model  # Component type for component 2
+1      # Number of ports
+2   0   # Ngspice node numbers for port 1
+0.015 +0.005 0.002  # connection point coordinates for connection number 1, port 1
+0.015 -0.005 0.002  # connection point coordinates for connection number 2, reference for port 1
+0.004     # z position for component 
+none      # package type
+0        # Number of additional components (heatsinks etc)
+* START of GGI_TLM input file text *
+
+ngspice_node_output_list
+2   # number of ngspice output nodes
+1   # NGSPICE OUTPUT NUMBER
+1   # ngspice node number
+2   # NGSPICE OUTPUT NUMBER
+2   # ngspice node number
+
+point_list
+1  # number of points
+1 # POINT NUMBER
+0.0 0.0 0.0
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+output_point_list
+1  # number of output points
+1  # output point number
+1  # point number for output
+Ey
+centre
+
+Simulation_time
+1e-9
+4e-9
+1e-8
+
+* END of GGI_TLM input file text *
+
+* START of Ngspice input file text *
+
+* Model to be included in the GGI_TLM simulation for port 1, connected to node 1
+* in this case a voltage source with series resistance
+Rs1     2001   1   100.0
+Vs1     2001   0   EXP( 0.0     1.0    0.000000E+00    2.000000E-010    1.200000E-09    2.000000E-010 )
+* 
+* Model to be included in the GGI_TLM simulation for port 2, connected to node 2
+* in this case a diode with series resistance
+*Diode2   2002   2   Dmod
+*Rl2      2002   0   100.0
+Rl2      2   0   100.0
+.model DMOD D ( is=1e-12 )
+*
+
+* END of Ngspice input file text *

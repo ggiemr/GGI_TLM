@@ -161,7 +161,7 @@
                 end if
                 
                 if (opnode1.NE.0) then
-                  Vspice1=sign*V_ngspice_array_F90(opnode1) 
+                  Vspice1=V_ngspice_array_F90(opnode1) 
                 else
                   Vspice1=0d0
                 end if 
@@ -200,7 +200,7 @@
                 end if
                 
                 if (opnode1.NE.0) then
-                  Vspice1=sign*V_ngspice_array_F90(opnode1) 
+                  Vspice1=V_ngspice_array_F90(opnode1) 
                 else
                   Vspice1=0d0
                 end if 
@@ -217,7 +217,7 @@
 
 ! ****** DEBUGGING OUTPUT TO BE REMOVED ********                
 !                write(*,*)'Spice to GGI_TLM: port',surface_material_list(material_number)%Spice_circuit_file_port, &
-!                          ' nodes',opnode1,opnode2,' Vspice=',Vspice
+!                          ' nodes',opnode1,opnode2,' sign=',sign,' Vspice=',Vspice
 
 	      else ! spice circuit port is not is this direction so do free space update for y polarisation
 	      
@@ -240,9 +240,7 @@
               pol=2
               call surface_material_update(V(Vy_zmax,cx,cy,cz-1),Z0,V(Vy_zmin,cx,cy,cz),Z0,	&
 	                                   Vy_max,Vy_min,material_number,pol,reverse_material,surface_filter_number+1)	
-	  
-	    else if (material_type.EQ.surface_material_type_SPICE) then	 
-	  
+	  	  
 	    end if
 	    
 	  end if

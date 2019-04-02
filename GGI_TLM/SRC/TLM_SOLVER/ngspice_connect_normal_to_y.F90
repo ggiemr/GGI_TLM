@@ -57,8 +57,7 @@
                  istat = ngSpice_Command(trim(command_string)//C_NULL_CHAR); 
                               	      
                end if
-	    
-            
+	                
 	    end if  ! Spice link
 	    
 	  end if  ! not free space scatter

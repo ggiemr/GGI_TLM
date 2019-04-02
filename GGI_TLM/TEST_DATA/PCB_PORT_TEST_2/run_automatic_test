@@ -1,0 +1,41 @@
+
+CURRENT_DIRECTORY=$( pwd )
+
+TEST_CASE_LIST=$( basename ${CURRENT_DIRECTORY} )
+
+ACTION=$1
+NAME=$2
+
+if [[ "$ACTION" = "run_mpi" || "$ACTION" = "run_seq" ]] ; then
+
+# run the process to create the GGI_TLM input file and the Ngspice template circuit file
+
+  echo "Running the GGI_TLM_create_PCB_simulation_model process"
+
+  cd PROBLEM_SPECIFICATION_FILES
+  GGI_TLM_create_PCB_simulation_model < GGI_TLM_create_PCB_simulation_model_in.txt
+      
+  RETURN_CODE=$?
+  
+  if [[ $RETURN_CODE != 0 ]] ; then
+  
+      echo "$TEST_CASE: GGI_TLM_create_PCB_simulation_model ***** FAILED *****" 
+      echo "$TEST_CASE: GGI_TLM_create_PCB_simulation_model ***** FAILED *****" >> progress
+      exit 1
+      
+  else
+    
+      echo "$TEST_CASE: GGI_TLM_create_PCB_simulation_model FINISHED CORRECTLY"  
+      echo "$TEST_CASE: GGI_TLM_create_PCB_simulation_model FINISHED CORRECTLY" >> progress   
+        
+  fi
+
+  cd ..
+
+  echo "Finished the GGI_TLM_create_PCB_simulation_model process"
+
+fi
+
+COPY_COMMAND='cp PROBLEM_SPECIFICATION_FILES/*.stl .'
+# run the default test case sequence
+source ../run_test_case_include

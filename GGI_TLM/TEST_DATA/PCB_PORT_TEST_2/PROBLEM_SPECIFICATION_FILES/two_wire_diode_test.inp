@@ -1,0 +1,110 @@
+Mesh_outer_boundary_dimension
+   -2.000000E-02    2.000000E-02   -1.200000E-02    1.200000E-02   -1.000000E-02    1.000000E-02
+
+Mesh_cell_dimension
+    1.000000E-03
+
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+Surface_list
+     5  # Number of surfaces
+     1  # SURFACE NUMBER
+stl_triangulated_surface
+two_track.gbr.stl
+1.0 0.0
+    0.000000E+00    0.000000E+00    0.000000E+00
+    0.000000E+00    0.000000E+00    2.000000E-03
+     2  # SURFACE NUMBER
+zplane
+   -1.500000E-02    8.673617E-19    4.000000E-03   -1.400000E-02    1.000000E-03    4.000000E-03
+    0.000000E+00    0.000000E+00    0.000000E+00
+    0.000000E+00    0.000000E+00    0.000000E+00
+     3  # SURFACE NUMBER
+zplane
+    1.500000E-02   -1.000000E-03    4.000000E-03    1.600000E-02    0.000000E+00    4.000000E-03
+    0.000000E+00    0.000000E+00    0.000000E+00
+    0.000000E+00    0.000000E+00    0.000000E+00
+     4  # SURFACE NUMBER
+zplane
+    1.500000E-02    1.000000E-03    4.000000E-03    1.600000E-02    2.000000E-03    4.000000E-03
+    0.000000E+00    0.000000E+00    0.000000E+00
+    0.000000E+00    0.000000E+00    0.000000E+00
+     5  # SURFACE NUMBER
+stl_triangulated_surface
+component_terminal_connections.stl
+1.0 0.0
+    0.000000E+00    0.000000E+00    0.000000E+00
+    0.000000E+00    0.000000E+00    0.000000E+00
+
+Surface_material_list
+     5  # Number of surface materials
+     1  # SURFACE MATERIAL NUMBER
+PEC
+     1  # Number of surfaces
+    1 # Surface list
+ 1 # Surface orientation list
+     2  # SURFACE MATERIAL NUMBER
+SPICE
+     1  # Ngspice port number
+     1     0  # Ngspice node numbers
+-y  # Port direction
+     1  # Number of surfaces
+     2  # Surface number
+     1  # Surface orientation list
+     3  # SURFACE MATERIAL NUMBER
+SPICE
+     2  # Ngspice port number
+     2     3  # Ngspice node numbers
+-y  # Port direction
+     1  # Number of surfaces
+     3  # Surface number
+     1  # Surface orientation list
+     4  # SURFACE MATERIAL NUMBER
+SPICE
+     3  # Ngspice port number
+     3     0  # Ngspice node numbers
+-y  # Port direction
+     1  # Number of surfaces
+     4  # Surface number
+     1  # Surface orientation list
+     5  # SURFACE MATERIAL NUMBER
+PEC
+     1  # Number of surfaces
+     5  # Surface number
+     1  # Surface orientation list
+
+volume_list
+     0   # Number of volumes
+
+volume_material_list
+     0   # Number of volume materials
+
+ngspice_node_output_list
+3   # number of ngspice output nodes
+1   # NGSPICE OUTPUT NUMBER
+1   # ngspice node number
+2   # NGSPICE OUTPUT NUMBER
+2   # ngspice node number
+3   # NGSPICE OUTPUT NUMBER
+3   # ngspice node number
+
+point_list
+1  # number of points
+1 # POINT NUMBER
+0.0 0.0 0.0
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+output_point_list
+1  # number of output points
+1  # output point number
+1  # point number for output
+Ey
+centre
+
+Simulation_time
+1e-9
+4e-9
+1e-8
+

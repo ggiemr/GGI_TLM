@@ -56,7 +56,7 @@
                  istat = ngSpice_Command(trim(command_string)//C_NULL_CHAR); 
                  
 ! ****** DEBUGGING OUTPUT TO BE REMOVED ********                
-!                 write(*,*)'GGI_TLM to Spice: port',spice_port,' Vspice=',Vspice
+!                 write(*,*)'GGI_TLM to Spice: port',spice_port,' sign=',sign,' Vspice=',Vspice
 
                end if
 	    

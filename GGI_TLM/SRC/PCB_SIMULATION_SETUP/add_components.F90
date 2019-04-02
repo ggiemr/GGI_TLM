@@ -51,6 +51,7 @@ real*8  :: sxmax,symax,szmax        ! maximum coordinates of device
 real*8  :: lx,ly,lz        ! extent of device
 
 integer :: dx,dy,dz        ! direction of multi-port device
+integer :: signx,signy,signz
 
 real*8  :: sxp(5),syp(5),szp(5)     ! coordinates of two port device cell centres
 integer :: ixp(5),iyp(5),izp(5)     ! centre cells of two port device cell centres
@@ -183,9 +184,9 @@ character(LEN=256) :: material_name
       STOP 1
     end if
     
-    lx=sxmax-sxmin
-    ly=symax-symin
-    lz=szmax-szmin
+    lx=abs(sxmax-sxmin)
+    ly=abs(symax-symin)
+    lz=abs(szmax-szmin)
     
     write(*,*)'min coordinate of component:'
     write(*,*)sxmin,symin,szmin
@@ -209,11 +210,26 @@ character(LEN=256) :: material_name
       dz=0                 ! Assume the active elements are normal to z
       dx=0
       dy=0
+      signx=1
+      signy=1
+      signz=1
       
       if (lx.GT.ly) then
-        dx=1
+! x directed port, work out the port orientation in x...
+        if (ngspice_terminal_list(i,2,1).GT.ngspice_terminal_list(i,1,1)) then
+          dx=1
+        else
+          dx=-1
+          signx=-1
+        end if
       else
-        dy=1
+! y directed port, work out the port orientation in y...
+        if (ngspice_terminal_list(i,2,2).GT.ngspice_terminal_list(i,1,2)) then
+          dy=1
+        else
+          dy=-1
+          signy=-1
+        end if
       end if 
       
       write(*,*)'Component direction dx,dy,dz:'
@@ -228,7 +244,8 @@ character(LEN=256) :: material_name
 
       CALL get_TLM_cell_from_coordinate(sx,sy,sz,ix,iy,iz)
       CALL get_TLM_cell_centre_coordinate(ix,iy,iz,sx,sy,sz)
-    
+
+! Single TLM surface patch, normal to z    
       surface_parameters(n_surfaces,1)=sx-dl/2d0
       surface_parameters(n_surfaces,2)=sy-dl/2d0
       surface_parameters(n_surfaces,3)=sz-dl/2d0  ! zmin face
@@ -252,13 +269,21 @@ character(LEN=256) :: material_name
       term_cz(1:2)=sz
 
       if (dy.NE.0) then
-        SPICE_port_direction_list(n_surface_materials)='-y'        ! ****** PORT DIRECTION TO BE GENERALISED ******
-        term_cy(1)=term_cy(1)-dl
-        term_cy(2)=term_cy(2)+dl
+        if (dy.LT.0) then
+          SPICE_port_direction_list(n_surface_materials)='-y'      
+        else
+          SPICE_port_direction_list(n_surface_materials)='+y'             
+        end if  
+        term_cy(1)=term_cy(1)-dl*signy        ! signy carries the direction information
+        term_cy(2)=term_cy(2)+dl*signy 
       else
-        SPICE_port_direction_list(n_surface_materials)='-x'        ! ****** PORT DIRECTION TO BE GENERALISED ******
-        term_cx(1)=term_cx(1)-dl
-        term_cx(2)=term_cx(2)+dl
+        if (dx.LT.0) then
+          SPICE_port_direction_list(n_surface_materials)='-x'        
+        else
+          SPICE_port_direction_list(n_surface_materials)='+x'             
+        end if  
+        term_cx(1)=term_cx(1)-dl*signx        ! signx carries the direction information
+        term_cx(2)=term_cx(2)+dl*signx
       end if  
 
 ! Set the cells from each terminal to the active element cell to PEC
@@ -269,7 +294,7 @@ character(LEN=256) :: material_name
         write(*,'(3es16.6)') sx,sy,sz
     
         CALL set_terminal_connection_cells(ngspice_terminal_list(i,ii,1),ngspice_terminal_list(i,ii,2),  &
-                                         ngspice_terminal_list(i,ii,3),sx,sy,sz)
+                                           ngspice_terminal_list(i,ii,3),sx,sy,sz)
           
       end do
   
@@ -290,13 +315,28 @@ character(LEN=256) :: material_name
       dz=0                 ! Assume the active elements are normal to z
       dx=0
       dy=0
+      signx=1
+      signy=1
+      signz=1
       
       if (lx.GT.ly) then
-        dx=1
+! x directed port, work out the port orientation in x...
+        if (ngspice_terminal_list(i,3,1).GT.ngspice_terminal_list(i,1,1)) then
+          dx=1
+        else
+          dx=-1
+          signx=-1
+        end if
       else
-        dy=1
+! y directed port, work out the port orientation in y...
+        if (ngspice_terminal_list(i,3,2).GT.ngspice_terminal_list(i,1,2)) then
+          dy=1
+        else
+          dy=-1
+          signy=-1
+        end if
       end if 
-      
+            
       write(*,*)'Component direction dx,dy,dz:'
       write(*,*)dx,dy,dz
       
@@ -309,19 +349,18 @@ character(LEN=256) :: material_name
 
 ! cells reserved for the two port device
        
-! ****** PORT OFFSETS TO BE GENERALISED -USE TERMINAL COORDINATES PERHAPS *******
        ixp(:)=ix
        iyp(:)=iy
        izp(:)=iz
               
-       ixp(1)=ixp(1)-2*dx
-       iyp(1)=iyp(1)-2*dy
-       ixp(2)=ixp(2)-1*dx
-       iyp(2)=iyp(2)-1*dy
-       ixp(4)=ixp(4)+1*dx
-       iyp(4)=iyp(4)+1*dy
-       ixp(5)=ixp(5)+2*dx
-       iyp(5)=iyp(5)+2*dy
+       ixp(1)=ixp(1)-2*dx*signx
+       iyp(1)=iyp(1)-2*dy*signy
+       ixp(2)=ixp(2)-1*dx*signx
+       iyp(2)=iyp(2)-1*dy*signy
+       ixp(4)=ixp(4)+1*dx*signx
+       iyp(4)=iyp(4)+1*dy*signy
+       ixp(5)=ixp(5)+2*dx*signx
+       iyp(5)=iyp(5)+2*dy*signy
        
        write(*,*)'Device cells:'
        do ii=1,5
@@ -353,6 +392,7 @@ character(LEN=256) :: material_name
         write(*,*)'Setting active patch surface at cell:'
         write(*,*)ixp(cell),iyp(cell),izp(cell)
         
+! Single TLM surface patch, normal to z    
         surface_parameters(n_surfaces,1)=sxp(cell)-dl/2d0
         surface_parameters(n_surfaces,2)=syp(cell)-dl/2d0
         surface_parameters(n_surfaces,3)=szp(cell)-dl/2d0  ! zmin face
@@ -371,13 +411,21 @@ character(LEN=256) :: material_name
         SPICE_node_list(n_surface_materials,1)=ngspice_node_list(i,ii,1)     
         SPICE_node_list(n_surface_materials,2)=ngspice_node_list(i,ii,2)     
         SPICE_port_list(n_surface_materials)=ngspice_port_list(i,ii)
-        
-       if (dy.NE.0) then
-          SPICE_port_direction_list(n_surface_materials)='-y'        ! ****** PORT DIRECTION TO BE GENERALISED ******
+
+        if (dy.NE.0) then
+          if (dy.LT.0) then
+            SPICE_port_direction_list(n_surface_materials)='-y'      
+          else
+            SPICE_port_direction_list(n_surface_materials)='+y'             
+          end if  
         else
-          SPICE_port_direction_list(n_surface_materials)='-x'        ! ****** PORT DIRECTION TO BE GENERALISED ******
+          if (dx.LT.0) then
+            SPICE_port_direction_list(n_surface_materials)='-x'        
+          else
+            SPICE_port_direction_list(n_surface_materials)='+x'             
+          end if  
         end if  
-      
+              
       end do ! next active patch
       
 ! Set the cells from each terminal to the active element cell to PEC

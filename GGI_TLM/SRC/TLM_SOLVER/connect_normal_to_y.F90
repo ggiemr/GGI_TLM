@@ -163,7 +163,7 @@
                 end if
                 
                 if (opnode1.NE.0) then
-                  Vspice1=sign*V_ngspice_array_F90(opnode1) 
+                  Vspice1=V_ngspice_array_F90(opnode1) 
                 else
                   Vspice1=0d0
                 end if 
@@ -202,7 +202,7 @@
                 end if
                 
                 if (opnode1.NE.0) then
-                  Vspice1=sign*V_ngspice_array_F90(opnode1) 
+                  Vspice1=V_ngspice_array_F90(opnode1) 
                 else
                   Vspice1=0d0
                 end if 
@@ -238,9 +238,7 @@
               pol=3
               call surface_material_update(V(Vz_ymax,cx,cy-1,cz),Z0,V(Vz_ymin,cx,cy,cz),Z0,	&
 	                                   Vz_max,Vz_min,material_number,pol,reverse_material,surface_filter_number+1)	
-	  
-	    else if (material_type.EQ.surface_material_type_SPICE) then	 
-					       	  
+	  					       	  
 	    end if
 	    
 	  end if

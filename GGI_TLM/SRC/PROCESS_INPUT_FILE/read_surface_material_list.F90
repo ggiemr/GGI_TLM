@@ -350,7 +350,7 @@ logical	:: file_exists
       
       surface_material_list(surface_material_number)%Spice_port_sign=-1
       if (surface_material_list(surface_material_number)%Spice_port_direction(1:1).EQ.'-') then
-        surface_material_list(surface_material_number)%Spice_port_sign=+1
+        surface_material_list(surface_material_number)%Spice_port_sign=1
       end if  
       
       run_ngspice=.TRUE.
