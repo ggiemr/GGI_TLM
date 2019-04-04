@@ -77,6 +77,20 @@ IMPLICIT NONE
   end interface
 
   interface
+    function ngspice_wrapper_run_to_breakpoint ( break_time, last_time, last_V, n_nodes, node_list, &
+                                                                 V_array_F90) bind ( c )
+      use iso_c_binding
+      real ( c_double ) :: break_time
+      real ( c_double ) :: last_time
+      real ( c_double ) :: last_V       
+      integer ( c_int ) :: n_nodes
+      integer ( c_int ) :: node_list(100)
+      real ( c_double ) :: V_array_F90(100)
+      integer ( c_int ) :: ngspice_wrapper_step
+   end function ngspice_wrapper_run_to_breakpoint
+  end interface
+
+  interface
     function ngspice_wrapper_set_breaktime ( breaktime ) bind ( c )
       use iso_c_binding
       real ( c_double ) :: breaktime
@@ -133,6 +147,7 @@ character(LEN=256) :: line
 character(LEN=256) :: Z0_string
 character(LEN=256) :: dt_string
 character(LEN=256) :: tmax_string
+character(LEN=256) :: command_string
   
 ! START
 
@@ -194,6 +209,10 @@ if (ngspice_error_flag) then
   STOP 1
 end if
 
+! Set the breakpoint command
+write(command_string,'(A,ES16.6)')"stop when time > v(time_node)"
+istat = ngSpice_Command(trim(command_string)//C_NULL_CHAR)
+
 ! the number of nodes linking TLM and ngspice is not known until 
 ! the first initdata function call so set to zero for now
 
@@ -242,6 +261,8 @@ real*8 :: tlm_time
 integer ( c_int ) :: istat
 
 integer :: spice_node,i
+
+character(LEN=256) :: command_string
   
 ! START
   
@@ -249,20 +270,32 @@ integer :: spice_node,i
 ! work out the next time to halt the ngspice solution and write the breakpoint to ngspice
 
   ngspice_break_time=tlm_time
-
-!  write(*,*)'CALLED update_ngspice, time=',t_ngspice_F90,' ngspice_break_time=',ngspice_break_time
-
-! single step through the ngspice solution until the time is greater than or equal to the next break time
-  do while((ngspice_break_time-t_ngspice_F90).GT.t_eps) 
   
-    istat = ngspice_wrapper_step(t_ngspice_F90,V_ngspice_F90,n_ngspice_nodes,ngspice_node_list,V_ngspice_array_F90)
     
-    if (istat.NE.0) then
-      write(*,*)'ERROR stepping Ngspice solution'
-      STOP 1
-    end if
-    
-  end do
+! write the break time to the source vbreak
+  write(command_string,'(A,ES16.6)')"alter vbreak = ",ngspice_break_time
+!  write(*,*)'Seeting breakpoint voltage:',trim(command_string)
+  istat = ngSpice_Command(trim(command_string)//C_NULL_CHAR)
+!  write(*,*)'Returned stat:',istat
+  
+  istat = ngspice_wrapper_run_to_breakpoint (ngspice_break_time,t_ngspice_F90,V_ngspice_F90,              &
+                                             n_ngspice_nodes,ngspice_node_list,V_ngspice_array_F90)
+
+! ***** OLD TO BE REMOVED *****
+!!  write(*,*)'CALLED update_ngspice, time=',t_ngspice_F90,' ngspice_break_time=',ngspice_break_time
+!
+!! single step through the ngspice solution until the time is greater than or equal to the next break time
+!  do while((ngspice_break_time-t_ngspice_F90).GT.t_eps) 
+!  
+!    istat = ngspice_wrapper_step(t_ngspice_F90,V_ngspice_F90,n_ngspice_nodes,ngspice_node_list,V_ngspice_array_F90)
+!    
+!    if (istat.NE.0) then
+!      write(*,*)'ERROR stepping Ngspice solution'
+!      STOP 1
+!    end if
+!    
+!  end do
+! ***** END OF OLD TO BE REMOVED *****
     
   if (.NOT.set_ngspice_node_to_V_ngspice_array_list) then
 ! set the array which points from 

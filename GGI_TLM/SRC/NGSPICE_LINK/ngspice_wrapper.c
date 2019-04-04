@@ -160,10 +160,12 @@ int ngspice_wrapper_step( double *tout, double *Vout, int *n_nodes_in, int *node
 /*    printf("**  ngspice step  **\n"); */
     
     ret = ngSpice_Command("step 2");
+    
+    no_bg=false; 
 
     /* wait until simulation stops */
     for (;;) {
-        usleep (100);
+        usleep (10);
         if (no_bg)
             break;
     }
@@ -189,6 +191,61 @@ int ngspice_wrapper_step( double *tout, double *Vout, int *n_nodes_in, int *node
     }
     
 /*    printf("** time = %f  voltage= %f **\n", *tout, *Vout);  */
+        
+    return ret;
+}
+
+int ngspice_wrapper_run_to_breakpoint( double *tbreak, double *tout, double *Vout, int *n_nodes_in, int *node_list_in, double *V_array_in)
+
+{
+    int ret, i;
+    int inode;
+    int node_number;
+    int vec_get_vnode;
+    
+    bool bret;
+    
+    int *pti;
+    double *ptd;
+        
+/*    printf("** ngspice_wrapper_run_to_breakpoint  **\n");  */
+
+/*    printf("Set breakpoint at time %e\n", *tbreak);  */
+
+/*    printf("Resume the Ngspice run \n");  */
+    
+    ret = ngSpice_Command("bg_resume");
+    
+    no_bg=false; 
+    
+    /* wait until simulation stops */
+    for (;;) {
+         usleep (10);  
+       if (no_bg)
+            break;
+    }
+        
+    *tout=simtime; 
+    
+    *Vout=v2dat;
+    
+    *n_nodes_in=n_nodes;
+    
+    pti=node_list_in;
+    ptd=V_array_in;
+            
+    for (inode = 0; inode<n_nodes ; inode++) {
+      node_number=v_present[inode][1];
+      vec_get_vnode=v_present[inode][2];
+          
+      *pti=node_number; 
+      pti++;
+      
+      *ptd=v_dat[inode]; 
+      ptd++;
+    }
+    
+ /*    printf("** Ngspice halted: time = %e  voltage= %e **\n", *tout, *Vout);   */
         
     return ret;
 }
@@ -224,11 +281,11 @@ int
 ng_thread_runs(bool noruns, int ident, void* userdata)
 {
     no_bg = noruns;
-    if (noruns)
+/*    if (noruns)
         printf("bg not running\n");
     else
-        printf("bg running\n");
-
+        printf("bg running\n");  
+*/
     return 0;
 }
 

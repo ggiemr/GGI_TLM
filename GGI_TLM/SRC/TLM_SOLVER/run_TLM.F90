@@ -160,6 +160,9 @@ IMPLICIT NONE
     GOTO 5
     
 6   CONTINUE
+
+    close(scratch_file_unit)
+    
     write(*,'(A)')""
     write(*,'(A)')"Note that RSS (resident set size) and VSZ (virtual memory size) are in Kilobytes"
     write(*,'(A)')""
@@ -304,8 +307,6 @@ IMPLICIT NONE
     write(info_file_unit,*)'' 
     write(info_file_unit,8030)'Run time per timestep: ',runtime_per_timestep,' seconds'
     write(info_file_unit,*)'' 
-    write(info_file_unit,*)'#END OF RUN INFORMATION'
-    write(info_file_unit,*)'' 
     
     write(*,8020)'Run time: ',time_to_finish_hrs,':',time_to_finish_min,':',time_to_finish_sec
     write(*,*)'' 
@@ -314,6 +315,46 @@ IMPLICIT NONE
     
 8020  format(A10,I6.2,A,I2.2,A,I2.2)    
 8030  format(A23,E10.2,A8)    
+  
+#if defined(SEQ)
+!    call system("ps -o pid,%cpu,%mem,rss,vsz,comm -C GGI_TLM_SEQ > GGI_TLM_memory_usage.txt ")
+    call system("ps -o pid,%cpu,%mem,rss,vsz,comm -C GGI_TLM_SEQ > GGI_TLM_memory_usage.txt ")
+#elif defined(MPI)
+!    call system("ps u -C GGI_TLM_MPI > GGI_TLM_memory_usage.txt ")
+    call system("ps -o pid,%cpu,%mem,rss,vsz,comm -C GGI_TLM_MPI > GGI_TLM_memory_usage.txt ")
+#endif
+    
+    write(info_file_unit,'(A)')""
+    write(info_file_unit,'(A)')"Memory Usage on completion:"
+    write(info_file_unit,'(A)')""
+
+    write(*,'(A)')'____________________________________________________'
+    write(*,'(A)')""
+    write(*,'(A)')"Memory Usage:"
+    write(*,'(A)')""
+    
+    open(unit=scratch_file_unit,file='GGI_TLM_memory_usage.txt')
+15   CONTINUE
+    read(scratch_file_unit,'(A256)',end=16)ipline
+    write(info_file_unit,'(A)')trim(ipline)
+    write(*,'(A)')trim(ipline)
+    
+    GOTO 15
+    
+16   CONTINUE
+    write(*,'(A)')""
+    write(*,'(A)')"Note that RSS (resident set size) and VSZ (virtual memory size) are in Kilobytes"
+    write(*,'(A)')""
+
+    write(info_file_unit,'(A)')""
+    write(info_file_unit,'(A)')""
+    write(*,'(A)')""
+    write(*,'(A)')'____________________________________________________'
+    write(*,'(A)')""
+    flush(info_file_unit)
+ 
+    write(info_file_unit,*)'#END OF RUN INFORMATION'
+    write(info_file_unit,*)'' 
     
   end if
   
