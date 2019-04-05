@@ -53,8 +53,8 @@ IMPLICIT NONE
 
   read(input_file_unit,*,err=9000)ngspice_timestep_factor
   
-  if (ngspice_timestep_factor.LT.4) then
-    CALL write_line('ngspice_timestep_factor should be at least 4',0,output_to_screen_flag)
+  if (ngspice_timestep_factor.LT.1) then
+    CALL write_line('ngspice_timestep_factor should be at least 1',0,output_to_screen_flag)
     GOTO 9000
   end if
 

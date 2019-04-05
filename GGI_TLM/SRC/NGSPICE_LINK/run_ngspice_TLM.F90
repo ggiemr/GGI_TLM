@@ -120,6 +120,14 @@ logical (C_bool)  :: ngspice_error_flag
 
 real*8            :: t_eps
 
+! Low pass filter stuff
+real ( c_double ) :: V_tlm_to_ngspice_in(100,2)
+real ( c_double ) :: V_tlm_to_ngspice_out(100,2)
+real ( c_double ) :: V_ngspice_to_tlm_in(100,2)
+real ( c_double ) :: V_ngspice_to_tlm_out(100,2)
+real ( c_double ) :: LPF_k1,LPF_k2,LPF_alpha
+
+
 END MODULE ngspice_F90
 !
 ! ________________________________________________________________________________
@@ -144,10 +152,14 @@ integer ( c_int ) :: istat
 ! circuit file construction stuff
 
 character(LEN=256) :: line
+character(LEN=256) :: line2
 character(LEN=256) :: Z0_string
-character(LEN=256) :: dt_string
+character(LEN=256) :: dt_out_string
+character(LEN=256) :: dt_ngspice_string
 character(LEN=256) :: tmax_string
 character(LEN=256) :: command_string
+
+logical :: Vbreak_found
   
 ! START
 
@@ -156,16 +168,22 @@ CALL write_line('CALLED: initialise_ngspice',0,output_to_screen_flag)
 ! set the impedance for the ngspice - GGI_TLM link. This is half the TLM link line impedance
 write(Z0_string,'(ES16.6)')Z0/2d0
 
+! set the ngspice timestep for saving data to the TLM timestep
+write(dt_out_string,'(ES16.6)')dt/ngspice_timestep_factor
+
 ! set the ngspice timestep to something much less than the TLM timestep, defined by the ngspice_timestep_factor
-write(dt_string,'(ES16.6)')dt/ngspice_timestep_factor   
+write(dt_ngspice_string,'(ES16.6)')dt/ngspice_timestep_factor   
 
 ! Set the maximum time for the ngspice solution - add an extra bit of time to avoid problems with numerical precision
 write(tmax_string,'(ES16.6)')simulation_time*1.0001d0 +dt 
 
 ! Read the template circuit file and include the parameters relating to this GGI_TLM solution
+! At the same time, check that Vbreak is included and connected to time_node
 
 open(unit=ngspice_TEMPLATE_circuit_file_unit,file='Spice_circuit_TEMPLATE.cir',status='OLD',ERR=9000)
 open(unit=ngspice_circuit_file_unit,file='Spice_circuit.cir')
+
+Vbreak_found=.FALSE.
 
 10 CONTINUE
   read(ngspice_TEMPLATE_circuit_file_unit,'(A256)',ERR=9010,END=1000)line
@@ -173,13 +191,26 @@ open(unit=ngspice_circuit_file_unit,file='Spice_circuit.cir')
 ! look for the string '#Z0_TLM' and replace with Z0
   CALL replace_in_string(line,'#Z0_TLM',Z0_string)
   
+! look for the string '#dt_out' and replace with dt
+  CALL replace_in_string(line,'#dt_out',dt_out_string)
+  
 ! look for the string '#dt_ngspice' and replace with dt
-  CALL replace_in_string(line,'#dt_ngspice',dt_string)
+  CALL replace_in_string(line,'#dt_ngspice',dt_ngspice_string)
   
 ! look for the string '#tmax_ngspice' and replace with tmax
   CALL replace_in_string(line,'#tmax_ngspice',tmax_string)
   
   write(ngspice_circuit_file_unit,'(A)')trim(line)
+  
+! convert text to lower case
+  CALL convert_to_lower_case(line,256)
+  if (line(1:1).NE.'*') then
+    if (index(line,'vbreak').NE.0) then  
+      if (index(line,'time_node').NE.0) then
+        Vbreak_found=.TRUE.
+      end if    
+    end if    
+  end if
     
   GOTO 10  ! read next line
 
@@ -187,6 +218,16 @@ open(unit=ngspice_circuit_file_unit,file='Spice_circuit.cir')
 
 close(unit=ngspice_TEMPLATE_circuit_file_unit)
 close(unit=ngspice_circuit_file_unit)
+
+if (.NOT.vbreak_found) then  
+
+  write(*,*)'ERROR initialising Ngspice solution'
+  write(*,*)'Vbreak not found in the input ciruit file'
+  write(*,*)'The circuit file must include the following line to control the breakpoints:'
+  write(*,*)'Vbreak time_node 0 DC 0.0'
+  STOP 1
+  
+end if
 
 write(*,*)' Initialise the ngspice solution'
 
@@ -219,6 +260,15 @@ istat = ngSpice_Command(trim(command_string)//C_NULL_CHAR)
 n_ngspice_nodes=0   
 
 t_eps=0.5d0*dt/ngspice_timestep_factor 
+
+
+LPF_alpha=0.5
+LPF_k1=1.0+2.0*LPF_alpha
+LPF_k2=1.0-2.0*LPF_alpha
+V_tlm_to_ngspice_in(:,:)=0d0
+V_tlm_to_ngspice_out(:,:)=0d0
+V_ngspice_to_tlm_in(:,:)=0d0
+V_ngspice_to_tlm_out(:,:)=0d0
 
 set_ngspice_node_to_V_ngspice_array_list=.FALSE.
 ngspice_node_list(:)=0
@@ -274,12 +324,13 @@ character(LEN=256) :: command_string
     
 ! write the break time to the source vbreak
   write(command_string,'(A,ES16.6)')"alter vbreak = ",ngspice_break_time
-!  write(*,*)'Seeting breakpoint voltage:',trim(command_string)
+!  write(*,*)'Seeting breakpoint voltage:',trim(command_string),' nits=',ngspice_break_time/dt
   istat = ngSpice_Command(trim(command_string)//C_NULL_CHAR)
 !  write(*,*)'Returned stat:',istat
   
   istat = ngspice_wrapper_run_to_breakpoint (ngspice_break_time,t_ngspice_F90,V_ngspice_F90,              &
                                              n_ngspice_nodes,ngspice_node_list,V_ngspice_array_F90)
+
 
 ! ***** OLD TO BE REMOVED *****
 !!  write(*,*)'CALLED update_ngspice, time=',t_ngspice_F90,' ngspice_break_time=',ngspice_break_time
@@ -298,12 +349,11 @@ character(LEN=256) :: command_string
 ! ***** END OF OLD TO BE REMOVED *****
     
   if (.NOT.set_ngspice_node_to_V_ngspice_array_list) then
-! set the array which points from 
+! set the array which points from ngspice output array elements to V_ngspice array
 
     do i=1,n_ngspice_nodes  ! loop over the elements of the voltage output array
       spice_node=ngspice_node_list(i)
       
-! loop over the     
       ngspice_node_to_V_ngspice_array_list(spice_node)=i
       
     end do
@@ -312,6 +362,25 @@ character(LEN=256) :: command_string
   end if
   
 !  write(*,*)'istat=',istat,' tout',t_ngspice_F90,' Vout',V_ngspice_F90,n_ngspice_nodes,ngspice_node_list(1),V_ngspice_array_F90(1)
+
+! Apply a low pass filter to the voltage data going from Ngspice to TLM
+    do i=1,n_ngspice_nodes  ! loop over the elements of the voltage output array
+
+      V_ngspice_to_tlm_in(i,1)=V_ngspice_array_F90(i) 
+      
+! Apply first order LPF  fout(i)=(fin(i-1)+fin(i)-k2*fout(i-1))/k1
+
+      V_ngspice_to_tlm_out(i,1)=(V_ngspice_to_tlm_in(i,2)+V_ngspice_to_tlm_in(i,1)-LPF_k2*V_ngspice_to_tlm_out(i,2))/LPF_k1
+      
+      V_ngspice_array_F90(i)=V_ngspice_to_tlm_out(i,1)
+      
+! timeshift voltage pulses
+      V_ngspice_to_tlm_in(i,2)=V_ngspice_to_tlm_in(i,1)
+      V_ngspice_to_tlm_out(i,2)=V_ngspice_to_tlm_out(i,1)
+      
+    end do
+
+
   
 RETURN
 

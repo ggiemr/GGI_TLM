@@ -78,9 +78,15 @@ character(LEN=256) :: line
     write(30,*)trim(GGI_TLM_voltage_source_name), ngspice_model_internal_node, ngspice_link_node2, ' DC  0.0'
     write(30,*)trim(GGI_TLM_resistance_name)    , ngspice_model_internal_node, ngspice_link_node1,      ' #Z0_TLM'
     write(30,'(A)')'* '
-    write(30,'(A)')'* Model to be included in the GGI_TLM simulation'
   
   end do ! next GGI_TLM port linked to ngspice
+
+! Additional text from the GGI_TLM_create_PCB_simulation_model input file
+  
+  write(30,'(A)')'* '
+  write(30,'(A)')'* Voltage source required for the voltage source controlling the breakpoint time'
+  write(30,'(A)')'Vbreak time_node 0 DC 0.0'
+  write(30,'(A)')'* '
 
 ! Additional text from the GGI_TLM_create_PCB_simulation_model input file
 
@@ -101,7 +107,8 @@ character(LEN=256) :: line
   
   write(30,'(A)')'*'
   write(30,'(A)')'* Control for transient simulation'
-  write(30,'(A)')'.TRAN #dt_ngspice  #tmax_ngspice  #dt_ngspice  UIC'
+  write(30,'(A)')'.OPTIONS INTERP'
+  write(30,'(A)')'.TRAN #dt_out  #tmax_ngspice 0.0 #dt_ngspice  UIC'
   write(30,'(A)')'*'
   write(30,'(A)')'.END'
 

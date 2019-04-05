@@ -197,7 +197,7 @@ IMPLICIT NONE
   
   logical	:: set_random_number_seed
    
-  real*8	:: ngspice_timestep_factor=100d0
+  real*8	:: ngspice_timestep_factor=8d0
   
 END MODULE TLM_general
 !

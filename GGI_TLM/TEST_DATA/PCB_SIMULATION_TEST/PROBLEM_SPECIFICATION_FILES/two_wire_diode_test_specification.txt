@@ -24,6 +24,8 @@ one_port_model  # Component type for component 2
 0.004     # z position for component 
 none      # package type
 0        # Number of additional components (heatsinks etc)
+
+
 * START of GGI_TLM input file text *
 
 ngspice_node_output_list
@@ -33,10 +35,15 @@ ngspice_node_output_list
 2   # NGSPICE OUTPUT NUMBER
 2   # ngspice node number
 
+ngspice_timestep_factor
+4
+
 Simulation_time
 1e-8
 
 * END of GGI_TLM input file text *
+
+
 
 * START of Ngspice input file text *
 

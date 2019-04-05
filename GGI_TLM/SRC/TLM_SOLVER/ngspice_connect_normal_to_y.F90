@@ -35,6 +35,16 @@
                  Vspice=sign*(V(Vx_ymin,cx,cy,cz)+V(Vx_ymax,cx,cy-1,cz))
                  if (abs(Vspice).LT.small) Vspice=0d0
 
+! Apply a low pass filter to the voltage data going from TLM to Ngspice 
+                 V_tlm_to_ngspice_in(spice_port,1)=Vspice      
+! Apply first order LPF  fout(t)=(fin(t-1)+fin(t)-k2*fout(t-1))/k1
+                 V_tlm_to_ngspice_out(spice_port,1)=(V_tlm_to_ngspice_in(spice_port,2)+V_tlm_to_ngspice_in(spice_port,1)     &
+                                                                                  -LPF_k2*V_tlm_to_ngspice_out(spice_port,2))/LPF_k1     
+                 Vspice=V_tlm_to_ngspice_out(spice_port,1)      
+! timeshift voltage pulses
+                 V_tlm_to_ngspice_in(spice_port,2)=V_tlm_to_ngspice_in(spice_port,1)
+                 V_tlm_to_ngspice_out(spice_port,2)=V_tlm_to_ngspice_out(spice_port,1)
+
 ! Build the command string including the spice node number                 
                  write(command_string,'(A10,I0,A3,ES16.6)')"alter vtlm",spice_port," = ",Vspice
                  
@@ -50,6 +60,16 @@
                  command_string=''
                  Vspice=sign*(V(Vz_ymin,cx,cy,cz)+V(Vz_ymax,cx,cy-1,cz))
                  if (abs(Vspice).LT.small) Vspice=0d0
+
+! Apply a low pass filter to the voltage data going from TLM to Ngspice 
+                 V_tlm_to_ngspice_in(spice_port,1)=Vspice      
+! Apply first order LPF  fout(t)=(fin(t-1)+fin(t)-k2*fout(t-1))/k1
+                 V_tlm_to_ngspice_out(spice_port,1)=(V_tlm_to_ngspice_in(spice_port,2)+V_tlm_to_ngspice_in(spice_port,1)     &
+                                                                                  -LPF_k2*V_tlm_to_ngspice_out(spice_port,2))/LPF_k1     
+                 Vspice=V_tlm_to_ngspice_out(spice_port,1)      
+! timeshift voltage pulses
+                 V_tlm_to_ngspice_in(spice_port,2)=V_tlm_to_ngspice_in(spice_port,1)
+                 V_tlm_to_ngspice_out(spice_port,2)=V_tlm_to_ngspice_out(spice_port,1)
 
 ! Build the command string including the spice node number                 
                  write(command_string,'(A10,I0,A3,ES16.6)')"alter vtlm",spice_port," = ",Vspice
