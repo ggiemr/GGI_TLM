@@ -39,21 +39,23 @@ $(GGI_LIB_DIR)/lib_GGI_polynomial.a \
 $(GGI_LIB_DIR)/lib_GGI_maths.a \
 $(GGI_LIB_DIR)/lib_EISPACK.a 
 
+# the following are required for the ngspice link
+
+ifeq ($(NGSPICE),TRUE)
+	export LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib
+	NGSPICE_LINK_LIBS=-lngspice -lpthread -ldl
+	MAKE_NGSPICE_LINK=MAKE_ngspice_link
+        NGSPICE_MODE=INCLUDE_NGSPICE
+else
+	NGSPICE_MODE=NO_NGSPICE
+endif
+
 export MPI_INCLUDE
 export MOD_DIR
 export FLAGS
 export LIBS
 export FC
 export EXECUTABLE_DIR
-
-# the following are required for the ngspice link
-
-ifeq ($(NGSPICE),TRUE)
-	INCLUDE_NGSPICE=TRUE
-	export LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib
-	NGSPICE_LINK_LIBS=-lngspice -lpthread -ldl
-	MAKE_NGSPICE_LINK=MAKE_ngspice_link
-endif
 #_____________________________________________________________
 
 # get the compilation date
@@ -192,7 +194,8 @@ PROCESS_INPUT_FILE/read_frequency_scale_flag.o  \
 PROCESS_INPUT_FILE/read_wrapping_boundary_conditions.o \
 PROCESS_INPUT_FILE/read_random_number_seed.o \
 PROCESS_INPUT_FILE/read_reduced_c.o \
-PROCESS_INPUT_FILE/read_ngspice_timestep_factor.o
+PROCESS_INPUT_FILE/read_ngspice_timestep_factor.o \
+PROCESS_INPUT_FILE/read_ngspice_LPF_alpha.o
 
 F90_GENERAL_OBJS=  \
 F90_GENERAL/convert_case.o \

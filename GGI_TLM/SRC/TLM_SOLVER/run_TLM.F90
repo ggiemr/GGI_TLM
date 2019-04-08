@@ -124,7 +124,12 @@ IMPLICIT NONE
       STOP 1
     end if
     
+#if defined(INCLUDE_NGSPICE)    
     CALL initialise_ngspice()
+#else
+    write(*,*)'ERROR: GGI_TLM has not been compiled with ngspice.'
+    STOP 1
+#endif
     
   end if
 
@@ -244,6 +249,8 @@ IMPLICIT NONE
     
     CALL mode_stir_surfaces()
     
+#if defined(INCLUDE_NGSPICE)    
+    
     if ( run_ngspice )  then    
 ! run ngspice up to a breakpoint at the current time (the link between ngspice and GGI_TLM happens during the connect process)
       
@@ -258,6 +265,8 @@ IMPLICIT NONE
       CALL update_ngspice(time)
       
     end if
+
+#endif
 
     CALL connect()
   

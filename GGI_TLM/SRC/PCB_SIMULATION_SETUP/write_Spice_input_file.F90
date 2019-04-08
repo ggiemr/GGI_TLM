@@ -107,7 +107,7 @@ character(LEN=256) :: line
   
   write(30,'(A)')'*'
   write(30,'(A)')'* Control for transient simulation'
-  write(30,'(A)')'.OPTIONS INTERP'
+!  write(30,'(A)')'.OPTIONS INTERP'
   write(30,'(A)')'.TRAN #dt_out  #tmax_ngspice 0.0 #dt_ngspice  UIC'
   write(30,'(A)')'*'
   write(30,'(A)')'.END'

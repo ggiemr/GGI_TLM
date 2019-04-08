@@ -198,6 +198,7 @@ IMPLICIT NONE
   logical	:: set_random_number_seed
    
   real*8	:: ngspice_timestep_factor=8d0
+  real*8	:: LPF_alpha=0d0                 ! default value is 0 i.e. no low pass filter
   
 END MODULE TLM_general
 !

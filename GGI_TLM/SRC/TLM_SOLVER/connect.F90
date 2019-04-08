@@ -67,7 +67,9 @@ USE TLM_surface_materials
 USE mesh
 USE constants
 USE file_information
+#if defined(INCLUDE_NGSPICE)    
 USE ngspice_F90
+#endif
 
 IMPLICIT NONE
 

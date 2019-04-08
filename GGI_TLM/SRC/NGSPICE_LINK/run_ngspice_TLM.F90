@@ -125,7 +125,7 @@ real ( c_double ) :: V_tlm_to_ngspice_in(100,2)
 real ( c_double ) :: V_tlm_to_ngspice_out(100,2)
 real ( c_double ) :: V_ngspice_to_tlm_in(100,2)
 real ( c_double ) :: V_ngspice_to_tlm_out(100,2)
-real ( c_double ) :: LPF_k1,LPF_k2,LPF_alpha
+real ( c_double ) :: LPF_k1,LPF_k2
 
 
 END MODULE ngspice_F90
@@ -261,8 +261,6 @@ n_ngspice_nodes=0
 
 t_eps=0.5d0*dt/ngspice_timestep_factor 
 
-
-LPF_alpha=0.5
 LPF_k1=1.0+2.0*LPF_alpha
 LPF_k2=1.0-2.0*LPF_alpha
 V_tlm_to_ngspice_in(:,:)=0d0
@@ -379,8 +377,6 @@ character(LEN=256) :: command_string
       V_ngspice_to_tlm_out(i,2)=V_ngspice_to_tlm_out(i,1)
       
     end do
-
-
   
 RETURN
 

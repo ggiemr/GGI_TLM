@@ -37,14 +37,18 @@ SUBROUTINE initialise_ngspice_output_nodes
 
 USE TLM_general
 USE TLM_output
-USE ngspice_F90
 USE file_information
+#if defined(INCLUDE_NGSPICE)    
+USE ngspice_F90
+#endif
 
 IMPLICIT NONE
 
 ! local variables
 
 ! START
+
+#if defined(INCLUDE_NGSPICE)    
   
   if (n_ngspice_output_nodes.GT.0) then
   
@@ -57,6 +61,8 @@ IMPLICIT NONE
     end if
     
   end if ! n_ngspice_output_nodes>0
+  
+#endif
 
   RETURN
 
@@ -82,9 +88,12 @@ SUBROUTINE write_ngspice_output_nodes
 
 USE TLM_general
 USE TLM_output
-USE ngspice_F90
 USE file_information
 USE output_formats
+
+#if defined(INCLUDE_NGSPICE)    
+USE ngspice_F90
+#endif
 
 IMPLICIT NONE
 
@@ -98,6 +107,8 @@ IMPLICIT NONE
 ! START
   
   CALL write_line('CALLED: write_ngspice_output_nodes',0,timestepping_output_to_screen_flag)
+
+#if defined(INCLUDE_NGSPICE)    
   
   if (rank.EQ.0) then
   
@@ -159,6 +170,8 @@ IMPLICIT NONE
     end do ! next output node
       
   end if ! (rank.eq.0)
+  
+#endif
   
   CALL write_line('FINISHED: write_ngspice_output_nodes',0,timestepping_output_to_screen_flag)
 

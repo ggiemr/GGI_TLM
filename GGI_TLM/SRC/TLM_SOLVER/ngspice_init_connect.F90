@@ -44,7 +44,9 @@ USE mesh
 USE constants
 USE file_information
 USE iso_c_binding
+#if defined(INCLUDE_NGSPICE)    
 USE ngspice_F90
+#endif
 
 IMPLICIT NONE
 
@@ -70,7 +72,9 @@ character*80 :: command_string
 ! START
   
   CALL write_line('CALLED: ngspice_init_connect',0,timestepping_output_to_screen_flag)
-	
+  
+#if defined(INCLUDE_NGSPICE)    
+
 ! Initial loop through the mesh getting the incident voltages for the ngspice solution
 
   face_number=0
@@ -112,6 +116,7 @@ character*80 :: command_string
     end do    ! next y cell
   end do      ! next z cell
           
+#endif
   
   CALL write_line('FINISHED: ngspice_init_connect',0,timestepping_output_to_screen_flag)
 

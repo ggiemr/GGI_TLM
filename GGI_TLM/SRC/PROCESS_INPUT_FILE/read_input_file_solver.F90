@@ -187,6 +187,10 @@ character*256	:: input_line
     else if (input_line.EQ.'ngspice_timestep_factor') then
     
       CALL read_ngspice_timestep_factor()
+            
+    else if (input_line.EQ.'ngspice_lpf_alpha') then
+    
+      CALL read_ngspice_LPF_alpha()
       
     end if
     

@@ -137,6 +137,8 @@
               end if	      
 	  
 	    else if (material_type.EQ.surface_material_type_SPICE) then	 
+
+#if defined(INCLUDE_NGSPICE)    
                   
               spice_node1=surface_material_list(material_number)%Spice_circuit_file_nodes(1)
               spice_node2=surface_material_list(material_number)%Spice_circuit_file_nodes(2)
@@ -225,6 +227,7 @@
 	        Vy_max=Vy_min
                 
               end if
+#endif
 	     
 	    else if ( (material_type.EQ.surface_material_type_DISPERSIVE).OR.			&
 	              (material_type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE) ) then
