@@ -193,11 +193,11 @@ if [ "$#" = "0" ] ; then
 else
 
 # set defaults...
-  ACTION=$1
+  ACTION_IN=$1
   NAME=$2
   NP="1"
 
-  if [ "$ACTION" = "run_mpi" ] ; then
+  if [ "$ACTION_IN" = "run_mpi" ] ; then
 # slightly different order of arguments, must include the number of processors to run on
 # check that we have an integer number of processors requested  
     echo $2 | grep "[^0-9]" > /dev/null 2>&1
@@ -259,9 +259,9 @@ else
   rm -f progress
   touch progress
   
-  if [ "$ACTION" = "run_mpi" ] ; then
+  if [ "$ACTION_IN" = "run_mpi" ] ; then
     echo "Running MPI, np= $NP" >> progress 
-  elif [ "$ACTION" = "run_seq" ] ; then
+  elif [ "$ACTION_IN" = "run_seq" ] ; then
     echo "Running Sequential" >> progress 
   fi
   
@@ -275,6 +275,7 @@ else
     
       cd $TEST_CASE
       
+      ACTION=$ACTION_IN
      
       if [ "$ACTION" = "run_mpi" ] ; then
      

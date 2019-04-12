@@ -22,6 +22,8 @@ Diode2   1023   2   Dmod
 Rl2     1023   0   100.0
 .model DMOD D ( is=1e-12 )
 *
+Vbreak time_node 0 DC 0.0
+*
 * Control for transient simulation
 .tran #dt_ngspice  #tmax_ngspice  #dt_ngspice
 *
