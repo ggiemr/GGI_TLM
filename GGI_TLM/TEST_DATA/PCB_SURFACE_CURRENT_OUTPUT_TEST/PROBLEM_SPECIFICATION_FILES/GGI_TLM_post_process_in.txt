@@ -1,0 +1,25 @@
+           5  Post processing option: Create Animation
+two_wire_diode_test.surface_field.tout
+           1  Output surface
+lin
+   0.0000000000000000     
+   0.0000000000000000     
+n
+           0  Output surface
+          33  POST PROCESSING OPTION: CREATE TIME DOMAIN VECTOR VOLUME ANIMATION
+two_wire_diode_test.volume_field.tout
+           1  Output surface component number           1
+           2  Output surface component number           2
+           0  Output surface component number           3
+   0.0000000000000000       max vector magnitude to plot (0 to use the value from the data)
+y
+H_field
+          1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+two_wire_diode_test.ngspice.tout
+           1
+source_voltage.tout
+          1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+two_wire_diode_test.ngspice.tout
+           2
+load_voltage.tout
+           0  POST PROCESSING OPTION: QUIT

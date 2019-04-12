@@ -125,7 +125,11 @@ IMPLICIT NONE
     end if
     
 #if defined(INCLUDE_NGSPICE)    
+
     CALL initialise_ngspice()
+      
+    CALL ngspice_init_connect()
+    
 #else
     write(*,*)'ERROR: GGI_TLM has not been compiled with ngspice.'
     STOP 1
@@ -252,18 +256,16 @@ IMPLICIT NONE
 #if defined(INCLUDE_NGSPICE)    
     
     if ( run_ngspice )  then    
-! run ngspice up to a breakpoint at the current time (the link between ngspice and GGI_TLM happens during the connect process)
+    
+! Transfer scattered voltage pulses from TLM nodes at time-dt/2d0, to Ngspice        
+      CALL update_TLM_to_ngspice()
+ 
+! Run ngspice up to a breakpoint set to simulate a period of a full TLM timestep i.e. at the next scatter time
+      CALL update_ngspice(time+dt/2d0)
       
-!      write(*,*)
-!      write(*,*)'ngspice_init_connect'
-      
-      CALL ngspice_init_connect()
-      
-!      write(*,*)
-!      write(*,*)'unpdate_ngspice, time=',time
-
-      CALL update_ngspice(time)
-      
+! Calculate the Ngspice voltage        
+      CALL update_ngspice_to_TLM()
+       
     end if
 
 #endif

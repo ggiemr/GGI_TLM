@@ -1,0 +1,91 @@
+two_wire_diode_test.inp
+0.001  # dl: cell size for the TLM solution
+-0.06 -0.02 -0.01   0.06 0.02 0.01  # TLM problem space dimensions: xmin,ymin,zmin,xmax,ymax,zmax     
+1      # Number of gerber files to include
+two_track.gbr
+0.002    # z position for the layer specified in this gerber file
+1      # Number of dielectric layers
+-0.055 -0.01 0.000    0.055 0.01 0.001  # outer dimensions of the dielectric layer. Material filename follows (without .vmat extension)
+Air
+0      # Number of vias
+2      # Number of lumped components
+1      # COMPONENT NUMBER
+one_port_model  # Component type for component 1
+1      # Number of ports
+1      # Ngspice node number for port 1
+-0.05  0.005 0.002  # connection point coordinates for connection number 1, port 1
+-0.05 -0.005 0.002  # connection point coordinates for connection number 2, reference for port 1
+0.004     # z offset for component
+none      # package type
+2      # COMPONENT NUMBER
+one_port_model  # Component type for component 2
+1      # Number of ports
+2      # Ngspice node number for port 1
+0.05  0.005 0.002  # connection point coordinates for connection number 1, port 1
+0.05 -0.005 0.002  # connection point coordinates for connection number 2, reference for port 1
+0.004     # z position for component 
+none      # package type
+0        # Number of additional components (heatsinks etc)
+
+
+* START of GGI_TLM input file text *
+
+ngspice_node_output_list
+2   # number of ngspice output nodes
+1   # NGSPICE OUTPUT NUMBER
+1   # ngspice node number
+2   # NGSPICE OUTPUT NUMBER
+2   # ngspice node number
+
+Output_surface_list
+1    		! number of output surfaces
+1		! OUTPUT SURFACE NUMBER
+1                 surface number
+0		! side of surface for output (+1 or -1)
+Jm
+output_time_information
+0	! first output time
+2e-8	! last output time
+5e-10	! output time interval
+
+Output_volume_list
+2 ! number of output volumes
+1 ! OUTPUT NUMBER
+1 ! volume number for output
+Hx
+output_time_information
+0	! first output time
+2e-8	! last output time
+5e-10	! output time interval
+2 ! OUTPUT NUMBER
+1 ! volume number for output
+Hy
+output_time_information
+0	! first output time
+2e-8	! last output time
+5e-10	! output time interval
+
+
+ngspice_timestep_factor
+4
+
+Simulation_time
+2e-8
+
+* END of GGI_TLM input file text *
+
+
+
+* START of Ngspice input file text *
+
+* Model to be included in the GGI_TLM simulation for port 1, connected to node 1
+* in this case a voltage source with series resistance
+Rs1     2001   1   100.0
+Vs1     2001   0   EXP( 0.0     1.0    0.000000E+00    2.000000E-09    2.000000E-08    2.000000E-09 )
+* 
+* Model to be included in the GGI_TLM simulation for port 2, connected to node 2
+* in this case a diode with series resistance
+Rl2      2   0   100.0
+*
+
+* END of Ngspice input file text *

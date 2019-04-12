@@ -59,7 +59,7 @@ PEC
 SPICE
      1  # Ngspice port number
      1     0  # Ngspice node numbers
--x  # Port direction
++x  # Port direction
      1  # Number of surfaces
      3  # Surface number
      1  # Surface orientation list
@@ -67,7 +67,7 @@ SPICE
 SPICE
      2  # Ngspice port number
      1     0  # Ngspice node numbers
--x  # Port direction
++x  # Port direction
      1  # Number of surfaces
      4  # Surface number
      1  # Surface orientation list
@@ -75,7 +75,7 @@ SPICE
 SPICE
      3  # Ngspice port number
      1     0  # Ngspice node numbers
--x  # Port direction
++x  # Port direction
      1  # Number of surfaces
      5  # Surface number
      1  # Surface orientation list
@@ -83,7 +83,7 @@ SPICE
 SPICE
      4  # Ngspice port number
      1     0  # Ngspice node numbers
--x  # Port direction
++x  # Port direction
      1  # Number of surfaces
      6  # Surface number
      1  # Surface orientation list

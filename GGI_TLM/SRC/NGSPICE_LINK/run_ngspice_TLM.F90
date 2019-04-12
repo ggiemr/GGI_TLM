@@ -17,7 +17,10 @@
 !
 ! MODULE ngspice_F90
 ! SUBROUTINE initialise_ngspice
+! SUBROUTINE update_TLM_to_ngspice
 ! SUBROUTINE update_ngspice
+! SUBROUTINE update_ngspice_to_TLM
+! SUBROUTINE ngspice_LPF
 !
 ! NAME
 !     
@@ -77,12 +80,10 @@ IMPLICIT NONE
   end interface
 
   interface
-    function ngspice_wrapper_run_to_breakpoint ( break_time, last_time, last_V, n_nodes, node_list, &
-                                                                 V_array_F90) bind ( c )
+    function ngspice_wrapper_run_to_breakpoint ( break_time, last_time, n_nodes, node_list, V_array_F90) bind ( c )
       use iso_c_binding
       real ( c_double ) :: break_time
       real ( c_double ) :: last_time
-      real ( c_double ) :: last_V       
       integer ( c_int ) :: n_nodes
       integer ( c_int ) :: node_list(100)
       real ( c_double ) :: V_array_F90(100)
@@ -109,14 +110,25 @@ IMPLICIT NONE
   END INTERFACE
 
 real ( c_double ) :: ngspice_break_time
+
 real ( c_double ) :: t_ngspice_F90
-real ( c_double ) :: V_ngspice_F90
+
 integer ( c_int ) :: n_ngspice_nodes
 integer ( c_int ) :: ngspice_node_list(100)
 real ( c_double ) :: V_ngspice_array_F90(100)
+
 integer :: ngspice_node_to_V_ngspice_array_list(100)
+
 logical :: set_ngspice_node_to_V_ngspice_array_list
 logical (C_bool)  :: ngspice_error_flag
+
+! lists to go from ngspice port number 
+integer :: ng_material_number(100)
+integer :: ng_sign(100)
+integer :: ng_spice_port(100)
+integer :: ng_spice_node1(100),ng_spice_node2(100)
+integer :: ng_face1(100),ng_cx1(100),ng_cy1(100),ng_cz1(100)
+integer :: ng_face2(100),ng_cx2(100),ng_cy2(100),ng_cz2(100)
 
 real*8            :: t_eps
 
@@ -165,6 +177,9 @@ logical :: Vbreak_found
 
 CALL write_line('CALLED: initialise_ngspice',0,output_to_screen_flag)
 
+! set the ngspice timestep in relation to the TLM timestep
+ngspice_dt=dt/ngspice_timestep_factor
+
 ! set the impedance for the ngspice - GGI_TLM link. This is half the TLM link line impedance
 write(Z0_string,'(ES16.6)')Z0/2d0
 
@@ -172,7 +187,7 @@ write(Z0_string,'(ES16.6)')Z0/2d0
 write(dt_out_string,'(ES16.6)')dt/ngspice_timestep_factor
 
 ! set the ngspice timestep to something much less than the TLM timestep, defined by the ngspice_timestep_factor
-write(dt_ngspice_string,'(ES16.6)')dt/ngspice_timestep_factor   
+write(dt_ngspice_string,'(ES16.6)')ngspice_dt 
 
 ! Set the maximum time for the ngspice solution - add an extra bit of time to avoid problems with numerical precision
 write(tmax_string,'(ES16.6)')simulation_time*1.0001d0 +dt 
@@ -273,6 +288,9 @@ ngspice_node_list(:)=0
 V_ngspice_array_F90(:)=0d0
 ngspice_node_to_V_ngspice_array_list(:)=0
 
+ngspice_time=0d0
+last_ngspice_time=ngspice_time-ngspice_dt
+
 CALL write_line('FINISHED: Initialise_ngspice',0,output_to_screen_flag)
 
 RETURN
@@ -288,16 +306,93 @@ END SUBROUTINE initialise_ngspice
 ! ________________________________________________________________________________
 !  
 !
-SUBROUTINE update_ngspice( tlm_time )
+SUBROUTINE update_TLM_to_ngspice( )
 
-! fortran test program to interface a 1D TLM solver with ngspice
-! The 1D TLM solver simulates a transmission line between a source and a lumped circuit
-! i.e. it is a terminated transmission line
+! Transfer the voltege pulses from TLM to the Ngspice model
 
 USE constants
 USE iso_c_binding
 USE ngspice_F90
 USE TLM_general
+USE mesh
+USE TLM_surface_materials
+USE File_information
+
+IMPLICIT NONE
+
+! ngspice link variables
+
+integer ( c_int ) :: istat
+
+integer :: spice_port_count
+
+integer :: sign,spice_port
+integer :: node1,node2
+integer :: face1,cx1,cy1,cz1
+integer :: face2,cx2,cy2,cz2
+
+real*8 :: Vspice
+
+character(LEN=256) :: command_string
+  
+! START
+  
+! Loop over all the ports linking Ngspice to GGI_TLM
+
+do spice_port_count=1,n_spice_ports
+
+  sign=ng_sign(spice_port_count)
+  spice_port=ng_spice_port(spice_port_count)
+  node1=ng_spice_node1(spice_port_count)
+  node2=ng_spice_node2(spice_port_count)
+  face1=ng_face1(spice_port_count)
+  cx1=ng_cx1(spice_port_count)
+  cy1=ng_cy1(spice_port_count)
+  cz1=ng_cz1(spice_port_count)
+  face2=ng_face2(spice_port_count)
+  cx2=ng_cx2(spice_port_count)
+  cy2=ng_cy2(spice_port_count)
+  cz2=ng_cz2(spice_port_count)
+  
+! Transfer the TLM incident voltage pulse(s) to the ngspice circuit
+
+  command_string=''
+  Vspice=sign*(V(face1,cx1,cy1,cz1)  + V(face2,cx2,cy2,cz2))
+  if (abs(Vspice).LT.small) Vspice=0d0
+
+! Apply a low pass filter to the voltage data going from TLM to Ngspice 
+  V_tlm_to_ngspice_in(spice_port,1)=Vspice      
+                 
+! Apply first order LPF  fout(t)=(fin(t-1)+fin(t)-k2*fout(t-1))/k1
+
+  CALL ngspice_LPF(V_tlm_to_ngspice_out(spice_port,1),V_tlm_to_ngspice_out(spice_port,2)  &
+                  ,V_tlm_to_ngspice_in(spice_port,1),V_tlm_to_ngspice_in(spice_port,2)   )
+                  
+  Vspice=V_tlm_to_ngspice_out(spice_port,1)
+                                       
+! Build the command string including the spice node number                 
+  write(command_string,'(A10,I0,A3,ES16.6)')"alter vtlm",spice_port," = ",Vspice
+                 
+  istat = ngSpice_Command(trim(command_string)//C_NULL_CHAR); 
+                              	      
+end do ! next Spice port
+  
+RETURN
+
+END SUBROUTINE update_TLM_to_ngspice
+!
+! ________________________________________________________________________________
+!  
+!
+SUBROUTINE update_ngspice( tlm_time )
+
+!  Run Ngspice for one timestep
+
+USE constants
+USE iso_c_binding
+USE ngspice_F90
+USE TLM_general
+USE TLM_surface_materials
 USE File_information
 
 IMPLICIT NONE
@@ -313,40 +408,74 @@ integer :: spice_node,i
 character(LEN=256) :: command_string
   
 ! START
-  
+ 
 ! UPDATE THE NGSPICE CIRCUIT SOLUTION
 ! work out the next time to halt the ngspice solution and write the breakpoint to ngspice
 
   ngspice_break_time=tlm_time
-  
-    
+      
 ! write the break time to the source vbreak
+
   write(command_string,'(A,ES16.6)')"alter vbreak = ",ngspice_break_time
-!  write(*,*)'Seeting breakpoint voltage:',trim(command_string),' nits=',ngspice_break_time/dt
   istat = ngSpice_Command(trim(command_string)//C_NULL_CHAR)
-!  write(*,*)'Returned stat:',istat
   
-  istat = ngspice_wrapper_run_to_breakpoint (ngspice_break_time,t_ngspice_F90,V_ngspice_F90,              &
-                                             n_ngspice_nodes,ngspice_node_list,V_ngspice_array_F90)
+  istat = ngspice_wrapper_run_to_breakpoint (ngspice_break_time,t_ngspice_F90,n_ngspice_nodes,   &
+                                             ngspice_node_list,V_ngspice_array_F90)
+  
+RETURN
 
-
-! ***** OLD TO BE REMOVED *****
-!!  write(*,*)'CALLED update_ngspice, time=',t_ngspice_F90,' ngspice_break_time=',ngspice_break_time
+END SUBROUTINE update_ngspice
 !
-!! single step through the ngspice solution until the time is greater than or equal to the next break time
-!  do while((ngspice_break_time-t_ngspice_F90).GT.t_eps) 
+! ________________________________________________________________________________
 !  
-!    istat = ngspice_wrapper_step(t_ngspice_F90,V_ngspice_F90,n_ngspice_nodes,ngspice_node_list,V_ngspice_array_F90)
-!    
-!    if (istat.NE.0) then
-!      write(*,*)'ERROR stepping Ngspice solution'
-!      STOP 1
-!    end if
-!    
-!  end do
-! ***** END OF OLD TO BE REMOVED *****
-    
+!
+SUBROUTINE update_ngspice_to_TLM( )
+
+! Transfer scatterd voltages from Ngspice to TLM i.e. implement the connect process for the SPICE surface type
+
+USE constants
+USE iso_c_binding
+USE ngspice_F90
+USE TLM_general
+USE mesh
+USE TLM_surface_materials
+USE File_information
+
+IMPLICIT NONE
+
+! ngspice link variables
+
+integer ( c_int ) :: istat
+
+integer :: spice_port_count
+
+integer :: sign,spice_port
+integer :: node1,node2
+integer :: opnode1,opnode2
+integer :: face1,cx1,cy1,cz1
+integer :: face2,cx2,cy2,cz2
+
+real*8 :: Vspice,Vspice1,Vspice2
+
+integer :: spice_node
+
+character(LEN=256) :: command_string
+integer :: i
+  
+! START
+
+!write(*,*)'CALLED: update_ngspice_to_TLM'
+
+! Wait until the Ngspice solution has reached the breakpoint then transfer node voltages to V_ngspice_array_F90
+  
+  istat = ngspice_wrapper_run_to_breakpoint (ngspice_break_time,t_ngspice_F90,n_ngspice_nodes,   &
+                                             ngspice_node_list,V_ngspice_array_F90) 
+
+! Note that Ngspice has to be run at least once before we can carry out the following process
+! Therefore it needs to be put here after ngspice_wrapper_run_to_breakpoint    
+
   if (.NOT.set_ngspice_node_to_V_ngspice_array_list) then
+  
 ! set the array which points from ngspice output array elements to V_ngspice array
 
     do i=1,n_ngspice_nodes  ! loop over the elements of the voltage output array
@@ -358,26 +487,46 @@ character(LEN=256) :: command_string
     set_ngspice_node_to_V_ngspice_array_list=.TRUE.
     
   end if
-  
-!  write(*,*)'istat=',istat,' tout',t_ngspice_F90,' Vout',V_ngspice_F90,n_ngspice_nodes,ngspice_node_list(1),V_ngspice_array_F90(1)
 
 ! Apply a low pass filter to the voltage data going from Ngspice to TLM
+
     do i=1,n_ngspice_nodes  ! loop over the elements of the voltage output array
 
       V_ngspice_to_tlm_in(i,1)=V_ngspice_array_F90(i) 
       
 ! Apply first order LPF  fout(i)=(fin(i-1)+fin(i)-k2*fout(i-1))/k1
 
-      V_ngspice_to_tlm_out(i,1)=(V_ngspice_to_tlm_in(i,2)+V_ngspice_to_tlm_in(i,1)-LPF_k2*V_ngspice_to_tlm_out(i,2))/LPF_k1
+      CALL ngspice_LPF(V_ngspice_to_tlm_out(i,1),V_ngspice_to_tlm_out(i,2),V_ngspice_to_tlm_in(i,1),V_ngspice_to_tlm_in(i,2))
       
-      V_ngspice_array_F90(i)=V_ngspice_to_tlm_out(i,1)
-      
-! timeshift voltage pulses
-      V_ngspice_to_tlm_in(i,2)=V_ngspice_to_tlm_in(i,1)
-      V_ngspice_to_tlm_out(i,2)=V_ngspice_to_tlm_out(i,1)
-      
-    end do
+    end do  
   
 RETURN
 
-END SUBROUTINE update_ngspice
+END SUBROUTINE update_ngspice_to_TLM
+!
+! ________________________________________________________________________________
+!  
+!
+SUBROUTINE ngspice_LPF( fout,fout_m1,fin,fin_m1  )
+
+USE ngspice_F90
+
+IMPLICIT NONE
+
+real ( c_double ) :: fout,fout_m1,fin,fin_m1
+
+! Apply a first order low pass filter to time sampled data
+!  fout(i)=(fin(i-1)+fin(i)-k2*fout(i-1))/k1
+
+! START
+
+fout=(fin_m1+fin-LPF_k2*fout_m1)/LPF_k1
+
+! timeshift the input and output time samples
+
+fin_m1=fin
+fout_m1=fout
+
+RETURN
+
+END SUBROUTINE ngspice_LPF

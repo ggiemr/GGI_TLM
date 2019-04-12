@@ -1,5 +1,5 @@
 Mesh_outer_boundary_dimension
-   -6.000000E-02    6.000000E-02   -2.000000E-02    2.000000E-02   -1.000000E-02    4.000000E-02
+   -6.000000E-02    6.000000E-02   -2.000000E-02    2.000000E-02   -1.000000E-02    1.000000E-02
 
 Mesh_cell_dimension
     1.000000E-03
@@ -62,10 +62,20 @@ PEC
      1  # Surface orientation list
 
 volume_list
-     0   # Number of volumes
+     1   # Number of volumes
+     1   # volume NUMBER
+Rectangular_block2
+   -5.500000E-02   -1.000000E-02    0.000000E+00    5.500000E-02    1.000000E-02    1.000000E-03
+    0.000000E+00    0.000000E+00    0.000000E+00
+    0.000000E+00    0.000000E+00    0.000000E+00
 
 volume_material_list
-     0   # Number of volume materials
+     1   # Number of volume materials
+     1   # volume MATERIAL NUMBER
+DISPERSIVE
+Air
+     1  # Number of volumes
+     1   # volume number
 
 ngspice_node_output_list
 2   # number of ngspice output nodes
@@ -74,9 +84,38 @@ ngspice_node_output_list
 2   # NGSPICE OUTPUT NUMBER
 2   # ngspice node number
 
+Output_surface_list
+1    		! number of output surfaces
+1		! OUTPUT SURFACE NUMBER
+1                 surface number
+0		! side of surface for output (+1 or -1)
+Jm
+output_time_information
+0	! first output time
+2e-8	! last output time
+5e-10	! output time interval
+
+Output_volume_list
+2 ! number of output volumes
+1 ! OUTPUT NUMBER
+1 ! volume number for output
+Hx
+output_time_information
+0	! first output time
+2e-8	! last output time
+5e-10	! output time interval
+2 ! OUTPUT NUMBER
+1 ! volume number for output
+Hy
+output_time_information
+0	! first output time
+2e-8	! last output time
+5e-10	! output time interval
+
+
 ngspice_timestep_factor
 4
 
 Simulation_time
-1e-8
+2e-8
 

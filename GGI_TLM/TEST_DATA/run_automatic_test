@@ -58,9 +58,6 @@ DIPOLE
 DIPOLE_JUNCTION_LOAD 
 DOCUMENTATION_TEST
 EXCITATION_FUNCTION_TEST 
-FILTER_FIT_CFC 
-FILTER_FIT_IMPEDANCE 
-FILTER_FIT_LS22 
 HUYGENS_SURFACE 
 MATERIAL_STABILITY_TEST 
 MATERIAL_TEST 
@@ -78,6 +75,7 @@ PCB_PORT_TEST_2
 PCB_SIMULATION_TEST
 PCB_SIMULATION_TEST_2
 PCB_SIMULATION_TEST_3
+PCB_SURFACE_CURRENT_OUTPUT_TEST
 PCB_CONVERTER_MODEL
 POWER_CALCS 
 RCS_MATERIAL_SPHERE 
@@ -131,6 +129,9 @@ GTEM_CELL
 PATCH_ANTENNA
 PARAMETERISED_FSS 
 OPTIMISE_FSS 
+FILTER_FIT_CFC 
+FILTER_FIT_IMPEDANCE 
+FILTER_FIT_LS22 
 "
 
 QUICK_TEST_CASE_LIST="CABLE_TEST 
@@ -277,72 +278,72 @@ else
      
       if [ "$ACTION" = "run_mpi" ] ; then
      
-        ./run_automatic_test $ACTION $NP $TEST_CASE
+        source ./run_automatic_test $ACTION $NP $TEST_CASE
      
       elif [ "$ACTION" = "run_seq" ] ; then
      
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
               
       elif [ "$ACTION" = "post_process" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
              
       elif [ "$ACTION" = "clean" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
              
       elif [ "$ACTION" = "clean_vtk" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
              
       elif [ "$ACTION" = "clean_all" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
     
       elif [ "$ACTION" = "plot" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
     
       elif [ "$ACTION" = "plot_jpg" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
        
       elif [ "$ACTION" = "plot_ref" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
        
       elif [ "$ACTION" = "plot_ref_jpg" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
       
       elif [ "$ACTION" = "reference" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
       
       elif [ "$ACTION" = "check_reference" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
       
       elif [ "$ACTION" = "document" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
       
       elif [ "$ACTION" = "view_geometry" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
       
       elif [ "$ACTION" = "view_meshed_geometry" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
       
       elif [ "$ACTION" = "view_mesh" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
       
       elif [ "$ACTION" = "save" ] ; then
       
         TAG=$3
-        ./run_automatic_test $ACTION $TEST_CASE $TAG
+        source ./run_automatic_test $ACTION $TEST_CASE $TAG
             
       else 
      

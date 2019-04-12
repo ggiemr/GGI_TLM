@@ -95,14 +95,30 @@ character*256	:: input_line
     
     if (side_of_surface_for_output.eq.1) then
       output_surfaces(output_number)%output_on_outward_normal=.TRUE.
+      output_surfaces(output_number)%output_average_of_both_sides=.FALSE.
     else if (side_of_surface_for_output.eq.-1) then
       output_surfaces(output_number)%output_on_outward_normal=.FALSE.
+      output_surfaces(output_number)%output_average_of_both_sides=.FALSE.
+    else if (side_of_surface_for_output.eq.0) then
+      output_surfaces(output_number)%output_on_outward_normal=.FALSE.
+      output_surfaces(output_number)%output_average_of_both_sides=.TRUE.
     else 
       GOTO 9020
     end if
       	
     CALL read_field_component_surface_output(input_file_unit,output_surfaces(output_number)%field_component)
-      	
+    
+    if (side_of_surface_for_output.eq.0) then
+      if ( (output_surfaces(output_number)%field_component.NE.Jx).AND.   &
+           (output_surfaces(output_number)%field_component.NE.Jy).AND.   &
+           (output_surfaces(output_number)%field_component.NE.Jz).AND.   &
+           (output_surfaces(output_number)%field_component.NE.Jmagnitude) ) then
+           
+         GOTO 9030  
+           
+      end if    
+    end if
+    
     CALL read_output_time_information(input_file_unit,	&
                                       output_surfaces(output_number)%specified_timestep_information,	&
                                       output_surfaces(output_number)%first_timestep,	&
@@ -134,7 +150,12 @@ character*256	:: input_line
      STOP
      
 9020 CALL write_line('Error reading output surface list packet',0,.TRUE.)
-     CALL write_line("Side of surface for output should be +1 or -1",0,.TRUE.)
+     CALL write_line("Side of surface for output should be +1, -1 or 0",0,.TRUE.)
+     CALL write_error_line(input_file_unit)
+     STOP
+     
+9030 CALL write_line('Error reading output surface list packet',0,.TRUE.)
+     CALL write_line("If the side of surface for output is 0 only Jx, Jy, Jz or Jm can be output",0,.TRUE.)
      CALL write_error_line(input_file_unit)
      STOP
   

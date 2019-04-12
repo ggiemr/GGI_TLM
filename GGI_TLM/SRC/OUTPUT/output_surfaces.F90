@@ -634,6 +634,8 @@ IMPLICIT NONE
   integer	:: loop
   integer 	:: surface_count
   integer 	:: surface_count_save
+  
+  logical :: output_both_sides
  
   integer			:: local_n_faces
   type(output_surface_type)    	:: local_output_surface
@@ -642,6 +644,7 @@ IMPLICIT NONE
   real*8,allocatable		:: real_array(:)
   
   real*8			:: field(1:6)
+  real*8			:: field2(1:6)
   real*8			:: Jsx,Jsy,Jsz,Jmag,Emag,Hmag
   real*8			:: normx,normy,normz
 
@@ -664,7 +667,8 @@ IMPLICIT NONE
         output_field_number=output_surfaces(output_surface)%face_output_field_number_list(output_face)
         field_component=output_surfaces(output_surface)%field_component  
         face=output_surfaces(output_surface)%face_list(output_face)%point
-	
+	output_both_sides=output_surfaces(output_surface)%output_average_of_both_sides
+        
         normx=0
 	normy=0
 	normz=0
@@ -689,32 +693,38 @@ IMPLICIT NONE
 	  normz=-1
         end if
 	
-	field(1:6)=face_output_field(output_field_number,side,1:6)
-	
+        if (.NOT.output_both_sides) then
+	  field(1:6)=face_output_field(output_field_number,side,1:6)
+	  field2(1:6)=0d0  
+	else
+	  field(1:6) =face_output_field(output_field_number,1,1:6)
+	  field2(1:6)=face_output_field(output_field_number,2,1:6)        
+        end if
+        
 	if (field_component.LE.6) then
 
           output_surfaces(output_surface)%value(output_face)=field(field_component)  
 
         else if (field_component.EQ.Jx) then
 	
-	  Jsx= ( normy*field(Hz)-normz*field(Hy) )   ! J=nxH
+	  Jsx= ( normy*field(Hz)-normz*field(Hy) ) - ( normy*field2(Hz)-normz*field2(Hy) )   ! J=nxH
 	  output_surfaces(output_surface)%value(output_face)=Jsx
 	
         else if (field_component.EQ.Jy) then
 	
-	  Jsy= ( normz*field(Hx)-normx*field(Hz) )   ! J=nxH
+	  Jsy= ( normz*field(Hx)-normx*field(Hz) ) - ( normz*field2(Hx)-normx*field2(Hz) )   ! J=nxH
 	  output_surfaces(output_surface)%value(output_face)=Jsy
 	
         else if (field_component.EQ.Jz) then
 	
-	  Jsz= ( normx*field(Hy)-normy*field(Hx) )   ! J=nxH
+	  Jsz= ( normx*field(Hy)-normy*field(Hx) ) - ( normx*field2(Hy)-normy*field2(Hx) )   ! J=nxH
 	  output_surfaces(output_surface)%value(output_face)=Jsz
 	
         else if (field_component.EQ.Jmagnitude) then
 	
-	  Jsx= ( normy*field(Hz)-normz*field(Hy) )   ! J=nxH
-	  Jsy= ( normz*field(Hx)-normx*field(Hz) )   
-	  Jsz= ( normx*field(Hy)-normy*field(Hx) )   
+	  Jsx= ( normy*field(Hz)-normz*field(Hy) ) - ( normy*field2(Hz)-normz*field2(Hy) )   ! J=nxH
+	  Jsy= ( normz*field(Hx)-normx*field(Hz) ) - ( normz*field2(Hx)-normx*field2(Hz) )   
+	  Jsz= ( normx*field(Hy)-normy*field(Hx) ) - ( normx*field2(Hy)-normy*field2(Hx) )   
 	  Jmag=sqrt((Jsx)**2+(Jsy)**2+(Jsz)**2)
 	  output_surfaces(output_surface)%value(output_face)=Jmag
 	

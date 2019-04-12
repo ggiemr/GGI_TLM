@@ -50,15 +50,15 @@ zmin                                     # slot depth direction (face from which
 * START of GGI_TLM input file text *
 
 ngspice_node_output_list
-4   # number of ngspice output nodes
-1   # NGSPICE OUTPUT NUMBER
-1   # ngspice node number
-2   # NGSPICE OUTPUT NUMBER
-3   # ngspice node number
-3   # NGSPICE OUTPUT NUMBER
-2   # ngspice node number
-4   # NGSPICE OUTPUT NUMBER
-4   # ngspice node number
+4    # number of ngspice output nodes
+1    # NGSPICE OUTPUT NUMBER
+1  0 # ngspice node number
+2    # NGSPICE OUTPUT NUMBER
+3  0 # ngspice node number
+3    # NGSPICE OUTPUT NUMBER
+2  0 # ngspice node number
+4    # NGSPICE OUTPUT NUMBER
+4  0 # ngspice node number
 
 Simulation_time
 1e-8

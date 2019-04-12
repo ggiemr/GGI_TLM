@@ -175,7 +175,7 @@ IMPLICIT NONE
       do cx=1,nx
       
        if (cx.NE.1) then
-            
+             
         face_number=face_number+1
             
 #include "connect_normal_to_x.F90"            

@@ -141,7 +141,7 @@
 	    else if (material_type.EQ.surface_material_type_SPICE) then	 
 
 #if defined(INCLUDE_NGSPICE)    
-                  
+             
               spice_node1=surface_material_list(material_number)%Spice_circuit_file_nodes(1)
               spice_node2=surface_material_list(material_number)%Spice_circuit_file_nodes(2)
 
@@ -165,13 +165,13 @@
                 end if
                 
                 if (opnode1.NE.0) then
-                  Vspice1=V_ngspice_array_F90(opnode1) 
+                  Vspice1=V_ngspice_to_tlm_out(opnode1,1)
                 else
                   Vspice1=0d0
                 end if 
                 
                 if (opnode2.NE.0) then
-                  Vspice2=V_ngspice_array_F90(opnode2) 
+                   Vspice2=V_ngspice_to_tlm_out(opnode2,1)
                 else
                   Vspice2=0d0
                 end if 
@@ -204,13 +204,13 @@
                 end if
                 
                 if (opnode1.NE.0) then
-                  Vspice1=V_ngspice_array_F90(opnode1) 
+                  Vspice1=V_ngspice_to_tlm_out(opnode1,1)
                 else
                   Vspice1=0d0
                 end if 
                 
                 if (opnode2.NE.0) then
-                  Vspice2=V_ngspice_array_F90(opnode2) 
+                  Vspice2=V_ngspice_to_tlm_out(opnode2,1)
                 else
                   Vspice2=0d0
                 end if 
@@ -225,6 +225,7 @@
 	        Vz_max=Vz_min
                 
               end if
+
 #endif
 	  
 	    else if ( (material_type.EQ.surface_material_type_DISPERSIVE).OR.			&

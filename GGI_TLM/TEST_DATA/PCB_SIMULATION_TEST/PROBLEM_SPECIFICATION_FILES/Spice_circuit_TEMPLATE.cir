@@ -6,14 +6,16 @@ Ngspice template file for GGI_TLM - ngspice linked simulation
  Vtlm1        1001           0  DC  0.0
  Rtlm1        1001           1  #Z0_TLM
 * 
-* Model to be included in the GGI_TLM simulation
 * GGI_TLM link port    2 using nodes    2 and   0
 *
 * Voltage source with series resistance: equivalent circuit of TLM link
  Vtlm2        1002           0  DC  0.0
  Rtlm2        1002           2  #Z0_TLM
 * 
-* Model to be included in the GGI_TLM simulation
+* 
+* Voltage source required for the voltage source controlling the breakpoint time
+Vbreak time_node 0 DC 0.0
+* 
 
 * Model to be included in the GGI_TLM simulation for port 1, connected to node 1
 * in this case a voltage source with series resistance
@@ -29,6 +31,6 @@ Rl2      2002   0   100.0
 
 *
 * Control for transient simulation
-.TRAN #dt_ngspice  #tmax_ngspice  #dt_ngspice  UIC
+.TRAN #dt_out  #tmax_ngspice 0.0 #dt_ngspice  UIC
 *
 .END

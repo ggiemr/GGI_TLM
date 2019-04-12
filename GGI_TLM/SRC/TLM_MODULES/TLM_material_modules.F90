@@ -170,4 +170,6 @@ END TYPE surface_material_type
   integer 	:: surface_diode_storage
   type(Zfilter_response),allocatable	:: Diode_Cj_filter_data(:) 
 
+  integer 	:: n_spice_ports
+
 END MODULE TLM_surface_materials

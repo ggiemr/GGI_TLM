@@ -146,7 +146,7 @@ int ngspice_wrapper_resume( double *tout, double *Vout)
     return ret;
 }
 
-int ngspice_wrapper_step( double *tout, double *Vout, int *n_nodes_in, int *node_list_in, double *V_array_in)
+int ngspice_wrapper_step( double *tout, int *n_nodes_in, int *node_list_in, double *V_array_in)
 
 {
     int ret, i;
@@ -172,8 +172,6 @@ int ngspice_wrapper_step( double *tout, double *Vout, int *n_nodes_in, int *node
         
     *tout=simtime; 
     
-    *Vout=v2dat;
-    
     *n_nodes_in=n_nodes;
     
     pti=node_list_in;
@@ -195,7 +193,7 @@ int ngspice_wrapper_step( double *tout, double *Vout, int *n_nodes_in, int *node
     return ret;
 }
 
-int ngspice_wrapper_run_to_breakpoint( double *tbreak, double *tout, double *Vout, int *n_nodes_in, int *node_list_in, double *V_array_in)
+int ngspice_wrapper_run_to_breakpoint( double *tbreak, double *tout, int *n_nodes_in, int *node_list_in, double *V_array_in)
 
 {
     int ret, i;
@@ -209,12 +207,11 @@ int ngspice_wrapper_run_to_breakpoint( double *tbreak, double *tout, double *Vou
     double *ptd;
         
 /*    printf("** ngspice_wrapper_run_to_breakpoint  **\n");  */
-
 /*    printf("Set breakpoint at time %e\n", *tbreak);  */
-
 /*    printf("Resume the Ngspice run \n");  */
-    
-    ret = ngSpice_Command("bg_resume");
+
+/*  RESUME COMMAND COULD BE ISSUED IN SUBROUTINE update_ngspice */
+     ret = ngSpice_Command("bg_resume"); 
     
     no_bg=false; 
     
@@ -226,9 +223,7 @@ int ngspice_wrapper_run_to_breakpoint( double *tbreak, double *tout, double *Vou
     }
         
     *tout=simtime; 
-    
-    *Vout=v2dat;
-    
+        
     *n_nodes_in=n_nodes;
     
     pti=node_list_in;

@@ -68,6 +68,7 @@ TYPE::output_surface_type
 
   integer 			:: surface_number
   logical 			:: output_on_outward_normal
+  logical 			:: output_average_of_both_sides
   integer 			:: number_of_faces
   type(cell_point),allocatable	:: face_list(:)
   integer			:: field_component

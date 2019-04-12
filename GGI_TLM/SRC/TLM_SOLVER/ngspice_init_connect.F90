@@ -21,13 +21,12 @@
 !     ngspice_init_connect
 !
 ! DESCRIPTION
-!     Loop over mesh and link GGI_TLM voltage pulses to the ngspice solution
+!     Loop over mesh and work out the information to link GGI_TLM voltage pulses to the ngspice solution
 !
 !     
 ! COMMENTS
 !     The loop structure must be exactly the same as connect
 !     
-!     **** WE NEED TO ELIMINIATE UNUSED VARAIBLES ****
 !
 ! HISTORY
 !
@@ -59,15 +58,14 @@ character*80 :: command_string
   integer face_number
     
 ! Spice circuit simulation link update vcariables
-  integer       :: sign
-  real*8        :: Vspice,Vspice1,Vspice2
-  integer       :: spice_node1,spice_node2
-  integer       :: spice_port
+  integer       :: spice_port_count
+  integer       :: spice_node
    
 ! Material update parameters  
   integer material_type
   integer material_number
-  logical reverse_material
+  
+  integer :: i
   
 ! START
   
@@ -78,6 +76,7 @@ character*80 :: command_string
 ! Initial loop through the mesh getting the incident voltages for the ngspice solution
 
   face_number=0
+  spice_port_count=0
   
 ! faces normal to x i.e. the y z plane
   do cz=nz1,nz2
@@ -88,7 +87,70 @@ character*80 :: command_string
             
           face_number=face_number+1
             
-#include "ngspice_connect_normal_to_x.F90"            
+	
+	if (face_update_code(face_number).NE.0) then   ! not free space
+
+!         face_update_code points to arrays which tell us about materials, excitations and outputs
+	
+	  material_number=abs( face_update_code_to_material_data(face_update_code(face_number),1) )
+	  if (material_number.NE.0) then
+	    material_type=surface_material_list(material_number)%type
+	  else
+	    material_type=0
+	  end if
+          	  						
+	  if (material_type.NE.0) then ! not free space scatter
+	
+	  
+            if (material_type.EQ.surface_material_type_SPICE) then	
+             
+	      if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-y').OR.	&
+	          (surface_material_list(material_number)%Spice_port_direction.EQ.'+y') ) then
+  
+                spice_port_count=spice_port_count+1
+                
+                ng_material_number(spice_port_count)=material_number
+                ng_sign(spice_port_count)=surface_material_list(material_number)%Spice_port_sign
+                ng_spice_port(spice_port_count)=surface_material_list(material_number)%Spice_circuit_file_port
+                ng_spice_node1(spice_port_count)=surface_material_list(material_number)%Spice_circuit_file_nodes(1)
+                ng_spice_node2(spice_port_count)=surface_material_list(material_number)%Spice_circuit_file_nodes(2)
+                ng_face1(spice_port_count)=Vy_xmin
+                ng_cx1(spice_port_count)=cx
+                ng_cy1(spice_port_count)=cy
+                ng_cz1(spice_port_count)=cz
+                ng_face2(spice_port_count)=Vy_xmax
+                ng_cx2(spice_port_count)=cx-1
+                ng_cy2(spice_port_count)=cy
+                ng_cz2(spice_port_count)=cz
+                              	      
+               end if
+	    
+ 	      if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-z').OR.  &
+	          (surface_material_list(material_number)%Spice_port_direction.EQ.'+z') ) then
+  
+                spice_port_count=spice_port_count+1
+                
+                ng_material_number(spice_port_count)=material_number
+                ng_sign(spice_port_count)=surface_material_list(material_number)%Spice_port_sign
+                ng_spice_port(spice_port_count)=surface_material_list(material_number)%Spice_circuit_file_port
+                ng_spice_node1(spice_port_count)=surface_material_list(material_number)%Spice_circuit_file_nodes(1)
+                ng_spice_node2(spice_port_count)=surface_material_list(material_number)%Spice_circuit_file_nodes(2)
+                ng_face1(spice_port_count)=Vz_xmin
+                ng_cx1(spice_port_count)=cx
+                ng_cy1(spice_port_count)=cy
+                ng_cz1(spice_port_count)=cz
+                ng_face2(spice_port_count)=Vz_xmin
+                ng_cx2(spice_port_count)=cx-1
+                ng_cy2(spice_port_count)=cy
+                ng_cz2(spice_port_count)=cz
+                             	      
+               end if
+           
+	    end if  ! Spice link
+	    
+	  end if  ! not free space scatter
+
+	end if  ! not free space
 
         end if  ! cx.NE.1
   
@@ -98,7 +160,70 @@ character*80 :: command_string
  	
           face_number=face_number+1
             
-#include "ngspice_connect_normal_to_y.F90"            
+	
+	if (face_update_code(face_number).NE.0) then   ! not free space
+
+!         face_update_code points to arrays which tell us about materials, excitations and outputs
+	
+	  material_number=abs( face_update_code_to_material_data(face_update_code(face_number),1) )
+	  if (material_number.NE.0) then
+	    material_type=surface_material_list(material_number)%type
+	  else
+	    material_type=0
+	  end if
+          	  						
+	  if (material_type.NE.0) then ! not free space scatter
+	
+	  
+            if (material_type.EQ.surface_material_type_SPICE) then
+            	 
+	      if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-x').OR.	&
+	          (surface_material_list(material_number)%Spice_port_direction.EQ.'+x') ) then
+  
+                spice_port_count=spice_port_count+1
+                
+                ng_material_number(spice_port_count)=material_number
+                ng_sign(spice_port_count)=surface_material_list(material_number)%Spice_port_sign
+                ng_spice_port(spice_port_count)=surface_material_list(material_number)%Spice_circuit_file_port
+                ng_spice_node1(spice_port_count)=surface_material_list(material_number)%Spice_circuit_file_nodes(1)
+                ng_spice_node2(spice_port_count)=surface_material_list(material_number)%Spice_circuit_file_nodes(2)
+                ng_face1(spice_port_count)=Vx_ymin
+                ng_cx1(spice_port_count)=cx
+                ng_cy1(spice_port_count)=cy
+                ng_cz1(spice_port_count)=cz
+                ng_face2(spice_port_count)=Vx_ymax
+                ng_cx2(spice_port_count)=cx
+                ng_cy2(spice_port_count)=cy-1
+                ng_cz2(spice_port_count)=cz
+                            	      
+               end if
+                                   
+	      if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-z').OR.  &
+	          (surface_material_list(material_number)%Spice_port_direction.EQ.'+z') ) then
+  
+                spice_port_count=spice_port_count+1
+                
+                ng_material_number(spice_port_count)=material_number
+                ng_sign(spice_port_count)=surface_material_list(material_number)%Spice_port_sign
+                ng_spice_port(spice_port_count)=surface_material_list(material_number)%Spice_circuit_file_port
+                ng_spice_node1(spice_port_count)=surface_material_list(material_number)%Spice_circuit_file_nodes(1)
+                ng_spice_node2(spice_port_count)=surface_material_list(material_number)%Spice_circuit_file_nodes(2)
+                ng_face1(spice_port_count)=Vz_ymin
+                ng_cx1(spice_port_count)=cx
+                ng_cy1(spice_port_count)=cy
+                ng_cz1(spice_port_count)=cz
+                ng_face2(spice_port_count)=Vz_ymax
+                ng_cx2(spice_port_count)=cx
+                ng_cy2(spice_port_count)=cy-1
+                ng_cz2(spice_port_count)=cz
+                              	      
+               end if
+	                
+	    end if  ! Spice link
+	    
+	  end if  ! not free space scatter
+
+	end if  ! not free space
 	            
         end if  ! cy.NE.1
       
@@ -108,13 +233,81 @@ character*80 :: command_string
       	
           face_number=face_number+1
             
-#include "ngspice_connect_normal_to_z.F90"            
+	
+	if (face_update_code(face_number).NE.0) then   ! not free space
+
+!         face_update_code points to arrays which tell us about materials, excitations and outputs
+	
+	  material_number=abs( face_update_code_to_material_data(face_update_code(face_number),1) )
+	  if (material_number.NE.0) then
+	    material_type=surface_material_list(material_number)%type
+	  else
+	    material_type=0
+	  end if
+	  						
+	  if (material_type.NE.0) then ! not free space scatter
+		  
+            if (material_type.EQ.surface_material_type_SPICE) then	 
+              
+	      if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-x').OR.	&
+	          (surface_material_list(material_number)%Spice_port_direction.EQ.'+x') ) then
+  
+                spice_port_count=spice_port_count+1
+                
+                ng_material_number(spice_port_count)=material_number
+                ng_sign(spice_port_count)=surface_material_list(material_number)%Spice_port_sign
+                ng_spice_port(spice_port_count)=surface_material_list(material_number)%Spice_circuit_file_port
+                ng_spice_node1(spice_port_count)=surface_material_list(material_number)%Spice_circuit_file_nodes(1)
+                ng_spice_node2(spice_port_count)=surface_material_list(material_number)%Spice_circuit_file_nodes(2)
+                ng_face1(spice_port_count)=Vx_zmin
+                ng_cx1(spice_port_count)=cx
+                ng_cy1(spice_port_count)=cy
+                ng_cz1(spice_port_count)=cz
+                ng_face2(spice_port_count)=Vx_zmax
+                ng_cx2(spice_port_count)=cx
+                ng_cy2(spice_port_count)=cy
+                ng_cz2(spice_port_count)=cz-1
+                              	      
+               end if
+	      
+	       if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-y').OR.	&
+	           (surface_material_list(material_number)%Spice_port_direction.EQ.'+y') ) then
+  
+                spice_port_count=spice_port_count+1
+                
+                ng_material_number(spice_port_count)=material_number
+                ng_sign(spice_port_count)=surface_material_list(material_number)%Spice_port_sign
+                ng_spice_port(spice_port_count)=surface_material_list(material_number)%Spice_circuit_file_port
+                ng_spice_node1(spice_port_count)=surface_material_list(material_number)%Spice_circuit_file_nodes(1)
+                ng_spice_node2(spice_port_count)=surface_material_list(material_number)%Spice_circuit_file_nodes(2)
+                ng_face1(spice_port_count)=Vy_zmin
+                ng_cx1(spice_port_count)=cx
+                ng_cy1(spice_port_count)=cy
+                ng_cz1(spice_port_count)=cz
+                ng_face2(spice_port_count)=Vy_zmax
+                ng_cx2(spice_port_count)=cx
+                ng_cy2(spice_port_count)=cy
+                ng_cz2(spice_port_count)=cz-1
+
+               end if	    
+            
+	     end if  ! Spice link
+	    
+	   end if  ! not free space scatter
+
+	 end if  ! not free space
 	
         end if
             
       end do  ! next x cell
     end do    ! next y cell
   end do      ! next z cell
+  
+  if (spice_port_count.NE.n_spice_ports) then
+    write(*,*)'ERROR finding the spice ports in the mesh in ngspice_init_connect'
+    write(*,*)'spice_port_count=',spice_port_count,' n_spice_ports=',n_spice_ports
+    STOP 1
+  end if
           
 #endif
   

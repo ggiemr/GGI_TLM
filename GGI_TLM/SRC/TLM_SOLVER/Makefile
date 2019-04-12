@@ -17,12 +17,9 @@ cell_centre_cable_junction.o \
 face_cable_junction.o \
 TLM_parallel_pass_data.o 
 
-default: $(TLM_SOLVER_OBJS) \
-         connect_normal_to_x.F90  connect_normal_to_y.F90  connect_normal_to_z.F90 \
-         ngspice_connect_normal_to_x.F90 ngspice_connect_normal_to_y.F90  ngspice_connect_normal_to_z.F90
+default: $(TLM_SOLVER_OBJS) 
 
-
-%.o: %.F90
+%.o: %.F90 connect_normal_to_x.F90  connect_normal_to_y.F90  connect_normal_to_z.F90
 	$(FC) $(FLAGS) -c $<
 
 clean:

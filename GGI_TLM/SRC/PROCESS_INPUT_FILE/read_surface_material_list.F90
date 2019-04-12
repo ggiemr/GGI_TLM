@@ -107,6 +107,8 @@ logical	:: file_exists
   if ( allocated( surface_material_list ) ) GOTO 9000
   
   ALLOCATE( surface_material_list(1:n_surface_materials) )
+  
+  n_spice_ports=0
 
   do surface_material_number=1,n_surface_materials
   
@@ -314,8 +316,13 @@ logical	:: file_exists
 ! read spice circuit model parameters      
 
 ! read the Ngspice node(s) for this surface 
-
+      n_spice_ports=n_spice_ports+1
       read(input_file_unit,*,err=9005)surface_material_list(surface_material_number)%Spice_circuit_file_port
+      
+      if (surface_material_list(surface_material_number)%Spice_circuit_file_port.NE.n_spice_ports) then
+        write(*,*)'ERROR in read_surface_material_list: Spice ports should be numbered in order at the moment'
+        STOP 1
+      end if
       
       read(input_file_unit,'(A)')input_line  ! read the nodes for this port
       
