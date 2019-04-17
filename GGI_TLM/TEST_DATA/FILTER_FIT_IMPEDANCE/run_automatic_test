@@ -237,6 +237,3 @@ else
       
 fi
 
-exit 0
-# we have some arguments to run_automatic_test
-
