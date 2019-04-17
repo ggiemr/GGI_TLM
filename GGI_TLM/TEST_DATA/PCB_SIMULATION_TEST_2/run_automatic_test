@@ -13,7 +13,7 @@ if [[ "$ACTION" = "run_mpi" || "$ACTION" = "run_seq" ]] ; then
   echo "Running the GGI_TLM_create_PCB_simulation_model process"
 
   cd PROBLEM_SPECIFICATION_FILES
-  GGI_TLM_create_PCB_simulation_model < GGI_TLM_create_PCB_simulation_model_in.txt
+  $EXECUTABLE_DIR/GGI_TLM_create_PCB_simulation_model < GGI_TLM_create_PCB_simulation_model_in.txt
       
   RETURN_CODE=$?
   

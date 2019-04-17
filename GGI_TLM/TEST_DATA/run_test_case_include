@@ -202,9 +202,9 @@ else
 	   echo $VALUE | sed  "s/URANDOM//g" >> GGI_TLM_generate_random_numbers_in.txt
 	   echo "y
 random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt	   
-	   GGI_TLM_generate_random_numbers < GGI_TLM_generate_random_numbers_in.txt
+	   $EXECUTABLE_DIR/GGI_TLM_generate_random_numbers < GGI_TLM_generate_random_numbers_in.txt
 	   
-	   VALUE=$(GGI_TLM_generate_random_numbers < GGI_TLM_generate_random_numbers_in.txt)
+	   VALUE=$($EXECUTABLE_DIR/GGI_TLM_generate_random_numbers < GGI_TLM_generate_random_numbers_in.txt)
 	   
 	   read VALUE < random_number.dat
 	   
