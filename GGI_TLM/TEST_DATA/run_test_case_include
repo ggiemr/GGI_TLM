@@ -305,6 +305,9 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
          exit 1
        fi
 #       
+
+       sleep 1s
+       
        $SEQ_RUN_COMMAND $EXECUTABLE_DIR/GGI_TLM_post_process < PROBLEM_SPECIFICATION_FILES/GGI_TLM_post_process_in.txt
        read LINE < $PROGRESS_FILENAME
        if [ "$LINE" = "FINISHED: GGI_TLM_post_process" ] ; then
