@@ -62,6 +62,8 @@ integer,parameter  :: max_gerber_files=20
 integer            :: n_gerber_files
 character(LEN=256) :: gerber_filename(max_gerber_files)
 real*8             :: gerber_z_offset(max_gerber_files)
+character(LEN=256) :: executable_name
+character(LEN=256) :: executable_path
 
 ! Surface geometry stuff
 

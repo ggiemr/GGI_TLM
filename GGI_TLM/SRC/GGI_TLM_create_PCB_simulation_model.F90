@@ -48,6 +48,7 @@ IMPLICIT NONE
 
 character(LEN=256) :: ipfilename
 character(LEN=256) :: opfilename
+integer :: path_length
 
 ! START
 
@@ -63,6 +64,21 @@ character(LEN=256) :: opfilename
   n_volume_materials=0
   tot_n_ngspice_nodes=0
   tot_n_ngspice_ports=0
+  
+  CALL GET_COMMAND_ARGUMENT(0,executable_name)
+  write(*,*)'Executable name is:'
+  write(*,'(A)')trim(executable_name)
+  
+  path_length=index(executable_name,'GGI_TLM_create_PCB_simulation_model')
+  if (path_length.NE.0) then
+    executable_path=''
+    executable_path(1:path_length-1)=executable_name(1:path_length-1)
+    write(*,*)'Executable path is:'
+    write(*,'(A)')trim(executable_path)
+  else
+    write(*,*)'ERROR in GGI_TLM_create_PCB_simulation_model: Cannot find executable path'
+    STOP 1 
+  end if
   
 !1a. Open the file containing the PCB simulation specifications
 

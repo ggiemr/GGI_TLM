@@ -103,7 +103,7 @@ do i=1,n_gerber_files
   if (.NOT.file_exists) GOTO 9000
   
   write(number,'(ES16.6)')dl/4d0   ! gerber to stl resolution - should be less than dl
-  command='GGI_TLM_gerber_to_stl '//trim(gerber_filename(i))//' '//trim(number)
+  command=trim(executable_path)//'GGI_TLM_gerber_to_stl '//trim(gerber_filename(i))//' '//trim(number)
   
   write(*,*)'Running gerber to stl command:',trim(command)
   CALL execute_command_line (trim(command), exitstat=iout)
