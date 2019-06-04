@@ -41,6 +41,8 @@ IMPLICIT NONE
 
 ! local variables
 
+integer,parameter :: maxports=2  ! maximum number of ports for a component
+
 integer :: i,ii,cell
 
 real*8  :: sx,sy,sz        ! centre coordinates of device
@@ -55,6 +57,8 @@ integer :: signx,signy,signz
 
 real*8  :: sxp(5),syp(5),szp(5)     ! coordinates of two port device cell centres
 integer :: ixp(5),iyp(5),izp(5)     ! centre cells of two port device cell centres
+
+integer :: port_numbers(maxports)   ! maxports is the current maximum number of ports for a component
 
 integer :: nterminals
 real*8  :: term_cx(3),term_cy(3),term_cz(3) ! coordinates of device internal termination cells
@@ -99,10 +103,23 @@ character(LEN=256) :: material_name
       write(*,*)'ERROR: unknown component type:',trim(line)
       STOP 1
     end if
-    
+
+! read the number of ports    
     read(10,*)ngspice_n_ports(i)
     
     write(*,*)'Number of ports',ngspice_n_ports(i)
+    
+! read the port number(s) for these ports
+    read(10,*)(port_numbers(ii),ii=1,ngspice_n_ports(i))
+    
+    do ii=1,ngspice_n_ports(i)
+      if (port_numbers(ii).NE.tot_n_ngspice_ports+ii) then
+        write(*,*)'ERROR in GGI_TLM_create_PCB_simulation_model'
+        write(*,*)'Ports should be numbered in order'
+        STOP 1
+      end if
+    end do
+    
     
     ngspice_n_nodes(i)=ngspice_n_ports(i)        ! number of ngspice nodes equal to number of ngspice ports
     

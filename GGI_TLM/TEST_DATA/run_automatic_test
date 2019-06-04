@@ -177,6 +177,7 @@ action=view_meshed_geometry  NAME     : View the meshed geometry; volumes, surfa
 action=view_mesh  NAME     : View the computational mesh; volume materials, surface materials and cables.
 action=document  NAME     : Create a document in rtf format with details of the problem i.e. geometry, materials, cables, mesh and results
 action=save  NAME  TAG   : Create a directory RESULTS_TAG and save results, .inp file, .info file and any .rtf files into it.
+action=set_permissions  NAME  : Set executable permissions on run_automatic_test and create_reference_restuls files
 
 NAME can be : One of the existing test cases ,
      	    : FULL_TEST_CASE_LIST to run all the test cases
@@ -345,6 +346,10 @@ else
       
         TAG=$3
         source ./run_automatic_test $ACTION $TEST_CASE $TAG
+      
+      elif [ "$ACTION" = "set_permissions" ] ; then
+       
+        source ./run_automatic_test $ACTION $TEST_CASE
             
       else 
      

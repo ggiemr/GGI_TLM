@@ -83,6 +83,7 @@ if [ "$#" = "0" ] ; then
   echo "action=view_mesh  NAME     : View the computational mesh; volume materials, surface materials and cables"
   echo "action=document  NAME     : Create a document in rtf format with details of the problem i.e. geometry, materials, cables, mesh and results"
   echo "action=save  NAME  TAG   : Create a directory RESULTS_TAG and save results, .inp file, .info file and any .rtf files into it."
+  echo "action=set_permissions  NAME  : Set executable permissions on run_automatic_test and create_reference_restuls files"
   echo " "
   echo "NAME can be one of the existing test cases or leave blank to run the whole set"
   echo " "
@@ -167,7 +168,7 @@ else
      
      cd ..
      RUN_NAME=${RUN_FILE_NAME%\.*}
-     echo "TEST_CASE:${TEST_CASE}  RUN_NAME:${RUN_NAME}"
+     echo "TEST_CASE:${TEST_CASE}  RUN_NAME:${RUN_NAME} ACTION:$ACTION"
      
      PROGRESS_FILENAME='progress'
      
@@ -662,6 +663,11 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
        cp *.rtf  RESULTS_$TAG
                                  
        echo "FINISHED: $TEST_CASE: save" > ./progress
+      
+     elif [ "$ACTION" = "set_permissions" ] ; then
+     
+       chmod +x ./run_automatic_test
+       chmod +x ./PROBLEM_SPECIFICATION_FILES/create_reference_result
 
      else 
      

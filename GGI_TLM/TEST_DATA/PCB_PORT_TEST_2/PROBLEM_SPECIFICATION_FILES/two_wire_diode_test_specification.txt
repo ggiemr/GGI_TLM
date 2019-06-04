@@ -10,6 +10,7 @@ two_track.gbr
 1      # COMPONENT NUMBER
 one_port_model  # Component type for component 1
 1      # Number of ports
+1      # Port numbers
 1   0   # Ngspice node numbers for port 1
 -0.015  0.005 0.002  # connection point coordinates for connection number 1, port 1
 -0.015 -0.005 0.002  # connection point coordinates for connection number 2, reference for port 1
@@ -18,8 +19,9 @@ none      # package type
 2      # COMPONENT NUMBER
 two_port_model  # Component type for component 2
 2      # Number of ports
+2   3   # Port numbers
 2   3   # Ngspice node numbers for port 1
-3   0   # Ngspice node numbers for port 1
+3   0   # Ngspice node numbers for port 2
 0.015 +0.005 0.002  # connection point coordinates for connection number 1, port 1
 0.015  0.000 0.002  # connection point coordinates for connection number 2, reference for port 1, node for port 2
 0.015 -0.005 0.002  # connection point coordinates for connection number 3, reference for port 2

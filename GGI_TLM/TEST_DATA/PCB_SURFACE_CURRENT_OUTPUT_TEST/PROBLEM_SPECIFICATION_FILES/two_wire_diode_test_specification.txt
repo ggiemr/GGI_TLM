@@ -12,7 +12,8 @@ Air
 1      # COMPONENT NUMBER
 one_port_model  # Component type for component 1
 1      # Number of ports
-1      # Ngspice node number for port 1
+1      # Port number
+1   0  # Ngspice nodes number for port 1
 -0.05  0.005 0.002  # connection point coordinates for connection number 1, port 1
 -0.05 -0.005 0.002  # connection point coordinates for connection number 2, reference for port 1
 0.004     # z offset for component
@@ -20,7 +21,8 @@ none      # package type
 2      # COMPONENT NUMBER
 one_port_model  # Component type for component 2
 1      # Number of ports
-2      # Ngspice node number for port 1
+2      # Port number
+2   0  # Ngspice node numbers for port 1
 0.05  0.005 0.002  # connection point coordinates for connection number 1, port 1
 0.05 -0.005 0.002  # connection point coordinates for connection number 2, reference for port 1
 0.004     # z position for component 

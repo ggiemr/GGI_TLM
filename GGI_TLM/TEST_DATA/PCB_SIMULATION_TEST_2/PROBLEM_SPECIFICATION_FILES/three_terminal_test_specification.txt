@@ -16,8 +16,9 @@ FR4
 1      # COMPONENT NUMBER
 two_port_model  # Component type for component 1
 2      # Number of ports
-1      # Ngspice node number for port 1
-2      # Ngspice node number for port 2
+1  2   # Port numbers
+1  0    # Ngspice node numbers for port 1
+2  0    # Ngspice node numbers for port 2
 -0.05  0.005 0.002  # connection point coordinates for connection number 1, port 1: note coordinate numbering; end, centre, end
 -0.05  0.000 0.002  # connection point coordinates for connection number 3, reference for ports 1 and 2
 -0.05 -0.005 0.002  # connection point coordinates for connection number 2, port 2
@@ -29,8 +30,9 @@ component_case
 2      # COMPONENT NUMBER
 two_port_model  # Component type for component 2
 2      # Number of ports
-3      # Ngspice node number for port 1
-4      # Ngspice node number for port 2
+3  4   # Port numbers
+3  0   # Ngspice node numbers for port 1
+4  0   # Ngspice node numbers for port 2
 0.05  0.005 0.002  # connection point coordinates for connection number 1, port 1: note coordinate numbering; end, centre, end
 0.05  0.000 0.002  # connection point coordinates for connection number 3, reference for ports 1 and 2
 0.05 -0.005 0.002  # connection point coordinates for connection number 2, port 2
