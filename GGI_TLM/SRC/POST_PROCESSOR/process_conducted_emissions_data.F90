@@ -51,7 +51,8 @@ logical :: BW_warning
 logical :: freq_range_warning
 logical :: centre_freq_found
 character*256    :: opfilename
-integer :: detector_half_width,hw_samples,ifsample
+real*8  :: detector_half_width
+integer :: hw_samples,ifsample
 real*8  :: fs,df
 real*8  :: f_detector,V_detector,P_detector
 integer :: if1,if2,last_if1
@@ -242,9 +243,9 @@ end do
 if (nt_sub_pad2.NE.nt_sub) then
   write(*,*)'WARNING: The number of sub-samples is not a power of 2. The next power of 2 is:',nt_sub_pad2
   write(*,*)'Zero padding will be required for the FFT'
-  nt_sub2=nt_sub
-  nt_sub=nt_sub_pad2   ! make a power of 2
 end if
+nt_sub2=nt_sub
+nt_sub=nt_sub_pad2   ! make a power of 2
 
 write(*,*)'Enter the step size for sampling the original dataset (allows lower sample rate)'
 read(*,*)step_sub
@@ -550,6 +551,10 @@ else if (detector_type.EQ.'G') then
   detector_half_width=BW*2d0
 end if
 
+write(*,*)'Detector bandwidth =',BW
+write(*,*)'Detector half width=',detector_half_width
+write(*,*)'FFT frequency step =',df
+
 hw_samples=NINT(detector_half_width/df)+1    ! ensure that this is at least 1
 
 write(*,*)'Number of samples in detector half-width=',hw_samples
@@ -705,7 +710,8 @@ else
 end if
 
 
-END SUBROUTINE evaluate_filter_function
+END     SUBROUTINE evaluate_filter_function
+
 !
 ! These subroutines come from the GGI_TLM project
 !
