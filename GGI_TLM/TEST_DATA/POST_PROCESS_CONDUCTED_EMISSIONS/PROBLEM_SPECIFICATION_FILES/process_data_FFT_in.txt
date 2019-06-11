@@ -1,0 +1,18 @@
+ce336_600w.dat
+1.0e6        ! scale factor 1E6 scales to microVolts
+0            ! number of filters to apply
+8          ! Number of sub-data segments of data to process
+4096         ! number of samples in each subsegment (should be a power of 2)
+1            ! step size for sub-segment sampling. This allows sampling at a lower sample rate
+0            ! time period over which the samples are to be distributed or enter 0 for continuous subsets
+1            ! zero pad factor (should be a power of two)
+4            ! number of sub-segments to plot (max 9)
+r            ! time domain window function ('r'=rectangular, 'h'=Hann)
+n            ! subtract d.c. 'y' or 'n'
+2e3          ! minimum frequency for output
+150e3        ! maximum frequency for output
+1000         ! number of frequencies for output
+r            ! filter frequency domain function ('gaussian' or 'rectangular')
+200.0        ! filter bandwidth
+ce336_600w.out
+

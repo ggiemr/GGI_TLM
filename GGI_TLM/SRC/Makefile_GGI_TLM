@@ -446,7 +446,9 @@ POST_PROCESSOR/filter_impulse_response.o \
 POST_PROCESSOR/create_filter_function.o \
 POST_PROCESSOR/interpolate.o \
 POST_PROCESSOR/subtract_dc.o \
-POST_PROCESSOR/Scale_frequency_domain_data.o
+POST_PROCESSOR/Scale_frequency_domain_data.o \
+POST_PROCESSOR/process_conducted_emissions_data.o
+
 
 OPTIMISATION_OBJS=  \
 OPTIMISATION/opt_module.o \

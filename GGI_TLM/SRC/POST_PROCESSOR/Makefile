@@ -49,7 +49,8 @@ filter_impulse_response.o \
 create_filter_function.o \
 interpolate.o \
 subtract_dc.o \
-Scale_frequency_domain_data.o
+Scale_frequency_domain_data.o \
+process_conducted_emissions_data.o
 
 default: $(POST_PROCESSOR_OBJS)
 

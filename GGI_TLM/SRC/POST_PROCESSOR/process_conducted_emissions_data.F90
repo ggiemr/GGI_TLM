@@ -1,6 +1,8 @@
-PROGRAM process_data_FFT
+SUBROUTINE post_process_time_domain_data
 
 ! process time domain conducted emissions data 
+USE constants
+USE file_information
 
 IMPLICIT NONE
 
@@ -13,6 +15,10 @@ real*8           :: tin,ftin
 integer :: readloop
 
 real*8 :: dt
+
+integer :: n_head,t_col,V_col,n_col
+
+real*8,allocatable :: data_line(:)
 
 real*8,allocatable :: t(:),ft(:)
 
@@ -67,8 +73,10 @@ complex*16,allocatable :: ft_sub_favg(:)
 complex*16 :: Vdc
 
 integer i,ii,isegment
+  
+logical		:: file_exists
 
-real*8,parameter :: pi=3.1415926535d0
+logical,parameter :: write_temp_files=.FALSE.
 
 ! START
 
@@ -77,15 +85,46 @@ real*8,parameter :: pi=3.1415926535d0
 write(*,*)'Enter the filename for the time domain data'
 read(*,'(A)')ipfilename
 
-open(unit=10,file=trim(ipfilename),STATUS='OLD')
+inquire(file=trim(ipfilename),exist=file_exists)
+if (.NOT.file_exists) then
+  write(*,*)'Error file does not exist:',trim(ipfilename)
+  STOP
+end if
+write(record_user_inputs_unit,'(A)')trim(ipfilename)
+write(post_process_info_unit,*)'Time domain data filename:',trim(ipfilename)
+
+open(unit=local_file_unit,file=trim(ipfilename),STATUS='OLD')
+
+write(*,*)'Enter the number of header lines in the file'
+read(*,*)n_head
+write(record_user_inputs_unit,*)n_head,'  # number of header lines in the file'
+
+write(*,*)'Enter the column number for time data'
+read(*,*)t_col
+write(record_user_inputs_unit,*)t_col,'  # time data column'
+
+write(*,*)'Enter the column number for voltage data'
+read(*,*)V_col
+write(record_user_inputs_unit,*)V_col,'  # Voltage data column'
+
+n_col=max(t_col,V_col)
+
+ALLOCATE( data_line(1:n_col) )
 
 do readloop=1,2
+
+! read file header
+  do i=1,n_head
+    read(local_file_unit,*)
+  end do
 
   nt=0
 
 10 CONTINUE
 
-  read(10,*,END=100)tin,ftin
+  read(local_file_unit,*,END=100)(data_line(i),i=1,n_col)
+  tin =data_line(t_col)
+  ftin=data_line(V_col)
   nt=nt+1
   if (readloop.EQ.2) then
     t(nt)=tin
@@ -110,13 +149,16 @@ do readloop=1,2
     ALLOCATE( t(1:nt_pad) )
     ft(1:nt_pad)=0d0
     t(1:nt_pad) =0d0  
-    rewind(10)
+    rewind(local_file_unit)
   end if
   
 end do ! next readloop
 
 write(*,*)'Number of samples read, nt=',nt
 write(*,*)'Number of samples with zero padding, nt_pad=',nt_pad
+
+CLOSE(unit=local_file_unit)
+DEALLOCATE( data_line )
 
 dt=t(2)-t(1)
 
@@ -129,6 +171,7 @@ end do
 
 write(*,*)'Enter the scaling factor for the data (eg 1e6 to scale from V to uV)'
 read(*,*)scale
+write(record_user_inputs_unit,*)scale,'  # scale factor for data (eg 1E6 for V to micro V'
 
 ft(:)=ft(:)*scale
 
@@ -152,6 +195,7 @@ ALLOCATE( ft_filtered(1:nt_pad) )
 
 write(*,*)'Enter the number of filters to apply to the input time domain data'
 read(*,*)n_filter
+write(record_user_inputs_unit,*)n_filter,'  # number of filters to apply'
 
 ft_filtered(1:nt_pad)=dcmplx(ft(1:nt_pad))
 
@@ -171,18 +215,24 @@ CALL FFT(ft_filtered,nt_pad)
 
 CALL Power_calc_FFT(ft_filtered,nt_pad,dt)
   
-filename='ft_freq.dat'
-CALL write_FFT_data(frequency,ft_filtered,nt_pad,filename)
+if (write_temp_files) then
+  filename='ft_freq.dat'
+  CALL write_FFT_data(frequency,ft_filtered,nt_pad,filename,local_file_unit)
+end if
 
 do filter=1,n_filter
 
   write(*,*)'Enter the filter type (LPF or HPF)'
   read(*,*)ch
+  write(record_user_inputs_unit,'(A,A)')ch,'  # filter type (LPF or HPF)'
 
   write(*,*)'Enter the filter order (integer)'
   read(*,*)order
+  write(record_user_inputs_unit,*)order,'  # filter order'
+  
   write(*,*)'Enter the filter 3dB frequency (Hz)'
   read(*,*)fc
+  write(record_user_inputs_unit,*)fc,'  # filter cutoff frequency'
   wc=2d0*pi*fc
   
   if( (ch.eq.'l').OR.(ch.eq.'L') ) then
@@ -208,12 +258,14 @@ do filter=1,n_filter
   
 end do ! apply next filter function
   
-filename='filter_transfer_function.dat'
-CALL write_FFT_data(frequency,ft_impulse,nt_pad,filename)
+if (write_temp_files) then
+  filename='filter_transfer_function.dat'
+  CALL write_FFT_data(frequency,ft_impulse,nt_pad,filename,local_file_unit)
   
-filename='ft_filtered.dat'
-CALL write_FFT_data(frequency,ft_filtered,nt_pad,filename)
-  
+  filename='ft_filtered.dat'
+  CALL write_FFT_data(frequency,ft_filtered,nt_pad,filename,local_file_unit)
+end if
+ 
 write(*,*)
 write(*,*)'Filtered function:'
 CALL Power_calc_FFT(ft_filtered,nt_pad,dt)
@@ -221,19 +273,25 @@ CALL Power_calc_FFT(ft_filtered,nt_pad,dt)
 CALL INVERSE_FFT(ft_impulse,nt_pad)
 CALL INVERSE_FFT(ft_filtered,nt_pad)
   
-filename='filter_impulse_response.dat'
-CALL write_FFT_data(t,ft_impulse,nt_pad,filename)
+if (write_temp_files) then
+  filename='filter_impulse_response.dat'
+  CALL write_FFT_data(t,ft_impulse,nt_pad,filename,local_file_unit)
   
-filename='ft_out.dat'
-CALL write_FFT_data(t,ft_filtered,nt_pad,filename)
+  filename='ft_out.dat'
+  CALL write_FFT_data(t,ft_filtered,nt_pad,filename,local_file_unit)
+end if
+  
 CALL Power_calc_time(ft_filtered,nt_pad,dt)
 
 !4 EXTRACT SUB-SAMPLES FROM THE INPUT DATASET
 
 write(*,*)'Enter the number of sub-data segments to extract from the original dataset'
 read(*,*)n_sub_segments
+write(record_user_inputs_unit,*)n_sub_segments,'  # Number of sub-data segments of data to process'
+
 write(*,*)'Enter the number of samples in each sub-segment (this should be a power of 2)'
 read(*,*)nt_sub
+write(record_user_inputs_unit,*)nt_sub,'  # number of samples in each sub-segment (this should be a power of 2)'
 
 ! work out the power of two greater than or equal to nt
 nt_sub_pad2=2
@@ -249,15 +307,24 @@ nt_sub=nt_sub_pad2   ! make a power of 2
 
 write(*,*)'Enter the step size for sampling the original dataset (allows lower sample rate)'
 read(*,*)step_sub
+write(record_user_inputs_unit,*)step_sub,'  # step size for sub-segment sampling. This allows sampling at a lower sample rate'
+
 write(*,*)'Enter the time period over which the samples are to be distributed or enter 0 for continuous subsets'
 read(*,*)sub_sample_period
+write(record_user_inputs_unit,*)sub_sample_period,  &
+ '  # time period over which the samples are to be distributed or enter 0 for continuous subsets'
+
 write(*,*)'Enter the zero padding factor (should be a power of two)'
 read(*,*)zero_pad_factor
+write(record_user_inputs_unit,*)zero_pad_factor,'  # zero pad factor (should be a power of two)'
+
 write(*,*)'Enter the number of time domain sub-segments to plot'
 read(*,*)n_sub_plot
+write(record_user_inputs_unit,*)n_sub_plot,'  # number of sub-segments to plot (max 9)'
 
 write(*,*)"Enter the type of time domain window function to apply; 'r'=rectangular, 'h'=Hann'"
 read(*,'(A)')window_fn
+write(record_user_inputs_unit,'(A,A)')window_fn,'  # time domain window function (r=rectangular, h=Hann)'
 
 if ( (window_fn.NE.'r').AND.(window_fn.NE.'R').AND.(window_fn.NE.'h').AND.(window_fn.NE.'H') ) then
   write(*,*)'Unknown window function type:',window_fn
@@ -375,18 +442,20 @@ end do
 
 ft_sub_tavg(:)=ft_sub_tavg(:)/dble(n_sub_segments)
 
+if (write_temp_files) then
 ! Plot time domain datasets
-do isegment=1,n_sub_plot
+  do isegment=1,n_sub_plot
 
-  write(ch,'(I1)')isegment
-  filename='sub_segment_time_'//ch//'.dat'
-  ft_sub_temp(1:nt_sub)=ft_sub(1:nt_sub,isegment)
-  CALL write_FFT_data(t_sub,ft_sub_temp,nt_sub_pad,filename)
+    write(ch,'(I1)')isegment
+    filename='sub_segment_time_'//ch//'.dat'
+    ft_sub_temp(1:nt_sub)=ft_sub(1:nt_sub,isegment)
+    CALL write_FFT_data(t_sub,ft_sub_temp,nt_sub_pad,filename,local_file_unit)
   
-end do
+  end do
 
-filename='sub_segment_time_average.dat'
-CALL write_FFT_data(t_sub,ft_sub_tavg,nt_sub_pad,filename)
+  filename='sub_segment_time_average.dat'
+  CALL write_FFT_data(t_sub,ft_sub_tavg,nt_sub_pad,filename,local_file_unit)
+end if
 
 !6. CALCULATE TIME DOMAIN POWER
 
@@ -409,6 +478,8 @@ CALL Power_calc_time(ft_sub_tavg,nt_sub_pad,dt_sub)
 
 write(*,*)'Do you want to subtract the d.c. voltage (y/n)'
 read(*,'(A)')ch
+write(record_user_inputs_unit,'(A,A)')ch,'  # subtract d.c. (y or n)'
+
 if ((ch.eq.'y').OR.(ch.EQ.'Y')) then
 
   write(*,*)'Subtracting the d.c. voltage'
@@ -473,22 +544,27 @@ do isegment=1,n_sub_segments
 end do
 ft_sub_favg(:)=ft_sub_favg(:)/dble(n_sub_segments)
 
+if (write_temp_files) then
+
 ! Plot frequency domain datasets
-do i=1,n_sub_plot
+  do i=1,n_sub_plot
 
-  write(ch,'(I1)')i
-  filename='sub_segment_freq_'//ch//'.dat'
-  ft_sub_temp(:)=(0d0,0d0)
-  ft_sub_temp(1:nt_sub_pad)=ft_sub(1:nt_sub_pad,i)
-  CALL write_single_side_FFT_data(frequency_sub,ft_sub_temp,nt_sub_pad,zero_pad_factor,filename)
+    write(ch,'(I1)')i
+    filename='sub_segment_freq_'//ch//'.dat'
+    ft_sub_temp(:)=(0d0,0d0)
+    ft_sub_temp(1:nt_sub_pad)=ft_sub(1:nt_sub_pad,i)
+    CALL write_single_side_FFT_data(frequency_sub,ft_sub_temp,nt_sub_pad,zero_pad_factor,filename,local_file_unit)
   
-end do
+  end do
+end if
 
-filename='sub_segment_time_average_freq.dat'
-CALL write_single_side_FFT_data(frequency_sub,ft_sub_tavg,nt_sub_pad,zero_pad_factor,filename)
+if (write_temp_files) then
+  filename='sub_segment_time_average_freq.dat'
+  CALL write_single_side_FFT_data(frequency_sub,ft_sub_tavg,nt_sub_pad,zero_pad_factor,filename,local_file_unit)
+end if
 
-filename='sub_segment_freq_average_freq.dat'
-CALL write_single_side_FFT_data(frequency_sub,ft_sub_favg,nt_sub_pad,zero_pad_factor,filename)
+filename='sub_segment_freq_average.dat'
+CALL write_single_side_FFT_data(frequency_sub,ft_sub_favg,nt_sub_pad,zero_pad_factor,filename,local_file_unit)
 
 !10. CALCULATE FREQUENCY DOMAIN POWER 
 
@@ -507,12 +583,19 @@ CALL Power_calc_FFT(ft_sub_tavg,nt_sub_pad,dt_sub)
 write(*,*)
 write(*,*)'Enter the minimum frequency to output (Hz)'
 read(*,*)fmin
+write(record_user_inputs_unit,*)fmin,' # minimum frequency for output'
+
 write(*,*)'Enter the maximum frequency to output (Hz)'
 read(*,*)fmax
+write(record_user_inputs_unit,*)fmax,' # maximum frequency for output'
+
 write(*,*)'Enter the number of frequencies to output '
 read(*,*)nf
+write(record_user_inputs_unit,*)nf,' # number of frequencies for output'
+
 write(*,*)"Enter the detector filter frequency domain function ('gaussian' or 'rectangular')"
 read(*,'(A)')detector_type
+write(record_user_inputs_unit,'(A,A)')detector_type,' # detector frequency domain function (gaussian or rectangular)'
 
 if ( (detector_type.NE.'r').AND.(detector_type.NE.'R').AND.(detector_type.NE.'g').AND.(detector_type.NE.'G') ) then
   write(*,*)'Unknown detector type:',detector_type
@@ -524,13 +607,15 @@ end if
 
 write(*,*)'Enter the detector bandwidth (Hz)'
 read(*,*)BW
+write(record_user_inputs_unit,*)BW,' # detector bandwidth'
 
 write(*,*)'Enter the output filename'
 read(*,'(A)')opfilename
+write(record_user_inputs_unit,'(A)')trim(opfilename)
 
 fstep=(fmax-fmin)/dble(nf-1)
 
-open(unit=30,file=trim(opfilename))
+open(unit=local_file_unit,file=trim(opfilename))
 
 freq_range_warning=.FALSE.
 BW_warning=.FALSE.
@@ -608,9 +693,12 @@ do i=1,nf
         
 ! add the contribution of this frequency to the detector power. Note factor of 2 to take account of negative frequencies
 ! There is a question about what to do about zero padding here...
+
         V_detector=abs(f_detector*ft_sub_favg(ifsample)*zero_pad_factor/nt_sub_pad)
+        
 ! Note in the power calculation, divide by zero_pad_factor as the signal is padded out with zeros which should
 ! be corrected for in the calculation
+
         P_detector=P_detector+2d0*((V_detector)**2)/zero_pad_factor       
                
       else
@@ -618,11 +706,11 @@ do i=1,nf
       end if
     
     end do
-  
+        
     if (P_detector.GT.0d0) then
-      write(30,'(4ES16.6)')f,P_detector,10d0*log10(P_detector/50d0)+30d0,10d0*log10(P_detector)   ! note conversion to dBm for 50 ohm load in col 3.
+      write(local_file_unit,'(4ES16.6)')f,P_detector,10d0*log10(P_detector/50d0)+30d0,10d0*log10(P_detector)   ! note conversion to dBm for 50 ohm load in col 3.
     else
-      write(30,'(4ES16.6)')f,P_detector,-200d0,-200d0                       ! zero power so write very small dBm value
+      write(local_file_unit,'(4ES16.6)')f,P_detector,-200d0,-200d0                       ! zero power so write very small dBm value
     end if
     
   else
@@ -634,7 +722,7 @@ do i=1,nf
 
 end do
 
-close(unit=30)
+close(unit=local_file_unit)
 
 if (BW_warning) then
   write(*,*)'***************************************************************************'
@@ -662,12 +750,12 @@ DEALLOCATE( ft_sub_temp )
 DEALLOCATE( ft_sub_tavg )
 DEALLOCATE( ft_sub_favg )
 
-STOP
+RETURN
 
 9000 write(*,*)'Error reading the input datafile'
      STOP 1
 
-END PROGRAM process_data_FFT
+END SUBROUTINE post_process_time_domain_data
 !
 ! ___________________________________________________________________________________
 !
@@ -710,18 +798,18 @@ else
 end if
 
 
-END     SUBROUTINE evaluate_filter_function
+END SUBROUTINE evaluate_filter_function
 
 !
 ! These subroutines come from the GGI_TLM project
 !
-! SUBROUTINE FFT_MAIN
+! SUBROUTINE FFT_set frequencies
 !
 ! NAME
-!    FFT
+!    FFTT_set frequencies
 !
 ! DESCRIPTION
-!     controlling subroutine for the FFT
+!     calculate the frequencies output by the FFT subroutine
 !     
 ! COMMENTS
 !     
@@ -768,133 +856,6 @@ IMPLICIT NONE
   
 END SUBROUTINE FFT_set_frequencies
 !
-! SUBROUTINE FFT
-!
-! NAME
-!    FFT
-!
-! DESCRIPTION
-!     Fast Fourier Transform routine - called recursively
-!     
-! COMMENTS
-!     
-!
-! HISTORY
-!
-!     started 20/11/2013 CJS
-!
-!
-RECURSIVE SUBROUTINE FFT(x,n)
-
-IMPLICIT NONE
-
-  integer	:: n
-  complex*16	:: x(n)
-
-! local variables
-
-  integer			:: n2
-  complex*16,allocatable	:: xe(:)
-  complex*16,allocatable	:: xo(:)
-  complex*16	:: const
-  
-  integer	:: i
-  
-  complex*16,parameter :: j=(0d0,1d0)
-  real*8,parameter :: pi=3.1415926535d0
-
-! START
-
-! No action required for n=1  
-  if(n .LE. 1) RETURN
-  
-  n2=n/2
- 
-  ALLOCATE(xe(1:n2))
-  ALLOCATE(xo(1:n2))
- 
-! fill odd and even data
- 
-  do i=1,n2
-    xo(i)=x(2*i-1)
-    xe(i)=x(2*i)
-  end do
-
-! FFT odd and even sequences
-  CALL FFT(xo,n2)
-  CALL FFT(xe,n2)
- 
-! combine odd and even FFTs
-
-  do i=1,n2
- 
-    const=exp(-2d0*pi*j*(i-1)/n)
-
-    x(i)   = xo(i)+xe(i)*const
-    x(i+N2)= xo(i)-xe(i)*const
-    
-  end do
- 
-  DEALLOCATE(xo)
-  DEALLOCATE(xe)
-  
-  RETURN
- 
-END SUBROUTINE FFT
-!
-! SUBROUTINE INVERSE_FFT
-!
-! NAME
-!    INVERSE_FFT
-!
-! DESCRIPTION
-!     Inverse Fast Fourier Transform routine 
-!     
-! COMMENTS
-!     
-!
-! HISTORY
-!
-!     started 20/11/2013 CJS
-!
-!
-SUBROUTINE INVERSE_FFT(x,n)
-
-IMPLICIT NONE
-
-  integer	:: n
-  complex*16	:: x(n)
-
-! local variables
-
-  integer 	:: i
-  complex*16	:: x2(n)
-  complex*16 	:: swap
-
-! START
-
-! copy the dataset into a local array
-  do i=1,n
-    x2(i)=x(i)
-  end do
-
-! Call the forward FFT routine
-  CALL FFT(x2,n)
-  
-  do i=1,n
-    x2(i)=x2(i)/n
-  end do
-  
-! loop over the result dividing by n and reversing the imaginary part
-  x(1)=x2(1)
-  do i=2,n
-    x(i)=x2(n-i+2)
-  end do
-  
-  RETURN
- 
-END SUBROUTINE INVERSE_FFT
-!
 ! SUBROUTINE write_FFT_time_data
 !
 ! NAME
@@ -911,7 +872,7 @@ END SUBROUTINE INVERSE_FFT
 !     started 20/11/2013 CJS
 !
 !
-SUBROUTINE write_FFT_time_data(xdata,ydata,n,name)
+SUBROUTINE write_FFT_time_data(xdata,ydata,n,name,op_unit)
 
 
 IMPLICIT NONE
@@ -920,6 +881,7 @@ IMPLICIT NONE
   real*8        :: xdata(n)
   complex*16	:: ydata(n)
   character*256 :: name
+  integer :: op_unit
 
 ! local variables
 
@@ -927,7 +889,7 @@ IMPLICIT NONE
 
 ! START
 
-  open(unit=20,file=trim(name))
+  open(unit=op_unit,file=trim(name))
   
 ! look at the first and last xdata samples to decide if we have frequency or time domain data
 
@@ -935,7 +897,7 @@ IMPLICIT NONE
 
 ! we have time domain data and should plot in order
     do i=1,n
-      write(20,'(4ES16.6)')xdata(i),real(ydata(i)),imag(ydata(i)),abs(ydata(i))
+      write(op_unit,'(4ES16.6)')xdata(i),real(ydata(i)),imag(ydata(i)),abs(ydata(i))
     end do
   
   else
@@ -945,7 +907,7 @@ IMPLICIT NONE
   
   end if
   
-  close(unit=20)
+  close(unit=op_unit)
   
   RETURN
  
@@ -967,7 +929,7 @@ END SUBROUTINE write_FFT_time_data
 !     started 20/11/2013 CJS
 !
 !
-SUBROUTINE write_FFT_data(xdata,ydata,n,name)
+SUBROUTINE write_FFT_data(xdata,ydata,n,name,op_unit)
 
 
 IMPLICIT NONE
@@ -976,6 +938,7 @@ IMPLICIT NONE
   real*8        :: xdata(n)
   complex*16	:: ydata(n)
   character*256 :: name
+  integer :: op_unit
 
 ! local variables
 
@@ -983,7 +946,7 @@ IMPLICIT NONE
 
 ! START
 
-  open(unit=20,file=trim(name))
+  open(unit=op_unit,file=trim(name))
   
 ! look at the first and last xdata samples to decide if we have frequency or time domain data
 
@@ -991,22 +954,22 @@ IMPLICIT NONE
 
 ! we have time domain data and should plot in order
     do i=1,n
-      write(20,'(4ES16.6)')xdata(i),real(ydata(i)),imag(ydata(i)),abs(ydata(i))
+      write(op_unit,'(4ES16.6)')xdata(i),real(ydata(i)),imag(ydata(i)),abs(ydata(i))
     end do
   
   else
 ! we have frequency domain data so reorder the data when writing and scale data by 1/n
     n2=n/2
     do i=n2+2,n
-      write(20,'(4ES16.6)')xdata(i),real(ydata(i)/n),imag(ydata(i)/n),abs(ydata(i)/n)
+      write(op_unit,'(4ES16.6)')xdata(i),real(ydata(i)/n),imag(ydata(i)/n),abs(ydata(i)/n)
     end do
     do i=1,n2+1
-      write(20,'(4ES16.6)')xdata(i),real(ydata(i)/n),imag(ydata(i)/n),abs(ydata(i)/n)
+      write(op_unit,'(4ES16.6)')xdata(i),real(ydata(i)/n),imag(ydata(i)/n),abs(ydata(i)/n)
     end do
   
   end if
   
-  close(unit=20)
+  close(unit=op_unit)
   
   RETURN
  
@@ -1029,7 +992,7 @@ END SUBROUTINE write_FFT_data
 !     started 20/11/2013 CJS
 !
 !
-SUBROUTINE write_single_side_FFT_data(xdata,ydata,n,zero_pad_factor,name)
+SUBROUTINE write_single_side_FFT_data(xdata,ydata,n,zero_pad_factor,name,op_unit)
 
 
 IMPLICIT NONE
@@ -1039,6 +1002,7 @@ IMPLICIT NONE
   complex*16	:: ydata(n)
   integer	:: zero_pad_factor
   character*256 :: name
+  integer :: op_unit
 
 ! local variables
 
@@ -1048,7 +1012,7 @@ IMPLICIT NONE
 
 ! START
 
-  open(unit=20,file=trim(name))
+  open(unit=op_unit,file=trim(name))
   
 ! look at the first and last xdata samples to decide if we have frequency or time domain data
 
@@ -1064,15 +1028,17 @@ IMPLICIT NONE
     do i=1,n2+1
 ! power into 50ohm load in mW; note add 3dB so we can compare with single sided data
 ! Note also the use of the zero pad factor to scale 
+
       Vdbm=20d0*log10(abs(ydata(i)*zero_pad_factor/n)/sqrt(50d0))+30d0+3.01d0      
-      Vdb=20d0*log10(abs(ydata(i)*zero_pad_factor/n))
-      write(20,'(6ES16.6)')xdata(i),real(ydata(i)*zero_pad_factor/n),imag(ydata(i)*zero_pad_factor/n), &
+      Vdb=20d0*log10(abs(ydata(i)*zero_pad_factor/n))+3.01d0  
+      
+      write(op_unit,'(6ES16.6)')xdata(i),real(ydata(i)*zero_pad_factor/n),imag(ydata(i)*zero_pad_factor/n), &
                                      abs(ydata(i)*zero_pad_factor/n),Vdbm,Vdb
     end do
 
   end if
   
-  close(unit=20)
+  close(unit=op_unit)
   
   RETURN
  
