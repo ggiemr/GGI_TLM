@@ -118,7 +118,7 @@ IMPLICIT NONE
 
 100 CONTINUE
 
-    read(local_file_unit,*,end=110)(data_line(i),i=1,max_col)
+    read(local_file_unit,*,end=110,err=110)(data_line(i),i=1,max_col)
     n_samples1=n_samples1+1
     
     x1min=min(x1min,data_line(x1_col)*xscale)
@@ -200,7 +200,7 @@ IMPLICIT NONE
     
 200 CONTINUE
 
-    read(local_file_unit,*,end=210)(data_line(i),i=1,max_col)
+    read(local_file_unit,*,end=210,err=210)(data_line(i),i=1,max_col)
     n_samples2=n_samples2+1
     
     x2min=min(x2min,data_line(x2_col)*xscale)
@@ -335,8 +335,6 @@ IMPLICIT NONE
   DEALLOCATE( re )
   DEALLOCATE( im )
   
-  STOP
-  
   RETURN
   
 9000 write(*,*)'ERROR in interpolate: cannot open the file:',trim(x1filename)
@@ -344,5 +342,5 @@ IMPLICIT NONE
   
 9010 write(*,*)'ERROR in interpolate: cannot open the file:',trim(x2filename)
      STOP
-    
+      
 END SUBROUTINE interpolate
