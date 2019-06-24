@@ -21,6 +21,7 @@ integer :: n_head,t_col,V_col,n_col
 real*8,allocatable :: data_line(:)
 
 real*8,allocatable :: t(:),ft(:)
+real*8 :: tmax
 
 ! Functions to be transformed are complex here
 real*8,allocatable     :: frequency(:)
@@ -37,12 +38,21 @@ real*8  :: fc,wc
 integer :: n_sub_segments
 integer :: nt_sub,nt_sub2
 integer :: step_sub
-integer :: window_spacing
 integer :: n_sub_plot
-integer :: zero_pad_factor
 integer :: nt_sub_pad,nt_sub_pad2
 real*8    :: sub_sample_period
-real*8    :: dt_sub
+real*8    :: dt_sub,t_sub_period
+real*8    :: tstart,time
+integer   :: ntstart,istart
+real*8    :: window_spacing
+
+real*8  :: t1,t2
+integer :: last_sample,i_time
+real*8  :: interpolated_value,value_1,value_2
+
+! dataset padding stuff
+integer   :: pad_factor
+character :: pad_type
 
 ! time domain window stuff
 character :: window_fn
@@ -60,6 +70,9 @@ character*256    :: opfilename
 real*8  :: detector_half_width
 integer :: hw_samples,ifsample
 real*8  :: fs,df
+
+integer :: n_detectors,detector
+
 real*8  :: f_detector,V_detector,P_detector
 integer :: if1,if2,last_if1
 
@@ -154,8 +167,16 @@ do readloop=1,2
   
 end do ! next readloop
 
+write(*,*)
+write(*,*)'Time of first sample=',t(1)
+write(*,*)'Time of last sample=',t(nt)
+write(*,*)'Time period of the input signal=',t(nt)-t(1)
+tmax=t(nt)-t(1)
+write(*,*)'Rescaling time axis from 0 to tmax, tmax=',tmax
+write(*,*)
 write(*,*)'Number of samples read, nt=',nt
-write(*,*)'Number of samples with zero padding, nt_pad=',nt_pad
+write(*,*)'Number of samples with zero padding to the next power of 2, nt_pad=',nt_pad
+write(*,*)'(Note: zero padding is only used here for the purposes of applying filters)'
 
 CLOSE(unit=local_file_unit)
 DEALLOCATE( data_line )
@@ -167,8 +188,11 @@ do i=1,nt_pad
   t(i)=dble(i-1)*dt
 end do
 
+write(*,*)'Time of last sample with zero padding=',t(nt_pad)
+
 !2. SCALE THE DATA (E.G. TO MICRO VOLTS) IF REQUIRED
 
+write(*,*)
 write(*,*)'Enter the scaling factor for the data (eg 1e6 to scale from V to uV)'
 read(*,*)scale
 write(record_user_inputs_unit,*)scale,'  # scale factor for data (eg 1E6 for V to micro V'
@@ -183,7 +207,7 @@ end do
 
 Power_t_in=power_t_in*dt
 
-write(*,*)'Time domain input power:',Power_t_in,' W'
+write(*,*)'Time domain input power:',Power_t_in
 
 !3. APPLY LOW PASS AND HIGH PASS FILTERS TO INPUT TIME DOMAIN DATA AS REQUIRED
 
@@ -289,34 +313,54 @@ write(*,*)'Enter the number of sub-data segments to extract from the original da
 read(*,*)n_sub_segments
 write(record_user_inputs_unit,*)n_sub_segments,'  # Number of sub-data segments of data to process'
 
+if (n_sub_segments.LT.1) then
+  write(*,*)'ERROR: The number of sub-segments should be at least 1'
+  STOP 1
+end if
+
+write(*,*)'Total number of input samples/ number of sub segments=',nt/n_sub_segments
+write(*,*)'Period of input signal/ number of sub segments=',(t(nt)-t(1))/n_sub_segments
+
+write(*,*)'Enter the period of each sub-segment'
+read(*,*)t_sub_period
+write(record_user_inputs_unit,*)t_sub_period,'  # period of each sub-segment'
+
 write(*,*)'Enter the number of samples in each sub-segment (this should be a power of 2)'
 read(*,*)nt_sub
 write(record_user_inputs_unit,*)nt_sub,'  # number of samples in each sub-segment (this should be a power of 2)'
 
-! work out the power of two greater than or equal to nt
+! work out the power of two greater than or equal to nt_sub
 nt_sub_pad2=2
 do while (nt_sub_pad2.LT.nt_sub)
   nt_sub_pad2=nt_sub_pad2*2
 end do
 if (nt_sub_pad2.NE.nt_sub) then
   write(*,*)'WARNING: The number of sub-samples is not a power of 2. The next power of 2 is:',nt_sub_pad2
-  write(*,*)'Zero padding will be required for the FFT'
 end if
 nt_sub2=nt_sub
 nt_sub=nt_sub_pad2   ! make a power of 2
 
-write(*,*)'Enter the step size for sampling the original dataset (allows lower sample rate)'
-read(*,*)step_sub
-write(record_user_inputs_unit,*)step_sub,'  # step size for sub-segment sampling. This allows sampling at a lower sample rate'
-
 write(*,*)'Enter the time period over which the samples are to be distributed or enter 0 for continuous subsets'
+write(*,*)'tmax=',tmax
 read(*,*)sub_sample_period
 write(record_user_inputs_unit,*)sub_sample_period,  &
  '  # time period over which the samples are to be distributed or enter 0 for continuous subsets'
 
-write(*,*)'Enter the zero padding factor (should be a power of two)'
-read(*,*)zero_pad_factor
-write(record_user_inputs_unit,*)zero_pad_factor,'  # zero pad factor (should be a power of two)'
+if (sub_sample_period.GT.tmax) then
+  write(*,*)'ERROR: sub sample period should be less than tmax'
+  STOP 1
+end if
+
+write(*,*)'Enter the padding factor (should be a power of two)'
+read(*,*)pad_factor
+write(record_user_inputs_unit,*)pad_factor,'  # pad factor (should be a power of two)'
+
+write(*,*)'Enter z to pad with zeros or p to create a periodic continuation of the sub-signal'
+read(*,'(A)'),pad_type
+if ( (pad_type.NE.'z').AND.(pad_type.NE.'p') ) then
+  write(*,*)'Pad type should be z or p'
+  STOP 1
+end if
 
 write(*,*)'Enter the number of time domain sub-segments to plot'
 read(*,*)n_sub_plot
@@ -334,10 +378,10 @@ else if (window_fn.EQ.'h') then
   window_fn='H'
 end if
 
-nt_sub_pad=nt_sub*zero_pad_factor
+nt_sub_pad=nt_sub*pad_factor
 
-write(*,*)'Number of time samples in each sub-sample,         n_sub2=',nt_sub2
-write(*,*)'Number of time samples increased to power of 2,    nt_sub=',nt_sub
+write(*,*)'Period of each sub-sample,    t_sub_period=',t_sub_period
+write(*,*)'Number of time samples (increased to power of 2),    nt_sub=',nt_sub
 write(*,*)'Number of time samples including zero padding, nt_sub_pad=',nt_sub_pad
 
 if ( (n_sub_plot.LT.0).OR.(n_sub_plot.GT.9) ) then
@@ -350,13 +394,13 @@ if ( n_sub_plot.GT.n_sub_segments ) then
   STOP 1
 end if
 
-if (window_spacing.NE.0d0) then
-  window_spacing=NINT(sub_sample_period/dble(n_sub_segments))
+if (sub_sample_period.NE.0d0) then
+  window_spacing=sub_sample_period/dble(n_sub_segments)
 else
-  window_spacing=nt_sub
+  window_spacing=t_sub_period
 end if
 
-dt_sub=dt*step_sub       ! timestep for the sub-sampled segments
+dt_sub=t_sub_period/dble(nt_sub)       ! timestep for the sub-sampled segments
 
 write(*,*)'Timestep for sub-sampled segments =',dt_sub
 
@@ -381,25 +425,91 @@ end do
 ALLOCATE( ft_sub(1:nt_sub_pad,1:n_sub_segments) )
 ft_sub(1:nt_sub_pad,1:n_sub_segments)=(0d0,0d0)
 
+write(*,*)
 write(*,*)'extract the sub-segments from the original filtered dataset'
 
 do isegment=1,n_sub_segments
-
-  write(*,*)'First sample of sub_segment is:',(isegment-1)*window_spacing
-
-  do i=1,nt_sub2   ! note use the number of samples requested initially, not the number of samples with zero padding
   
-    ii=(isegment-1)*window_spacing+1+(i-1)*step_sub
-    if (ii.GT.nt) then
-      write(*,*)'ERROR: sub-sampling beyond the input data range'
-      write(*,*)'Data sample:',ii,' Total number of samples=',nt
-      STOP 1
+  tstart=(isegment-1)*window_spacing
+  
+  write(*,*)
+  write(*,*)'Sub segment             : ',isegment
+  write(*,*)'Sub segment initial time: ',tstart  
+    
+! Find the timesteps that bracket the initial time
+    
+  do ii=1,nt_pad-1
+    
+    t1=t(ii)
+    t2=t(ii+1)
+      
+    if ( (tstart.GE.t1).AND.(tstart.LE.t2) ) then
+! the initial time is bracketed by timesteps ii and ii+1
+      GOTO 7000
     end if
-    ft_sub(i,isegment)=ft_filtered(ii)
     
   end do
+    
+  write(*,*)'ERROR: Unable to find the intiial timestep for this sub-segment data'
+  STOP 1
+    
+7000 CONTINUE   ! Jump here when we have the initial time for this sub-segment
 
-end do
+  last_sample=ii
+
+! loop over the timesteps required in the resampled dataset  
+  do i_time=1,nt_sub
+  
+    time=tstart+(i_time-1)*dt_sub
+    
+! loop over the input dataset and find the timesteps which bracket the required time
+    do ii=last_sample,nt_pad-1
+    
+      t1=t(ii)
+      t2=t(ii+1)
+      
+      if ( (time.GE.t1).AND.(time.LT.t2) ) then
+! the required time is bracketed by timesteps ii and ii+1
+        GOTO 7010
+      end if
+    
+    end do
+    
+    if (time.EQ.t2) GOTO 7010    ! special case for the last sample
+    
+    write(*,*)'ERROR: Unable to find the timesteps bracketing time:',time
+    STOP 1
+      
+7010 CONTINUE   ! Jump here when we have bracketed the required time
+
+    value_1=ft_filtered(ii)
+    value_2=ft_filtered(ii+1)
+	   
+    interpolated_value=value_1+( (value_2-value_1)/(t2-t1) )*(time-t1)
+    ft_sub(i_time,isegment)=interpolated_value
+	    
+    last_sample=ii    
+            
+  end do ! next i_time
+
+  if (pad_type.EQ.'p') then
+! Add a periodic extension of the dataset if required
+
+! loop over the timesteps of the initial signal
+    do i_time=1,nt_sub
+  
+      do i=2,pad_factor
+
+        ii=i_time+(i-1)*nt_sub
+        ft_sub(ii,isegment)=ft_sub(i_time,isegment)
+
+      end do  ! next padding period
+    
+    end do ! next time sample of initial signal
+  
+  end if  ! Add periodic extension
+
+end do    ! next sub_segment
 
 !4. APPLY A WINDOW FUNCTION
 ! Note: no action reqiuired for rectangular window
@@ -407,9 +517,9 @@ if (window_fn.EQ.'H') then
 
 do isegment=1,n_sub_segments
 
-  do i=1,nt_sub2  ! note use the number of samples requested initially, not the number of samples with zero padding
+  do i=1,nt_sub_pad  
   
-    wi=0.5d0*( 1d0-cos(2d0*pi*(dble(i-1))/dble(nt_sub2-1)) )
+    wi=0.5d0*( 1d0-cos(2d0*pi*(dble(i-1))/dble(nt_sub_pad -1)) )
     ft_sub(i,isegment)=ft_sub(i,isegment)*wi
     
   end do
@@ -553,18 +663,22 @@ if (write_temp_files) then
     filename='sub_segment_freq_'//ch//'.dat'
     ft_sub_temp(:)=(0d0,0d0)
     ft_sub_temp(1:nt_sub_pad)=ft_sub(1:nt_sub_pad,i)
-    CALL write_single_side_FFT_data(frequency_sub,ft_sub_temp,nt_sub_pad,zero_pad_factor,filename,local_file_unit)
+    CALL write_single_side_FFT_data(frequency_sub,ft_sub_temp,nt_sub_pad,pad_factor,filename,local_file_unit)
   
   end do
 end if
 
 if (write_temp_files) then
   filename='sub_segment_time_average_freq.dat'
-  CALL write_single_side_FFT_data(frequency_sub,ft_sub_tavg,nt_sub_pad,zero_pad_factor,filename,local_file_unit)
+  CALL write_single_side_FFT_data(frequency_sub,ft_sub_tavg,nt_sub_pad,pad_factor,filename,local_file_unit)
 end if
 
 filename='sub_segment_freq_average.dat'
-CALL write_single_side_FFT_data(frequency_sub,ft_sub_favg,nt_sub_pad,zero_pad_factor,filename,local_file_unit)
+
+write(*,*)'Enter the filename for the raw FFT output data'
+read(*,'(A)')opfilename
+write(record_user_inputs_unit,'(A)')trim(opfilename)
+CALL write_single_side_FFT_data(frequency_sub,ft_sub_favg,nt_sub_pad,pad_factor,opfilename,local_file_unit)
 
 !10. CALCULATE FREQUENCY DOMAIN POWER 
 
@@ -579,148 +693,162 @@ write(*,*)
 write(*,*)'Time domain average over sub-samples:'
 CALL Power_calc_FFT(ft_sub_tavg,nt_sub_pad,dt_sub)
 
-!11. Output frequency domain data over a specified frequency range with a given bandwidth detector
+!11. Output frequency domain data over a specified frequency ranges with given bandwidth detectors
+
 write(*,*)
-write(*,*)'Enter the minimum frequency to output (Hz)'
-read(*,*)fmin
-write(record_user_inputs_unit,*)fmin,' # minimum frequency for output'
-
-write(*,*)'Enter the maximum frequency to output (Hz)'
-read(*,*)fmax
-write(record_user_inputs_unit,*)fmax,' # maximum frequency for output'
-
-write(*,*)'Enter the number of frequencies to output '
-read(*,*)nf
-write(record_user_inputs_unit,*)nf,' # number of frequencies for output'
-
-write(*,*)"Enter the detector filter frequency domain function ('gaussian' or 'rectangular')"
-read(*,'(A)')detector_type
-write(record_user_inputs_unit,'(A,A)')detector_type,' # detector frequency domain function (gaussian or rectangular)'
-
-if ( (detector_type.NE.'r').AND.(detector_type.NE.'R').AND.(detector_type.NE.'g').AND.(detector_type.NE.'G') ) then
-  write(*,*)'Unknown detector type:',detector_type
-else if (detector_type.EQ.'r') then
-  detector_type='R'
-else if (detector_type.EQ.'g') then
-  detector_type='G'
-end if
-
-write(*,*)'Enter the detector bandwidth (Hz)'
-read(*,*)BW
-write(record_user_inputs_unit,*)BW,' # detector bandwidth'
+write(*,*)'Enter the number of frequency domain bands with specific detector bandwidths to output'
+read(*,*)n_detectors
+write(record_user_inputs_unit,*)n_detectors,' number of frequency domain bands with specific detector bandwidths to output'
 
 write(*,*)'Enter the output filename'
 read(*,'(A)')opfilename
 write(record_user_inputs_unit,'(A)')trim(opfilename)
 
-fstep=(fmax-fmin)/dble(nf-1)
-
 open(unit=local_file_unit,file=trim(opfilename))
 
-freq_range_warning=.FALSE.
-BW_warning=.FALSE.
+do detector=1,n_detectors
 
-df=1d0/(nt_sub_pad*dt_sub)
+  write(*,*)'Bandwidth and detector specification number ',detector
+  write(*,*)
+  write(*,*)'Enter the minimum frequency to output (Hz)'
+  read(*,*)fmin
+  write(record_user_inputs_unit,*)fmin,' # minimum frequency for output'
 
-write(*,*)'Frequency step check',df,frequency_sub(2)-frequency_sub(1)
+  write(*,*)'Enter the maximum frequency to output (Hz)'
+  read(*,*)fmax
+  write(record_user_inputs_unit,*)fmax,' # maximum frequency for output'
 
-if (BW.LT.df) then
-  BW_warning=.TRUE.
-end if
+  write(*,*)'Enter the number of frequencies to output '
+  read(*,*)nf
+  write(record_user_inputs_unit,*)nf,' # number of frequencies for output'
 
-fstep=(fmax-fmin)/dble(nf-1)
+  write(*,*)"Enter the detector filter frequency domain function ('gaussian' or 'rectangular')"
+  read(*,'(A)')detector_type
+  write(record_user_inputs_unit,'(A,A)')detector_type,' # detector frequency domain function (gaussian or rectangular)'
 
-if (detector_type.EQ.'R') then
-  detector_half_width=BW/2d0
-else if (detector_type.EQ.'G') then
-  detector_half_width=BW*2d0
-end if
+  if ( (detector_type.NE.'r').AND.(detector_type.NE.'R').AND.(detector_type.NE.'g').AND.(detector_type.NE.'G') ) then
+    write(*,*)'Unknown detector type:',detector_type
+  else if (detector_type.EQ.'r') then
+    detector_type='R'
+  else if (detector_type.EQ.'g') then
+    detector_type='G'
+  end if
 
-write(*,*)'Detector bandwidth =',BW
-write(*,*)'Detector half width=',detector_half_width
-write(*,*)'FFT frequency step =',df
+  write(*,*)'Enter the detector bandwidth (Hz)'
+  read(*,*)BW
+  write(record_user_inputs_unit,*)BW,' # detector bandwidth'
 
-hw_samples=NINT(detector_half_width/df)+1    ! ensure that this is at least 1
+  fstep=(fmax-fmin)/dble(nf-1)
 
-write(*,*)'Number of samples in detector half-width=',hw_samples
+  freq_range_warning=.FALSE.
+  BW_warning=.FALSE.
 
-write(*,*)' Check on the evaluation of the detector filter function in the frequency domain'
+  df=1d0/(nt_sub_pad*dt_sub)
 
-do i=-hw_samples,hw_samples
-  df=dble(i)/(nt_sub_pad*dt_sub)
-  CALL evaluate_filter_function(detector_type,BW,df,f_detector)         
-  write(*,*)i,df,BW,f_detector
-end do
+  write(*,*)'Frequency step check',df,frequency_sub(2)-frequency_sub(1)
 
-write(*,*)
+  if (BW.LT.df) then
+    BW_warning=.TRUE.
+  end if
 
-last_if1=1
-do i=1,nf
+  fstep=(fmax-fmin)/dble(nf-1)
+
+  if (detector_type.EQ.'R') then
+    detector_half_width=BW/2d0
+  else if (detector_type.EQ.'G') then
+    detector_half_width=BW*2d0
+  end if
+
+  write(*,*)'Detector bandwidth =',BW
+  write(*,*)'Detector half width=',detector_half_width
+  write(*,*)'FFT frequency step =',df
+
+  hw_samples=NINT(detector_half_width/df)+1    ! ensure that this is at least 1
+
+  write(*,*)'Number of samples in detector half-width=',hw_samples
+
+  write(*,*)' Check on the evaluation of the detector filter function in the frequency domain'
+
+  do i=-hw_samples,hw_samples
+    df=dble(i)/(nt_sub_pad*dt_sub)
+    CALL evaluate_filter_function(detector_type,BW,df,f_detector)         
+    write(*,*)i,df,BW,f_detector
+  end do
+
+  write(*,*)
+
+  last_if1=1
+  do i=1,nf
   
-  f=fmin+dble(i-1)*fstep      ! centre frequency for the detector
+    f=fmin+dble(i-1)*fstep      ! centre frequency for the detector
   
 ! find the frequency samples bracketing the centre frequency 
-  centre_freq_found=.FALSE.
-  do if1=last_if1,nt_sub_pad/2-1
+    centre_freq_found=.FALSE.
+    do if1=last_if1,nt_sub_pad/2-1
   
-    if2=if1+1
+      if2=if1+1
     
-    if ( (frequency_sub(if1).LE.f).AND.(frequency_sub(if2).GE.f) ) then
+      if ( (frequency_sub(if1).LE.f).AND.(frequency_sub(if2).GE.f) ) then
 ! if1 and if2 bracket the centre frequency
-      centre_freq_found=.TRUE.
-      last_if1=if1
-      EXIT   ! exit from the loop
-    end if
+        centre_freq_found=.TRUE.
+        last_if1=if1
+        EXIT   ! exit from the loop
+      end if
   
-  end do
+    end do
   
-  P_detector=0d0   
+    P_detector=0d0   
   
-  if (centre_freq_found) then
+    if (centre_freq_found) then
 
 ! loop over the samples within the bandwidth of the detector
-    do ii=-hw_samples,hw_samples
+      do ii=-hw_samples,hw_samples
       
-      ifsample=if1+ii     ! sample number
+        ifsample=if1+ii     ! sample number
             
-      if ( (ifsample.GE.1).AND.(ifsample.LE.(nt_sub_pad/2)) ) then
+        if ( (ifsample.GE.1).AND.(ifsample.LE.(nt_sub_pad/2)) ) then
       
-        fs=frequency_sub(ifsample)
-        df=abs(f-fs)
+          fs=frequency_sub(ifsample)
+          df=abs(f-fs)
         
 ! evaluate the detector filter function at this frequency offset        
-        CALL evaluate_filter_function(detector_type,BW,df,f_detector)         
+          CALL evaluate_filter_function(detector_type,BW,df,f_detector)         
         
 ! add the contribution of this frequency to the detector power. Note factor of 2 to take account of negative frequencies
 ! There is a question about what to do about zero padding here...
 
-        V_detector=abs(f_detector*ft_sub_favg(ifsample)*zero_pad_factor/nt_sub_pad)
+          V_detector=abs(f_detector*ft_sub_favg(ifsample)*pad_factor/nt_sub_pad)
         
-! Note in the power calculation, divide by zero_pad_factor as the signal is padded out with zeros which should
+! Note in the power calculation, divide by pad_factor as the signal is padded out with zeros which should
 ! be corrected for in the calculation
 
-        P_detector=P_detector+2d0*((V_detector)**2)/zero_pad_factor       
+          P_detector=P_detector+2d0*((V_detector)**2)/pad_factor       
                
+        else
+          freq_range_warning=.TRUE.    ! warn that the filter goes out of the range of the frequency domain data
+        end if
+    
+      end do
+        
+      if (P_detector.GT.0d0) then
+        write(local_file_unit,'(4ES16.6)')f,P_detector,10d0*log10(P_detector/50d0)+30d0,10d0*log10(P_detector)   ! note conversion to dBm for 50 ohm load in col 3.
       else
-        freq_range_warning=.TRUE.    ! warn that the filter goes out of the range of the frequency domain data
+        write(local_file_unit,'(4ES16.6)')f,P_detector,-200d0,-200d0                       ! zero power so write very small dBm value
       end if
     
-    end do
-        
-    if (P_detector.GT.0d0) then
-      write(local_file_unit,'(4ES16.6)')f,P_detector,10d0*log10(P_detector/50d0)+30d0,10d0*log10(P_detector)   ! note conversion to dBm for 50 ohm load in col 3.
     else
-      write(local_file_unit,'(4ES16.6)')f,P_detector,-200d0,-200d0                       ! zero power so write very small dBm value
-    end if
-    
-  else
   
-    freq_range_warning=.TRUE.
-    write(*,*)'Centre frequeny out of range',f 
+      freq_range_warning=.TRUE.
+      write(*,*)'Centre frequeny out of range',f 
     
-  end if
+    end if
 
-end do
+  end do  ! next frequency
+  
+  write(local_file_unit,*)
+  write(local_file_unit,*)
+
+end do  ! next detector
 
 close(unit=local_file_unit)
 
@@ -992,7 +1120,7 @@ END SUBROUTINE write_FFT_data
 !     started 20/11/2013 CJS
 !
 !
-SUBROUTINE write_single_side_FFT_data(xdata,ydata,n,zero_pad_factor,name,op_unit)
+SUBROUTINE write_single_side_FFT_data(xdata,ydata,n,pad_factor,name,op_unit)
 
 
 IMPLICIT NONE
@@ -1000,7 +1128,7 @@ IMPLICIT NONE
   integer	:: n
   real*8        :: xdata(n)
   complex*16	:: ydata(n)
-  integer	:: zero_pad_factor
+  integer	:: pad_factor
   character*256 :: name
   integer :: op_unit
 
@@ -1029,11 +1157,11 @@ IMPLICIT NONE
 ! power into 50ohm load in mW; note add 3dB so we can compare with single sided data
 ! Note also the use of the zero pad factor to scale 
 
-      Vdbm=20d0*log10(abs(ydata(i)*zero_pad_factor/n)/sqrt(50d0))+30d0+3.01d0      
-      Vdb=20d0*log10(abs(ydata(i)*zero_pad_factor/n))+3.01d0  
+      Vdbm=20d0*log10(abs(ydata(i)*pad_factor/n)/sqrt(50d0))+30d0+3.01d0      
+      Vdb=20d0*log10(abs(ydata(i)*pad_factor/n))+3.01d0  
       
-      write(op_unit,'(6ES16.6)')xdata(i),real(ydata(i)*zero_pad_factor/n),imag(ydata(i)*zero_pad_factor/n), &
-                                     abs(ydata(i)*zero_pad_factor/n),Vdbm,Vdb
+      write(op_unit,'(6ES16.6)')xdata(i),real(ydata(i)*pad_factor/n),imag(ydata(i)*pad_factor/n), &
+                                     abs(ydata(i)*pad_factor/n),Vdbm,Vdb
     end do
 
   end if
