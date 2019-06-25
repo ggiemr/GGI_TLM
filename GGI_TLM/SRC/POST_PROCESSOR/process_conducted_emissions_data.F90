@@ -51,7 +51,7 @@ integer :: last_sample,i_time
 real*8  :: interpolated_value,value_1,value_2
 
 ! dataset padding stuff
-integer   :: pad_factor
+integer   :: pad_factor,pad_factor2,zero_pad_factor
 character :: pad_type
 
 ! time domain window stuff
@@ -59,9 +59,9 @@ character :: window_fn
 real*8    :: wi
 
 ! frequency domain output with specified bandwidth stuff
-real*8 :: fmin,fmax,fstep,f
+real*8  :: fmin,fmax,fstep,f
 integer :: nf
-real*8 :: BW
+real*8  :: BW
 character :: detector_type
 logical :: BW_warning
 logical :: freq_range_warning
@@ -74,6 +74,7 @@ real*8  :: fs,df
 integer :: n_detectors,detector
 
 real*8  :: f_detector,V_detector,P_detector
+real*8  :: Pmultiplier
 integer :: if1,if2,last_if1
 
 real*8,allocatable     :: frequency_sub(:)
@@ -89,7 +90,8 @@ integer i,ii,isegment
   
 logical		:: file_exists
 
-logical,parameter :: write_temp_files=.FALSE.
+!logical,parameter :: write_temp_files=.FALSE.
+logical,parameter :: write_temp_files=.TRUE.
 
 ! START
 
@@ -167,21 +169,22 @@ do readloop=1,2
   
 end do ! next readloop
 
-write(*,*)
-write(*,*)'Time of first sample=',t(1)
-write(*,*)'Time of last sample=',t(nt)
-write(*,*)'Time period of the input signal=',t(nt)-t(1)
-tmax=t(nt)-t(1)
-write(*,*)'Rescaling time axis from 0 to tmax, tmax=',tmax
-write(*,*)
-write(*,*)'Number of samples read, nt=',nt
-write(*,*)'Number of samples with zero padding to the next power of 2, nt_pad=',nt_pad
-write(*,*)'(Note: zero padding is only used here for the purposes of applying filters)'
-
 CLOSE(unit=local_file_unit)
 DEALLOCATE( data_line )
 
 dt=t(2)-t(1)
+
+write(*,*)
+write(*,*)'Number of samples read, nt=',nt
+write(*,*)'Time of first sample     =',t(1)
+write(*,*)'Time of last sample      =',t(nt)
+write(*,*)'Timestep of input signal =',dt
+tmax=t(nt)-t(1)
+write(*,*)'Time period of the input signal=',tmax
+write(*,*)'Rescaling time axis from 0 to tmax, tmax=',tmax
+write(*,*)
+write(*,*)'Number of samples with zero padding to the next power of 2, nt_pad=',nt_pad
+write(*,*)'(Note: zero padding is only used here for the purposes of applying filters)'
 
 ! fill the time axis data including the padded values
 do i=1,nt_pad
@@ -196,8 +199,10 @@ write(*,*)
 write(*,*)'Enter the scaling factor for the data (eg 1e6 to scale from V to uV)'
 read(*,*)scale
 write(record_user_inputs_unit,*)scale,'  # scale factor for data (eg 1E6 for V to micro V'
+write(*,*)'Scale factor is:',scale
 
 ft(:)=ft(:)*scale
+Pmultiplier=1.0/(scale*scale)
 
 ! Calculate the sum of the squares of the samples i.e. a measure of the power in the signal
 Power_t_in=0d0
@@ -205,7 +210,7 @@ do i=1,nt
   Power_t_in=Power_t_in+ft(i)**2
 end do
 
-Power_t_in=power_t_in*dt
+Power_t_in=power_t_in*dt*Pmultiplier
 
 write(*,*)'Time domain input power:',Power_t_in
 
@@ -220,6 +225,7 @@ ALLOCATE( ft_filtered(1:nt_pad) )
 write(*,*)'Enter the number of filters to apply to the input time domain data'
 read(*,*)n_filter
 write(record_user_inputs_unit,*)n_filter,'  # number of filters to apply'
+write(*,*)'number of filters=',n_filter
 
 ft_filtered(1:nt_pad)=dcmplx(ft(1:nt_pad))
 
@@ -230,14 +236,14 @@ ft_impulse(1)=(1d0,0d0)
 
 write(*,*)
 write(*,*)'Input function:'
-CALL Power_calc_time(ft_filtered,nt_pad,dt)
+CALL Power_calc_time(ft_filtered,nt_pad,dt,Pmultiplier)
 
 ! Fourier Transform the input funtion
   
 CALL FFT(ft_impulse,nt_pad)
 CALL FFT(ft_filtered,nt_pad)
 
-CALL Power_calc_FFT(ft_filtered,nt_pad,dt)
+CALL Power_calc_FFT(ft_filtered,nt_pad,dt,Pmultiplier)
   
 if (write_temp_files) then
   filename='ft_freq.dat'
@@ -249,14 +255,17 @@ do filter=1,n_filter
   write(*,*)'Enter the filter type (LPF or HPF)'
   read(*,*)ch
   write(record_user_inputs_unit,'(A,A)')ch,'  # filter type (LPF or HPF)'
+  write(*,*)'Filter type=',ch
 
   write(*,*)'Enter the filter order (integer)'
   read(*,*)order
   write(record_user_inputs_unit,*)order,'  # filter order'
+  write(*,*)'Order=',order
   
   write(*,*)'Enter the filter 3dB frequency (Hz)'
   read(*,*)fc
   write(record_user_inputs_unit,*)fc,'  # filter cutoff frequency'
+  write(*,*)'cutoff frequency=',fc
   wc=2d0*pi*fc
   
   if( (ch.eq.'l').OR.(ch.eq.'L') ) then
@@ -292,7 +301,7 @@ end if
  
 write(*,*)
 write(*,*)'Filtered function:'
-CALL Power_calc_FFT(ft_filtered,nt_pad,dt)
+CALL Power_calc_FFT(ft_filtered,nt_pad,dt,Pmultiplier)
 
 CALL INVERSE_FFT(ft_impulse,nt_pad)
 CALL INVERSE_FFT(ft_filtered,nt_pad)
@@ -305,13 +314,14 @@ if (write_temp_files) then
   CALL write_FFT_data(t,ft_filtered,nt_pad,filename,local_file_unit)
 end if
   
-CALL Power_calc_time(ft_filtered,nt_pad,dt)
+CALL Power_calc_time(ft_filtered,nt_pad,dt,Pmultiplier)
 
 !4 EXTRACT SUB-SAMPLES FROM THE INPUT DATASET
 
 write(*,*)'Enter the number of sub-data segments to extract from the original dataset'
 read(*,*)n_sub_segments
 write(record_user_inputs_unit,*)n_sub_segments,'  # Number of sub-data segments of data to process'
+write(*,*)'Number of sub-segments=',n_sub_segments
 
 if (n_sub_segments.LT.1) then
   write(*,*)'ERROR: The number of sub-segments should be at least 1'
@@ -324,10 +334,12 @@ write(*,*)'Period of input signal/ number of sub segments=',(t(nt)-t(1))/n_sub_s
 write(*,*)'Enter the period of each sub-segment'
 read(*,*)t_sub_period
 write(record_user_inputs_unit,*)t_sub_period,'  # period of each sub-segment'
+write(*,*)'period of sub-segment=',t_sub_period
 
 write(*,*)'Enter the number of samples in each sub-segment (this should be a power of 2)'
 read(*,*)nt_sub
 write(record_user_inputs_unit,*)nt_sub,'  # number of samples in each sub-segment (this should be a power of 2)'
+write(*,*)'number of samples in each sub-segment=',nt_sub
 
 ! work out the power of two greater than or equal to nt_sub
 nt_sub_pad2=2
@@ -345,15 +357,31 @@ write(*,*)'tmax=',tmax
 read(*,*)sub_sample_period
 write(record_user_inputs_unit,*)sub_sample_period,  &
  '  # time period over which the samples are to be distributed or enter 0 for continuous subsets'
+write(*,*)'sub sample period=',sub_sample_period
 
 if (sub_sample_period.GT.tmax) then
   write(*,*)'ERROR: sub sample period should be less than tmax'
   STOP 1
 end if
 
-write(*,*)'Enter the padding factor (should be a power of two)'
+write(*,*)'Enter the padding factor (set to 1 for no padding, pad factor should be a power of two)'
 read(*,*)pad_factor
-write(record_user_inputs_unit,*)pad_factor,'  # pad factor (should be a power of two)'
+write(record_user_inputs_unit,*)pad_factor,'  # pad factor (set to 1 for no padding, pad factor should be a power of two)'
+write(*,*)'padding factor=',pad_factor
+
+if (pad_factor.LT.1) then
+  write(*,*)'ERROR: The padding factor should be at least 1'
+  STOP 1
+end if 
+  
+pad_factor2=1
+do while (pad_factor2.LT.pad_factor)
+  pad_factor2=pad_factor2*2
+end do
+if (pad_factor2.NE.pad_factor) then
+  write(*,*)'ERROR: The pad_factor is not a power of 2. The next power of 2 is:',pad_factor2
+  STOP 1
+end if
 
 write(*,*)'Enter z to pad with zeros or p to create a periodic continuation of the sub-signal'
 read(*,'(A)'),pad_type
@@ -361,14 +389,24 @@ if ( (pad_type.NE.'z').AND.(pad_type.NE.'p') ) then
   write(*,*)'Pad type should be z or p'
   STOP 1
 end if
+write(record_user_inputs_unit,'(A)')pad_type,' # z to pad with zeros or p to create a periodic continuation of the sub-signal'
+write(*,*)'pad_type=',pad_type
+
+if (pad_type.EQ.'z')then
+  zero_pad_factor=pad_factor
+else
+  zero_pad_factor=1
+end if
 
 write(*,*)'Enter the number of time domain sub-segments to plot'
 read(*,*)n_sub_plot
 write(record_user_inputs_unit,*)n_sub_plot,'  # number of sub-segments to plot (max 9)'
+write(*,*)'Number of sub-segments to plot=',n_sub_plot
 
 write(*,*)"Enter the type of time domain window function to apply; 'r'=rectangular, 'h'=Hann'"
 read(*,'(A)')window_fn
 write(record_user_inputs_unit,'(A,A)')window_fn,'  # time domain window function (r=rectangular, h=Hann)'
+write(*,*)'window function=',window_fn
 
 if ( (window_fn.NE.'r').AND.(window_fn.NE.'R').AND.(window_fn.NE.'h').AND.(window_fn.NE.'H') ) then
   write(*,*)'Unknown window function type:',window_fn
@@ -495,12 +533,19 @@ do isegment=1,n_sub_segments
   if (pad_type.EQ.'p') then
 ! Add a periodic extension of the dataset if required
 
+    write(*,*)'Add periodic extension to sub-sample',isegment
+    write(*,*)'copy samples',1,' to',nt_sub,' to period(s)'
+    do i=2,pad_factor
+      write(*,*)'            ',1+(i-1)*nt_sub,' to',nt_sub+(i-1)*nt_sub
+    end do
+
 ! loop over the timesteps of the initial signal
     do i_time=1,nt_sub
   
       do i=2,pad_factor
 
         ii=i_time+(i-1)*nt_sub
+!        write(*,*)'copy from',i_time,' to ',ii,'ft=',ft_sub(i_time,isegment)
         ft_sub(ii,isegment)=ft_sub(i_time,isegment)
 
       end do  ! next padding period
@@ -514,6 +559,8 @@ end do    ! next sub_segment
 !4. APPLY A WINDOW FUNCTION
 ! Note: no action reqiuired for rectangular window
 if (window_fn.EQ.'H') then
+
+write(*,*)'Apply Hann window'
 
 do isegment=1,n_sub_segments
 
@@ -552,21 +599,6 @@ end do
 
 ft_sub_tavg(:)=ft_sub_tavg(:)/dble(n_sub_segments)
 
-if (write_temp_files) then
-! Plot time domain datasets
-  do isegment=1,n_sub_plot
-
-    write(ch,'(I1)')isegment
-    filename='sub_segment_time_'//ch//'.dat'
-    ft_sub_temp(1:nt_sub)=ft_sub(1:nt_sub,isegment)
-    CALL write_FFT_data(t_sub,ft_sub_temp,nt_sub_pad,filename,local_file_unit)
-  
-  end do
-
-  filename='sub_segment_time_average.dat'
-  CALL write_FFT_data(t_sub,ft_sub_tavg,nt_sub_pad,filename,local_file_unit)
-end if
-
 !6. CALCULATE TIME DOMAIN POWER
 
 write(*,*)
@@ -576,19 +608,20 @@ do isegment=1,n_sub_segments
 
   ft_sub_temp(:)=0d0
   ft_sub_temp(1:nt_sub_pad)=ft_sub(1:nt_sub_pad,isegment)
-  CALL Power_calc_time(ft_sub_temp,nt_sub_pad,dt_sub)
+  CALL Power_calc_time(ft_sub_temp,nt_sub_pad,dt_sub,Pmultiplier)
 
 end do
 
 write(*,*)
 write(*,*)'Time domain averaged sub-samples:'
-CALL Power_calc_time(ft_sub_tavg,nt_sub_pad,dt_sub)
+CALL Power_calc_time(ft_sub_tavg,nt_sub_pad,dt_sub,Pmultiplier)
 
 !7. Remove d.c. if required
 
 write(*,*)'Do you want to subtract the d.c. voltage (y/n)'
 read(*,'(A)')ch
 write(record_user_inputs_unit,'(A,A)')ch,'  # subtract d.c. (y or n)'
+write(*,*)'Remove d.c.:',ch
 
 if ((ch.eq.'y').OR.(ch.EQ.'Y')) then
 
@@ -623,13 +656,33 @@ if ((ch.eq.'y').OR.(ch.EQ.'Y')) then
   
 end if
 
+if (write_temp_files) then
+! Plot time domain datasets
+  do isegment=1,n_sub_plot
+
+    write(ch,'(I1)')isegment
+    filename='sub_segment_time_'//ch//'.dat'
+    write(*,*)'Writing time domain dataset:',trim(filename)
+    ft_sub_temp(1:nt_sub_pad)=ft_sub(1:nt_sub_pad,isegment)
+    CALL write_FFT_data(t_sub,ft_sub_temp,nt_sub_pad,filename,local_file_unit)
+  
+  end do
+
+!  filename='sub_segment_time_average.dat'
+!  CALL write_FFT_data(t_sub,ft_sub_tavg,nt_sub_pad,filename,local_file_unit)
+end if
+
 !8. FFT
+
+write(*,*)
 
 ! FFT each of the sub-segment data sets
 do isegment=1,n_sub_segments
 
   ft_sub_temp(:)=(0d0,0d0)
   ft_sub_temp(1:nt_sub_pad)=ft_sub(1:nt_sub_pad,isegment)
+
+  write(*,*)'FFT sub-segment',isegment,' number of samples=',nt_sub_pad
 
   CALL FFT(ft_sub_temp,nt_sub_pad)
 
@@ -663,22 +716,23 @@ if (write_temp_files) then
     filename='sub_segment_freq_'//ch//'.dat'
     ft_sub_temp(:)=(0d0,0d0)
     ft_sub_temp(1:nt_sub_pad)=ft_sub(1:nt_sub_pad,i)
-    CALL write_single_side_FFT_data(frequency_sub,ft_sub_temp,nt_sub_pad,pad_factor,filename,local_file_unit)
+    write(*,*)'Writing time domain dataset:',trim(filename)
+    CALL write_single_side_FFT_data(frequency_sub,ft_sub_temp,nt_sub_pad,zero_pad_factor,filename,local_file_unit)
   
   end do
 end if
 
-if (write_temp_files) then
-  filename='sub_segment_time_average_freq.dat'
-  CALL write_single_side_FFT_data(frequency_sub,ft_sub_tavg,nt_sub_pad,pad_factor,filename,local_file_unit)
-end if
+!if (write_temp_files) then
+!  filename='sub_segment_time_average_freq.dat'
+!  CALL write_single_side_FFT_data(frequency_sub,ft_sub_tavg,nt_sub_pad,zero_pad_factor,filename,local_file_unit)
+!end if
 
 filename='sub_segment_freq_average.dat'
 
 write(*,*)'Enter the filename for the raw FFT output data'
 read(*,'(A)')opfilename
 write(record_user_inputs_unit,'(A)')trim(opfilename)
-CALL write_single_side_FFT_data(frequency_sub,ft_sub_favg,nt_sub_pad,pad_factor,opfilename,local_file_unit)
+CALL write_single_side_FFT_data(frequency_sub,ft_sub_favg,nt_sub_pad,zero_pad_factor,opfilename,local_file_unit)
 
 !10. CALCULATE FREQUENCY DOMAIN POWER 
 
@@ -687,18 +741,19 @@ write(*,*)'Frequency domain power calculations:'
 
 write(*,*)
 write(*,*)'Frequency domain averaged magnitude over sub-samples:'
-CALL Power_calc_FFT(ft_sub_favg,nt_sub_pad,dt_sub)
+CALL Power_calc_FFT(ft_sub_favg,nt_sub_pad,dt_sub,Pmultiplier)
 
 write(*,*)
 write(*,*)'Time domain average over sub-samples:'
-CALL Power_calc_FFT(ft_sub_tavg,nt_sub_pad,dt_sub)
+CALL Power_calc_FFT(ft_sub_tavg,nt_sub_pad,dt_sub,Pmultiplier)
 
 !11. Output frequency domain data over a specified frequency ranges with given bandwidth detectors
 
 write(*,*)
 write(*,*)'Enter the number of frequency domain bands with specific detector bandwidths to output'
 read(*,*)n_detectors
-write(record_user_inputs_unit,*)n_detectors,' number of frequency domain bands with specific detector bandwidths to output'
+write(record_user_inputs_unit,*)n_detectors,' # number of frequency domain bands with specific detector bandwidths to output'
+write(*,*)'Number of detectors:',n_detectors
 
 write(*,*)'Enter the output filename'
 read(*,'(A)')opfilename
@@ -713,18 +768,22 @@ do detector=1,n_detectors
   write(*,*)'Enter the minimum frequency to output (Hz)'
   read(*,*)fmin
   write(record_user_inputs_unit,*)fmin,' # minimum frequency for output'
+  write(*,*)'minimum frequency for output=',fmin
 
   write(*,*)'Enter the maximum frequency to output (Hz)'
   read(*,*)fmax
   write(record_user_inputs_unit,*)fmax,' # maximum frequency for output'
+  write(*,*)'maximum frequency for output=',fmax
 
   write(*,*)'Enter the number of frequencies to output '
   read(*,*)nf
   write(record_user_inputs_unit,*)nf,' # number of frequencies for output'
+  write(*,*)'number of frequencies for output=',nf
 
   write(*,*)"Enter the detector filter frequency domain function ('gaussian' or 'rectangular')"
   read(*,'(A)')detector_type
   write(record_user_inputs_unit,'(A,A)')detector_type,' # detector frequency domain function (gaussian or rectangular)'
+  write(*,*)'detector_type=',detector_type
 
   if ( (detector_type.NE.'r').AND.(detector_type.NE.'R').AND.(detector_type.NE.'g').AND.(detector_type.NE.'G') ) then
     write(*,*)'Unknown detector type:',detector_type
@@ -737,6 +796,7 @@ do detector=1,n_detectors
   write(*,*)'Enter the detector bandwidth (Hz)'
   read(*,*)BW
   write(record_user_inputs_unit,*)BW,' # detector bandwidth'
+  write(*,*)'detector bandwidth',BW
 
   fstep=(fmax-fmin)/dble(nf-1)
 
@@ -817,12 +877,12 @@ do detector=1,n_detectors
 ! add the contribution of this frequency to the detector power. Note factor of 2 to take account of negative frequencies
 ! There is a question about what to do about zero padding here...
 
-          V_detector=abs(f_detector*ft_sub_favg(ifsample)*pad_factor/nt_sub_pad)
+          V_detector=abs(f_detector*ft_sub_favg(ifsample)*zero_pad_factor/nt_sub_pad)
         
 ! Note in the power calculation, divide by pad_factor as the signal is padded out with zeros which should
 ! be corrected for in the calculation
 
-          P_detector=P_detector+2d0*((V_detector)**2)/pad_factor       
+          P_detector=P_detector+2d0*((V_detector)**2)/zero_pad_factor       
                
         else
           freq_range_warning=.TRUE.    ! warn that the filter goes out of the range of the frequency domain data
@@ -1081,12 +1141,14 @@ IMPLICIT NONE
   if(xdata(n).GT.xdata(1)) then
 
 ! we have time domain data and should plot in order
+    write(*,*)'CALLED write_FFT_data: Writing time domain data'
     do i=1,n
       write(op_unit,'(4ES16.6)')xdata(i),real(ydata(i)),imag(ydata(i)),abs(ydata(i))
     end do
   
   else
 ! we have frequency domain data so reorder the data when writing and scale data by 1/n
+    write(*,*)'CALLED write_FFT_data: Writing frequency domain data'
     n2=n/2
     do i=n2+2,n
       write(op_unit,'(4ES16.6)')xdata(i),real(ydata(i)/n),imag(ydata(i)/n),abs(ydata(i)/n)
@@ -1147,18 +1209,29 @@ IMPLICIT NONE
   if(xdata(n).GT.xdata(1)) then
 
 ! we have time domain data 
+    write(*,*)'CALLED write_single_side_FFT_data: Writing time domain data'
     write(*,*)'ERROR in write_single_side_FFT_data. It looks like it has been called with time domain data'
     STOP 1
   
   else
 ! we have frequency domain data so reorder the data when writing and scale data by 1/n
+    write(*,*)'CALLED write_single_side_FFT_data: Writing frequency domain data'
     n2=n/2
     do i=1,n2+1
 ! power into 50ohm load in mW; note add 3dB so we can compare with single sided data
 ! Note also the use of the zero pad factor to scale 
 
-      Vdbm=20d0*log10(abs(ydata(i)*pad_factor/n)/sqrt(50d0))+30d0+3.01d0      
-      Vdb=20d0*log10(abs(ydata(i)*pad_factor/n))+3.01d0  
+      if (ydata(i).NE.0d0) then
+
+        Vdbm=20d0*log10(abs(ydata(i)*pad_factor/n)/sqrt(50d0))+30d0+3.01d0      
+        Vdb=20d0*log10(abs(ydata(i)*pad_factor/n))+3.01d0  
+      
+      else
+      
+        Vdbm=-200d0
+        Vdb=-200d0
+      
+      end if
       
       write(op_unit,'(6ES16.6)')xdata(i),real(ydata(i)*pad_factor/n),imag(ydata(i)*pad_factor/n), &
                                      abs(ydata(i)*pad_factor/n),Vdbm,Vdb
@@ -1385,14 +1458,14 @@ END SUBROUTINE butterworth_HPF
 !     started 20/11/2013 CJS
 !
 !
-SUBROUTINE Power_calc_FFT(v,n,dt)
+SUBROUTINE Power_calc_FFT(v,n,dt,Pmultiplier)
 
 
 IMPLICIT NONE
 
   integer	:: n
   complex*16	:: v(n)
-  real*8        :: dt
+  real*8        :: dt,Pmultiplier
 
 ! local variables
 
@@ -1412,7 +1485,7 @@ IMPLICIT NONE
     
   end do
 
-  Power=Power/(dble(n)*dble(n))
+  Power=Power*Pmultiplier/(dble(n)*dble(n))
 
   write(*,*)'Power calculated from Frequency domain data:'
   write(*,*)Power,' ',10d0*log10(Power),'dB'
@@ -1438,14 +1511,14 @@ END SUBROUTINE Power_calc_FFT
 !     started 20/11/2013 CJS
 !
 !
-SUBROUTINE Power_calc_time(v,n,dt)
+SUBROUTINE Power_calc_time(v,n,dt,Pmultiplier)
 
 
 IMPLICIT NONE
 
   integer	:: n
   complex*16	:: v(n)
-  real*8        :: dt
+  real*8        :: dt,Pmultiplier
 
 ! local variables
 
@@ -1461,7 +1534,7 @@ IMPLICIT NONE
   
   do i=1,n
     
-    Power=Power+dble(V(i))*conjg(v(i))*dt
+    Power=Power+dble(V(i))*conjg(v(i))*dt*Pmultiplier
     
   end do
   
