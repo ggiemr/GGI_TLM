@@ -257,10 +257,9 @@ IMPLICIT NONE
   read(*,*)opxmin
   write(record_user_inputs_unit,'(ES16.6,A24)')opxmin,'   ! output xmin value  '
   
-  write(*,*)'Please enter xmin for the output data'  
+  write(*,*)'Please enter xmax for the output data'  
   read(*,*)opxmax
   write(record_user_inputs_unit,'(ES16.6,A24)')opxmax,'   ! output xmax value  '
-
 
   write(*,*)'Please enter the filename for the output data'
   
@@ -270,20 +269,20 @@ IMPLICIT NONE
   
   OPEN(unit=local_file_unit,file=opfilename)
 
-! loop over samples of file 1 to work out sample_min and sample_max for local_ielf_value
+! loop over samples of file 1 to work out sample_min and sample_max 
 
   sample_min=0
   sample_max=0
   
-  do sample=2,n_samples1-1
+  do sample=1,n_samples1
   
-    if ( ( x1(sample-1).ge.opxmin ).AND.( sample_min.eq.0 ) ) sample_min=sample
-    if ( ( x1(sample+1).ge.opxmax ).AND.( sample_max.eq.0 ) ) sample_max=sample
+    if ( ( x1(sample).ge.opxmin ).AND.( sample_min.eq.0 ) ) sample_min=sample
+    if ( ( x1(sample).ge.opxmax ).AND.( sample_max.eq.0 ) ) sample_max=sample
     
   end do
   
-  if (sample_min.eq.0) sample_min=2
-  if (sample_max.eq.0) sample_max=n_samples1-1
+  if (sample_min.eq.0) sample_min=1
+  if (sample_max.eq.0) sample_max=n_samples1
   
   write(*,*)'n_samples1 =',n_samples1
   write(*,*)'Sample_min=',sample_min,' xmin=',x1(sample_min)
