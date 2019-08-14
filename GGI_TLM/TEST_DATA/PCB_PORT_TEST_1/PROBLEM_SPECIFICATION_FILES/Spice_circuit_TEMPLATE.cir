@@ -19,19 +19,19 @@ Vbreak time_node 0 DC 0.0
 
 * Model to be included in the GGI_TLM simulation for port 1, connected to node 1
 * in this case a voltage source with series resistance
-Rs1     2001   1   100.0
-Vs1     2001   0   dc    1.0
 *Rs1     2001   1   100.0
-*Vs1     2001   0   EXP( 0.0     1.0    0.000000E+00    2.000000E-010    1.200000E-09    2.000000E-010 )
+*Vs1     2001   0   dc    1.0
+Rs1     2001   1   100.0
+Vs1     2001   0   EXP( 0.0     1.0    0.000000E+00    2.000000E-010    1.200000E-09    2.000000E-010 )
 *
 * Model to be included in the GGI_TLM simulation for port 2, connected to node 2
 * in this case a diode with series resistance
 *Diode2   2002   2   Dmod
 *Rl2      2002   0   100.0
-C2       2    0   1e-10
-Rl2      2    0   100.0
+**L2       2    2002   1e-6   IC=0.005A
+**Rl2      2002    0   100.0
 
-*Rl2      2   0   100.0
+Rl2      2   0   100.0
 .model DMOD D ( is=1e-12 )
 *.model DMOD D ( IS=0.0002 )
 *

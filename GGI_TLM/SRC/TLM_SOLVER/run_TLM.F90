@@ -369,6 +369,12 @@ IMPLICIT NONE
     
   end if
   
+  if ( run_ngspice )  then    
+  
+    CALL finish_ngspice()
+          
+  end if
+  
   CALL write_line('FINISHED: run_TLM',0,output_to_screen_flag)
 
   RETURN

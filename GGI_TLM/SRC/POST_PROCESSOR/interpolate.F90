@@ -118,7 +118,7 @@ IMPLICIT NONE
 
 100 CONTINUE
 
-    read(local_file_unit,*,end=110,err=110)(data_line(i),i=1,max_col)
+    read(local_file_unit,*,end=110,err=120)(data_line(i),i=1,max_col)
     n_samples1=n_samples1+1
     
     x1min=min(x1min,data_line(x1_col)*xscale)
@@ -129,6 +129,8 @@ IMPLICIT NONE
       x1(n_samples1)=data_line(x1_col)*xscale
       
     end if
+    
+120 CONTINUE
     
     GOTO 100
 
@@ -200,7 +202,7 @@ IMPLICIT NONE
     
 200 CONTINUE
 
-    read(local_file_unit,*,end=210,err=210)(data_line(i),i=1,max_col)
+    read(local_file_unit,*,end=210,err=220)(data_line(i),i=1,max_col)
     n_samples2=n_samples2+1
     
     x2min=min(x2min,data_line(x2_col)*xscale)
@@ -219,6 +221,8 @@ IMPLICIT NONE
       end if
       
     end if
+
+220 CONTINUE 
     
     GOTO 200
 

@@ -21,6 +21,7 @@
 ! SUBROUTINE update_ngspice
 ! SUBROUTINE update_ngspice_to_TLM
 ! SUBROUTINE ngspice_LPF
+! SUBROUTINE finish_ngspice
 !
 ! NAME
 !     
@@ -530,3 +531,32 @@ fout_m1=fout
 RETURN
 
 END SUBROUTINE ngspice_LPF
+!
+! ________________________________________________________________________________
+!  
+!
+SUBROUTINE finish_ngspice
+
+! Finalise the ngspice circuit simulation process which runs alongside GGI_TLM
+
+USE constants
+USE iso_c_binding
+USE ngspice_F90
+USE TLM_general
+USE File_information
+
+IMPLICIT NONE
+
+integer ( c_int ) :: istat
+
+character(LEN=256) :: command_string
+
+! START
+
+  write(command_string,'(A,ES16.6)')"bg_halt"
+  istat = ngSpice_Command(trim(command_string)//C_NULL_CHAR)
+
+RETURN
+
+END SUBROUTINE finish_ngspice
+!

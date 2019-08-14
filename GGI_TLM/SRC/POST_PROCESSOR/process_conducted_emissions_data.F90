@@ -389,7 +389,7 @@ if ( (pad_type.NE.'z').AND.(pad_type.NE.'p') ) then
   write(*,*)'Pad type should be z or p'
   STOP 1
 end if
-write(record_user_inputs_unit,'(A)')pad_type,' # z to pad with zeros or p to create a periodic continuation of the sub-signal'
+write(record_user_inputs_unit,'(A,A)')pad_type,' # z to pad with zeros or p to create a periodic continuation of the sub-signal'
 write(*,*)'pad_type=',pad_type
 
 if (pad_type.EQ.'z')then
