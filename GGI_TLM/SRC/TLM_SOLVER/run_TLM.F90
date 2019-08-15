@@ -368,12 +368,16 @@ IMPLICIT NONE
     write(info_file_unit,*)'' 
     
   end if
+    
+#if defined(INCLUDE_NGSPICE)    
   
   if ( run_ngspice )  then    
   
     CALL finish_ngspice()
           
   end if
+
+#endif
   
   CALL write_line('FINISHED: run_TLM',0,output_to_screen_flag)
 
