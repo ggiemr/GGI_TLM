@@ -1,0 +1,77 @@
+TEST 1:
+
+Single cycle of 10 harmonics from a square wave expansion, 20kHz.
+2048 samples, timestep=2.44e-8s, fmax=20.49GHz.
+
+TEST 1B:
+
+Single cycle of 10 harmonics from a square wave expansion, 20kHz.
+2000 samples, timestep=2.5e-8s, fmax=20GHz.
+Resampling adds some noise to the frequency domain output
+
+TEST 2: 
+
+1000 cycles of 10 harmonics from a square wave expansion, 20kHz.
+200 samples, timestep=2.5e-7s, fmax=2GHz.
+Resampling adds some noise to the frequency domain output at period of 2GHz
+
+TEST 3: 
+
+1000 cycles of 10 harmonics from a square wave expansion, 20kHz plus 50Hz contribution
+200 samples, timestep=2.5e-7s, fmax=2GHz.
+Use of High pass filter at 100Hz to reduce 50Hz influence on result
+
+TEST 3b: 
+
+1000 cycles of 10 harmonics from a square wave expansion, 20kHz plus 50Hz contribution
+200 samples, timestep=2.5e-7s, fmax=2GHz.
+No High pass filter at 100Hz to reduce 50Hz influence on result. Compare with TEST 3.
+
+TEST 4: 
+
+1000 cycles of 10 harmonics from a square wave expansion, 20kHz.
+200 samples, timestep=2.5e-7s, fmax=2GHz.
+Single period in sub-sample and zero pad *128. Not recommended
+
+TEST 5: 
+
+1000 cycles of 10 harmonics from a square wave expansion, 20kHz.
+200 samples, timestep=2.5e-7s, fmax=2GHz.
+Single period in sub-sample and periodic extension *128. Better than zero padding...
+
+TEST 6: 
+
+128 cycles of 10 harmonics from a square wave expansion, 20kHz.
+2048 samples, timestep=2.5e-7s, fmax=2GHz.
+128 periods in sub-sample.
+Shows effect of BW change between bands
+
+TEST 6b: 
+
+128 cycles of 10 harmonics from a square wave expansion, 20kHz.
+2048 samples, timestep=2.5e-7s, fmax=2GHz.
+100 periods in sub-sample.
+Shows effect of sub-sampling interpolation on high frequency response
+
+TEST7:
+
+10000 cycles of 10 harmonics from a square wave expansion, 20kHz plus 0.5V gaussian noise
+average over 100 frequency domain sub-samples, each of 100 cycles
+
+TEST7:
+
+1000 cycles of 10 harmonics from a square wave expansion, 20kHz plus 0.5V gaussian noise
+process only 1 frequency domain sub-sample of 100 cycles
+
+MEAS:
+   process measured data measured at 500kHz over 0.1s
+process data over 10 subsegments averaged over 10 subsamples
+
+MEAS2:
+   process measured data measured at 500kHz over 0.1s
+process data over the whole dataset
+
+
+
+
+

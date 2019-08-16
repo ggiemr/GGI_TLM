@@ -1,0 +1,1 @@
+rm *.dat *.txt *.favg *.fft create_test_datasets GGI_TLM_post_process* square_wave_fourier_series.fout create_test_datasets_in.txt *.jpg
