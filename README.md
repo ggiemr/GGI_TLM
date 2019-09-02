@@ -1,8 +1,8 @@
 
 Time Domain Electromagnetic Field Simulation using the Transmission Line Modelling (TLM) method
 
-Version number: 1.4.1
-Date: 15th January 2019
+Version number: 2.0.0
+Date: 2nd Septembery 2019
 
 Features:
 
@@ -12,6 +12,8 @@ Frequency dependent thin layer models.
 
 Multi-conductor cable model including shielded cable model with frequency dependent 
 parameters plus frequency dependent lumped impedance models.
+
+Link to Ngspice for embedding spice lumped circuit elements
 
 Outputs suitable for 3D visualisation and animation using paraview.
 
