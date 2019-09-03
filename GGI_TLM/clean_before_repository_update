@@ -33,6 +33,8 @@ Frequency dependent thin layer models.
 Multi-conductor cable model including shielded cable model with frequency dependent 
 parameters plus frequency dependent lumped impedance models.
 
+Link to Ngspice for 3D circuit simulation
+
 Outputs suitable for 3D visualisation and animation using paraview.
 
 Sequential and parallel (mpi) implementation
