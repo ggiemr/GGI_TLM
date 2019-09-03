@@ -121,7 +121,7 @@
                 Zc=surface_material_list(material_number)%Diode_Cj_f
 		Vc=Diode_Cj_filter_data(diode_filter_number)%f
 	      
-	        CALL diode_calc(V(Vy_zmin,cx,cy,cz)+V(Vy_zmax,cx,cy,cz-1),Z0/2d0,Is,nVt,Rs,Vd,Id,1)
+	        CALL diode_calc(V(Vy_zmin,cx,cy,cz)+V(Vy_zmax,cx,cy,cz-1),Z0/2d0,Is,nVt,Rs,Zc,Vc,Vd,Id,Ic,sign)
 		Vy_min=Vd
 		Vy_max=Vd
 		

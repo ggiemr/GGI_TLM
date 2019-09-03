@@ -371,6 +371,7 @@ output point is 'inside' the PEC/PMC and sees no field.
      other lumped elements - perhaps using the existing frequency dependent impedance model for wires? 
      It may be useful for modelling high frequency surface mount devices maybe..
      It could also be a link to SPICE (ngspice?) models...
+     DONE. A link to Ngspice has been included in version 2.0.0 2/9/2019 CJS.
      
 118. Can we parameterise the geometry i.e. specify parameters at the top of the input file such as a dielectric substrate thickness
      and then refer to this label in the rest of the document... This could maybe be done by writing a separate input file then
@@ -435,3 +436,9 @@ FIXED in read_cable_geometry_list.F90
 
 137. There is a problem when putting resistance on a cable shield in the junction formulation. The result is in error
      FIXED 23/2/2017 see new test case COAX_TERMINATION_TEST.
+     
+138. Mlayer documentation needs to be checked. Coordinate system consistency between software message and documentation. Also need to include the material file name in the input file format description
+
+139. Need to check and update cygwin installation notes
+
+140. Need to check and complete ngspice link documentation
