@@ -27,7 +27,7 @@
 !     read triangulated_surface from stl format file
 !
 ! Format is:
-!  solid ascii
+!  solid name
 !  facet normal 5.972882e-015 -3.877537e-002 9.992480e-001
 !    outer loop
 !      vertex   -2.692400e+000 4.231861e-001 -5.444578e+000
@@ -55,7 +55,7 @@
 !
 !     started 2/12/2014 CJS based on build_surface_vtk_triangulated_surface
 !     7/1/2019 CJS correct reversal of surface normal by changing the triangle vertex order
-!
+!     4/9/2019 CJS correct input format error to generalise things
 !
 SUBROUTINE build_surface_stl_triangulated_surface(surface_number)
 
@@ -102,7 +102,7 @@ character*256 	:: ipline
   read(local_file_unit,'(A)',err=9000),ipline
   line_number=line_number+1
   call convert_to_lower_case(ipline,256)
-  found=INDEX(ipline,'solid ascii')
+  found=INDEX(ipline,'solid')
   if (found.eq.0) then
 ! Format error...
     GOTO 9010
