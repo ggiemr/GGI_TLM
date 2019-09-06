@@ -1,0 +1,5 @@
+cp v1.tout PROBLEM_SPECIFICATION_FILES/v1.tout_ref
+cp v2.tout PROBLEM_SPECIFICATION_FILES/v2.tout_ref
+cp v3.tout PROBLEM_SPECIFICATION_FILES/v3.tout_ref
+cp v4.tout PROBLEM_SPECIFICATION_FILES/v4.tout_ref
+

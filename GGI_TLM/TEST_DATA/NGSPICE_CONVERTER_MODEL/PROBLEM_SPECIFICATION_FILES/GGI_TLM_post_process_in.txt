@@ -1,0 +1,51 @@
+           5  POST PROCESSING OPTION: CREATE SURFACE/VOLUME ANIMATION
+converter.surface_field.tout
+           1  Output surface
+lin
+   0.0000000000000000     
+   0.0000000000000000     
+n
+           0  Output surface
+          33  POST PROCESSING OPTION: CREATE TIME DOMAIN VECTOR VOLUME ANIMATION
+converter.volume_field.tout
+           1  Output surface component number           1
+           2  Output surface component number           2
+           0  Output surface component number           3
+   0.0000000000000000       max vector magnitude to plot (0 to use the value from the data)
+n
+H_field
+          1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+converter.ngspice.tout
+           1
+v1.tout
+          1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+converter.ngspice.tout
+           2
+v2.tout
+          1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+converter.ngspice.tout
+           3
+v3.tout
+          1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+converter.ngspice.tout
+           4
+v4.tout
+          1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+converter.ngspice.tout
+           5
+v5.tout
+          1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+converter.ngspice.tout
+           6
+v6.tout
+          1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+converter.ngspice.tout
+           7
+v7.tout
+          1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+converter.ngspice.tout
+           8
+v8.tout
+           0  POST PROCESSING OPTION: QUIT
+           
+           

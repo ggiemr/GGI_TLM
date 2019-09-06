@@ -1,0 +1,86 @@
+Ngspice template file for GGI_TLM - ngspice linked simulation
+*
+* GGI_TLM link port    1 using nodes    1 and   0
+*
+* Voltage source with series resistance: equivalent circuit of TLM link
+ Vtlm1        1001           0  DC  0.0
+ Rtlm1        1001           1  #Z0_TLM
+* 
+* GGI_TLM link port    2 using nodes    2 and   0
+*
+* Voltage source with series resistance: equivalent circuit of TLM link
+ Vtlm2        1002           0  DC  0.0
+ Rtlm2        1002           2  #Z0_TLM
+* 
+* GGI_TLM link port    3 using nodes    3 and   0
+*
+* Voltage source with series resistance: equivalent circuit of TLM link
+ Vtlm3        1003           0  DC  0.0
+ Rtlm3        1003           3  #Z0_TLM
+* 
+* GGI_TLM link port    4 using nodes    4 and   0
+*
+* Voltage source with series resistance: equivalent circuit of TLM link
+ Vtlm4        1004           0  DC  0.0
+ Rtlm4        1004           4  #Z0_TLM
+* 
+* GGI_TLM link port    5 using nodes    5 and   0
+*
+* Voltage source with series resistance: equivalent circuit of TLM link
+ Vtlm5        1005           0  DC  0.0
+ Rtlm5        1005           5  #Z0_TLM
+* 
+* GGI_TLM link port    6 using nodes    6 and   0
+*
+* Voltage source with series resistance: equivalent circuit of TLM link
+ Vtlm6        1006           0  DC  0.0
+ Rtlm6        1006           6  #Z0_TLM
+* 
+* 
+* Voltage source required for the voltage source controlling the breakpoint time
+Vbreak time_node 0 DC 0.0
+* 
+
+* Model to be included in the GGI_TLM simulation connected to node 1
+* INPUT VOLTAGE
+VIN	1	0	DC	20.0
+
+* Model to be included in the GGI_TLM simulation connected to node 2
+* Voltage controlled switch model
+SW1	2       0	8  0 	SWitch1
+** Switch snubber
+CSW1 2 100 22e-12
+RSW1 100 0 10.0
+
+* Model to be included in the GGI_TLM simulation connected to node 3
+* Diode model
+D1	0	3	DSCH  IC=0.967A
+** Diode snubber
+CD1 0 101 22e-12
+RD1 101 3 10.0
+
+* Model to be included in the GGI_TLM simulation connected to node 4
+* Inductor model
+L1	4	0	500UH  IC=0.967A
+*
+* Model to be included in the GGI_TLM simulation connected to node 5
+* Capacitor model
+C1	5	0	4UF   IC=4.835V
+
+* Model to be included in the GGI_TLM simulation connected to node 6
+* LOAD model
+RL	6	0	5.0
+*
+* SWITCH CONTROL SIGNAL
+VCTRL	8	0	PULSE(0V 6V 0 0.0001US 0.0001US 0.05US 0.2US)
+Rctrl	8	0	1MEG
+*
+.MODEL  SWitch1	SW	Vt=5V Vh=0.2V RON=0.01 ROFF=1MEG
+*
+.MODEL DSCH D( IS=0.0002 )
+*
+*
+* Control for transient simulation
+.TRAN #dt_out  #tmax_ngspice 0.0 #dt_ngspice  UIC
+*
+.END

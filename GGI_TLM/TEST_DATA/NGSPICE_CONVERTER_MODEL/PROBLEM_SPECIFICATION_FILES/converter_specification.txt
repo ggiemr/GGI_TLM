@@ -1,0 +1,184 @@
+converter.inp
+0.001  # dl: cell size for the TLM solution
+-0.01 -0.01 -0.03   0.07 0.04 0.01  # TLM problem space dimensions: xmin,ymin,zmin,xmax,ymax,zmax     
+1      # Number of gerber files to include
+top_layer.gbr
+0.002    # z position for the layer specified in this gerber file
+2      # Number of dielectric layers. Here the first layer idefines an output volume for H field output, the second is the FR4 substrate
+-0.01 -0.01 0.006   0.07 0.04 0.007  # outer dimensions of the dielectric layer. Material filename follows (without .vmat extension)
+air
+0.0 0.0 0.0    0.06 0.03 0.002  # outer dimensions of the dielectric layer. Material filename follows (without .vmat extension)
+FR4
+0      # Number of vias
+6      # Number of lumped components
+1      # COMPONENT NUMBER
+one_port_model  # Component type for component 1
+1      # Number of ports 
+1      # Port number(s)
+1  0   # Ngspice node numbers for port 1
+0.005  0.020 0.002  # connection point coordinates for connection number 1, port 
+0.005  0.015 0.002  # connection point coordinates for connection number 2, reference for port
+0.003     # z position for component
+none      # package type
+2      # COMPONENT NUMBER
+two_port_model  # Component type for component 2
+1         # Number of ports 
+2         # Port number(s)
+2  0        # Ngspice node number for port 2
+0.020  0.020 0.002  # connection point coordinates for connection number 1, port 
+0.025  0.020 0.002  # connection point coordinates for connection number 2, reference for port
+-0.003              # z position for component
+rectangular         # package type
+-0.0055  0.0005  -0.0015     0.0055  -0.0095   0.0015      # package parameters. Material filename follows (without .vmat extension)
+component_case
+1          # Number of PEC surfaces
+zmin   2   # PEC surface and the terminal to electrically connect to
+3      # COMPONENT NUMBER
+one_port_model  # Component type for component 3
+1       # Number of ports 
+3       # Port number(s)
+3  0    # Ngspice node number for port 
+0.025  0.015 0.002  # connection point coordinates for connection number 1, port 
+0.025  0.005 0.002  # connection point coordinates for connection number 2, reference for port
+0.003     # z position for component
+none      # package type
+4      # COMPONENT NUMBER
+one_port_model  # Component type for component 4
+1       # Number of ports 
+4       # Port number(s)
+4  0    # Ngspice node number for port 
+0.030  0.020 0.002  # connection point coordinates for connection number 1, port 
+0.040  0.020 0.002  # connection point coordinates for connection number 2, reference for port
+0.003     # z position for component
+none      # package type
+5      # COMPONENT NUMBER
+one_port_model  # Component type for component 5
+1       # Number of ports 
+5       # Port number(s)
+5  0    # Ngspice node number for port 
+0.045  0.015 0.002  # connection point coordinates for connection number 1, port 
+0.045  0.005 0.002  # connection point coordinates for connection number 2, reference for port
+0.003     # z position for component
+none      # package type
+6      # COMPONENT NUMBER
+one_port_model  # Component type for component 6
+1       # Number of ports 
+6       # Port number(s)
+6  0    # Ngspice node number for port 
+0.055  0.015 0.002  # connection point coordinates for connection number 1, port 1
+0.055  0.005 0.002  # connection point coordinates for connection number 2, reference for port
+0.003     # z position for component
+none      # package type
+2         # Number of additional components (heatsinks etc)
+heatsink
+-0.002  0.0 -0.020    0.062 0.03 -0.005  # outer dimensions of the heatsink
+10                                       # number of slots
+y                                        # slot width direction
+zmin                                     # slot depth direction (face from which slots are cut)
+0.004                                    # width of slots 
+0.010                                    # depth of slots 
+dielectric
+0.015  0.010  -0.005     0.026  0.020   -0.004 # outer dimensions of the dielectric. Material name follows (without .vmat extension)
+ceramic_tile
+* START of GGI_TLM input file text *
+
+ngspice_node_output_list
+8   # number of ngspice output nodes
+1   # NGSPICE OUTPUT NUMBER  
+1   # ngspice node number      # Supply voltage
+2   # NGSPICE OUTPUT NUMBER
+2   # ngspice node number      # Switch  voltage
+3   # NGSPICE OUTPUT NUMBER
+3   # ngspice node number      # Diode voltage
+4   # NGSPICE OUTPUT NUMBER
+4   # ngspice node number      # Inductor voltage
+5   # NGSPICE OUTPUT NUMBER
+5   # ngspice node number      # Capacitor voltage
+6   # NGSPICE OUTPUT NUMBER
+6   # ngspice node number      # load voltage
+7   # NGSPICE OUTPUT NUMBER
+7   # ngspice node number      # control voltage 1
+8   # NGSPICE OUTPUT NUMBER
+8   # ngspice node number      # control voltage 2
+
+ngspice_timestep_factor
+8                  (real)
+
+ngspice_lpf_alpha
+0.1                  (real)
+
+Output_surface_list
+1    		! number of output surfaces
+1		! OUTPUT SURFACE NUMBER
+1                 surface number
+0		! side of surface for output (+1 or -1)
+Jm
+output_time_information
+0.02e-6	! first output time
+0.25e-6	! last output time
+0.02e-6	! output time interval
+
+Output_volume_list
+2 ! number of output volumes
+1 ! OUTPUT NUMBER
+1 ! volume number for output
+Hx
+output_time_information
+0.02e-6	! first output time
+0.25e-6	! last output time
+0.02e-6	! output time interval
+2 ! OUTPUT NUMBER
+1 ! volume number for output
+Hy
+output_time_information
+0.02e-6	! first output time
+0.25e-6	! last output time
+0.02e-6	! output time interval
+
+Simulation_time
+0.25e-6
+
+* END of GGI_TLM input file text *
+
+* START of Ngspice input file text *
+
+* Model to be included in the GGI_TLM simulation connected to node 1
+* INPUT VOLTAGE
+VIN	1	0	DC	20.0
+
+* Model to be included in the GGI_TLM simulation connected to node 2
+* Voltage controlled switch model
+SW1	2       0	8  0 	SWitch1
+** Switch snubber
+CSW1 2 100 22e-12  
+RSW1 100 0 10.0
+
+* Model to be included in the GGI_TLM simulation connected to node 3
+* Diode model
+D1	0	3	DSCH  IC=0.967A
+** Diode snubber
+CD1 0 101 22e-12  
+RD1 101 3 10.0
+
+* Model to be included in the GGI_TLM simulation connected to node 4
+* Inductor model
+L1	4	0	500UH  IC=0.967A
+* 
+* Model to be included in the GGI_TLM simulation connected to node 5
+* Capacitor model
+C1	5	0	4UF   IC=4.835V
+
+* Model to be included in the GGI_TLM simulation connected to node 6
+* LOAD model
+RL	6	0	5.0
+*
+* SWITCH CONTROL SIGNAL 
+VCTRL	8	0	PULSE(0V 6V 0 0.0001US 0.0001US 0.05US 0.2US)
+Rctrl	8	0	1MEG
+*
+.MODEL  SWitch1	SW	Vt=5V Vh=0.2V RON=0.01 ROFF=1MEG
+*
+.MODEL DSCH D( IS=0.0002 )
+*
+* END of Ngspice input file text *
+

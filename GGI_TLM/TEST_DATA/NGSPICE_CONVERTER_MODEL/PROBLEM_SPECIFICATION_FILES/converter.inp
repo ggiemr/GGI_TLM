@@ -1,0 +1,227 @@
+Mesh_outer_boundary_dimension
+   -1.000000E-02    7.000000E-02   -1.000000E-02    4.000000E-02   -3.000000E-02    1.000000E-02
+
+Mesh_cell_dimension
+    1.000000E-03
+
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+Surface_list
+     9  # Number of surfaces
+     1  # SURFACE NUMBER
+stl_triangulated_surface
+top_layer.gbr.stl
+1.0 0.0
+    0.000000E+00    0.000000E+00    0.000000E+00
+    0.000000E+00    0.000000E+00    2.000000E-03
+     2  # SURFACE NUMBER
+zplane
+    5.000000E-03    1.700000E-02    3.000000E-03    6.000000E-03    1.800000E-02    3.000000E-03
+    0.000000E+00    0.000000E+00    0.000000E+00
+    0.000000E+00    0.000000E+00    0.000000E+00
+     3  # SURFACE NUMBER
+zplane
+    2.200000E-02    2.000000E-02   -3.000000E-03    2.300000E-02    2.100000E-02   -3.000000E-03
+    0.000000E+00    0.000000E+00    0.000000E+00
+    0.000000E+00    0.000000E+00    0.000000E+00
+     4  # SURFACE NUMBER
+zplane
+    1.700000E-02    2.100000E-02   -4.000000E-03    2.800000E-02    1.100000E-02   -4.000000E-03
+    0.000000E+00    0.000000E+00    0.000000E+00
+    0.000000E+00    0.000000E+00    0.000000E+00
+     5  # SURFACE NUMBER
+zplane
+    2.500000E-02    1.000000E-02    3.000000E-03    2.600000E-02    1.100000E-02    3.000000E-03
+    0.000000E+00    0.000000E+00    0.000000E+00
+    0.000000E+00    0.000000E+00    0.000000E+00
+     6  # SURFACE NUMBER
+zplane
+    3.500000E-02    2.000000E-02    3.000000E-03    3.600000E-02    2.100000E-02    3.000000E-03
+    0.000000E+00    0.000000E+00    0.000000E+00
+    0.000000E+00    0.000000E+00    0.000000E+00
+     7  # SURFACE NUMBER
+zplane
+    4.500000E-02    1.000000E-02    3.000000E-03    4.600000E-02    1.100000E-02    3.000000E-03
+    0.000000E+00    0.000000E+00    0.000000E+00
+    0.000000E+00    0.000000E+00    0.000000E+00
+     8  # SURFACE NUMBER
+zplane
+    5.500000E-02    1.000000E-02    3.000000E-03    5.600000E-02    1.100000E-02    3.000000E-03
+    0.000000E+00    0.000000E+00    0.000000E+00
+    0.000000E+00    0.000000E+00    0.000000E+00
+     9  # SURFACE NUMBER
+stl_triangulated_surface
+component_terminal_connections.stl
+1.0 0.0
+    0.000000E+00    0.000000E+00    0.000000E+00
+    0.000000E+00    0.000000E+00    0.000000E+00
+
+Surface_material_list
+     9  # Number of surface materials
+     1  # SURFACE MATERIAL NUMBER
+PEC
+     1  # Number of surfaces
+    1 # Surface list
+ 1 # Surface orientation list
+     2  # SURFACE MATERIAL NUMBER
+SPICE
+     1  # Ngspice port number
+     1     0  # Ngspice node numbers
+-y  # Port direction
+     1  # Number of surfaces
+     2  # Surface number
+     1  # Surface orientation list
+     3  # SURFACE MATERIAL NUMBER
+SPICE
+     2  # Ngspice port number
+     2     0  # Ngspice node numbers
++x  # Port direction
+     1  # Number of surfaces
+     3  # Surface number
+     1  # Surface orientation list
+     4  # SURFACE MATERIAL NUMBER
+PEC
+     1  # Number of surfaces
+     4  # Surface number
+     1  # Surface orientation list
+     5  # SURFACE MATERIAL NUMBER
+SPICE
+     3  # Ngspice port number
+     3     0  # Ngspice node numbers
+-y  # Port direction
+     1  # Number of surfaces
+     5  # Surface number
+     1  # Surface orientation list
+     6  # SURFACE MATERIAL NUMBER
+SPICE
+     4  # Ngspice port number
+     4     0  # Ngspice node numbers
++x  # Port direction
+     1  # Number of surfaces
+     6  # Surface number
+     1  # Surface orientation list
+     7  # SURFACE MATERIAL NUMBER
+SPICE
+     5  # Ngspice port number
+     5     0  # Ngspice node numbers
+-y  # Port direction
+     1  # Number of surfaces
+     7  # Surface number
+     1  # Surface orientation list
+     8  # SURFACE MATERIAL NUMBER
+SPICE
+     6  # Ngspice port number
+     6     0  # Ngspice node numbers
+-y  # Port direction
+     1  # Number of surfaces
+     8  # Surface number
+     1  # Surface orientation list
+     9  # SURFACE MATERIAL NUMBER
+PEC
+     1  # Number of surfaces
+     9  # Surface number
+     1  # Surface orientation list
+
+volume_list
+     4   # Number of volumes
+     1   # volume NUMBER
+Rectangular_block2
+   -1.000000E-02   -1.000000E-02    6.000000E-03    7.000000E-02    4.000000E-02    7.000000E-03
+    0.000000E+00    0.000000E+00    0.000000E+00
+    0.000000E+00    0.000000E+00    0.000000E+00
+     2   # volume NUMBER
+Rectangular_block2
+    0.000000E+00    0.000000E+00    0.000000E+00    6.000000E-02    3.000000E-02    2.000000E-03
+    0.000000E+00    0.000000E+00    0.000000E+00
+    0.000000E+00    0.000000E+00    0.000000E+00
+     3   # volume NUMBER
+Rectangular_block2
+    1.700000E-02    2.100000E-02   -4.000000E-03    2.800000E-02    1.100000E-02   -1.000000E-03
+    0.000000E+00    0.000000E+00    0.000000E+00
+    0.000000E+00    0.000000E+00    0.000000E+00
+     4   # volume NUMBER
+Rectangular_block2
+    1.500000E-02    1.000000E-02   -5.000000E-03    2.600000E-02    2.000000E-02   -4.000000E-03
+    0.000000E+00    0.000000E+00    0.000000E+00
+    0.000000E+00    0.000000E+00    0.000000E+00
+
+volume_material_list
+     4   # Number of volume materials
+     1   # volume MATERIAL NUMBER
+DISPERSIVE
+air
+     1  # Number of volumes
+     1   # volume number
+     2   # volume MATERIAL NUMBER
+DISPERSIVE
+FR4
+     1  # Number of volumes
+     2   # volume number
+     3   # volume MATERIAL NUMBER
+DISPERSIVE
+component_case
+     1  # Number of volumes
+     3   # volume number
+     4   # volume MATERIAL NUMBER
+DISPERSIVE
+ceramic_tile
+     1  # Number of volumes
+     4   # volume number
+
+ngspice_node_output_list
+8   # number of ngspice output nodes
+1   # NGSPICE OUTPUT NUMBER
+1   # ngspice node number      # Supply voltage
+2   # NGSPICE OUTPUT NUMBER
+2   # ngspice node number      # Switch  voltage
+3   # NGSPICE OUTPUT NUMBER
+3   # ngspice node number      # Diode voltage
+4   # NGSPICE OUTPUT NUMBER
+4   # ngspice node number      # Inductor voltage
+5   # NGSPICE OUTPUT NUMBER
+5   # ngspice node number      # Capacitor voltage
+6   # NGSPICE OUTPUT NUMBER
+6   # ngspice node number      # load voltage
+7   # NGSPICE OUTPUT NUMBER
+7   # ngspice node number      # control voltage 1
+8   # NGSPICE OUTPUT NUMBER
+8   # ngspice node number      # control voltage 2
+
+ngspice_timestep_factor
+8                  (real)
+
+ngspice_lpf_alpha
+0.1                  (real)
+
+Output_surface_list
+1    		! number of output surfaces
+1		! OUTPUT SURFACE NUMBER
+1                 surface number
+0		! side of surface for output (+1 or -1)
+Jm
+output_time_information
+0.02e-6	! first output time
+0.25e-6	! last output time
+0.02e-6	! output time interval
+
+Output_volume_list
+2 ! number of output volumes
+1 ! OUTPUT NUMBER
+1 ! volume number for output
+Hx
+output_time_information
+0.02e-6	! first output time
+0.25e-6	! last output time
+0.02e-6	! output time interval
+2 ! OUTPUT NUMBER
+1 ! volume number for output
+Hy
+output_time_information
+0.02e-6	! first output time
+0.25e-6	! last output time
+0.02e-6	! output time interval
+
+Simulation_time
+0.25e-6
+
