@@ -42,8 +42,12 @@ $(GGI_LIB_DIR)/lib_EISPACK.a
 # the following are required for the ngspice link
 
 ifeq ($(NGSPICE),TRUE)
+# for linux/ unix use the following two lines:
 	export LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib
 	NGSPICE_LINK_LIBS=-lngspice -lpthread -ldl
+# for cygwin, un-comment the following line and comment out the previious two lines
+#	NGSPICE_LINK_LIBS=-L/usr/local/lib/ -lngspice -lpthread -ldl
+
 	MAKE_NGSPICE_LINK=MAKE_ngspice_link
         NGSPICE_MODE=INCLUDE_NGSPICE
 else
