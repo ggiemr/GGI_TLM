@@ -172,7 +172,7 @@ end do ! next readloop
 CLOSE(unit=local_file_unit)
 DEALLOCATE( data_line )
 
-dt=t(2)-t(1)
+dt=(t(nt)-t(1))/dble(nt-1)
 
 write(*,*)
 write(*,*)'Number of samples read, nt=',nt

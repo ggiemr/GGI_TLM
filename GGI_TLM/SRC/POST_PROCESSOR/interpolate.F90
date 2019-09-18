@@ -83,80 +83,126 @@ IMPLICIT NONE
   
   write(*,*)' '
 
-  write(*,*)'Please enter the filename with required x values (x1)'
+  write(*,*)'Please enter the filename with required x values (x1) '
+  write(*,*)'or press enter to define the x1 samples from n_x1_samples, x1min and x1max'
   
-  read(*,*)x1filename
+  read(*,'(A)')x1filename
+  
   write(record_user_inputs_unit,'(A)')trim(x1filename)
-  write(post_process_info_unit,*)'Filename for x1 data:',trim(x1filename)
   
-  OPEN(unit=local_file_unit,file=x1filename,err=9000)
+  if (len(trim(x1filename)).EQ.0) then
 
-! read the x1 values only
-
-  write(*,*)'Please enter the number of lines to ignore at the top of the x1 file'  
-  read(*,*)n_ignore
-  write(record_user_inputs_unit,'(I4,A32)')n_ignore,'   ! number of lines to ignore  '
-
-  write(*,*)'Please enter the column for x1 data'  
-  read(*,*)x1_col
-  write(record_user_inputs_unit,'(I4,A25)')x1_col,'   ! column for x1 data  '
-  
-! Allocate the array for reading the data file
-  max_col=x1_col
-  ALLOCATE( data_line(1:max_col) )
-  
-  xscale=1d0
-  do loop=1,2      ! read loop, the first to count the samples and the second to read them
-  
-    do i=1,n_ignore
-      read(local_file_unit,*)
-    end do
+! set the x1 values from start, end and step values
+    write(*,*)'Please enter the number of x1 data samples'  
+    read(*,*)n_samples1
     
-    n_samples1=0
-    x1min=1D30
-    x1max=-1D30
-
-100 CONTINUE
-
-    read(local_file_unit,*,end=110,err=120)(data_line(i),i=1,max_col)
-    n_samples1=n_samples1+1
-    
-    x1min=min(x1min,data_line(x1_col)*xscale)
-    x1max=max(x1max,data_line(x1_col)*xscale)
-      
-    if (loop.EQ.2) then
-    
-      x1(n_samples1)=data_line(x1_col)*xscale
-      
+    if (n_samples1.LT.1) then
+      write(*,*)'ERROR in interpolate: number of samples should be at least 1'
+      STOP 1    
     end if
     
-120 CONTINUE
-    
-    GOTO 100
+    write(record_user_inputs_unit,'(I12,A33)')n_samples1,'   ! number of x1 samples '
 
-110 CONTINUE ! jump here when the file has been read
+    write(*,*)'Please enter the minimum x1 value'  
+    read(*,*)x1min
+    write(record_user_inputs_unit,'(ES16.6,A33)')x1min,'   ! minimum value for x1 data  '
+
+    write(*,*)'Please enter the maximum x1 value'  
+    read(*,*)x1max
+    write(record_user_inputs_unit,'(ES16.6,A33)')x1max,'   ! maximum value for x1 data  '
     
-    write(*,*)'Loop:',loop
-    write(*,*)'Number of samples read:',n_samples1
+    write(*,*)'Number of x1 samples:',n_samples1
     write(*,*)'Minimum x1 value is: ',x1min
     write(*,*)'Maximum x1 value is: ',x1max
 
-    if (loop.EQ.1) then
-
-      write(*,*)'Please enter the scaling factor for x1 data'  
-      read(*,*)xscale
-      write(record_user_inputs_unit,'(ES16.6,A33)')xscale,'   ! scaling factor for x1 data  '
-      
-      ALLOCATE( x1(1:n_samples1) )
-      rewind(local_file_unit)
-      
+    ALLOCATE( x1(1:n_samples1) )
+    
+    if (n_samples1.GT.1) then
+      do i=1,n_samples1
+        x1(i)=x1min+dble(i-1)*(x1max-x1min)/dble(n_samples1-1)
+      end do
+    else if (n_samples1.EQ.1) then
+      x1(1)=x1min
     end if
- 
-  end do ! next read loop
+    
+  else
   
-  DEALLOCATE( data_line )
+! read x1 values from a file
+  
+    write(post_process_info_unit,*)'Filename for x1 data:',trim(x1filename)
+  
+    OPEN(unit=local_file_unit,file=x1filename,err=9000)
 
-  CLOSE(unit=local_file_unit)
+! read the x1 values only
+
+    write(*,*)'Please enter the number of lines to ignore at the top of the x1 file'  
+    read(*,*)n_ignore
+    write(record_user_inputs_unit,'(I4,A32)')n_ignore,'   ! number of lines to ignore  '
+
+    write(*,*)'Please enter the column for x1 data'  
+    read(*,*)x1_col
+    write(record_user_inputs_unit,'(I4,A25)')x1_col,'   ! column for x1 data  '
+  
+! Allocate the array for reading the data file
+    max_col=x1_col
+    ALLOCATE( data_line(1:max_col) )
+  
+    xscale=1d0
+    do loop=1,2      ! read loop, the first to count the samples and the second to read them
+  
+      do i=1,n_ignore
+        read(local_file_unit,*)
+      end do
+    
+      n_samples1=0
+      x1min=1D30
+      x1max=-1D30
+
+100   CONTINUE
+
+      read(local_file_unit,*,end=110,err=120)(data_line(i),i=1,max_col)
+      n_samples1=n_samples1+1
+    
+      x1min=min(x1min,data_line(x1_col)*xscale)
+      x1max=max(x1max,data_line(x1_col)*xscale)
+      
+      if (loop.EQ.2) then
+    
+        x1(n_samples1)=data_line(x1_col)*xscale
+      
+      end if
+    
+120   CONTINUE
+    
+      GOTO 100
+
+110   CONTINUE ! jump here when the file has been read
+    
+      write(*,*)'Loop:',loop
+      write(*,*)'Number of samples read:',n_samples1
+      write(*,*)'Minimum x1 value is: ',x1min
+      write(*,*)'Maximum x1 value is: ',x1max
+
+      if (loop.EQ.1) then
+
+        write(*,*)'Please enter the scaling factor for x1 data'  
+        read(*,*)xscale
+        write(record_user_inputs_unit,'(ES16.6,A33)')xscale,'   ! scaling factor for x1 data  '
+      
+        ALLOCATE( x1(1:n_samples1) )
+        rewind(local_file_unit)
+      
+      end if
+ 
+    end do ! next read loop
+  
+    DEALLOCATE( data_line )
+
+    CLOSE(unit=local_file_unit)
+    
+  end if
+  
+! we now have n_samples1 time samples in the array x1
   
 ! Read the existing x values (x2) and function values, f(x2)
 
@@ -237,7 +283,7 @@ IMPLICIT NONE
 
       write(*,*)'Please enter the scaling factor for x2 data'  
       read(*,*)xscale
-      write(record_user_inputs_unit,'(ES16.6,A33)')xscale,'   ! scaling factor for x2 data  '
+      write(record_user_inputs_unit,'(ES18.8,A33)')xscale,'   ! scaling factor for x2 data  '
       
       ALLOCATE( x2(1:n_samples2) )
       ALLOCATE( re(1:n_samples2) )
@@ -259,11 +305,11 @@ IMPLICIT NONE
   
   write(*,*)'Please enter xmin for the output data'  
   read(*,*)opxmin
-  write(record_user_inputs_unit,'(ES16.6,A24)')opxmin,'   ! output xmin value  '
+  write(record_user_inputs_unit,'(ES18.8,A24)')opxmin,'   ! output xmin value  '
   
   write(*,*)'Please enter xmax for the output data'  
   read(*,*)opxmax
-  write(record_user_inputs_unit,'(ES16.6,A24)')opxmax,'   ! output xmax value  '
+  write(record_user_inputs_unit,'(ES18.8,A24)')opxmax,'   ! output xmax value  '
 
   write(*,*)'Please enter the filename for the output data'
   
@@ -327,7 +373,7 @@ IMPLICIT NONE
 
 1000  CONTINUE
   
-  write(local_file_unit,'(3ES16.6)')x,real(interpolated_value),imag(interpolated_value)
+  write(local_file_unit,'(ES20.10,2ES16.6)')x,real(interpolated_value),imag(interpolated_value)
 
   end do ! next x1 sample
 
