@@ -53,15 +53,17 @@ IMPLICIT NONE
 
 ! START
 
-  write(*,*)'Calculate reflection and transmission of layers in the yz plane'
-  write(*,*)'as a function of frequency, angle of incidence and polarisation'
+  write(*,*)'Calculate reflection and transmission of multiple material layers '
+  write(*,*)'and impedance boundariesas a function of frequency,'
+  write(*,*)'angle of incidence and polarisation'
   write(*,*)'Note:'
-  write(*,*)'Wave propagation is in the x direction'
-  write(*,*)'There is no field variation in the z direction (normal to the plane of propagation)'
+  write(*,*)'The material layers are normal to the z direction'
+  write(*,*)'Wave propagation is in the xz plane'
+  write(*,*)'There is no field variation in the y direction (normal to the plane of propagation)'
   write(*,*)'Angle of incidence is measured from the normal to the layers'
-  write(*,*)'i.e. the angle between the k vector and the x direction'
-  write(*,*)'TE(z) polarisation: Ex, Ey, Hz'
-  write(*,*)'TM(z) polarisation: Ez, Hx, Hy'
+  write(*,*)'i.e. the angle between the k vector and the z direction'
+  write(*,*)'TE(z) polarisation: Ex, Hy, Ez'
+  write(*,*)'TM(z) polarisation: Hx, Ey, Hz'
   
   call open_files()
   
