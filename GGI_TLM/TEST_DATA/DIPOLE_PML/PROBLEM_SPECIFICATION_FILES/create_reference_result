@@ -1,0 +1,5 @@
+cp dipole.cable_current.tout PROBLEM_SPECIFICATION_FILES/dipole.cable_current.tout_ref
+cp dipole.field.tout PROBLEM_SPECIFICATION_FILES/dipole.field.tout_ref
+cp dipole.far_field.fout PROBLEM_SPECIFICATION_FILES/dipole.far_field.fout_ref
+cp dipole.impedance.fout PROBLEM_SPECIFICATION_FILES/dipole.impedance.fout_ref
+

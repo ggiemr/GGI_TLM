@@ -43,6 +43,7 @@ SUBROUTINE deallocate_geometry
 
 USE TLM_general
 USE geometry
+USE PML_module
 
 IMPLICIT NONE
 
@@ -95,6 +96,24 @@ integer	:: surface_number
   if ( allocated( problem_points ) ) then
       
     DEALLOCATE( problem_points )
+    
+  end if
+  
+  if ( allocated( pml_volumes ) ) then
+  
+    do volume_number=1,n_volumes
+  
+      if ( allocated( pml_volumes(volume_number)%tet_list ) ) then
+        DEALLOCATE( pml_volumes(volume_number)%tet_list )
+      end if
+  
+      if ( allocated( pml_volumes(volume_number)%cell_list ) ) then
+        DEALLOCATE( pml_volumes(volume_number)%cell_list )
+      end if
+    
+    end do ! next volume number
+    
+    DEALLOCATE( pml_volumes )
     
   end if
   

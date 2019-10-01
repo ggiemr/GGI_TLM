@@ -31,6 +31,7 @@
 ! HISTORY
 !
 !     started 9/08/2012 CJS
+!             1/10/2019 CJS  Add PML
 !
 MODULE cell_parameters
 
@@ -114,7 +115,6 @@ IMPLICIT NONE
   integer		:: number_of_face_codes
   integer,allocatable	:: face_update_code(:)   
 
-
 ! temporary mesh arrays to hold material codes  
   integer,allocatable	:: local_surface_material(:,:,:,:)
   integer,allocatable	:: local_cell_material(:,:,:)
@@ -130,6 +130,10 @@ IMPLICIT NONE
 ! temporary mesh arrays to hold excitation codes  
   integer,allocatable	:: local_surface_excitation(:,:,:,:)
   integer,allocatable	:: local_cell_excitation(:,:,:)
+
+! temporary mesh arrays to hold PML codes  
+  integer,allocatable	:: local_surface_PML(:,:,:,:)
+  integer,allocatable	:: local_cell_PML(:,:,:)
   
 ! code lookup tables  
   integer		:: n_special_cells
@@ -137,12 +141,14 @@ IMPLICIT NONE
   integer,allocatable	:: cell_update_code_to_cable_cell_number(:)
   integer,allocatable	:: cell_update_code_to_excitation_number(:)
   integer,allocatable	:: cell_update_code_to_output_number(:)
+  integer,allocatable	:: cell_update_code_to_PML_data(:,:)
 
   integer		:: n_special_faces
   integer,allocatable	:: face_update_code_to_material_data(:,:)
   integer,allocatable	:: face_update_code_to_cable_number(:)
   integer,allocatable	:: face_update_code_to_excitation_number(:)
   integer,allocatable	:: face_update_code_to_output_number(:)
+  integer,allocatable	:: face_update_code_to_PML_data(:,:)
 
 END MODULE mesh
 !

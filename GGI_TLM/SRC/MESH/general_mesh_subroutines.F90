@@ -372,7 +372,10 @@ type(ijk)	:: cell
      write(*,*)'The cell is outside the defined mesh'
      write(*,*)'x =',point%x,' y =',point%y,' z =',point%z
      write(*,*)'i =',cell%i ,' j =',cell%j ,' k =',cell%k
-     write(*,*)'nx=',point%x,' ny=',point%y,' nz=',point%z
+     write(*,*)'nx=',nx,' ny=',ny,' nz=',nz
+     write(*,*)'mesh_xmin=',mesh_xmin,' mesh_xmax=',mesh_xmax
+     write(*,*)'mesh_ymin=',mesh_ymin,' mesh_ymax=',mesh_ymax
+     write(*,*)'mesh_zmin=',mesh_zmin,' mesh_zmax=',mesh_zmax
      STOP
 
   RETURN

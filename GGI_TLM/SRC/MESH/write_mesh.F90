@@ -39,6 +39,7 @@
 !
 !     started 12/08/2012 CJS
 !     periodic boundary mesh copy 5/03/2014 CJS
+!             1/10/2019 CJS  Add PML
 !
 !
 SUBROUTINE write_mesh()
@@ -46,6 +47,7 @@ SUBROUTINE write_mesh()
 USE TLM_general
 USE geometry_types
 USE geometry
+USE PML_module
 USE file_information
 USE constants
 
@@ -271,6 +273,30 @@ integer :: nx2,ny2
 				problem_points(point_number)%face%point
     
   end do ! next point number
+  
+  if ( (n_pml_volumes.NE.0).AND.periodic_boundary ) then
+    write(*,*)'ERROR: We cannot use the PML with periodic boundaries'
+    STOP 1
+  end if
+  
+  write(mesh_file_unit,*)n_pml_volumes,' n_pml_volumes'
+
+  do volume_number=1,n_pml_volumes
+
+    number_of_cells=pml_volumes(volume_number)%number_of_cells
+        
+      write(mesh_file_unit,*)number_of_cells,' number_of_cells in PML volume=',volume_number
+    
+      do cell=1,number_of_cells
+     
+        write(mesh_file_unit,*)	pml_volumes(volume_number)%cell_list(cell)%cell%i,     &
+				pml_volumes(volume_number)%cell_list(cell)%cell%j,     &
+				pml_volumes(volume_number)%cell_list(cell)%cell%k,     &
+				pml_volumes(volume_number)%cell_list(cell)%point
+				
+      end do ! next cell
+    
+  end do ! next volume number
   
   CALL close_file(mesh_file_unit)
 

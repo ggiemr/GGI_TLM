@@ -6,6 +6,7 @@ TLM_material_modules.o \
 TLM_excitation_modules.o \
 TLM_output_modules.o \
 TLM_mode_stir_modules.o \
+PML_module.o \
 Cable_Modules.o \
 Mesh_Modules.o \
 pul_LC_Modules.o \

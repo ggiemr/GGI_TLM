@@ -37,7 +37,8 @@
 ! HISTORY
 !
 !     started 6/08/2012 CJS
-!     1/11/2018 CJS:  Allow volumes to be created by filling surfaces
+!             1/11/2018 CJS:  Allow volumes to be created by filling surfaces
+!             1/10/2019 CJS  Add PML
 !
 !
 PROGRAM GGI_TLM_model_builder
@@ -80,6 +81,8 @@ IMPLICIT NONE
   CALL build_line_geometry()
   
   CALL build_point_geometry()
+  
+  CALL build_PML_geometry()
 
 ! BUILD MESH
   
@@ -90,6 +93,8 @@ IMPLICIT NONE
   CALL build_line_mesh()
   
   CALL build_point_mesh()
+  
+  CALL build_PML_mesh()
   
 ! WRITE GEOMETRY AND MESH FILES
 

@@ -69,6 +69,8 @@ IMPLICIT NONE
   
   logical	:: run_ngspice
 
+  logical	:: PML_flag
+
 ! number of cells in x, y and z directions  
   integer 	:: nx,ny,nz
   

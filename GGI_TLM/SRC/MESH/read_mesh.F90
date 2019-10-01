@@ -36,12 +36,14 @@
 !
 !     started 12/08/2012 CJS
 !     parallel 22/11/2012
+!             1/10/2019 CJS  Add PML
 !
 SUBROUTINE read_mesh()
 
 USE TLM_general
 USE geometry_types
 USE geometry
+USE PML_module
 USE file_information
 USE constants
 USE cell_parameters
@@ -318,6 +320,56 @@ real*8	:: x,y,z
       end if
       
     end if ! read_loop.eq.1
+
+! STAGE 5: READ PML VOLUMES
+    
+    read(mesh_file_unit,*)n_pml_volumes
+  
+    if (read_loop.eq.1) then 
+! Allocate the structure required for each volume
+      ALLOCATE( pml_volumes(1:n_pml_volumes) )
+    end if
+    
+! read the cell list for each of the volumes
+    
+    do volume_number=1,n_pml_volumes
+    
+      read(mesh_file_unit,*)total_number_of_cells
+      
+      cell_count=0
+          
+      do cell=1,total_number_of_cells
+! read cell data      
+        read(mesh_file_unit,*)	i1,j1,k1,point1
+
+! check whether the cell belongs to this process	
+	if ( rank.EQ.cell_rank(k1) ) then
+	
+	  cell_count=cell_count+1
+	  
+	  if (read_loop.eq.2) then
+! put the data into the already allocated cell_list	  
+	    pml_volumes(volume_number)%cell_list(cell_count)%cell%i=i1
+	    pml_volumes(volume_number)%cell_list(cell_count)%cell%j=j1
+	    pml_volumes(volume_number)%cell_list(cell_count)%cell%k=k1
+	    pml_volumes(volume_number)%cell_list(cell_count)%point =point1
+	  end if ! read_loop.eq.2
+	  
+	end if ! cell belongs to this process
+	
+      end do ! next cell
+      
+      if (read_loop.eq.1) then
+! allocate the cell_list according to the number of cells in this processors mesh
+
+        pml_volumes(volume_number)%number_of_cells=cell_count   
+        if (cell_count.gt.0) then
+          ALLOCATE( pml_volumes(volume_number)%cell_list(1:cell_count) )
+        end if
+      
+      end if ! read_loop.eq.1
+    
+    end do ! next volume number
     
   end do ! next read_loop
   

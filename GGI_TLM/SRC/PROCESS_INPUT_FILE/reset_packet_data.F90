@@ -85,6 +85,8 @@ IMPLICIT NONE
   
   periodic_boundary=.FALSE.
   
+  PML_flag=.FALSE.
+  
   write_geometry_vtk_files=.FALSE.     ! changed as we can now do this separately from run_automatic_test
   
   wrap_x=.FALSE.

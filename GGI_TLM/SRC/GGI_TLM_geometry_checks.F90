@@ -37,6 +37,7 @@
 ! HISTORY
 !
 !     started 6/08/2012 CJS
+!             1/10/2019 CJS  Add PML
 !
 !
 PROGRAM GGI_TLM_geometry_checks
@@ -81,6 +82,8 @@ IMPLICIT NONE
   CALL build_line_geometry()
   
   CALL build_point_geometry()
+  
+  CALL build_PML_geometry()
   
   CALL plot_mesh_boundary()
 

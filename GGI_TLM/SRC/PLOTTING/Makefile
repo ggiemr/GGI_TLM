@@ -9,6 +9,7 @@ write_surface_list_vtk.o  \
 write_line_list_vtk.o  \
 write_point_list_vtk.o  \
 plot_mesh_volumes.o \
+plot_mesh_PML_volumes.o \
 plot_mesh_surfaces.o \
 plot_mesh_lines.o \
 plot_mesh_points.o \

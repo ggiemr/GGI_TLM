@@ -6,6 +6,10 @@ Mesh_outer_boundary_dimension
 Mesh_cell_dimension
 1.0   ( 3*integer)
 
+PML
+4.0 4.0   4.0 4.0   4.0 4.0     ! PML thickness on each outer boundary surface: xmin, xmax,   ymin, ymax,    zmin, zmax
+1e-4                            ! PML reflection_coefficient
+
 #specify the outer boundary conditions (6*real)
 Outer_boundary_reflection_coefficient
 0.0 0.0 0.0 0.0 0.0 0.0

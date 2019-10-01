@@ -54,6 +54,38 @@ for vol in range (0,nvol):
 
 	Show( vmesh )   
 
+# Add the PML volume mesh for each PML volume 
+
+volume_material_pml_mesh_files= glob.glob("./*.pml_v_mesh.vtk.*")
+nvol=len(volume_material_pml_mesh_files)
+
+print "Number of PML volumes=" , nvol
+
+# loop over the volumes and add to the image 
+
+for vol in range (0,nvol):
+
+	number=vol+1
+	number_string=str(number)
+
+	pmlvmesh_file=glob.glob("*.pml_v_mesh.vtk." +number_string)
+
+        name="PML_"+number_string
+	
+	print "Processing file" , pmlvmesh_file , " name=" , name
+
+	pmlvmesh=LegacyVTKReader(guiName=name,FileNames=pmlvmesh_file) 
+	
+	sDataRepresentation= GetDisplayProperties( pmlvmesh ) 
+	sDataRepresentation.Opacity = 0.25
+	sDataRepresentation.Representation = 'Surface'
+
+	colour=float(vol+1)/float(nvol)
+
+	sDataRepresentation.DiffuseColor = [colour, colour , colour ]      
+
+	Show( pmlvmesh )   
+
 # Add the surface mesh for each surface material
 
 surface_material_mesh_files= glob.glob("./*.s_mesh.vtk.*")

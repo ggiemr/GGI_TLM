@@ -7,6 +7,7 @@ build_volume_mesh.o \
 build_surface_mesh.o \
 build_line_mesh.o \
 build_point_mesh.o \
+build_PML_mesh.o \
 mesh_triangle.o \
 mesh_tet.o \
 mesh_line_segment.o \

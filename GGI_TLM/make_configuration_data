@@ -20,7 +20,7 @@ MPI_INCLUDE=/usr/include/mpich
 
 # Compilation flags, Option 1. Here we compile with bounds check - slow but good for development testing...
 
-#FLAGS= -D$(MODE) -D$(NGSPICE_MODE) -cpp -g -fbounds-check -finit-real=nan -finit-integer=nan -J$(MOD_DIR) -I$(MOD_DIR) -I$(MPI_INCLUDE) 
+FLAGS= -D$(MODE) -D$(NGSPICE_MODE) -cpp -g -fbounds-check -finit-real=nan -finit-integer=nan -J$(MOD_DIR) -I$(MOD_DIR) -I$(MPI_INCLUDE) 
 
 # Compilation flags, Option 2.  Compile without bounds check - faster...
 
@@ -28,7 +28,7 @@ MPI_INCLUDE=/usr/include/mpich
 
 # Compilation flags, Option 3.  Compilation flags, Here we compile with optimisation - fastest
 
-FLAGS= -D$(MODE) -D$(NGSPICE_MODE) -cpp -J$(MOD_DIR) -I$(MOD_DIR) -I$(MPI_INCLUDE) -O4
+#FLAGS= -D$(MODE) -D$(NGSPICE_MODE) -cpp -J$(MOD_DIR) -I$(MOD_DIR) -I$(MPI_INCLUDE) -O4
 
 
 

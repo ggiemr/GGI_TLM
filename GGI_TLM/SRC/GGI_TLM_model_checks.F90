@@ -32,6 +32,7 @@
 ! HISTORY
 !
 !     started 9/08/2012 CJS
+!             1/10/2019 CJS  Add PML
 !
 !
 PROGRAM GGI_TLM_model_checks
@@ -66,6 +67,10 @@ IMPLICIT NONE
   CALL plot_mesh_lines()
   
   CALL plot_mesh_points()
+  
+  CALL plot_mesh_volumes()
+  
+  CALL plot_mesh_PML_volumes()
   
   CALL plot_mesh_boundary()
 

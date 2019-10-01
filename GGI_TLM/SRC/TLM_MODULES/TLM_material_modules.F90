@@ -75,6 +75,8 @@ END TYPE volume_material_type
 
   integer,parameter	:: volume_material_type_DISPERSIVE=3
 
+  integer,parameter	:: volume_material_type_PML=4
+
   integer				  :: n_volume_materials
   type(volume_material_type),allocatable :: volume_material_list(:)
   
@@ -154,6 +156,8 @@ END TYPE surface_material_type
   integer,parameter	:: surface_material_type_DIODE=6
   
   integer,parameter	:: surface_material_type_SPICE=7
+  
+  integer,parameter	:: surface_material_type_PML=8
 
   integer				  :: n_surface_materials
   type(surface_material_type),allocatable :: surface_material_list(:)

@@ -134,6 +134,7 @@ IMPLICIT NONE
     
     write_all_material_info_to_file=.FALSE.
     CALL plot_volume_material_cells(write_all_material_info_to_file)      
+    CALL plot_mesh_PML_volumes()
     CALL plot_mesh_boundary()
 
   else if (option.EQ.3) then
@@ -157,7 +158,8 @@ IMPLICIT NONE
     
     write_all_material_info_to_file=.TRUE.
     CALL Volume_material_frequency_response(write_all_material_info_to_file)
-    CALL plot_volume_material_cells(write_all_material_info_to_file)
+    CALL plot_volume_material_cells(write_all_material_info_to_file)  
+    CALL plot_mesh_PML_volumes()
     CALL plot_mesh_boundary()
 
   else if (option.EQ.6) then
