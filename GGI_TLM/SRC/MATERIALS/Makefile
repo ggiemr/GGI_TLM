@@ -1,6 +1,7 @@
 
 MATERIAL_OBJS=  \
 TLM_volume_materials.o \
+TLM_PML_volume_materials.o \
 TLM_surface_materials.o \
 output_material_frequency_response.o \
 Surface_material_frequency_response.o \

@@ -133,7 +133,7 @@ IMPLICIT NONE
 
 ! temporary mesh arrays to hold PML codes  
   integer,allocatable	:: local_surface_PML(:,:,:,:)
-  integer,allocatable	:: local_cell_PML(:,:,:)
+  integer,allocatable	:: local_cell_PML(:,:,:,:)      ! holds distance into PML in x,y and z directions
   
 ! code lookup tables  
   integer		:: n_special_cells

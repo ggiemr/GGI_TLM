@@ -79,6 +79,10 @@ IMPLICIT NONE
   ALLOCATE (  local_cell_excitation(1:nx,1:ny,nzmin:nzmax) )
   local_cell_excitation(1:nx,1:ny,nzmin:nzmax)=0
   
+! temporary mesh arrays to hold PML information 
+  ALLOCATE ( local_cell_PML(1:nx,1:ny,nzmin:nzmax,1:3) )
+  local_cell_PML(1:nx,1:ny,nzmin:nzmax,1:3)=0
+  
   CALL write_line('FINISHED: allocate_temporary_mesh_arrays',0,output_to_screen_flag)
 
   RETURN
@@ -172,6 +176,9 @@ IMPLICIT NONE
 ! temporary mesh arrays to hold excitation codes  
   DEALLOCATE ( local_surface_excitation )
   DEALLOCATE ( local_cell_excitation )
+  
+! temporary mesh arrays to PML information
+  DEALLOCATE ( local_cell_PML )
   
   CALL write_line('FINISHED: deallocate_temporary_mesh_arrays',0,output_to_screen_flag)
 

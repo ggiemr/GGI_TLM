@@ -62,30 +62,38 @@ IMPLICIT NONE
   
   n_pml_volumes=0
   
+  pml_volume_to_face(1:6)=0
+  
   if (pml_txmin.GT.0.0) then
     n_pml_volumes=n_pml_volumes+1
+    pml_volume_to_face(n_pml_volumes)=pml_face_xmin
     pml_xmin_flag=.TRUE.
   end if
   if (pml_txmax.GT.0.0) then
     n_pml_volumes=n_pml_volumes+1
+    pml_volume_to_face(n_pml_volumes)=pml_face_xmax
     pml_xmax_flag=.TRUE.
   end if
   
   if (pml_tymin.GT.0.0) then
     n_pml_volumes=n_pml_volumes+1
+    pml_volume_to_face(n_pml_volumes)=pml_face_ymin
     pml_ymin_flag=.TRUE.
   end if
   if (pml_tymax.GT.0.0) then
     n_pml_volumes=n_pml_volumes+1
+    pml_volume_to_face(n_pml_volumes)=pml_face_ymax
     pml_ymax_flag=.TRUE.
   end if
   
   if (pml_tzmin.GT.0.0) then
     n_pml_volumes=n_pml_volumes+1
+    pml_volume_to_face(n_pml_volumes)=pml_face_zmin
     pml_zmin_flag=.TRUE.
   end if
   if (pml_tzmax.GT.0.0) then
     n_pml_volumes=n_pml_volumes+1
+    pml_volume_to_face(n_pml_volumes)=pml_face_zmax
     pml_zmax_flag=.TRUE.
   end if
   

@@ -351,6 +351,7 @@ FILTER_FIT/calculate_mean_square_error.o
 
 MATERIAL_OBJS= \
 MATERIALS/TLM_volume_materials.o \
+MATERIALS/TLM_PML_volume_materials.o \
 MATERIALS/TLM_surface_materials.o \
 MATERIALS/output_material_frequency_response.o \
 MATERIALS/Surface_material_frequency_response.o \

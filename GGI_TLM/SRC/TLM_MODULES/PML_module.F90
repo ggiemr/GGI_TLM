@@ -44,6 +44,15 @@ logical :: pml_ymax_flag=.FALSE.
 logical :: pml_zmin_flag=.FALSE.
 logical :: pml_zmax_flag=.FALSE.
 
+integer :: pml_volume_to_face(1:6)
+
+integer,parameter :: pml_face_xmin=1
+integer,parameter :: pml_face_xmax=2
+integer,parameter :: pml_face_ymin=3
+integer,parameter :: pml_face_ymax=4
+integer,parameter :: pml_face_zmin=5
+integer,parameter :: pml_face_zmax=6
+
 real*8  :: pml_txmin,pml_txmax,pml_tymin,pml_tymax,pml_tzmin,pml_tzmax
   
 type(volume_type),allocatable 	:: pml_volumes(:)
