@@ -79,6 +79,8 @@ IMPLICIT NONE
   
   CALL set_volume_material_mesh()
   
+  CALL set_pml_volume_material_mesh()
+  
   CALL set_surface_material_mesh()
 
   

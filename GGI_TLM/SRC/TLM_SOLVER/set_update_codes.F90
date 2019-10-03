@@ -42,6 +42,7 @@ USE TLM_output
 USE TLM_excitation
 USE Cables
 USE geometry
+USE PML_module
 USE TLM_surface_materials
 USE mesh
 USE File_information
@@ -64,7 +65,11 @@ IMPLICIT NONE
 
   excitation_in_material_flag=.FALSE.
   excitation_on_cable_flag=.FALSE.
-
+  
+  PML_material_intersection_flag=.FALSE.
+  PML_cable_intersection_flag=.FALSE.
+  PML_excitation_intersection_flag=.FALSE.
+  
   number_of_cell_centre_codes=nx*ny*nz
   
   ALLOCATE ( cell_centre_update_code(1:number_of_cell_centre_codes) )
@@ -87,6 +92,7 @@ IMPLICIT NONE
         cell_number=cell_number+1
 	
 	if ( (local_cell_material(cx,cy,cz).NE.0).OR.	&
+	     (local_cell_PML(cx,cy,cz,0).NE.0).OR.	&
 	     (local_cell_excitation(cx,cy,cz).NE.0).OR.	&
 	     (local_cell_cable(cx,cy,cz).NE.0).OR.	&
 	     (local_cell_output(cx,cy,cz).NE.0) ) then
@@ -102,6 +108,21 @@ IMPLICIT NONE
           if ( (local_cell_cable(cx,cy,cz).NE.0).AND.	&
 	       (local_cell_excitation(cx,cy,cz).NE.0)   ) then	    
 	    excitation_on_cable_flag=.TRUE.
+	  end if
+          
+         if ( (local_cell_PML(cx,cy,cz,0).NE.0).AND.	&
+	       (local_cell_material(cx,cy,cz).NE.0)   ) then	    
+	    PML_material_intersection_flag=.TRUE.
+	  end if
+          
+         if ( (local_cell_PML(cx,cy,cz,0).NE.0).AND.	&
+	       (local_cell_cable(cx,cy,cz).NE.0)   ) then	    
+	    PML_cable_intersection_flag=.TRUE.
+	  end if
+          
+         if ( (local_cell_PML(cx,cy,cz,0).NE.0).AND.	&
+	       (local_cell_excitation(cx,cy,cz).NE.0)   ) then	    
+	    PML_excitation_intersection_flag=.TRUE.
 	  end if
 	
 	end if
@@ -138,6 +159,9 @@ IMPLICIT NONE
 
   ALLOCATE ( cell_update_code_to_material_data(1:special_cell_count,1:2) )
   cell_update_code_to_material_data(1:special_cell_count,1:2)=0
+
+  ALLOCATE ( cell_update_code_to_PML_data(1:special_cell_count) )
+  cell_update_code_to_PML_data(1:special_cell_count)=0
   
   ALLOCATE ( cell_update_code_to_excitation_number(1:special_cell_count) )
   cell_update_code_to_excitation_number(1:special_cell_count)=0
@@ -176,6 +200,7 @@ IMPLICIT NONE
         cell_number=cell_number+1
 	
 	if ( (local_cell_material(cx,cy,cz).NE.0).OR.	&
+	     (local_cell_PML(cx,cy,cz,0).NE.0).OR.	&
 	     (local_cell_cable(cx,cy,cz).NE.0).OR.	&
 	     (local_cell_excitation(cx,cy,cz).NE.0).OR.	&
 	     (local_cell_output(cx,cy,cz).NE.0) ) then
@@ -186,33 +211,29 @@ IMPLICIT NONE
 	
 	end if
 	
-	if (local_cell_material(cx,cy,cz).NE.0) then
-	
-	  cell_update_code_to_material_data(special_cell_count,1)=local_cell_material(cx,cy,cz)
-	  
+	if (local_cell_material(cx,cy,cz).NE.0) then	
+	  cell_update_code_to_material_data(special_cell_count,1)=local_cell_material(cx,cy,cz)	  
 	end if
 	
-	if (local_cell_cable(cx,cy,cz).NE.0) then
+	if (local_cell_PML(cx,cy,cz,0).NE.0) then	
+	  cell_update_code_to_PML_data(special_cell_count)=local_cell_PML(cx,cy,cz,0)	  
+	end if
 	
+	if (local_cell_cable(cx,cy,cz).NE.0) then	
 	  total_number_cable_cells=total_number_cable_cells+1
-	  cell_update_code_to_cable_cell_number(special_cell_count)=local_cell_cable(cx,cy,cz)
-	  
+	  cell_update_code_to_cable_cell_number(special_cell_count)=local_cell_cable(cx,cy,cz)	  
 	end if
 	
-	if (local_cell_excitation(cx,cy,cz).NE.0) then
-		
+	if (local_cell_excitation(cx,cy,cz).NE.0) then		
 	  total_number_excitation_cells=total_number_excitation_cells+1
 	  cell_update_code_to_excitation_number(special_cell_count)=1
-	  local_cell_excitation(cx,cy,cz)=total_number_excitation_cells
-	
+	  local_cell_excitation(cx,cy,cz)=total_number_excitation_cells	
 	end if	
 	
-	if (local_cell_output(cx,cy,cz).NE.0) then
-	
+	if (local_cell_output(cx,cy,cz).NE.0) then	
 	  total_number_output_cells=total_number_output_cells+1
 	  cell_update_code_to_output_number(special_cell_count)=1
-	  local_cell_output(cx,cy,cz)=total_number_output_cells
-	  
+	  local_cell_output(cx,cy,cz)=total_number_output_cells	  
 	end if
 		
       end do  ! next x cell
@@ -245,6 +266,24 @@ IMPLICIT NONE
   if (excitation_on_cable_flag) then
     CALL write_line('Warning in set_cell_update_codes:',warning_file_unit,.TRUE.)
     CALL write_line('Excitation on cable cell',warning_file_unit,.TRUE.)
+  end if  
+  
+  if (PML_material_intersection_flag) then
+    CALL write_line('Warning in set_cell_update_codes:',warning_file_unit,.TRUE.)
+    CALL write_line('Material intersects PML',warning_file_unit,.TRUE.)
+    STOP 1
+  end if  
+  
+  if (PML_cable_intersection_flag) then
+    CALL write_line('Warning in set_cell_update_codes:',warning_file_unit,.TRUE.)
+    CALL write_line('Cable intersects PML',warning_file_unit,.TRUE.)
+    STOP 1
+  end if  
+  
+  if (PML_excitation_intersection_flag) then
+    CALL write_line('Warning in set_cell_update_codes:',warning_file_unit,.TRUE.)
+    CALL write_line('Excitation intersects PML',warning_file_unit,.TRUE.)
+    STOP 1
   end if  
   
   CALL write_line('FINISHED: set_cell_update_codes',0,output_to_screen_flag)

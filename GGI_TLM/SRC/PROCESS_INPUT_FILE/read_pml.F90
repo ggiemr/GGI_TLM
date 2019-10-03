@@ -59,6 +59,8 @@ IMPLICIT NONE
   read(input_file_unit,*,err=9000)pml_txmin,pml_txmax,pml_tymin,pml_tymax,pml_tzmin,pml_tzmax
       
   read(input_file_unit,*,err=9005)pml_r
+      
+  read(input_file_unit,*,err=9010)pml_order
   
   n_pml_volumes=0
   
@@ -110,5 +112,9 @@ IMPLICIT NONE
 9005 CALL write_line('Error reading PML reflection parameter from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
      STOP
-  
+      
+9010 CALL write_line('Error reading PML order from input file:',0,.TRUE.)
+     CALL write_error_line(input_file_unit)
+     STOP
+ 
 END SUBROUTINE read_pml

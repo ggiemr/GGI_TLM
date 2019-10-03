@@ -141,14 +141,13 @@ IMPLICIT NONE
   integer,allocatable	:: cell_update_code_to_cable_cell_number(:)
   integer,allocatable	:: cell_update_code_to_excitation_number(:)
   integer,allocatable	:: cell_update_code_to_output_number(:)
-  integer,allocatable	:: cell_update_code_to_PML_data(:,:)
+  integer,allocatable	:: cell_update_code_to_PML_data(:)
 
   integer		:: n_special_faces
   integer,allocatable	:: face_update_code_to_material_data(:,:)
   integer,allocatable	:: face_update_code_to_cable_number(:)
   integer,allocatable	:: face_update_code_to_excitation_number(:)
   integer,allocatable	:: face_update_code_to_output_number(:)
-  integer,allocatable	:: face_update_code_to_PML_data(:,:)
 
 END MODULE mesh
 !

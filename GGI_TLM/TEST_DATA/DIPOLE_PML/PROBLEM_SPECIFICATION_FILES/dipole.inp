@@ -7,8 +7,9 @@ Mesh_cell_dimension
 1.0   ( 3*integer)
 
 PML
-4.0 4.0   4.0 4.0   4.0 4.0     ! PML thickness on each outer boundary surface: xmin, xmax,   ymin, ymax,    zmin, zmax
-1e-4                            ! PML reflection_coefficient
+3.0 3.0   3.0 3.0   3.0 3.0     ! PML thickness on each outer boundary surface: xmin, xmax,   ymin, ymax,    zmin, zmax
+1.00                            ! PML reflection_coefficient
+2                               ! PML order
 
 #specify the outer boundary conditions (6*real)
 Outer_boundary_reflection_coefficient
@@ -66,7 +67,7 @@ Point_list
 Cable_geometry_list
 1  number of cable geometries
 1  cable geometry number, Cable geometry type (file name) follows:
-CABLE_DIRECTORY/dipole_wire                                       
+CABLE_DIRECTORY/1mm_single_wire                                       
 
 Cable_list
 2  number of cables

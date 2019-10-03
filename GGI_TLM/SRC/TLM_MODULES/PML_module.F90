@@ -53,10 +53,75 @@ integer,parameter :: pml_face_ymax=4
 integer,parameter :: pml_face_zmin=5
 integer,parameter :: pml_face_zmax=6
 
+! Notation change for PML to make things consistent with the paper
+! PML port numbering               ! GGI_TLM port numbering
+
+integer,parameter :: Vxny=1   !  Vy_xmin=1
+integer,parameter :: Vxnz=2   !  Vz_xmin=2
+integer,parameter :: Vxpy=3   !  Vy_xmax=3
+integer,parameter :: Vxpz=4   !  Vz_xmax=4
+integer,parameter :: Vynx=5   !  Vx_ymin=5
+integer,parameter :: Vynz=6   !  Vz_ymin=6
+integer,parameter :: Vypx=7   !  Vx_ymax=7
+integer,parameter :: Vypz=8   !  Vz_ymax=8
+integer,parameter :: Vznx=9   !  Vx_zmin=9
+integer,parameter :: Vzny=10  !  Vy_zmin=10
+integer,parameter :: Vzpx=11  !  Vx_zmax=11
+integer,parameter :: Vzpy=12  !  Vy_zmax=12
+
 real*8  :: pml_txmin,pml_txmax,pml_tymin,pml_tymax,pml_tzmin,pml_tzmax
   
 type(volume_type),allocatable 	:: pml_volumes(:)
 
+! PML estimated reflection coefficient
 real*8  :: pml_r
-   
+
+! PML order
+integer :: pml_order
+
+! maximum conductivity in x, y and z directions
+real*8  :: pml_s_max
+
+logical ::   PML_material_intersection_flag
+logical ::   PML_cable_intersection_flag
+logical ::   PML_excitation_intersection_flag
+
+integer :: pml_xmin,pml_xmax,npml_x
+integer :: pml_ymin,pml_ymax,npml_y
+integer :: pml_zmin,pml_zmax,npml_z
+
+! array to transform from d_x,d_y,d_z cell to position in the PML parameters array
+
+integer,allocatable :: PML_dxdydz_to_parameter_array(:,:,:)
+
+! Parameters for each type of PML cell i.e. for each sx, sy, sz combination
+TYPE::PML_material_type
+
+  integer :: d_x,d_y,d_z  ! depth into PML in x, y and z for this cell
+  real*8  :: ax,ay,az     ! alpha constants of each cell type
+  real*8  :: sx,sy,sz     ! conductivity of each cell type
+
+END TYPE PML_material_type
+
+! data for each PML cell i.e. voltage and current values to be saved for each cell
+TYPE::PML_data_type
+
+  integer :: PML_parameter_array_pos ! position in PML_parameters array to find the correct constants for this cell
+  
+  real*8  :: Vxt,Vyt,Vzt
+  real*8  :: Ix,Iy,Iz
+  real*8  :: Vi(12)
+  real*8  :: Vyxt,Vzxt,Vxyt,Vzyt,Vyzt,Vxzt
+
+END TYPE PML_data_type
+
+integer :: PML_array_size
+integer :: PML_n_parameters
+
+type(PML_material_type),allocatable :: PML_parameters(:)
+
+integer	:: total_number_of_PML_cells
+
+type(PML_data_type),allocatable :: PML_cell_data(:)
+
 END MODULE PML_module

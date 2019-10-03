@@ -1119,6 +1119,7 @@ SUBROUTINE deallocate_mesh
 USE TLM_general
 USE TLM_periodic
 USE mesh
+USE PML_module
 USE TLM_excitation
 
 IMPLICIT NONE
@@ -1145,6 +1146,7 @@ IMPLICIT NONE
   if (allocated( face_update_code )) DEALLOCATE ( face_update_code )
   
   if (allocated( cell_update_code_to_material_data )) DEALLOCATE ( cell_update_code_to_material_data )
+  if (allocated( cell_update_code_to_PML_data )) DEALLOCATE ( cell_update_code_to_PML_data )
   if (allocated( cell_update_code_to_cable_cell_number )) DEALLOCATE ( cell_update_code_to_cable_cell_number )
   if (allocated( cell_update_code_to_excitation_number )) DEALLOCATE ( cell_update_code_to_excitation_number )
   if (allocated( cell_update_code_to_output_number )) DEALLOCATE ( cell_update_code_to_output_number )
@@ -1169,6 +1171,9 @@ IMPLICIT NONE
   if (allocated( V_pbc_y )) DEALLOCATE (V_pbc_y)
   if (allocated( V_pbc_x_save )) DEALLOCATE (V_pbc_x_save)
   if (allocated( V_pbc_y_save )) DEALLOCATE (V_pbc_y_save)
+  
+  if (allocated( PML_cell_data )) DEALLOCATE ( PML_cell_data )
+  if (allocated( PML_parameters )) DEALLOCATE ( PML_parameters )
   
   CALL write_line('FINISHED: deallocate_mesh',0,output_to_screen_flag)
 

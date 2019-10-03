@@ -79,6 +79,8 @@ integer :: i2,j2,k2,point2
 
 real*8	:: x,y,z
 
+integer :: i
+
 ! START
 
   CALL write_line('CALLED: read_mesh',0,output_to_screen_flag)
@@ -372,7 +374,21 @@ real*8	:: x,y,z
     end do ! next volume number
     
   end do ! next read_loop
-  
+    
+  read(mesh_file_unit,*)
+  read(mesh_file_unit,*)(pml_volume_to_face(i),i=1,6)
+    
+  read(mesh_file_unit,*)
+  read(mesh_file_unit,*)pml_txmin,pml_txmax
+  read(mesh_file_unit,*)pml_tymin,pml_tymax
+  read(mesh_file_unit,*)pml_tzmin,pml_tzmax
+    
+  read(mesh_file_unit,*)
+  read(mesh_file_unit,*)pml_r
+    
+  read(mesh_file_unit,*)
+  read(mesh_file_unit,*)pml_order
+
   CALL close_file(mesh_file_unit)
 
   CALL write_line('FINISHED: read_mesh',0,output_to_screen_flag)

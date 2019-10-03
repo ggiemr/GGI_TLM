@@ -23,9 +23,6 @@ dipole.cable_current.fout
    1.0000000000000000       constant, B
   -50.000000000000000       constant, C
 dipole.impedance.fout
-           0  Post processing option: Quit
-
-
           36  POST PROCESSING OPTION: GENERATE FAR FIELD PLOT DATA
 dipole.far_field.fout.1
 3    ! 1=Etheta, 2=Ephi, 3=Etot
@@ -41,6 +38,6 @@ dipole.frequency_output_surface.fout
            1  Output surface component number           1
            0  Output surface component number           2
            2  Output surface component number           3
-y
+n
 E_field_13MHz
            0  Post processing option: Quit

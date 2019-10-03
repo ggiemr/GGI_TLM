@@ -68,6 +68,8 @@ integer	:: point_number
 
 integer :: nx2,ny2
 
+integer :: i
+
 ! START
 
   CALL write_line('CALLED: write_mesh',0,output_to_screen_flag)
@@ -297,6 +299,20 @@ integer :: nx2,ny2
       end do ! next cell
     
   end do ! next volume number
+  
+  write(mesh_file_unit,*)'pml_volume_to_face'
+  write(mesh_file_unit,*)(pml_volume_to_face(i),i=1,6)
+  
+  write(mesh_file_unit,*)'pml thicknesses on xmin, xmax, ymin, ymax, zmin and zmax boundaries'
+  write(mesh_file_unit,*)pml_txmin,pml_txmax
+  write(mesh_file_unit,*)pml_tymin,pml_tymax
+  write(mesh_file_unit,*)pml_tzmin,pml_tzmax
+  
+  write(mesh_file_unit,*)'pml_r'
+  write(mesh_file_unit,*)pml_r
+  
+  write(mesh_file_unit,*)'pml_order'
+  write(mesh_file_unit,*)pml_order
   
   CALL close_file(mesh_file_unit)
 
