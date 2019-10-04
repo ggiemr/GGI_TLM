@@ -26,8 +26,9 @@
 ! Example packet:
 !
 !PML
-!4.0 4.0   4.0 4.0   4.0 4.0 ! PML thickness on each outer boundary surface: xmin,xmax,ymin,ymax,zmin,zmax
-!1e-4                        ! PML reflection_coefficient
+!4.0  4.0   4.0  4.0   4.0 4.0   ! PML thickness on each outer boundary surface: xmin,xmax,ymin,ymax,zmin,zmax
+!1e-4 1e-4  1e-4 1e-4  1e-4 1e-4 ! PML reflection_coefficient on each outer boundary surface: xmin,xmax,ymin,ymax,zmin,zmax
+!2                               ! PML order
 !
 ! COMMENTS
 !     
@@ -58,7 +59,7 @@ IMPLICIT NONE
   
   read(input_file_unit,*,err=9000)pml_txmin,pml_txmax,pml_tymin,pml_tymax,pml_tzmin,pml_tzmax
       
-  read(input_file_unit,*,err=9005)pml_r
+  read(input_file_unit,*,err=9005)pml_r_xmin,pml_r_xmax,pml_r_ymin,pml_r_ymax,pml_r_zmin,pml_r_zmax
       
   read(input_file_unit,*,err=9010)pml_order
   

@@ -74,13 +74,17 @@ real*8  :: pml_txmin,pml_txmax,pml_tymin,pml_tymax,pml_tzmin,pml_tzmax
 type(volume_type),allocatable 	:: pml_volumes(:)
 
 ! PML estimated reflection coefficient
-real*8  :: pml_r
+real*8  :: pml_r_xmin,pml_r_xmax
+real*8  :: pml_r_ymin,pml_r_ymax
+real*8  :: pml_r_zmin,pml_r_zmax
 
 ! PML order
 integer :: pml_order
 
-! maximum conductivity in x, y and z directions
-real*8  :: pml_s_max
+! conductivity of first PML layer in x, y and z directions
+real*8  :: pml_s0_xmin,pml_s0_xmax
+real*8  :: pml_s0_ymin,pml_s0_ymax
+real*8  :: pml_s0_zmin,pml_s0_zmax
 
 logical ::   PML_material_intersection_flag
 logical ::   PML_cable_intersection_flag

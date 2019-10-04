@@ -1,0 +1,119 @@
+ ____________________________________________________
+ 
+ #START OF VOLUME MATERIAL DESCRIPTION
+ 
+ Number of volume materials=           0
+ 
+ 
+ #END OF VOLUME MATERIAL DESCRIPTION
+ ____________________________________________________
+ 
+ #START OF PML DESCRIPTION
+ 
+ Number of PML volumes=           1
+ 
+Total number of PML cells=           920
+ 
+ #END OF PML MATERIAL DESCRIPTION
+ ____________________________________________________
+ 
+ #START OF SURFACE MATERIAL DESCRIPTION
+ 
+ Number of surface materials=           1
+ 
+ 
+ Surface material_number :            1
+ Material type: DISPERSIVE
+ Material name: WR90_mode_impedance
+Number of geometric surfaces=         1
+Total number of material faces=            92
+ 
+ #END OF SURFACE MATERIAL DESCRIPTION
+ Number of Frequency Output Surfaces=           2
+ Frequency Output Surface number           1  Number of cell_faces=        2576
+ Frequency Output Surface number           2  Number of cell_faces=        2576
+  ____________________________________________________
+ 
+ Setting cell update codes
+ Number of special cells       922
+ Total number of cable cells         0
+ Total number of excitation cells         0
+ Total number of output cells         2
+  ____________________________________________________
+ 
+ Setting face update codes
+Number of special faces      3128
+Total number of cable faces         0
+Total number of excitation faces        92
+Total number of output faces      2944
+ ____________________________________________________
+ 
+ #START OF MESH DESCRIPTION
+ 
+ Cell size, dl=   5.0000000000000001E-004  m
+ 
+ Nx=           2
+ Ny=          46
+ Nz=         100
+ 
+ Total number of cells=        9200
+ 
+ Outer boundary reflection coefficients
+R_xmin= -1.0000 R_xmax -1.0000
+R_ymin= -1.0000 R_ymax -1.0000
+R_zmin=  0.0000 R_zmax  0.0000
+ 
+ #END OF MESH DESCRIPTION
+ ____________________________________________________
+ 
+ #START OF RUN INFORMATION
+ 
+ GGI_TLM version:2.0.4
+ GGI_TLM date   :18th Septembery 2019
+ GGI_TLM compilation date:Fri Oct  4 16:43:19 BST 2019
+ 
+ Timestep=   8.3391023799538018E-013  seconds
+ 
+ Number of timesteps=        2398
+ 
+ Number of processes=            1
+ 
+ bicubic_warp_flag=  F
+ frequency_scale_flag=  F
+ frequency_scale=    1.0000000000000000     
+ 
+ GGI_TLM solution Started:
+ Date:04/10/2019
+ Time:16:43:51.558
+ 
+
+Memory Usage:
+
+  PID %CPU %MEM   RSS    VSZ COMMAND
+11862  0.0  0.0  5688  29836 GGI_TLM_SEQ
+
+
+ 
+ TLM solution Finished:
+ Date:04/10/2019
+ Time:16:44:27.170
+ 
+Run time:     00:00:35
+ 
+Run time per timestep:   0.15E-01 seconds
+ 
+
+Memory Usage on completion:
+
+  PID %CPU %MEM   RSS    VSZ COMMAND
+11862  101  0.0  6288  29836 GGI_TLM_SEQ
+
+
+ #END OF RUN INFORMATION
+ 
+#START OF OUTPUT INFORMATION
+Time domain field output at a point
+Time domain field output over a surface
+Modal field output
+Frequency domain field over a surface
+#END OF OUTPUT INFORMATION

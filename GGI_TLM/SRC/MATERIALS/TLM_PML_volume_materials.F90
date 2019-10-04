@@ -17,10 +17,8 @@
 !
 ! SUBROUTINE set_pml_volume_material_mesh
 ! SUBROUTINE calc_pml_dist
+! SUBROUTINE calc_sigma_0
 ! FUNCTION PML_conductivity
-!!!!! SUBROUTINE calculate_pml_volume_material_filter_coefficients
-!!!!! SUBROUTINE allocate_pml_volume_material_filter_data
-!!!!! SUBROUTINE pml_volume_material_update
 !
 ! NAME
 !     set_pml_volume_material_mesh
@@ -42,6 +40,7 @@
 !
 SUBROUTINE set_pml_volume_material_mesh
 
+USE Constants
 USE TLM_general
 USE geometry
 USE PML_module
@@ -170,9 +169,9 @@ IMPLICIT NONE
   pml_zmax=0
 
   total_number_of_PML_cells=0
-  do cx=1,nx
+  do cz=nz1,nz2
     do cy=1,ny
-      do cz=nz1,nz2
+      do cx=1,nx
         if ( local_cell_PML(cx,cy,cz,0).NE.0 ) then
         
           total_number_of_PML_cells=total_number_of_PML_cells+1
@@ -233,14 +232,24 @@ IMPLICIT NONE
   CALL write_line_integer('PML zmax=',pml_zmax,0,output_to_screen_flag)
   CALL write_line_integer('PML nz  =',npml_z  ,0,output_to_screen_flag)
 
-! work out the PML conductivity profile
+! work out the PML conductivity profile parameters, here the electric conductivity of the first cell in the PML
 
-! ******* TEMP TO BE WORKED OUT PROPERLY NOT HARD WIRED *******
+  CALL calc_sigma_0(pml_s0_xmin,pml_r_xmin,pml_xmin,pml_order,dl,eps0,c0)
+  CALL calc_sigma_0(pml_s0_xmax,pml_r_xmax,pml_xmax,pml_order,dl,eps0,c0)
+  CALL calc_sigma_0(pml_s0_ymin,pml_r_ymin,pml_ymin,pml_order,dl,eps0,c0)
+  CALL calc_sigma_0(pml_s0_ymax,pml_r_ymax,pml_ymax,pml_order,dl,eps0,c0)
+  CALL calc_sigma_0(pml_s0_zmin,pml_r_zmin,pml_zmin,pml_order,dl,eps0,c0)
+  CALL calc_sigma_0(pml_s0_zmax,pml_r_zmax,pml_zmax,pml_order,dl,eps0,c0)
+  
+! Calculate the normalised conductivity
 
-  pml_s_max=250d0
-  
-! ******* TEMP TO BE WORKED OUT PROPERLY NOT HARD WIRED *******
-  
+  pml_s0_xmin=pml_s0_xmin/eps0
+  pml_s0_xmax=pml_s0_xmax/eps0
+  pml_s0_ymin=pml_s0_ymin/eps0
+  pml_s0_ymax=pml_s0_ymax/eps0
+  pml_s0_zmin=pml_s0_zmin/eps0
+  pml_s0_zmax=pml_s0_zmax/eps0
+
 ! Work out the PML parameters for all the different PML cells in the mesh
 
   PML_array_size=npml_x*npml_y*npml_z
@@ -250,9 +259,9 @@ IMPLICIT NONE
 
   PML_n_parameters=0
   
-  do cx=1,nx
+  do cz=nz1,nz2
     do cy=1,ny
-      do cz=nz1,nz2
+      do cx=1,nx
         if ( local_cell_PML(cx,cy,cz,0).NE.0 ) then
            
           pml_x=local_cell_PML(cx,cy,cz,1)
@@ -275,9 +284,9 @@ IMPLICIT NONE
 
   PML_n_parameters=0
   
-  do cx=1,nx
+  do cz=nz1,nz2
     do cy=1,ny
-      do cz=nz1,nz2
+      do cx=1,nx
         if ( local_cell_PML(cx,cy,cz,0).NE.0 ) then
            
           pml_x=local_cell_PML(cx,cy,cz,1)
@@ -290,9 +299,9 @@ IMPLICIT NONE
           PML_parameters(PML_n_parameters)%d_y=pml_y
           PML_parameters(PML_n_parameters)%d_z=pml_z
           
-          sigma_x=PML_conductivity(pml_x,pml_xmin,pml_xmax,pml_s_max,pml_order)
-          sigma_y=PML_conductivity(pml_y,pml_ymin,pml_ymax,pml_s_max,pml_order)
-          sigma_z=PML_conductivity(pml_z,pml_zmin,pml_zmax,pml_s_max,pml_order)
+          sigma_x=PML_conductivity(pml_x,pml_xmin,pml_xmax,pml_s0_xmin,pml_s0_xmax,pml_order)
+          sigma_y=PML_conductivity(pml_y,pml_ymin,pml_ymax,pml_s0_ymin,pml_s0_zmax,pml_order)
+          sigma_z=PML_conductivity(pml_z,pml_zmin,pml_zmax,pml_s0_zmin,pml_s0_zmax,pml_order)
           
           PML_parameters(PML_n_parameters)%sx=sigma_x
           PML_parameters(PML_n_parameters)%sy=sigma_y
@@ -310,11 +319,11 @@ IMPLICIT NONE
 ! Link the PML_cell_data array to the PML_parameters array
 
 !  write(info_file_unit,*)''
-!  write(info_file_unit,*)' cell  cx  cy  cz  p_x p_y p_z  param d_x d_y d_z     sx          sy          sz'
+!  write(info_file_unit,*)' ncells cx  cy  cz  p_x p_y p_z  cell  d_x d_y d_z     sx          sy          sz'
 
-  do cx=1,nx
+  do cz=nz1,nz2
     do cy=1,ny
-      do cz=nz1,nz2
+      do cx=1,nx
       
         if ( local_cell_PML(cx,cy,cz,0).NE.0 ) then
                   
@@ -334,7 +343,6 @@ IMPLICIT NONE
 !                                    PML_parameters(i)%sx,PML_parameters(i)%sy,PML_parameters(i)%sz
 !                                 
 !8888 format(I7,6I4,I6,3I4,3ES12.2)
-!
 !! **** TEMP write PML parameters to file ****
           
         end if
@@ -366,9 +374,6 @@ IMPLICIT NONE
     write(info_file_unit,*)''
     write(info_file_unit,*)'#END OF PML MATERIAL DESCRIPTION'
   end if
-
-!! ****** TEMP REMOVE ALL PML CELLS ******  
-!  local_cell_PML(:,:,:,:)=0
   
   CALL write_line('FINISHED: set_pml_volume_material_mesh',0,output_to_screen_flag)
   
@@ -430,6 +435,38 @@ IMPLICIT NONE
 END SUBROUTINE calc_pml_dist
 !
 ! NAME
+!     SUBROUTINE calc_sigma_0
+!
+! DESCRIPTION
+!     
+!     work out the dconductivity of the first PML cell from which the other cell conductivites are derived
+!     
+! COMMENTS
+!     
+!
+! HISTORY
+!
+!     started 4/10/2019 CJS
+!
+
+SUBROUTINE calc_sigma_0(pml_s0,pml_r,N,o,dl,eps0,c0)
+
+IMPLICIT NONE
+
+  real*8        :: pml_s0,pml_r
+  integer	:: N
+  integer	:: o
+  real*8        :: dl,eps0,c0
+
+! local variables
+  
+! START
+
+  pml_s0=-(eps0*c0/2d0)*log(pml_r)/( dl*abs(N)**(o+1) )
+
+END SUBROUTINE calc_sigma_0
+!
+! NAME
 !     FUNCTION PML_conductivity
 !
 ! DESCRIPTION
@@ -445,18 +482,18 @@ END SUBROUTINE calc_pml_dist
 !
 !
 
-FUNCTION PML_conductivity(pml_x,pml_xmin,pml_xmax,pml_s_max,pml_order) RESULT(sigma)
+FUNCTION PML_conductivity(pml_x,pml_xmin,pml_xmax,pml_s0_min,pml_s0_max,pml_order) RESULT(sigma)
 
 real*8 sigma
 
 integer :: pml_x,pml_xmin,pml_xmax
-real*8  :: pml_s_max
+real*8  :: pml_s0_min,pml_s0_max
 integer :: pml_order
 
 ! local variables
 
-integer :: d    ! distance into PML
-integer :: t    ! thickness of PML
+integer :: L    ! distance into PML
+integer :: N    ! thickness of PML
 
 ! START
 
@@ -469,28 +506,29 @@ if (pml_x.EQ.0) then
   
 else if (pml_x.LT.0) then
 
-! xmin boundary
-  d=abs(pml_x)
-  t=pml_xmin
-  if (t.EQ.0) then
+! min boundary
+
+  L=abs(pml_x)
+  N=pml_xmin
+  if (N.EQ.0) then
     write(*,*)'ERROR in PML_conductivity: PML thickness is zero'
     STOP 1
   end if
   
-  sigma=pml_s_max*(dble(d)/dble(t))**pml_order
+  sigma=pml_s0_min*dble( (L+1)**(pml_order+1)-(L)**(pml_order+1) )
 
 else 
 
-! xmax boundary
+! max boundary
 
-  d=abs(pml_x)
-  t=pml_xmax
-  if (t.EQ.0) then
+  L=abs(pml_x)
+  N=pml_xmax
+  if (N.EQ.0) then
     write(*,*)'ERROR in PML_conductivity: PML thickness is zero'
     STOP 1
   end if
   
-  sigma=pml_s_max*(dble(d)/dble(t))**pml_order
+  sigma=pml_s0_max*dble( (L+1)**(pml_order+1)-(L)**(pml_order+1) )
 
 end if
 

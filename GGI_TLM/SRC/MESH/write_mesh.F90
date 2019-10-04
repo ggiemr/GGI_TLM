@@ -309,7 +309,9 @@ integer :: i
   write(mesh_file_unit,*)pml_tzmin,pml_tzmax
   
   write(mesh_file_unit,*)'pml_r'
-  write(mesh_file_unit,*)pml_r
+  write(mesh_file_unit,*)pml_r_xmin,pml_r_xmax
+  write(mesh_file_unit,*)pml_r_ymin,pml_r_ymax
+  write(mesh_file_unit,*)pml_r_zmin,pml_r_zmax
   
   write(mesh_file_unit,*)'pml_order'
   write(mesh_file_unit,*)pml_order

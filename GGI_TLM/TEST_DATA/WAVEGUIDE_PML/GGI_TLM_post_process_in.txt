@@ -1,0 +1,45 @@
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+waveguide_pml.mode.tout
+           1
+lin
+   0.8000000E+10 fmin
+   0.1200000E+11 fmax
+             800 n_frequencies
+Ex1.fout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+waveguide_pml.mode.tout
+           2
+lin
+   0.8000000E+10 fmin
+   0.1200000E+11 fmax
+             800 n_frequencies
+Hy1.fout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+waveguide_pml.mode.tout
+           3
+lin
+   0.8000000E+10 fmin
+   0.1200000E+11 fmax
+             800 n_frequencies
+Ex2.fout
+           3  POST PROCESSING OPTION: FOURIER TRANSFORM
+waveguide_pml.mode.tout
+           4
+lin
+   0.8000000E+10 fmin
+   0.1200000E+11 fmax
+             800 n_frequencies
+Hy2.fout
+           9  POST PROCESSING OPTION: ONEPORT ANALYSIS
+Ex1.fout
+           1
+Ex2.fout
+           1
+Hy1.fout
+           1
+Hy2.fout
+           1
+   2.0000000000000000E-003  port separation (m)
+   1.0000000000000000E-002  port midpoint to interface distamce (m)
+waveguide_pml.fout
+           0  POST PROCESSING OPTION: QUIT

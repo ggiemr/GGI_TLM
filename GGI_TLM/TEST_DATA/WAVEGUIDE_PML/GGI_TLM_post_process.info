@@ -1,0 +1,43 @@
+#START OF POST_PROCESSING DESCRIPTION
+ Fourier transform
+ 	Time domain data filename:waveguide_pml.mode.tout
+ 	Time domain output point:           1
+ 	Linear frequency scale:
+ 	Fmin=   8000000000.0000000       Hz
+ 	Fmax=   12000000000.000000       Hz
+ 	n_frequencies=         800
+ 	Frequency domain output data filename:Ex1.fout
+ Fourier transform
+ 	Time domain data filename:waveguide_pml.mode.tout
+ 	Time domain output point:           2
+ 	Linear frequency scale:
+ 	Fmin=   8000000000.0000000       Hz
+ 	Fmax=   12000000000.000000       Hz
+ 	n_frequencies=         800
+ 	Frequency domain output data filename:Hy1.fout
+ Fourier transform
+ 	Time domain data filename:waveguide_pml.mode.tout
+ 	Time domain output point:           3
+ 	Linear frequency scale:
+ 	Fmin=   8000000000.0000000       Hz
+ 	Fmax=   12000000000.000000       Hz
+ 	n_frequencies=         800
+ 	Frequency domain output data filename:Ex2.fout
+ Fourier transform
+ 	Time domain data filename:waveguide_pml.mode.tout
+ 	Time domain output point:           4
+ 	Linear frequency scale:
+ 	Fmin=   8000000000.0000000       Hz
+ 	Fmax=   12000000000.000000       Hz
+ 	n_frequencies=         800
+ 	Frequency domain output data filename:Hy2.fout
+ Oneport analysis
+ 	Frequency domain data filename:Ex1.fout
+ 	Frequency domain output point:           1
+ 	Frequency domain data filename:Ex2.fout
+ 	Frequency domain output point:           1
+ 	Frequency domain data filename:Hy1.fout
+ 	Frequency domain output point:           1
+ 	Frequency domain data filename:Hy2.fout
+ 	Frequency domain output point:           1
+#END OF POST_PROCESSING DESCRIPTION

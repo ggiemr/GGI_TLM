@@ -18,7 +18,7 @@
 ! scatter_PML.F90: File to be included in scatter.F90 to handle the PML cell centre update
 !
 !  Started 3/10/2019
-  
+
 ! STAGE 1: get the parameters for this PML cell
 
             PML_parameter=PML_cell_data(PML_cell)%PML_parameter_array_pos
@@ -31,9 +31,20 @@
             ay=PML_parameters(PML_parameter)%ay
             az=PML_parameters(PML_parameter)%az
  
+! Loss factor for propagation half a cell in x, y and z        
             exp_x=exp(-dt*sx/2d0)
             exp_y=exp(-dt*sy/2d0)
             exp_z=exp(-dt*sz/2d0)
+
+! Loss factor as applied to incident fields            
+            exp_xi=exp_x  !1d0
+            exp_yi=exp_y  !1d0
+            exp_zi=exp_z  !1d0
+
+! Loss factor as applied to scattered fields
+            exp_xr=exp_x  !exp(-dt*sx)
+            exp_yr=exp_y  !exp(-dt*sy)
+            exp_zr=exp_z  !exp(-dt*sz)
             
             Csx=sx*dt/4d0
             Csy=sy*dt/4d0
@@ -46,6 +57,18 @@
             Csy_sz=1d0-(sy+sz)*dt/4d0
             Csz_sx=1d0-(sz+sx)*dt/4d0
             Csx_sy=1d0-(sx+sy)*dt/4d0
+            
+            if (PML_cell.EQ.-1) then
+            
+              write(*,*)'cx=',cx,' cy=',cy,' cz=',cz
+              write(*,*)'sx=',sx,' sy=',sy,' sz=',sz
+              write(*,*)'ax=',ax,' ay=',ay,' az=',az
+              write(*,*)'Csx=',Csx,' Csy=',Csy,' Csz=',Csz
+              write(*,*)'Csx2=',Csx2,' Csy2=',Csy2,' Csz2=',Csz2
+              write(*,*)'Csy_sz=',Csy_sz,' Csz_sx=',Csz_sx,' Csx_sy=',Csx_sy
+              write(*,*)'exp_x=',exp_x,' exp_y=',exp_y,' exp_z=',exp_z
+            
+            end if
            
 ! STAGE 2: Retrieve voltages and currents from the last timestep
 
@@ -68,32 +91,32 @@
        
 ! STAGE 3: Propagate incident voltages half a cell with exponential loss for dt/2 (equation 33 for half a cell propagation)
             
-            V(Vynx,cx,cy,cz)=V(Vynx,cx,cy,cz)*exp_y
-            V(Vypx,cx,cy,cz)=V(Vypx,cx,cy,cz)*exp_y
-            V(Vznx,cx,cy,cz)=V(Vznx,cx,cy,cz)*exp_z
-            V(Vzpx,cx,cy,cz)=V(Vzpx,cx,cy,cz)*exp_z
+            V(Vynx,cx,cy,cz)=V(Vynx,cx,cy,cz)*exp_yi
+            V(Vypx,cx,cy,cz)=V(Vypx,cx,cy,cz)*exp_yi
+            V(Vznx,cx,cy,cz)=V(Vznx,cx,cy,cz)*exp_zi
+            V(Vzpx,cx,cy,cz)=V(Vzpx,cx,cy,cz)*exp_zi
             
-            V(Vxny,cx,cy,cz)=V(Vxny,cx,cy,cz)*exp_x
-            V(Vxpy,cx,cy,cz)=V(Vxpy,cx,cy,cz)*exp_x
-            V(Vzny,cx,cy,cz)=V(Vzny,cx,cy,cz)*exp_z
-            V(Vzpy,cx,cy,cz)=V(Vzpy,cx,cy,cz)*exp_z
+            V(Vxny,cx,cy,cz)=V(Vxny,cx,cy,cz)*exp_xi
+            V(Vxpy,cx,cy,cz)=V(Vxpy,cx,cy,cz)*exp_xi
+            V(Vzny,cx,cy,cz)=V(Vzny,cx,cy,cz)*exp_zi
+            V(Vzpy,cx,cy,cz)=V(Vzpy,cx,cy,cz)*exp_zi
                                    
-            V(Vxnz,cx,cy,cz)=V(Vxnz,cx,cy,cz)*exp_x
-            V(Vxpz,cx,cy,cz)=V(Vxpz,cx,cy,cz)*exp_x
-            V(Vynz,cx,cy,cz)=V(Vynz,cx,cy,cz)*exp_y
-            V(Vypz,cx,cy,cz)=V(Vypz,cx,cy,cz)*exp_y
+            V(Vxnz,cx,cy,cz)=V(Vxnz,cx,cy,cz)*exp_xi
+            V(Vxpz,cx,cy,cz)=V(Vxpz,cx,cy,cz)*exp_xi
+            V(Vynz,cx,cy,cz)=V(Vynz,cx,cy,cz)*exp_yi
+            V(Vypz,cx,cy,cz)=V(Vypz,cx,cy,cz)*exp_yi
 
 ! STAGE 4: Calculate internal V and I with no stubs
 
-! Voltages from shunt circuits
+! Voltages from shunt circuits, equation 22
             Vx=( V(Vynx,cx,cy,cz)+V(Vypx,cx,cy,cz)+V(Vznx,cx,cy,cz)+V(Vzpx,cx,cy,cz) )/2d0                 
             Vy=( V(Vxny,cx,cy,cz)+V(Vxpy,cx,cy,cz)+V(Vzny,cx,cy,cz)+V(Vzpy,cx,cy,cz) )/2d0                 
             Vz=( V(Vxnz,cx,cy,cz)+V(Vxpz,cx,cy,cz)+V(Vynz,cx,cy,cz)+V(Vypz,cx,cy,cz) )/2d0    
 	          
-! Currents from series circuits
-	    Ix=2d0*( V(Vypz,cx,cy,cz)-V(Vzpy,cx,cy,cz)-V(Vynz,cx,cy,cz)+V(Vzny,cx,cy,cz) ) 
-	    Iy=2d0*( V(Vzpx,cx,cy,cz)-V(Vxpz,cx,cy,cz)-V(Vznx,cx,cy,cz)+V(Vxnz,cx,cy,cz) )         
-	    Iz=2d0*( V(Vxpy,cx,cy,cz)-V(Vypx,cx,cy,cz)-V(Vxny,cx,cy,cz)+V(Vynx,cx,cy,cz) ) 
+! Currents from series circuits, equation 25
+	    Ix=( V(Vypz,cx,cy,cz)-V(Vzpy,cx,cy,cz)-V(Vynz,cx,cy,cz)+V(Vzny,cx,cy,cz) )/(2d0*Z0)
+	    Iy=( V(Vzpx,cx,cy,cz)-V(Vxpz,cx,cy,cz)-V(Vznx,cx,cy,cz)+V(Vxnz,cx,cy,cz) )/(2d0*Z0)        
+	    Iz=( V(Vxpy,cx,cy,cz)-V(Vypx,cx,cy,cz)-V(Vxny,cx,cy,cz)+V(Vynx,cx,cy,cz) )/(2d0*Z0)
 
 ! STAGE 5: Calculate VPML_shunt terms, equation 23
 
@@ -123,26 +146,30 @@
 
 ! STAGE 7: Calculate VPML_series terms, equation 28
 
+! i=x j=y k=z
+            Vxy_PML_series=az*(  Z0*( -last_Iz+Csy2*(Iz+last_Iz) )     &
+                                +Csx_sy*last_Vxyt                   )
 ! i=y j=x k=z
-            Vyx_PML_series=az*(  Z0*( -last_Iz+Csx2*(Iz-last_Iz) )     &
+            Vyx_PML_series=az*(  Z0*( -last_Iz+Csx2*(Iz+last_Iz) )     &      
                                 +Csx_sy*last_Vyxt                   )
 ! i=z j=x k=y
-            Vzx_PML_series=ay*(  Z0*( -last_Iy+Csx2*(Iy-last_Iy) )     &
+            Vzx_PML_series=ay*(  Z0*( -last_Iy+Csx2*(Iy+last_Iy) )     &
                                 +Csz_sx*last_Vzxt                   )
-! i=x j=y k=z
-            Vxy_PML_series=az*(  Z0*( -last_Iz+Csy2*(Iz-last_Iz) )     &
-                                +Csx_sy*last_Vxyt                   )
-! i=z j=y k=x
-            Vzy_PML_series=ax*(  Z0*( -last_Ix+Csy2*(Ix-last_Ix) )     &
-                                +Csy_sz*last_Vzyt                   )
-! i=y j=z k=x
-            Vyz_PML_series=ax*(  Z0*( -last_Ix+Csz2*(Ix-last_Ix) )     &
-                                +Csy_sz*last_Vyzt                   )
 ! i=x j=z k=y
-            Vxz_PML_series=ay*(  Z0*( -last_Iy+Csz2*(Iy-last_Iy) )     &
+            Vxz_PML_series=ay*(  Z0*( -last_Iy+Csz2*(Iy+last_Iy) )     &
                                 +Csz_sx*last_Vxzt                   )
+! i=y j=z k=x
+            Vyz_PML_series=ax*(  Z0*( -last_Ix+Csz2*(Ix+last_Ix) )     &
+                                +Csy_sz*last_Vyzt                   )
+! i=z j=y k=x
+            Vzy_PML_series=ax*(  Z0*( -last_Ix+Csy2*(Ix+last_Ix) )     &
+                                +Csy_sz*last_Vzyt                   )
 
 ! STAGE 8: Stretched Vyxt, Vzxt, Vxyt, Vzyt, Vyzt, Vxzt, equation 27
+
+                                         
+! i=x j=y k=z
+            Vxyt=az*Iz*Z0+Vxy_PML_series
 
 ! i=y j=x k=z
             Vyxt=az*Iz*Z0+Vyx_PML_series
@@ -150,17 +177,14 @@
 ! i=z j=x k=y
             Vzxt=ay*Iy*Z0+Vzx_PML_series
                                          
-! i=x j=y k=z
-            Vxyt=az*Iz*Z0+Vxy_PML_series
-                                         
-! i=z j=y k=x
-            Vzyt=ax*Ix*Z0+Vzy_PML_series
+! i=x j=z k=y
+            Vxzt=ay*Iy*Z0+Vxz_PML_series
                                          
 ! i=y j=z k=x
             Vyzt=ax*Ix*Z0+Vyz_PML_series
                                          
-! i=x j=z k=y
-            Vxzt=ay*Iy*Z0+Vxz_PML_series
+! i=z j=y k=x
+            Vzyt=ax*Ix*Z0+Vzy_PML_series
                     
 ! STAGE 9:  Save voltages and currents for the next timestep
 
@@ -174,12 +198,14 @@
             PML_cell_data(PML_cell)%Vyt=Vyt
             PML_cell_data(PML_cell)%Vzt=Vzt
             
-            PML_cell_data(PML_cell)%Vyxt=Vyxt
-            PML_cell_data(PML_cell)%Vzxt=Vzxt
             PML_cell_data(PML_cell)%Vxyt=Vxyt
+            PML_cell_data(PML_cell)%Vyxt=Vyxt
+            
+            PML_cell_data(PML_cell)%Vzxt=Vzxt
+            PML_cell_data(PML_cell)%Vxzt=Vxzt
+            
             PML_cell_data(PML_cell)%Vzyt=Vzyt
             PML_cell_data(PML_cell)%Vyzt=Vyzt
-            PML_cell_data(PML_cell)%Vxzt=Vxzt
 
 ! STAGE 10: Calculate V_PML terms from equation 34
 
@@ -204,23 +230,64 @@
 
 ! STAGE 11: Calculate scattered voltages from equation 33
 
-	    V(Vynx,cx,cy,cz)=ax*Vx-az*Z0*Iz-V(Vypx,cx,cy,cz)+Vynx_PML
-	    V(Vypx,cx,cy,cz)=ax*Vx+az*Z0*Iz-V(Vynx,cx,cy,cz)+Vypx_PML
+            if (PML_cell.EQ.-1) then
+              write(*,*)'----------------------------------------------------------------'
+              write(*,*)'Vx=',Vx,' Vy=',Vy,' Vz=',Vz
+              write(*,*)'Ix=',Ix,' Iy=',Iy,' Iz=',Iz
+              write(*,*)
+              write(*,*)'Vx_PML_shunt',Vx_PML_shunt,' Vy_PML_shunt',Vy_PML_shunt,' Vz_PML_shunt',Vz_PML_shunt
+              
+              write(*,*)'Vxy_PML_series=',Vxy_PML_series
+              write(*,*)'Vxz_PML_series=',Vxz_PML_series
+              
+              write(*,*)'Vyx_PML_series=',Vyx_PML_series
+              write(*,*)'Vyz_PML_series=',Vyz_PML_series
+              
+              write(*,*)'Vzx_PML_series=',Vzx_PML_series
+              write(*,*)'Vzy_PML_series=',Vzy_PML_series
+              
+              
+              write(*,*)'Vxny_PML=',Vxny_PML,' Vxpy_PML=',Vxpy_PML
+              write(*,*)'Vxnz_PML=',Vxnz_PML,' Vxpz_PML=',Vxpz_PML
+              
+              write(*,*)'Vynx_PML=',Vynx_PML,' Vypx_PML=',Vypx_PML
+              write(*,*)'Vynz_PML=',Vynz_PML,' Vypz_PML=',Vypz_PML
+              
+              write(*,*)'Vznx_PML=',Vznx_PML,' Vzpx_PML=',Vzpx_PML
+              write(*,*)'Vzny_PML=',Vzny_PML,' Vzpy_PML=',Vzpy_PML
 
-	    V(Vznx,cx,cy,cz)=ax*Vx+ay*Z0*Iy-V(Vzpx,cx,cy,cz)+Vznx_PML
-	    V(Vzpx,cx,cy,cz)=ax*Vx-ay*Z0*Iy-V(Vznx,cx,cy,cz)+Vzpx_PML
+            end if
+
+            V_max=V(Vypx,cx,cy,cz)
+            V_min=V(Vynx,cx,cy,cz)    
+	    V(Vynx,cx,cy,cz)=ax*Vx-az*Z0*Iz-V_max+Vynx_PML
+	    V(Vypx,cx,cy,cz)=ax*Vx+az*Z0*Iz-V_min+Vypx_PML
+
+            V_max=V(Vzpx,cx,cy,cz)
+            V_min=V(Vznx,cx,cy,cz)    
+	    V(Vznx,cx,cy,cz)=ax*Vx+ay*Z0*Iy-V_max+Vznx_PML
+	    V(Vzpx,cx,cy,cz)=ax*Vx-ay*Z0*Iy-V_min+Vzpx_PML
 	
-	    V(Vzny,cx,cy,cz)=ay*Vy-ax*Z0*Ix-V(Vzpy,cx,cy,cz)+Vzny_PML
-	    V(Vzpy,cx,cy,cz)=ay*Vy+ax*Z0*Ix-V(Vzny,cx,cy,cz)+Vzpy_PML
+            V_max=V(Vzpy,cx,cy,cz)
+            V_min=V(Vzny,cx,cy,cz)    
+	    V(Vzny,cx,cy,cz)=ay*Vy-ax*Z0*Ix-V_max+Vzny_PML
+	    V(Vzpy,cx,cy,cz)=ay*Vy+ax*Z0*Ix-V_min+Vzpy_PML
 	
-	    V(Vxny,cx,cy,cz)=ay*Vy+az*Z0*Iz-V(Vxpy,cx,cy,cz)+Vxny_PML
-	    V(Vxpy,cx,cy,cz)=ay*Vy-az*Z0*Iz-V(Vxny,cx,cy,cz)+Vxpy_PML
+            V_max=V(Vxpy,cx,cy,cz)
+            V_min=V(Vxny,cx,cy,cz)    
+	    V(Vxny,cx,cy,cz)=ay*Vy+az*Z0*Iz-V_max+Vxny_PML
+	    V(Vxpy,cx,cy,cz)=ay*Vy-az*Z0*Iz-V_min+Vxpy_PML
 	
-	    V(Vxnz,cx,cy,cz)=az*Vz-ay*Z0*Iy-V(Vxpz,cx,cy,cz)+Vxnz_PML
-	    V(Vxpz,cx,cy,cz)=az*Vz+ay*Z0*Iy-V(Vxnz,cx,cy,cz)+Vxpz_PML
+            V_max=V(Vxpz,cx,cy,cz)
+            V_min=V(Vxnz,cx,cy,cz)    
+	    V(Vxnz,cx,cy,cz)=az*Vz-ay*Z0*Iy-V_max+Vxnz_PML
+	    V(Vxpz,cx,cy,cz)=az*Vz+ay*Z0*Iy-V_min+Vxpz_PML
 	
-	    V(Vynz,cx,cy,cz)=az*Vz+ax*Z0*Ix-V(Vypz,cx,cy,cz)+Vynz_PML
-  	    V(Vypz,cx,cy,cz)=az*Vz-ax*Z0*Ix-V(Vynz,cx,cy,cz)+Vypz_PML     
+            V_max=V(Vypz,cx,cy,cz)
+            V_min=V(Vynz,cx,cy,cz)    
+	    V(Vynz,cx,cy,cz)=az*Vz+ax*Z0*Ix-V_max+Vynz_PML
+  	    V(Vypz,cx,cy,cz)=az*Vz-ax*Z0*Ix-V_min+Vypz_PML     
+         
 	  
 ! STAGE 12: Output		
  	    output_number=cell_update_code_to_output_number(special_cell_count)
@@ -244,18 +311,19 @@
        
 ! STAGE 13: Propagate scattered voltages half a cell with exponential loss for dt/2 (equation 33 for half a cell propagation)
             
-            V(Vynx,cx,cy,cz)=V(Vynx,cx,cy,cz)*exp_y
-            V(Vypx,cx,cy,cz)=V(Vypx,cx,cy,cz)*exp_y
-            V(Vznx,cx,cy,cz)=V(Vznx,cx,cy,cz)*exp_z
-            V(Vzpx,cx,cy,cz)=V(Vzpx,cx,cy,cz)*exp_z
+            V(Vynx,cx,cy,cz)=V(Vynx,cx,cy,cz)*exp_yr
+            V(Vypx,cx,cy,cz)=V(Vypx,cx,cy,cz)*exp_yr
+            V(Vznx,cx,cy,cz)=V(Vznx,cx,cy,cz)*exp_zr
+            V(Vzpx,cx,cy,cz)=V(Vzpx,cx,cy,cz)*exp_zr
             
-            V(Vxny,cx,cy,cz)=V(Vxny,cx,cy,cz)*exp_x
-            V(Vxpy,cx,cy,cz)=V(Vxpy,cx,cy,cz)*exp_x
-            V(Vzny,cx,cy,cz)=V(Vzny,cx,cy,cz)*exp_z
-            V(Vzpy,cx,cy,cz)=V(Vzpy,cx,cy,cz)*exp_z
+            V(Vxny,cx,cy,cz)=V(Vxny,cx,cy,cz)*exp_xr
+            V(Vxpy,cx,cy,cz)=V(Vxpy,cx,cy,cz)*exp_xr
+            V(Vzny,cx,cy,cz)=V(Vzny,cx,cy,cz)*exp_zr
+            V(Vzpy,cx,cy,cz)=V(Vzpy,cx,cy,cz)*exp_zr
                                    
-            V(Vxnz,cx,cy,cz)=V(Vxnz,cx,cy,cz)*exp_x
-            V(Vxpz,cx,cy,cz)=V(Vxpz,cx,cy,cz)*exp_x
-            V(Vynz,cx,cy,cz)=V(Vynz,cx,cy,cz)*exp_y
-            V(Vypz,cx,cy,cz)=V(Vypz,cx,cy,cz)*exp_y
+            V(Vxnz,cx,cy,cz)=V(Vxnz,cx,cy,cz)*exp_xr
+            V(Vxpz,cx,cy,cz)=V(Vxpz,cx,cy,cz)*exp_xr
+            V(Vynz,cx,cy,cz)=V(Vynz,cx,cy,cz)*exp_yr
+            V(Vypz,cx,cy,cz)=V(Vypz,cx,cy,cz)*exp_yr
             
+9999 CONTINUE

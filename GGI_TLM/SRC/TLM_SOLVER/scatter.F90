@@ -133,9 +133,13 @@ IMPLICIT NONE
   real*8        :: Vxnz_PML,Vxpz_PML,Vynz_PML,Vypz_PML
   
   real*8        :: exp_x,exp_y,exp_z
+  real*8        :: exp_xi,exp_yi,exp_zi
+  real*8        :: exp_xr,exp_yr,exp_zr
   real*8        :: Csx,Csy,Csz
   real*8        :: Csx2,Csy2,Csz2
   real*8        :: Csy_sz,Csz_sx,Csx_sy
+  
+  real*8        :: loss_dist_inc,loss_dist_ref
   
   logical :: op_flag
 

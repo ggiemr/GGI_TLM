@@ -26,6 +26,9 @@ git checkout testing
 git checkout -b testing
 )
 
+To push this branch to a remote repository:
+git push -u origin testing
+
 to move back to the original branch:
 git checkout master
 
@@ -80,5 +83,5 @@ git rebase
 'flattens' the merged structure so that changes to one branch are added after
  the changes to the other branch rather than the 'parallel' changes of merge.
 NOTE: Do not rebase commits that exist outside your repository.
-The effect of rebase is to pprovide a cleaner history of the developments.
+The effect of rebase is to provide a cleaner history of the developments.
  

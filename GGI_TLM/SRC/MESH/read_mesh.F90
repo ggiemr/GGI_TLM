@@ -384,7 +384,9 @@ integer :: i
   read(mesh_file_unit,*)pml_tzmin,pml_tzmax
     
   read(mesh_file_unit,*)
-  read(mesh_file_unit,*)pml_r
+  read(mesh_file_unit,*)pml_r_xmin,pml_r_xmax
+  read(mesh_file_unit,*)pml_r_ymin,pml_r_ymax
+  read(mesh_file_unit,*)pml_r_zmin,pml_r_zmax
     
   read(mesh_file_unit,*)
   read(mesh_file_unit,*)pml_order
