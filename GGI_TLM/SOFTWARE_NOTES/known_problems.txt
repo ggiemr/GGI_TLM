@@ -439,6 +439,10 @@ FIXED in read_cable_geometry_list.F90
      
 138. Mlayer documentation needs to be checked. Coordinate system consistency between software message and documentation. Also need to include the material file name in the input file format description
 
-139. Need to check and update cygwin installation notes
+139. Need to check and update cygwin installation notes  DONE
 
-140. Need to check and complete ngspice link documentation
+140. Need to check and complete ngspice link documentation STARTED
+
+141. There is a problem with a memory leak in Ngspice which means that problems which use Ngspice grab more and more memory
+     as they run until the computer starts to use swap space. Note that the use of swap space doesn't seem to affect performance
+     as the Ngspice memory is not actively used.
