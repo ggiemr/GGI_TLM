@@ -119,6 +119,8 @@ IMPLICIT NONE
   real*8        :: Vxt,Vyt,Vzt
   real*8        :: Vyxt,Vzxt,Vxyt,Vzyt,Vyzt,Vxzt
   
+  real*8        :: Ixt,Iyt,Izt
+  real*8        :: last_Ixt,last_Iyt,last_Izt
   real*8        :: last_Ix,last_Iy,last_Iz
   real*8        :: last_Vi(12)
   
@@ -146,7 +148,7 @@ IMPLICIT NONE
 ! START
   
   CALL write_line('CALLED: scatter',0,timestepping_output_to_screen_flag)
-
+  
   op_flag=.FALSE.
   
   Z04=Z0*4d0

@@ -356,60 +356,63 @@ IMPLICIT NONE
   
   CALL write_line('CALLED: finish_outputs',0,output_to_screen_flag)
   
-  write (info_file_unit,'(A)')"#START OF OUTPUT INFORMATION"
+  if (rank.EQ.0) then
+    write (info_file_unit,'(A)')"#START OF OUTPUT INFORMATION"
+    write (info_file_unit,'(A)')""
+  end if
   
   if (n_output_points.gt.0) then
     
-    write (info_file_unit,'(A)')"Time domain field output at a point"   
+    if (rank.EQ.0) write (info_file_unit,'(A)')"Time domain field output at a point"   
     CLOSE(unit=field_output_unit)
     
   end if
   
   if (n_ngspice_output_nodes.GT.0) then
     
-    write (info_file_unit,'(A)')"Time domain ngspice output node voltages"   
+    if (rank.EQ.0) write (info_file_unit,'(A)')"Time domain ngspice output node voltages"   
     CLOSE(unit=ngspice_output_unit)
     
   end if
   
   if (n_output_surfaces.gt.0) then
   
-    write (info_file_unit,'(A)')"Time domain field output over a surface"
+    if (rank.EQ.0) write (info_file_unit,'(A)')"Time domain field output over a surface"
     CLOSE(unit=surface_field_output_unit)
     
   end if
   
   if (n_output_volumes.gt.0) then
   
-    write (info_file_unit,'(A)')"Time domain field output over a volume"
+    if (rank.EQ.0) write (info_file_unit,'(A)')"Time domain field output over a volume"
     CLOSE(unit=volume_field_output_unit)
     
   end if
   
   if (n_output_volume_averages.gt.0) then
   
-    write (info_file_unit,'(A)')"Time domain field output averaged over a volume"
+    if (rank.EQ.0) write (info_file_unit,'(A)')"Time domain field output averaged over a volume"
     CLOSE(unit=volume_average_field_output_unit)
     
   end if
   
   if (n_output_volume_peak.gt.0) then
   
-    write (info_file_unit,'(A)')"Time domain field peak value over a volume"
+    if (rank.EQ.0) write (info_file_unit,'(A)')"Time domain field peak value over a volume"
     CLOSE(unit=volume_peak_field_output_unit)
     
   end if
   
   if (n_output_modes.gt.0) then
   
-    write (info_file_unit,'(A)')"Modal field output"
+    if (rank.EQ.0) write (info_file_unit,'(A)')"Modal field output"
     CLOSE(unit=mode_output_unit)
     
   end if
   
   if (n_PB_far_field_surfaces.gt.0) then
   
-    write (info_file_unit,'(A)')"Far field output"
+    if (rank.EQ.0) write (info_file_unit,'(A)')"Far field output"
     CLOSE(unit=PB_far_field_output_unit)
     
   end if
@@ -423,21 +426,21 @@ IMPLICIT NONE
   
   if (n_SAR_volumes.gt.0) then
   
-    write (info_file_unit,'(A)')"SAR output"
+    if (rank.EQ.0) write (info_file_unit,'(A)')"SAR output"
     CLOSE(unit=SAR_output_unit)
     
   end if
   
   if (n_frequency_output_surfaces.gt.0) then
   
-    write (info_file_unit,'(A)')"Frequency domain field over a surface"
+    if (rank.EQ.0) write (info_file_unit,'(A)')"Frequency domain field over a surface"
     CLOSE(unit=frequency_output_surface_unit)
     
   end if
   
   if (n_frequency_output_volumes.gt.0) then
   
-    write (info_file_unit,'(A)')"Frequency domain field over a volume"
+    if (rank.EQ.0) write (info_file_unit,'(A)')"Frequency domain field over a volume"
 !    CLOSE(unit=frequency_output_volume_unit)
     CALL close_output_file(frequency_output_volume_unit,	&
          trim(problem_name)//frequency_output_volume_extn,compress_output_files)
@@ -447,15 +450,18 @@ IMPLICIT NONE
 ! CABLE OUTPUTS
   if (n_cable_outputs.gt.0) then
   
-    write (info_file_unit,'(A)')"Time domain cable current output"
+    if (rank.EQ.0) write (info_file_unit,'(A)')"Time domain cable current output"
     CLOSE(unit=cable_current_output_unit)
   
   end if  ! n_cable_outputs.gt.0
  
   CALL write_line('FINISHED: finish_outputs',0,output_to_screen_flag)
 
-  write (info_file_unit,'(A)')"#END OF OUTPUT INFORMATION"
-
+  if (rank.EQ.0) then
+    write (info_file_unit,'(A)')""
+    write (info_file_unit,'(A)')"#END OF OUTPUT INFORMATION"
+  end if
+  
   RETURN
 
 END SUBROUTINE finish_outputs

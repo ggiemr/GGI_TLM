@@ -1,0 +1,56 @@
+# Define the problem space 
+Mesh_outer_boundary_dimension
+-10.5 10.5 -10.5 10.5 -10.5 10.5
+
+# Specify the mesh cell dimension
+Mesh_cell_dimension
+1.0   ( 3*integer)
+
+PML
+3.0        ! PML thickness on all outer boundary surfaces
+1e-3       ! PML reflection_coefficient
+2          ! PML order
+
+#specify the outer boundary conditions (6*real)
+Outer_boundary_reflection_coefficient
+-1 -1   -1 -1   -1 -1    
+
+# Define the geometrical entities, 3D volumes, 2D surfaces, 1D lines. Note the ability to import
+#geometry from a file means that this is a fairly general format for geometry specification
+
+Point_list 
+2   Number of points (integer)
+1       POINT_NUMBER (integer)
+1.0 2.0 3.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0                                   
+2       POINT_NUMBER (integer)
+-5.0 -4.0 -2.0    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0                                   
+
+Excitation_point_list
+1	       ! number of output points
+1	       ! EXCITATION POINT NUMBER
+1	       ! excitation function number
+1	       ! excitation point
+Ex
+centre
+soft
+
+Excitation_function_list
+1            	! number of excitation functions
+1		! EXCITATION NUMBER
+noise
+1.0
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+2		! output point
+Ey
+centre
+
+Simulation_time
+25e-6
+

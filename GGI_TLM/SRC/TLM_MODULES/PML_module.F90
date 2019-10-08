@@ -104,6 +104,11 @@ TYPE::PML_material_type
   integer :: d_x,d_y,d_z  ! depth into PML in x, y and z for this cell
   real*8  :: ax,ay,az     ! alpha constants of each cell type
   real*8  :: sx,sy,sz     ! conductivity of each cell type
+  
+  real*8        :: exp_x,exp_y,exp_z
+  real*8        :: Csx,Csy,Csz
+  real*8        :: Csx2,Csy2,Csz2
+  real*8        :: Csy_sz,Csz_sx,Csx_sy
 
 END TYPE PML_material_type
 
@@ -114,6 +119,7 @@ TYPE::PML_data_type
   
   real*8  :: Vxt,Vyt,Vzt
   real*8  :: Ix,Iy,Iz
+  real*8  :: Ixt,Iyt,Izt
   real*8  :: Vi(12)
   real*8  :: Vyxt,Vzxt,Vxyt,Vzyt,Vyzt,Vxzt
 

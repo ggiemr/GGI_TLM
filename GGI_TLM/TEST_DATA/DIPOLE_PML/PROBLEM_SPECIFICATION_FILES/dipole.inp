@@ -7,13 +7,17 @@ Mesh_cell_dimension
 1.0   ( 3*integer)
 
 PML
-3.0 3.0   3.0 3.0   3.0 3.0     ! PML thickness on each outer boundary surface: xmin, xmax,   ymin, ymax,    zmin, zmax
-1e-3 1e-3    1e-3 1e-3  1e-3  1e-3      ! PML reflection_coefficient
-2                                       ! PML order
+3.0        ! PML thickness on all outer boundary surfaces
+1e-3       ! PML reflection_coefficient
+2          ! PML order
 
 #specify the outer boundary conditions (6*real)
 Outer_boundary_reflection_coefficient
-0.0 0.0 0.0 0.0 0.0 0.0
+-1 -1   -1 -1   -1 -1   
+
+##specify the outer boundary conditions (6*real)
+#Outer_boundary_reflection_coefficient
+#0.0 0.0 0.0 0.0 0.0 0.0
 
 # Define the geometrical entities, 3D volumes, 2D surfaces, 1D lines. Note the ability to import
 #geometry from a file means that this is a fairly general format for geometry specification

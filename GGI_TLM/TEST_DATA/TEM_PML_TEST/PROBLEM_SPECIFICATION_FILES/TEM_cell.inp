@@ -1,0 +1,70 @@
+# TEM cell model
+
+Mesh_outer_boundary_dimension
+-0.05 0.05 -0.05 0.05 0 20
+
+Mesh_cell_dimension
+0.1
+
+Outer_boundary_reflection_coefficient
+1.0 1.0 -1.0 -1.0 0.0 -1.0
+
+PML
+0.0  0.0     0.0  0.0   0.0   2.0     ! PML thickness on each outer boundary surface: xmin,xmax, ymin,ymax, zmin,zmax
+1e-1 1e-1    1e-1 1e-1  1e-1  0.0001      ! PML reflection_coefficient
+2                                    ! PML order
+
+Surface_list
+1   Number of surfaces 
+1   SURFACE_NUMBER 
+rectangle 
+0.1 0.1       surface parameters 
+0.0 0.0 0.0
+0.0 0.0 0.1
+
+Point_list 
+2   Number of points 
+1       POINT_NUMBER 
+0.0 0.0 0.0    point coordinates 
+0.0 0.0 0.0
+0.0 0.0 9.95
+2       POINT_NUMBER 
+0.0 0.0 0.0    point coordinates 
+0.0 0.0 0.0
+0.0 0.0 10.05
+
+Excitation_function_list
+1    ! number of excitation functions
+1    ! EXCITATION_FUNCTION_NUMBER
+gaussian
+1.0 2e-9 8e-9
+
+Huygens_surface
+1     surface number
+1     side of surface for excitation
+1     excitation function number
+0.0 90.0  wave vector Theta and Phi 
+1.0 0.0  Polarisation theta and Phi
+
+Output_point_list
+4    		! number of output points
+1		! OUTPUT NUMBER
+1		! output point
+Ey
+centre
+2		! OUTPUT NUMBER
+1		! output point
+Hx
+centre
+3		! OUTPUT NUMBER
+2		! output point
+Ey
+centre
+4		! OUTPUT NUMBER
+2		! output point
+Hx
+centre
+
+Simulation_time
+30e-8
+

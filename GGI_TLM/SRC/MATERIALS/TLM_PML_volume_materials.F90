@@ -76,7 +76,9 @@ IMPLICIT NONE
 
 ! INITIALISE VOLUME MATERIALS  
     
-  CALL write_line_integer('n_pml_volumes=',n_pml_volumes,0,output_to_screen_flag)
+!  CALL write_line_integer('n_pml_volumes=',n_pml_volumes,0,output_to_screen_flag)
+  
+  write(*,*)'rank=',rank,' n_pml_volumes=',n_pml_volumes
 
   if (rank.eq.0) then
   
@@ -101,9 +103,12 @@ IMPLICIT NONE
 
     number_of_cells=pml_volumes(volume_number)%number_of_cells
 
-    CALL write_line_integer('PML volume     =',volume_number  ,0,output_to_screen_flag)
-    CALL write_line_integer('Number of cells=',number_of_cells,0,output_to_screen_flag)
+!    CALL write_line_integer('PML volume     =',volume_number  ,0,output_to_screen_flag)
+!    CALL write_line_integer('Number of cells=',number_of_cells,0,output_to_screen_flag)
 
+    write(*,*)'rank=',rank,' PML volume     =',volume_number 
+    write(*,*)'rank=',rank,' Number of cells=',number_of_cells
+  
     if (number_of_cells.gt.0) then
       
       total_number_of_PML_cells=total_number_of_PML_cells+number_of_cells
@@ -156,7 +161,9 @@ IMPLICIT NONE
 
   end do ! next volume number
   
-  CALL write_line_integer('Total number of cells (not counting overlaps)=',total_number_of_PML_cells,0,output_to_screen_flag)
+!  CALL write_line_integer('Total number of cells (not counting overlaps)=',total_number_of_PML_cells,0,output_to_screen_flag)
+
+  write(*,*)'rank=',rank,' Total number of cells (not counting overlaps)=',total_number_of_PML_cells
   
 ! count the number of cells, also the extent of the PML distances in x, y and z
 ! Here we can also give each PML cell a unique number which points into the PML_cell_data array
@@ -194,8 +201,10 @@ IMPLICIT NONE
   npml_y=pml_ymax-pml_ymin+1
   npml_z=pml_zmax-pml_zmin+1  
  
-  CALL write_line_integer('Total number of PML cells =',total_number_of_PML_cells,0,output_to_screen_flag)
-  
+!  CALL write_line_integer('Total number of PML cells =',total_number_of_PML_cells,0,output_to_screen_flag)
+
+  write(*,*)'rank=',rank,' Total number of PML cells =',total_number_of_PML_cells
+
   ALLOCATE( PML_cell_data(1:total_number_of_PML_cells) )
   
 ! Reset PML_cell_data
@@ -210,6 +219,9 @@ IMPLICIT NONE
     PML_cell_data(i)%Ix=0d0
     PML_cell_data(i)%Iy=0d0
     PML_cell_data(i)%Iz=0d0
+    PML_cell_data(i)%Ixt=0d0
+    PML_cell_data(i)%Iyt=0d0
+    PML_cell_data(i)%Izt=0d0
     PML_cell_data(i)%Vi(1:12)=0d0
     PML_cell_data(i)%Vyxt=0d0
     PML_cell_data(i)%Vzxt=0d0
@@ -278,6 +290,8 @@ IMPLICIT NONE
     end do
   end do
   
+  write(*,*)'rank=',rank,' PML_n_parameters',PML_n_parameters
+  
   ALLOCATE( PML_parameters(1:PML_n_parameters) )
 
 ! Fill the PML_parameters array
@@ -287,6 +301,7 @@ IMPLICIT NONE
   do cz=nz1,nz2
     do cy=1,ny
       do cx=1,nx
+      
         if ( local_cell_PML(cx,cy,cz,0).NE.0 ) then
            
           pml_x=local_cell_PML(cx,cy,cz,1)
@@ -300,7 +315,7 @@ IMPLICIT NONE
           PML_parameters(PML_n_parameters)%d_z=pml_z
           
           sigma_x=PML_conductivity(pml_x,pml_xmin,pml_xmax,pml_s0_xmin,pml_s0_xmax,pml_order)
-          sigma_y=PML_conductivity(pml_y,pml_ymin,pml_ymax,pml_s0_ymin,pml_s0_zmax,pml_order)
+          sigma_y=PML_conductivity(pml_y,pml_ymin,pml_ymax,pml_s0_ymin,pml_s0_ymax,pml_order)
           sigma_z=PML_conductivity(pml_z,pml_zmin,pml_zmax,pml_s0_zmin,pml_s0_zmax,pml_order)
           
           PML_parameters(PML_n_parameters)%sx=sigma_x
@@ -309,9 +324,26 @@ IMPLICIT NONE
           
           PML_parameters(PML_n_parameters)%ax=4d0/(4d0+(sigma_y+sigma_z)*dt)
           PML_parameters(PML_n_parameters)%ay=4d0/(4d0+(sigma_z+sigma_x)*dt)
-          PML_parameters(PML_n_parameters)%az=4d0/(4d0+(sigma_x+sigma_y)*dt)                     
+          PML_parameters(PML_n_parameters)%az=4d0/(4d0+(sigma_x+sigma_y)*dt)   
+                            
+          PML_parameters(PML_n_parameters)%exp_x=exp(-dt*sigma_x/2d0)
+          PML_parameters(PML_n_parameters)%exp_y=exp(-dt*sigma_y/2d0)
+          PML_parameters(PML_n_parameters)%exp_z=exp(-dt*sigma_z/2d0)
+          
+          PML_parameters(PML_n_parameters)%Csx=sigma_x*dt/4d0
+          PML_parameters(PML_n_parameters)%Csy=sigma_y*dt/4d0
+          PML_parameters(PML_n_parameters)%Csz=sigma_z*dt/4d0 
+          
+          PML_parameters(PML_n_parameters)%Csx2=sigma_x*dt/2d0
+          PML_parameters(PML_n_parameters)%Csy2=sigma_y*dt/2d0
+          PML_parameters(PML_n_parameters)%Csz2=sigma_z*dt/2d0
+          
+          PML_parameters(PML_n_parameters)%Csy_sz=1d0-(sigma_y+sigma_z)*dt/4d0
+          PML_parameters(PML_n_parameters)%Csz_sx=1d0-(sigma_z+sigma_x)*dt/4d0
+          PML_parameters(PML_n_parameters)%Csx_sy=1d0-(sigma_x+sigma_y)*dt/4d0          
            
         end if
+        
       end do
     end do
   end do
@@ -319,7 +351,7 @@ IMPLICIT NONE
 ! Link the PML_cell_data array to the PML_parameters array
 
 !  write(info_file_unit,*)''
-!  write(info_file_unit,*)' ncells cx  cy  cz  p_x p_y p_z  cell  d_x d_y d_z     sx          sy          sz'
+!  write(info_file_unit,*)' rank ncells cx  cy  cz  p_x p_y p_z  cell  d_x d_y d_z     sx          sy          sz'
 
   do cz=nz1,nz2
     do cy=1,ny
@@ -338,11 +370,11 @@ IMPLICIT NONE
 !! **** TEMP write PML parameters to file ****
 !          i=PML_cell_data(PML_cell)%PML_parameter_array_pos
 !          
-!          write(info_file_unit,8888)total_number_of_PML_cells,cx,cy,cz,pml_x,pml_y,pml_z,i, &
+!          write(info_file_unit,8888)rank,total_number_of_PML_cells,cx,cy,cz,pml_x,pml_y,pml_z,i, &
 !                                    PML_parameters(i)%d_x,PML_parameters(i)%d_y,PML_parameters(i)%d_z, &
 !                                    PML_parameters(i)%sx,PML_parameters(i)%sy,PML_parameters(i)%sz
 !                                 
-!8888 format(I7,6I4,I6,3I4,3ES12.2)
+!8888 format(I5,I7,6I4,I6,3I4,3ES12.2)
 !! **** TEMP write PML parameters to file ****
           
         end if
@@ -376,7 +408,7 @@ IMPLICIT NONE
   end if
   
   CALL write_line('FINISHED: set_pml_volume_material_mesh',0,output_to_screen_flag)
-  
+    
   RETURN
 
 END SUBROUTINE set_pml_volume_material_mesh

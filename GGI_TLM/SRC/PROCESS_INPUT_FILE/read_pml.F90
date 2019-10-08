@@ -23,12 +23,19 @@
 ! DESCRIPTION
 !     read pml packet
 !
-! Example packet:
+! Example packet 1:
 !
 !PML
 !4.0  4.0   4.0  4.0   4.0 4.0   ! PML thickness on each outer boundary surface: xmin,xmax,ymin,ymax,zmin,zmax
 !1e-4 1e-4  1e-4 1e-4  1e-4 1e-4 ! PML reflection_coefficient on each outer boundary surface: xmin,xmax,ymin,ymax,zmin,zmax
 !2                               ! PML order
+!
+! Example packet 2:
+!
+!PML
+!4.0   ! PML thickness on all outer boundary surfaces
+!1e-4  ! PML reflection_coefficient on all outer boundary surfaces
+!2     ! PML order
 !
 ! COMMENTS
 !     
@@ -51,17 +58,102 @@ IMPLICIT NONE
 
 ! local variables
 
+  character(LEN=256) :: line
+
 ! START  
 
   CALL write_line('CALLED: read_pml',0,output_to_screen_flag)
   
+  if (PML_flag) then
+    write(*,*)'ERROR: already read PML information from the input file'
+    STOP 1
+  end if
+  
   PML_flag=.TRUE.
   
-  read(input_file_unit,*,err=9000)pml_txmin,pml_txmax,pml_tymin,pml_tymax,pml_tzmin,pml_tzmax
-      
-  read(input_file_unit,*,err=9005)pml_r_xmin,pml_r_xmax,pml_r_ymin,pml_r_ymax,pml_r_zmin,pml_r_zmax
-      
+  read(input_file_unit,'(A)',err=9000)line
+  
+  ! attempt to read 6 values for PML layer thickness. If there are not six values, read one value
+  ! and use it for all  mesh boundaries
+  
+  read(line,*,err=1000)pml_txmin,pml_txmax,pml_tymin,pml_tymax,pml_tzmin,pml_tzmax
+  GOTO 1010 ! read six values OK
+  
+1000 CONTINUE
+     read(line,*,err=9000)pml_txmin
+     pml_txmax=pml_txmin
+     pml_tymin=pml_txmin
+     pml_tymax=pml_txmin
+     pml_tzmin=pml_txmin
+     pml_tzmax=pml_txmin
+
+1010 CONTINUE
+
+! Checks on values
+  if ( (pml_txmin.LT.0.0).OR.(pml_txmax.LT.0.0).OR.    &
+       (pml_tymin.LT.0.0).OR.(pml_tymax.LT.0.0).OR.    &
+       (pml_tzmin.LT.0.0).OR.(pml_tzmax.LT.0.0) ) then
+       
+    write(*,*)'ERROR in read_pml: PML layer thickness should be greater than or equal to zero'
+    write(*,*)'pml_txmin=',pml_txmin
+    write(*,*)'pml_txmax=',pml_txmax
+    write(*,*)'pml_tymin=',pml_tymin
+    write(*,*)'pml_tymax=',pml_tymax
+    write(*,*)'pml_tzmin=',pml_tzmin
+    write(*,*)'pml_tzmax=',pml_tzmax
+    
+    STOP 1
+       
+  end if
+ 
+  read(input_file_unit,'(A)',err=9000)line
+  
+  ! attempt to read 6 values for PML layer reflection coefficient. If there are not six values, read one value
+  ! and use it for all  mesh boundaries
+  
+  read(line,*,err=2000)pml_r_xmin,pml_r_xmax,pml_r_ymin,pml_r_ymax,pml_r_zmin,pml_r_zmax
+  GOTO 2010 ! read six values OK
+  
+2000 CONTINUE
+     read(line,*,err=9005)pml_r_xmin
+     pml_r_xmax=pml_r_xmin
+     pml_r_ymin=pml_r_xmin
+     pml_r_ymax=pml_r_xmin
+     pml_r_zmin=pml_r_xmin
+     pml_r_zmax=pml_r_xmin
+
+2010 CONTINUE
+
+! Checks on values
+  if ( (pml_r_xmin.LE.0.0).OR.(pml_r_xmax.LE.0.0).OR.    &
+       (pml_r_ymin.LE.0.0).OR.(pml_r_ymax.LE.0.0).OR.    &
+       (pml_r_zmin.LE.0.0).OR.(pml_r_zmax.LE.0.0).OR.    & 
+       (pml_r_xmin.GE.1.0).OR.(pml_r_xmax.GE.1.0).OR.    &
+       (pml_r_ymin.GE.1.0).OR.(pml_r_ymax.GE.1.0).OR.    &
+       (pml_r_zmin.GE.1.0).OR.(pml_r_zmax.GE.1.0) ) then
+       
+    write(*,*)'ERROR in read_pml: PML reflectivity should be between 0 and 1'
+    write(*,*)'pml_r_xmin=',pml_r_xmin
+    write(*,*)'pml_r_xmax=',pml_r_xmax
+    write(*,*)'pml_r_ymin=',pml_r_ymin
+    write(*,*)'pml_r_ymax=',pml_r_ymax
+    write(*,*)'pml_r_zmin=',pml_r_zmin
+    write(*,*)'pml_r_zmax=',pml_r_zmax
+    
+    STOP 1
+       
+  end if
+                
   read(input_file_unit,*,err=9010)pml_order
+  
+  if (pml_order.LE.0) then
+       
+    write(*,*)'ERROR in read_pml: PML order should be greater than 0'
+    write(*,*)'pml_order=',pml_order
+    
+    STOP 1
+       
+  end if
   
   n_pml_volumes=0
   
@@ -108,14 +200,14 @@ IMPLICIT NONE
     
 9000 CALL write_line('Error reading PML thicknesses from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
     
 9005 CALL write_line('Error reading PML reflection parameter from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
       
 9010 CALL write_line('Error reading PML order from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
  
 END SUBROUTINE read_pml

@@ -19,6 +19,8 @@
 !
 !  Started 3/10/2019
 
+ 	    output_number=cell_update_code_to_output_number(special_cell_count)
+
 ! STAGE 1: get the parameters for this PML cell
 
             PML_parameter=PML_cell_data(PML_cell)%PML_parameter_array_pos
@@ -32,9 +34,9 @@
             az=PML_parameters(PML_parameter)%az
  
 ! Loss factor for propagation half a cell in x, y and z        
-            exp_x=exp(-dt*sx/2d0)
-            exp_y=exp(-dt*sy/2d0)
-            exp_z=exp(-dt*sz/2d0)
+            exp_x=PML_parameters(PML_parameter)%exp_x
+            exp_y=PML_parameters(PML_parameter)%exp_y
+            exp_z=PML_parameters(PML_parameter)%exp_z
 
 ! Loss factor as applied to incident fields            
             exp_xi=exp_x  !1d0
@@ -44,32 +46,22 @@
 ! Loss factor as applied to scattered fields
             exp_xr=exp_x  !exp(-dt*sx)
             exp_yr=exp_y  !exp(-dt*sy)
-            exp_zr=exp_z  !exp(-dt*sz)
+            exp_zr=exp_z  !exp(-dt*sz)           
+          
+            Csx=PML_parameters(PML_parameter)%Csx
+            Csy=PML_parameters(PML_parameter)%Csy
+            Csz=PML_parameters(PML_parameter)%Csz
+          
+            Csx2=PML_parameters(PML_parameter)%Csx2
+            Csy2=PML_parameters(PML_parameter)%Csy2
+            Csz2=PML_parameters(PML_parameter)%Csz2
+          
+            Csy_sz=PML_parameters(PML_parameter)%Csy_sz
+            Csz_sx=PML_parameters(PML_parameter)%Csz_sx
+            Csx_sy=PML_parameters(PML_parameter)%Csx_sy
             
-            Csx=sx*dt/4d0
-            Csy=sy*dt/4d0
-            Csz=sz*dt/4d0 
-            
-            Csx2=sx*dt/2d0
-            Csy2=sy*dt/2d0
-            Csz2=sz*dt/2d0
-            
-            Csy_sz=1d0-(sy+sz)*dt/4d0
-            Csz_sx=1d0-(sz+sx)*dt/4d0
-            Csx_sy=1d0-(sx+sy)*dt/4d0
-            
-            if (PML_cell.EQ.-1) then
-            
-              write(*,*)'cx=',cx,' cy=',cy,' cz=',cz
-              write(*,*)'sx=',sx,' sy=',sy,' sz=',sz
-              write(*,*)'ax=',ax,' ay=',ay,' az=',az
-              write(*,*)'Csx=',Csx,' Csy=',Csy,' Csz=',Csz
-              write(*,*)'Csx2=',Csx2,' Csy2=',Csy2,' Csz2=',Csz2
-              write(*,*)'Csy_sz=',Csy_sz,' Csz_sx=',Csz_sx,' Csx_sy=',Csx_sy
-              write(*,*)'exp_x=',exp_x,' exp_y=',exp_y,' exp_z=',exp_z
-            
-            end if
-           
+!            write(*,'(A,I3,A,3I4,A,3ES12.3)')'rank=',rank,' cx, cy,cz=',cx,cy,cz,' sx, sy, sz=',sx,sy,sz
+                       
 ! STAGE 2: Retrieve voltages and currents from the last timestep
 
             last_Ix=PML_cell_data(PML_cell)%Ix
@@ -144,6 +136,21 @@
             
             Vzt=az*Vz+Vz_PML_shunt
 
+! STAGE 7a: Calculate Ixt, Iyt, Izt terms, equation 24 ! Only required for H field output
+            if (output_number.ne.0) then
+  
+              last_Ixt=PML_cell_data(PML_cell)%Ixt    ! Only required for H field output
+              last_Iyt=PML_cell_data(PML_cell)%Iyt
+              last_Izt=PML_cell_data(PML_cell)%Izt
+
+              Ixt=ax*(Ix-last_Ix + Csx2*(Ix+last_Ix) + Csy_sz*last_Ixt )
+
+              Iyt=ay*(Iy-last_Iy + Csy2*(Iy+last_Iy) + Csz_sx*last_Iyt )
+
+              Izt=az*(Iz-last_Iz + Csz2*(Iz+last_Iz) + Csx_sy*last_Izt )
+
+            end if
+            
 ! STAGE 7: Calculate VPML_series terms, equation 28
 
 ! i=x j=y k=z
@@ -197,6 +204,12 @@
             PML_cell_data(PML_cell)%Vxt=Vxt
             PML_cell_data(PML_cell)%Vyt=Vyt
             PML_cell_data(PML_cell)%Vzt=Vzt
+  
+            if (output_number.ne.0) then
+              PML_cell_data(PML_cell)%Ixt=Ixt   ! Only required for output
+              PML_cell_data(PML_cell)%Iyt=Iyt
+              PML_cell_data(PML_cell)%Izt=Izt
+            end if
             
             PML_cell_data(PML_cell)%Vxyt=Vxyt
             PML_cell_data(PML_cell)%Vyxt=Vyxt
@@ -230,34 +243,6 @@
 
 ! STAGE 11: Calculate scattered voltages from equation 33
 
-            if (PML_cell.EQ.-1) then
-              write(*,*)'----------------------------------------------------------------'
-              write(*,*)'Vx=',Vx,' Vy=',Vy,' Vz=',Vz
-              write(*,*)'Ix=',Ix,' Iy=',Iy,' Iz=',Iz
-              write(*,*)
-              write(*,*)'Vx_PML_shunt',Vx_PML_shunt,' Vy_PML_shunt',Vy_PML_shunt,' Vz_PML_shunt',Vz_PML_shunt
-              
-              write(*,*)'Vxy_PML_series=',Vxy_PML_series
-              write(*,*)'Vxz_PML_series=',Vxz_PML_series
-              
-              write(*,*)'Vyx_PML_series=',Vyx_PML_series
-              write(*,*)'Vyz_PML_series=',Vyz_PML_series
-              
-              write(*,*)'Vzx_PML_series=',Vzx_PML_series
-              write(*,*)'Vzy_PML_series=',Vzy_PML_series
-              
-              
-              write(*,*)'Vxny_PML=',Vxny_PML,' Vxpy_PML=',Vxpy_PML
-              write(*,*)'Vxnz_PML=',Vxnz_PML,' Vxpz_PML=',Vxpz_PML
-              
-              write(*,*)'Vynx_PML=',Vynx_PML,' Vypx_PML=',Vypx_PML
-              write(*,*)'Vynz_PML=',Vynz_PML,' Vypz_PML=',Vypz_PML
-              
-              write(*,*)'Vznx_PML=',Vznx_PML,' Vzpx_PML=',Vzpx_PML
-              write(*,*)'Vzny_PML=',Vzny_PML,' Vzpy_PML=',Vzpy_PML
-
-            end if
-
             V_max=V(Vypx,cx,cy,cz)
             V_min=V(Vynx,cx,cy,cz)    
 	    V(Vynx,cx,cy,cz)=ax*Vx-az*Z0*Iz-V_max+Vynx_PML
@@ -290,20 +275,19 @@
          
 	  
 ! STAGE 12: Output		
- 	    output_number=cell_update_code_to_output_number(special_cell_count)
             
             if (output_number.ne.0) then
 	    
 	      output_cell_number=output_cell_number+1
-	  
-! calculate cell centre fields		     
-	      field(Ex)=-Vx/dl
-	      field(Ey)=-Vy/dl
-	      field(Ez)=-Vz/dl
+
+! calculate cell centre fields
+	      field(Ex)=-Vxt/dl
+	      field(Ey)=-Vyt/dl
+	      field(Ez)=-Vzt/dl
 	
-	      field(Hx)= Ix/dl
-	      field(Hy)= Iy/dl
-	      field(Hz)= Iz/dl
+	      field(Hx)= Ixt/dl
+	      field(Hy)= Iyt/dl
+	      field(Hz)= Izt/dl
 	  
               cell_output_field(output_cell_number,1:6)=field(1:6)
 	  

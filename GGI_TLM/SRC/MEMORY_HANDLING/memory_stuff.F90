@@ -101,7 +101,7 @@ integer	:: surface_number
   
   if ( allocated( pml_volumes ) ) then
   
-    do volume_number=1,n_volumes
+    do volume_number=1,n_pml_volumes
   
       if ( allocated( pml_volumes(volume_number)%tet_list ) ) then
         DEALLOCATE( pml_volumes(volume_number)%tet_list )

@@ -1,3 +1,7 @@
+           1  Post processing option: extract time domain data
+waveguide_pml.mode.tout
+1
+Ex1.tout
            3  Post processing option: Fourier Transform
 waveguide_pml.mode.tout
            1
@@ -42,65 +46,6 @@ Hy2.fout
   0.002  port separation (m)
   0.01  port midpoint to interface distamce (m)
 waveguide_pml.fout
-           0  Post processing option: Quit
-
-##############################################################################
-
-           3  Post processing option: Fourier Transform
-waveguide_pml.mode.tout
-           5
-lin
-   0.8000000E+10 fmin
-   0.1200000E+11 fmax
-             800 n_frequencies
-Ex3.fout
-           3  Post processing option: Fourier Transform
-waveguide_pml.mode.tout
-           6
-lin
-   0.8000000E+10 fmin
-   0.1200000E+11 fmax
-             800 n_frequencies
-Hy3.fout
-           3  Post processing option: Fourier Transform
-waveguide_pml.mode.tout
-           7
-lin
-   0.8000000E+10 fmin
-   0.1200000E+11 fmax
-             800 n_frequencies
-Ex4.fout
-           3  Post processing option: Fourier Transform
-waveguide_pml.mode.tout
-           8
-lin
-   0.8000000E+10 fmin
-   0.1200000E+11 fmax
-             800 n_frequencies
-Hy4.fout
-           10  Post processing option: Twoport analysis
-Ex1.fout
-           1
-Ex2.fout
-           1
-Hy1.fout
-           1
-Hy2.fout
-           1
-Ex4.fout
-           1
-Ex3.fout
-           1
-Hy4.fout
-           1
-Hy3.fout
-           1
-  0.002  port separation (m)
-  0.010  port midpoint to interface distamce (m)
-  0.002  port separation (m)
-  0.010  port midpoint to interface distamce (m)
-1    ! excitation port number
-waveguide_pml.fout
           17  POST PROCESSING OPTION: CREATE VECTOR FREQUENCY DOMAIN ANIMATION
 waveguide_pml.frequency_output_surface.fout
            0  Output surface component number           1
@@ -108,4 +53,14 @@ waveguide_pml.frequency_output_surface.fout
            2  Output surface component number           3
 n
 waveguide_pml_field
+           5  POST PROCESSING OPTION: CREATE SURFACE/VOLUME ANIMATION
+waveguide_pml.surface_field.tout
+           1  Output surface
+lin
+   0.0000000000000000     
+   0.0000000000000000     
+y
+           0  Output surface
+           0  POST PROCESSING OPTION: QUIT
            0  Post processing option: Quit
+           
