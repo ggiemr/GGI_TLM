@@ -1,0 +1,64 @@
+          44  POST PROCESSING OPTION: SUM TIME DOMAIN DATA
+           4  number of functions to sum
+parallel_conductors.field.tout
+           1
+  -5.0000000000000001E-003  Multiplication_factor for this function
+parallel_conductors.field.tout
+           2
+   5.0000000000000001E-003  Multiplication_factor for this function
+parallel_conductors.field.tout
+           3
+   5.0000000000000001E-003  Multiplication_factor for this function
+parallel_conductors.field.tout
+           4
+  -5.0000000000000001E-003  Multiplication_factor for this function
+current_from_H.tout
+          44  POST PROCESSING OPTION: SUM TIME DOMAIN DATA
+           2  number of functions to sum
+parallel_conductors.field.tout
+           5
+  0.50000000000000000       Multiplication_factor for this function
+parallel_conductors.field.tout
+           7
+  0.50000000000000000       Multiplication_factor for this function
+Hy.tout
+          1  POST PROCESSING OPTION: EXTRACT TIME DOMAIN DATA
+parallel_conductors.field.tout
+           9
+Hy_wire_centre.tout
+          44  POST PROCESSING OPTION: SUM TIME DOMAIN DATA
+           1  number of functions to sum
+parallel_conductors.field.tout
+           10
+-1250.0    Multiplication_factor for this function=sigma*dl*dl
+current_from_sigma_E.tout
+          50  POST PROCESSING OPTION: MULTIPLY TIME DOMAIN DATA
+           2  number of functions to multiply
+   1.2566000000000000E-006  Multiplication_factor
+current_from_H.tout
+           1
+Hy.tout
+           1
+Fx.tout
+           50  POST PROCESSING OPTION: MULTIPLY TIME DOMAIN DATA
+           2  number of functions to multiply
+   1.2566000000000000E-006  Multiplication_factor
+current_from_H.tout
+           1
+Hy_wire_centre.tout
+           1
+Fx_wire_centre.tout
+         51  POST PROCESSING OPTION: CREATE TIME DOMAIN FORCE VECTOR ANIMATION
+parallel_conductors.volume_field.tout
+           1  Output field component number           1
+           2  Output field component number           2
+           3  Output field component number           3
+           4  Output field component number           4
+           5  Output field component number           5
+           6  Output field component number           6
+   50000000.0000000000       conductivity
+   1.0                      reduced c factor
+   0  max vector magnitude to plot (0 to use the value from the data)
+n
+Force
+           0  POST PROCESSING OPTION: QUIT

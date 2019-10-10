@@ -23,7 +23,7 @@
 ! DESCRIPTION
 !    Read frequency domain vector E and H fields and calculate the Poynting vector
 !    Then plot the resulting vector field
-!    Now extended to plot real and imaginary E and H fioeld vectors
+!    Now extended to plot real and imaginary E and H field vectors
 !     
 ! COMMENTS
 !     
@@ -31,7 +31,7 @@
 ! HISTORY
 !
 !     started 12/6/2015 CJS
-!     plot real and imaginary E and H fioeld vectors 3/9/2015 CJS
+!     plot real and imaginary E and H field vectors 3/9/2015 CJS
 !     5/11/2015  CJS allow the process to work on compressed files
 !
 SUBROUTINE create_poynting_vector_plot

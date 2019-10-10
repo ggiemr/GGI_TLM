@@ -46,6 +46,9 @@ Hy2.fout
   0.002  port separation (m)
   0.01  port midpoint to interface distamce (m)
 waveguide_pml.fout
+           0  POST PROCESSING OPTION: QUIT
+           
+           
           17  POST PROCESSING OPTION: CREATE VECTOR FREQUENCY DOMAIN ANIMATION
 waveguide_pml.frequency_output_surface.fout
            0  Output surface component number           1
@@ -62,5 +65,4 @@ lin
 y
            0  Output surface
            0  POST PROCESSING OPTION: QUIT
-           0  Post processing option: Quit
            

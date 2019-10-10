@@ -30,6 +30,7 @@
 ! HISTORY
 !
 !     started 26/04/2016 CJS based on time domain vector animation process
+!     10/10/2019 CJS explicitly request reduced_c_factor to be input
 !
 !
 SUBROUTINE create_time_domain_force_vector_animation
@@ -75,6 +76,8 @@ IMPLICIT NONE
 
   real*8 			:: max_data
   real*8 			:: data_range
+  
+  real*8                        :: reduced_c_factor
   
   real*8 			:: sigma
   
@@ -361,6 +364,10 @@ IMPLICIT NONE
   write(*,*)'Enter the electric conductivity of the material volume'
   read(*,*)sigma
   write(record_user_inputs_unit,*)sigma,' conductivity'
+  
+  write(*,*)'Enter the reduced c factor applied in the simulation (1 for no reduced_c applied'
+  read(*,*,err=9030)reduced_c_factor
+  write(record_user_inputs_unit,*)reduced_c_factor,' reduced c factor applied in the simulation'
 
   write(*,*)'Maximum E field value:',max_E
   write(*,*)'Minimum E field value:',min_E
@@ -373,7 +380,7 @@ IMPLICIT NONE
   write(*,*)'Maximum absolute value of E field:',max_E_abs
   write(*,*)'Maximum absolute value of H field:',max_H_abs
 
-  max_data=(max_E_abs*max_H_abs*mu0*sigma)     ! assume max E and max H occurr at the same time
+  max_data=(max_E_abs*max_H_abs*mu0*sigma/reduced_c_factor)     ! assume max E and max H occurr at the same time
   
   data_range=max_data
   if (data_range.eq.0d0) data_range=1d0   
@@ -479,20 +486,20 @@ IMPLICIT NONE
 
 ! OLD PRESSURE CALCULATION
 !! Calculate the force (per unit area) vector on this cell 
-!! Force per unit length is F=IxB=dA*sigma ExB= dA*sigma*mu0 ExH
+!! Force per unit length is F=IxB=dA*sigma ExB= dA*sigma*mu0 ExH/reduced_c_factor
 !! then divide by dl to give a pressure
 !
-!      Ffield(1)=cell_size*mu0*sigma*(Efield(2)*Hfield(3)-Efield(3)*Hfield(2))
-!      Ffield(2)=cell_size*mu0*sigma*(Efield(3)*Hfield(1)-Efield(1)*Hfield(3))
-!      Ffield(3)=cell_size*mu0*sigma*(Efield(1)*Hfield(2)-Efield(2)*Hfield(1))
+!      Ffield(1)=cell_size*mu0*sigma*(Efield(2)*Hfield(3)-Efield(3)*Hfield(2))/reduced_c_factor
+!      Ffield(2)=cell_size*mu0*sigma*(Efield(3)*Hfield(1)-Efield(1)*Hfield(3))/reduced_c_factor
+!      Ffield(3)=cell_size*mu0*sigma*(Efield(1)*Hfield(2)-Efield(2)*Hfield(1))/reduced_c_factor
 
 ! Calculate the force (per unit area) vector on this cell 
-! Force per unit length is F=IxB=dA*sigma ExB= dA*sigma*mu0 ExH
+! Force per unit length is F=IxB=dA*sigma ExB= dA*sigma*mu0 ExH/reduced_c_factor
 ! then multiply by dl to give the force on the cell
 
-      Ffield(1)=(cell_size**3)*mu0*sigma*(Efield(2)*Hfield(3)-Efield(3)*Hfield(2))
-      Ffield(2)=(cell_size**3)*mu0*sigma*(Efield(3)*Hfield(1)-Efield(1)*Hfield(3))
-      Ffield(3)=(cell_size**3)*mu0*sigma*(Efield(1)*Hfield(2)-Efield(2)*Hfield(1))
+      Ffield(1)=(cell_size**3)*mu0*sigma*(Efield(2)*Hfield(3)-Efield(3)*Hfield(2))/reduced_c_factor
+      Ffield(2)=(cell_size**3)*mu0*sigma*(Efield(3)*Hfield(1)-Efield(1)*Hfield(3))/reduced_c_factor
+      Ffield(3)=(cell_size**3)*mu0*sigma*(Efield(1)*Hfield(2)-Efield(2)*Hfield(1))/reduced_c_factor
             
       Fmagnitude=sqrt(Ffield(1)**2+Ffield(2)**2+Ffield(3)**2)
       Fmax=max(Fmax,Fmagnitude)
@@ -620,6 +627,10 @@ IMPLICIT NONE
   
 9020 continue
   write(*,*)'Output volume must be between 0 and ',n_volumes
+  STOP
+  
+9030 continue
+  write(*,*)'Error: expected a reduced_c factor for the simulation'
   STOP
 
   RETURN

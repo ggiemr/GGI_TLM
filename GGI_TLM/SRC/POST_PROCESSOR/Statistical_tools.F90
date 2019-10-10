@@ -24,11 +24,12 @@
 !     
 !     
 ! COMMENTS
-!     Some statistical tools for investigating 
+!     Some statistical tools: calculate PDF, CDF, mean and variance
+!     of a set of data samples.
 !
 ! HISTORY
 !
-!     Some statistical tools for investigating 28/11/2014
+!     Some statistical tools  28/11/2014
 !
 SUBROUTINE Statistical_tools()
 

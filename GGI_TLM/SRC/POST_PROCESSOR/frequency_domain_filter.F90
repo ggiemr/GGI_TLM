@@ -468,8 +468,6 @@ IMPLICIT NONE
 
   close(UNIT=local_file_unit)
 
-! we offer a choice to calculate the filter frequency response as 
-! specified or that of the digital filter obtained using the bilinear transformation  
   write(*,*)"Enter 't' to set the timestep or "
   write(*,*)"or 'l' to specify a TLM cell size and calculate the timestep appropriate for this"
  

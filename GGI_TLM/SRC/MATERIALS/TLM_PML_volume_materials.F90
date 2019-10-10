@@ -65,6 +65,8 @@ IMPLICIT NONE
   integer       :: pml_x,pml_y,pml_z
   
   real*8        :: sigma_x,sigma_y,sigma_z
+  
+  logical :: write_pml_data_to_info_file
 
 ! function variables  
 
@@ -73,6 +75,8 @@ IMPLICIT NONE
 ! START
   
   CALL write_line('CALLED: set_pml_volume_material_mesh',0,output_to_screen_flag)
+  
+  write_pml_data_to_info_file=.TRUE.
 
 ! INITIALISE VOLUME MATERIALS  
     
@@ -350,9 +354,13 @@ IMPLICIT NONE
     
 ! Link the PML_cell_data array to the PML_parameters array
 
-!  write(info_file_unit,*)''
-!  write(info_file_unit,*)' rank ncells cx  cy  cz  p_x p_y p_z  cell  d_x d_y d_z     sx          sy          sz'
+  if (write_pml_data_to_info_file) then
+  
+    write(info_file_unit,*)''
+    write(info_file_unit,*)' rank ncells cx  cy  cz  p_x p_y p_z  cell  d_x d_y d_z     sx          sy          sz'
 
+  end if
+  
   do cz=nz1,nz2
     do cy=1,ny
       do cx=1,nx
@@ -367,15 +375,17 @@ IMPLICIT NONE
                               
           PML_cell_data(PML_cell)%PML_parameter_array_pos=PML_dxdydz_to_parameter_array(pml_x,pml_y,pml_z)
 
-!! **** TEMP write PML parameters to file ****
-!          i=PML_cell_data(PML_cell)%PML_parameter_array_pos
-!          
-!          write(info_file_unit,8888)rank,total_number_of_PML_cells,cx,cy,cz,pml_x,pml_y,pml_z,i, &
-!                                    PML_parameters(i)%d_x,PML_parameters(i)%d_y,PML_parameters(i)%d_z, &
-!                                    PML_parameters(i)%sx,PML_parameters(i)%sy,PML_parameters(i)%sz
-!                                 
-!8888 format(I5,I7,6I4,I6,3I4,3ES12.2)
-!! **** TEMP write PML parameters to file ****
+          if (write_pml_data_to_info_file) then
+  
+          i=PML_cell_data(PML_cell)%PML_parameter_array_pos
+          
+            write(info_file_unit,8888)rank,total_number_of_PML_cells,cx,cy,cz,pml_x,pml_y,pml_z,i, &
+                                      PML_parameters(i)%d_x,PML_parameters(i)%d_y,PML_parameters(i)%d_z, &
+                                      PML_parameters(i)%sx*eps0,PML_parameters(i)%sy*eps0,PML_parameters(i)%sz*eps0
+                                 
+8888        format(I5,I7,6I4,I6,3I4,3ES12.3)
+
+          end if
           
         end if
       end do
@@ -540,7 +550,7 @@ else if (pml_x.LT.0) then
 
 ! min boundary
 
-  L=abs(pml_x)
+  L=abs(pml_x)-1     ! L is in the range 0 to N-1 where N is the number of layers
   N=pml_xmin
   if (N.EQ.0) then
     write(*,*)'ERROR in PML_conductivity: PML thickness is zero'
@@ -553,7 +563,7 @@ else
 
 ! max boundary
 
-  L=abs(pml_x)
+  L=abs(pml_x)-1    ! L is in the range 0 to N-1 where N is the number of layers
   N=pml_xmax
   if (N.EQ.0) then
     write(*,*)'ERROR in PML_conductivity: PML thickness is zero'

@@ -1,0 +1,5 @@
+cp parallel_conductors.cable_current.tout PROBLEM_SPECIFICATION_FILES/parallel_conductors.cable_current.tout_ref
+cp current_from_H.tout PROBLEM_SPECIFICATION_FILES/current_from_H.tout_ref
+cp Hy.tout PROBLEM_SPECIFICATION_FILES/Hy.tout_ref
+cp Fx.tout PROBLEM_SPECIFICATION_FILES/Fx.tout_ref
+

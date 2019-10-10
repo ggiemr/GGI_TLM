@@ -13,7 +13,7 @@ PML
 
 #specify the outer boundary conditions (6*real)
 Outer_boundary_reflection_coefficient
--1 -1   -1 -1   -1 -1    
+0 0   0 0   0 0
 
 # Define the geometrical entities, 3D volumes, 2D surfaces, 1D lines. Note the ability to import
 #geometry from a file means that this is a fairly general format for geometry specification

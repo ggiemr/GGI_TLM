@@ -51,7 +51,7 @@ IMPLICIT NONE
   
 ! START
 
-!  write(*,*)'Rciprocal Frequency domain data'
+!  write(*,*)'Scale Frequency domain data'
   
   write(*,*)' '
   write(*,*)'Result=scale*fn '

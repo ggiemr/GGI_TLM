@@ -21,9 +21,10 @@
 !    interpolate
 !
 ! DESCRIPTION
-!    read a data file with real or complex function values f(x) at a set of x values x1
-!    read a second file with a set of x values x2
-!    interpolate the values f(x) to the set of values x2
+!    read a data file with a set of x values x1 or alternatively set a 
+!    uniform set of n_samples sampling points x1 from x1min to x1max
+!    read a second file with a set of real or complex function values f(x) at a set of x values x2
+!    interpolate the values f(x) to the set of values x1
 !     
 ! COMMENTS
 !     

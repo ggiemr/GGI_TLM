@@ -110,7 +110,7 @@ IMPLICIT NONE
   write(*,*)'39. Calculate the impulse response of a filter function'
   write(*,*)'40. S11 to VSWR'
   write(*,*)'41. Convert Frequency Domain Volume Field Output to x y z Re{field} Im{field} |field| format'
-  write(*,*)'42. Calculate spatial correlation for 1D and 2D complex data sets'
+  write(*,*)'42. Calculate spatial covariance for 1D and 2D complex data sets'
   write(*,*)'43. Calculate and propagate Wigner function from complex spatial correlation data'
   write(*,*)'44. Sum Time Domain Data'
   write(*,*)'45. Square root Sum of squares/RMS calculation for Frequency Domain Data'
@@ -125,7 +125,7 @@ IMPLICIT NONE
   write(*,*)'54. Create filter function (LPF, HPF)'
   write(*,*)'55. interpolate function(s)'
   write(*,*)'56. Subtract d.c. from Time Domain Data'
-  write(*,*)'57. Multiply Frequency domain Data'
+  write(*,*)'57. Scale Frequency domain Data'
   write(*,*)'58. Post processing for time domain conducted emissions data'
   write(*,*)
   
@@ -475,10 +475,10 @@ IMPLICIT NONE
     
   else if (option.EQ.42) then
   
-    write(*,*)'42. Calculate spatial correlation for 1D and 2D complex data sets'
+    write(*,*)'42. Calculate spatial covariance for 1D and 2D complex data sets'
     write(record_user_inputs_unit,*)option,	&
     ' POST PROCESSING OPTION: Calculate spatial correlation for 1D and 2D complex data sets '
-    write(post_process_info_unit,*)'Calculate spatial correlation for 1D and 2D complex data sets'
+    write(post_process_info_unit,*)'Calculate spatial covariance for 1D and 2D complex data sets'
     CALL Spatial_correlation()
     
   else if (option.EQ.43) then
