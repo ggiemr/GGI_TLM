@@ -674,29 +674,20 @@
 
 3/9/2019        CJS     Fix bug with y directed diode surfaces on cell faces normal to z
 
-8/10/2019       CJS     Add implementation of the perfectly matched layer (PML) boundary condition
+8/10/2019       CJS     Add implementation of the perfectly matched layer (PML) boundary condition in new branch CJS_BC
 
-Next stages:  	
-		- Rewrite vector_fitting to fit in with GGI_TLM data structures: DONE
-		- Start to implement and document all the Fieldsolve test cases : STARTED
-	      	- Implement excitations/ outputs as required for test cases : STARTED
-	      	- Implement analytic solutions required for test case reference results : STARTED
-	      	- User documentation for code : STARTED
-	      	- Theoretical documentation for code : STARTED
-	      	- Software documentation : STARTED
-	      	- Set up open source project : DONE
-	     	- Set up website : DONE - page on the university GGIEMR web pages
+10/10/2019      CJS     Complete PML work after checking with Joju's implementation for a simple PML test case in CJS_BC. 
+                        Update documentation
+                        
+10/10/2019      CJS     Add and document a magnetic force calculation test case in CJS_BC
+
+10/10/2019      CJS     Rerun all test cases in branch CJS_BC and merge CJS_BC back into master. 
+                        Rerun all test cases in master before updating github and creating a new release.
+
+
 
 Missing Packets...	
-		- far_field_surface: DONE
-		- frequency_output_surface: DONE
-                - rcs_surface: DONE
 		- SAR_output: DONE - not for dispersive materials though...
-		- surface_current_output: DONE
-		- mode_excitation_surface: DONE
-		- mode_output_surface: DONE
-		- mode_stirred boundary: DONE
-		- frequency_domain_power_plane: DONE
 		- Periodic structures: STARTED
 		- mesh_energy_monitor
 		- save_restart_data

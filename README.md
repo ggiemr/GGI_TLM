@@ -1,8 +1,8 @@
 
 Time Domain Electromagnetic Field Simulation using the Transmission Line Modelling (TLM) method
 
-Version number: 2.1.0
-Date: 8th October 2019
+Version number: 2.1.1
+Date: 10th October 2019
 
 Features:
 
