@@ -45,6 +45,9 @@ integer	:: function_number
 ! local variables
 
   character(len=256)	:: filename
+  
+  integer               :: len_filename
+  character(len=4)      :: extension
 
   integer		:: n_data_points
   integer		:: n_timesteps
@@ -57,9 +60,17 @@ integer	:: function_number
   integer		:: n_in
   integer		:: n_timesteps_read
 
+  integer               :: n_head,t_col,V_col,n_col
+
+real*8,allocatable :: data_line(:)
+
   character(len=256)	:: command
+  integer               :: status
   
   logical		:: file_exists
+  logical               :: file_type_tout
+  
+  integer               :: i
   
 ! START
 
@@ -67,7 +78,15 @@ integer	:: function_number
   write(*,*)'Time domain output files:'
   
   command='ls -ltr *.tout'
-  CALL system(command)
+  CALL system(command,status)
+  
+  if (status.NE.0) then       ! no tout files were found so list all files
+    write(*,*)
+    write(*,*)' No .tout files found, listing all files...'
+    write(*,*)    
+    command='ls -ltr '
+    CALL system(command,status)
+  end if
 
   write(*,*)'Enter the time domain filename'
   read(*,'(A256)')filename
@@ -81,32 +100,86 @@ integer	:: function_number
   write(post_process_info_unit,*)'	Time domain data filename:',trim(filename)
   
   OPEN(unit=local_file_unit,file=filename)
-  
-  CALL read_time_domain_header_data(local_file_unit,n_data_points,n_timesteps)
-  
   write(*,*)'Opened file:',trim(filename)
-  write(*,*)'Number of output points in file=',n_data_points
-  write(*,*)'Number of timesteps in file=',n_timesteps
   
-  write(*,*)'Enter the output point required'
-  read(*,*)output_point
-  write(record_user_inputs_unit,*)output_point
+! Check whether this is a file with extension tout. If it is, read in the normal way, otherwise read a more general format
+
+  len_filename=len(trim(filename))
+  if (len_filename.GE.4) then
+    extension=filename(len_filename-3:len_filename)
+  else
+    extension='****'   ! something that is not 'tout'
+  end if
   
-  write(post_process_info_unit,*)'	Time domain output point:',output_point
+  if (extension.EQ.'tout') then
+  
+    CALL read_time_domain_header_data(local_file_unit,n_data_points,n_timesteps)
+  
+    write(*,*)'Number of output points in file=',n_data_points
+    write(*,*)'Number of timesteps in file=',n_timesteps
+  
+    write(*,*)'Enter the output point required'
+    read(*,*)output_point
+    write(record_user_inputs_unit,*)output_point
+  
+    write(post_process_info_unit,*)'	Time domain output point:',output_point
+        
+    rewind(unit=local_file_unit)
+    
+    file_type_tout=.TRUE.
+    
+    n_head=3
+    t_col=1
+    V_col=3
+    
+  else
+   
+    write(*,*)'Enter the number of header lines in the file'
+    read(*,*)n_head
+    write(record_user_inputs_unit,*)n_head,'  # number of header lines in the file'
+
+    write(*,*)'Enter the column number for time data'
+    read(*,*)t_col
+    write(record_user_inputs_unit,*)t_col,'  # time data column'
+
+    write(*,*)'Enter the column number for voltage data'
+    read(*,*)V_col
+    write(record_user_inputs_unit,*)V_col,'  # Voltage data column'
+    
+    file_type_tout=.FALSE.
+    output_point=1
+    
+  end if
   
 ! read the input file   
+
+  n_col=max(t_col,V_col)
+
+  ALLOCATE( data_line(1:n_col) )
        
   do loop=1,2
   
-  timestep=0
+! read file header
+    do i=1,n_head
+      read(local_file_unit,*)
+    end do
   
-  if (loop.EQ.2) then ! read header data again
-    CALL read_time_domain_header_data(local_file_unit,n_data_points,n_timesteps)
-  end if
-  
+    timestep=0
+    
 10  CONTINUE
 
-      read(local_file_unit,*,end=1000)t_in,n_in,value_in
+      if (file_type_tout) then
+      
+        read(local_file_unit,*,end=1000)t_in,n_in,value_in  ! tout format
+        
+      else 
+      
+        read(local_file_unit,*,END=1000)(data_line(i),i=1,n_col)
+        t_in =data_line(t_col)
+        value_in=data_line(V_col)
+        n_in=1
+        
+      end if
       
       if (n_in.eq.output_point) then ! read this output
       
@@ -137,6 +210,8 @@ integer	:: function_number
   end do ! next loop
   	 
   CLOSE(unit=local_file_unit)
+  
+  DEALLOCATE( data_line )
   
   function_of_time(function_number)%n_timesteps=n_timesteps_read
   

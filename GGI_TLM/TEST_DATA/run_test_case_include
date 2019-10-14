@@ -503,7 +503,15 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
 
        echo "STARTING PARAVIEW....."
      
-       paraview --script=${SRC_DIR}/GGI_TLM_view_geometry.py &
+       if [ "$(expr substr $(uname -s) 1 6)" == "CYGWIN" ]; then
+    
+         paraview --script=c:/cygwin64/${SRC_DIR}/GGI_TLM_view_geometry.py &
+	 
+       else
+    
+         paraview --script=${SRC_DIR}/GGI_TLM_view_geometry.py &
+
+       fi     
        
        echo "FINISHED: $TEST_CASE: view_geometry" > ./progress
              
@@ -523,8 +531,16 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
        echo " "
        echo "STARTING PARAVIEW....."
        echo " "
+     
+       if [ "$(expr substr $(uname -s) 1 6)" == "CYGWIN" ]; then
+    
+         paraview --script=c:/cygwin64/${SRC_DIR}/GGI_TLM_view_meshed_geometry.py &
+	 
+       else
+    
+         paraview --script=${SRC_DIR}/GGI_TLM_view_meshed_geometry.py &
 
-       paraview --script=${SRC_DIR}/GGI_TLM_view_meshed_geometry.py &
+       fi     
        
        echo "FINISHED: $TEST_CASE: view_geometry" > ./progress
              
@@ -566,9 +582,17 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
        echo " "
        echo "STARTING PARAVIEW....."
        echo " "
-     
-       paraview --script=${SRC_DIR}/GGI_TLM_view_mesh.py &
-       
+
+       if [ "$(expr substr $(uname -s) 1 6)" == "CYGWIN" ]; then
+    
+         paraview --script=c:/cygwin64/${SRC_DIR}/GGI_TLM_view_mesh.py &
+	 
+       else
+    
+         paraview --script=${SRC_DIR}/GGI_TLM_view_mesh.py &
+
+       fi     
+            
        echo "FINISHED: $TEST_CASE: view_mesh" > ./progress
              
      elif [ "$ACTION" = "document" ] ; then
@@ -626,9 +650,17 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
        fi
 
 # Run python script to create the document
-     
-       pvpython ${SRC_DIR}/GGI_TLM_document.py
-       
+    
+       if [ "$(expr substr $(uname -s) 1 6)" == "CYGWIN" ]; then
+    
+         pvpython c:/cygwin64${SRC_DIR}/GGI_TLM_document.py
+	 
+       else
+    
+         pvpython ${SRC_DIR}/GGI_TLM_document.py
+
+       fi     
+
        echo "FINISHED: $TEST_CASE: document" > ./progress
       
      elif [ "$ACTION" = "save" ] ; then

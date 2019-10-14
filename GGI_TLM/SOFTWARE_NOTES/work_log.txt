@@ -684,6 +684,7 @@
 10/10/2019      CJS     Rerun all test cases in branch CJS_BC and merge CJS_BC back into master. 
                         Rerun all test cases in master before updating github and creating a new release.
 
+14/10/2019      CJS     Fix problem with paths in cygwin when calling paraview with python scripts.
 
 
 Missing Packets...	
