@@ -4,6 +4,8 @@ GGI_TLM may be run on windows machines by using cygwin. Cygwin creates a unix ty
 Paraview installation
 Install paraview for windows from the website:
 www.paraview.org
+Note that Paraview version 4.0 is recommended at the moment. later versions
+may not support the file types used by GGI_TLM.
 and follow the download instructions.
 
 Cygwin installation
@@ -66,7 +68,10 @@ Click Finish
 
 An icon 'Cygwin64 Terminal' appears on the desktop
 
-Run Xlaunch from the programs menu
+In order to start working in the Cygwin environment
+Run Xlaunch from the programs menu (this should be done every time
+you work with GGI_TLM to ensure the display works correctly with
+gnuplot)
 (Programs->Cygwin-X->Xlaunch)
 
 Select Display Settings:

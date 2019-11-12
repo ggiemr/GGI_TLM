@@ -686,6 +686,9 @@
 
 14/10/2019      CJS     Fix problem with paths in cygwin when calling paraview with python scripts.
 
+12/11/2019      CJS     Fix problem with transformations applied to sphere surfaces.
+
+12/11/2019      CJS     Update cygwin installation notes for windows 10 to emphasise the use of Xlaunch. Also insist on paraview version 4.0.
 
 Missing Packets...	
 		- SAR_output: DONE - not for dispersive materials though...

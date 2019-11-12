@@ -118,7 +118,7 @@ different types of output are summarised in a subsequent section.
 
 Running a model proceeds in a number of stages, firstly a 3D meshed model is created from 
 the input file using the code GGI_TLM_model_builder. This creates a mesh from the geometry description. The model may be examined and checked by using the code GGI_TLM_model_checks 
-which produces files for 3D visualisation of the model and mesh with Paraview.
+which produces files for 3D visualisation of the model and mesh with Paraview (Note that Paraview version 4.0 is recommended at the moment. later versions may not support the file types used by GGI_TLM.)
 
 If the problem includes cables then the code GGI_TLM_cable_model_builder creates a cable 
 model. The cable model may be checked using the code GGI_TLM_cable_model_checks.

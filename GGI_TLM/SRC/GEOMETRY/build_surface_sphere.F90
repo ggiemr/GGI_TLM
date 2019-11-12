@@ -45,6 +45,7 @@
 !     started 29/08/2012 CJS
 !     surface roughness 13/8/2015 CJS
 !     use triangle subdivision method 21/9/2015 CJS
+!     Fix error which in which transformations (translations and rotations were in error) CJS 12/11/2019
 !
 !
 SUBROUTINE build_surface_sphere(surface_number)
@@ -181,7 +182,7 @@ logical		:: check_failed
         radius=radius+r_random*problem_surfaces(surface_number)%roughness_p1
       end if
       CALL rthetaphi_to_xyz_point(radius,theta,phi,point1)
-      CALL apply_transformation(point1,problem_surfaces(surface_number)%trans)
+!      CALL apply_transformation(point1,problem_surfaces(surface_number)%trans)
       point_list(point_count)=point1
       
 ! south pole point      
@@ -196,7 +197,7 @@ logical		:: check_failed
         radius=radius+r_random*problem_surfaces(surface_number)%roughness_p1
       end if
       CALL rthetaphi_to_xyz_point(radius,theta,phi,point1)
-      CALL apply_transformation(point1,problem_surfaces(surface_number)%trans)
+!      CALL apply_transformation(point1,problem_surfaces(surface_number)%trans)
       point_list(point_count)=point1
   
 ! top layer of 5 points     
@@ -213,7 +214,7 @@ logical		:: check_failed
      	  radius=radius+r_random*problem_surfaces(surface_number)%roughness_p1
         end if
         CALL rthetaphi_to_xyz_point(radius,theta,phi,point1)
-        CALL apply_transformation(point1,problem_surfaces(surface_number)%trans)
+!        CALL apply_transformation(point1,problem_surfaces(surface_number)%trans)
         point_list(point_count)=point1
       
       end do ! next equatorial point
@@ -232,7 +233,7 @@ logical		:: check_failed
      	  radius=radius+r_random*problem_surfaces(surface_number)%roughness_p1
         end if
         CALL rthetaphi_to_xyz_point(radius,theta,phi,point1)
-        CALL apply_transformation(point1,problem_surfaces(surface_number)%trans)
+!        CALL apply_transformation(point1,problem_surfaces(surface_number)%trans)
         point_list(point_count)=point1
       
       end do ! next equatorial point
@@ -608,7 +609,7 @@ logical		:: check_failed
 	  
           CALL scale_point(radius,point3)
 	  
-          CALL apply_transformation(point3,problem_surfaces(surface_number)%trans)
+!          CALL apply_transformation(point3,problem_surfaces(surface_number)%trans)
 	  point_list(p3)=point3
 	  edge_to_point_list(edge,3)=p3
 	  
@@ -829,6 +830,16 @@ logical		:: check_failed
         end if
 	  
       end do ! next stage of sub-division
+      
+! Apply the transformation to all the points in the point list
+
+      do i=1,tot_n_points
+      
+        point1=point_list(i)
+        CALL apply_transformation(point1,problem_surfaces(surface_number)%trans)
+        point_list(i)=point1
+       
+      end do
 
 ! Copy the triangulated surface into the problem_surfaces structure      
       do triangle=1,triangle_count
