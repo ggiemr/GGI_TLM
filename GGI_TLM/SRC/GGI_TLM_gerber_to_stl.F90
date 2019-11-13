@@ -36,7 +36,7 @@
 ! HISTORY
 !
 !     started 10/12/19 CJS
-!     
+!     8/11/2019 CJS enforce closure of regions so that gerber output from CST microwave studio works correctly
 !
 
 PROGRAM GGI_gerber_to_stl
@@ -156,7 +156,8 @@ character(len=256) :: opfilename
     polarity=dark
   
 ! not within a region statement
-    region=.FALSE.
+    region=.FALSE.  
+    first_region_point_set=.FALSE.
 ! 
     line_in=''
     
@@ -319,6 +320,7 @@ character(len=256) :: opfilename
         
           pos=pos+3
           region=.TRUE.
+          first_region_point_set=.FALSE.
           write(*,*)'Setting interpolation region=TRUE'
           reg(1:nx,1:ny)=0       ! reset the region filling array
     
@@ -326,11 +328,23 @@ character(len=256) :: opfilename
         
           if (region) then
 ! If a contour has been specified then go through the fill procedure and then transfer the region array to the pixel array
+
+! First close the region by 
+            if (rloop.EQ.2) then      
+          
+! place the line in the region filling array
+              CALL sweep_line(reg,nx,ny,ap,anx,any,frx,fry,x,y,xi,yj,                      &
+                              xmin,ymin,dl,interpolation_mode,quadrant_mode,polarity,region)
+            
+            end if
+
             CALL set_region(reg,p,nx,ny,polarity)
+            
           end if
        
           pos=pos+3
           region=.FALSE.
+          first_region_point_set=.FALSE.
           write(*,*)'Setting interpolation region=FALSE'
     
         else if (line(pos:pos+2).EQ.'G74') then
@@ -355,20 +369,31 @@ character(len=256) :: opfilename
           write(*,*)'  xi, yj  : ',xi,yj
  
           if (rloop.EQ.2) then      
+          
             if ( (.NOT.region).AND.(aperture.EQ.0) ) GOTO 9010  
+            
             if (region) then
 ! place the line in the region filling array
               CALL sweep_line(reg,nx,ny,ap,anx,any,x,y,xm,ym,xi,yj,xmin,ymin,dl,interpolation_mode,quadrant_mode,polarity,region)
             else
               CALL sweep_line(p,nx,ny,ap,anx,any,x,y,xm,ym,xi,yj,xmin,ymin,dl,interpolation_mode,quadrant_mode,polarity,region)           
             end if
+            
           end if
         
         else if (line(pos:pos+2).EQ.'D02') then
         
           if (region) then
-! If a contour has been specified then go through the fill procedure and then transfer the region array to the pixel array
-          
+! save the first point of the region so we can ensure that the region is closed at the end
+            if (.NOT.first_region_point_set) then
+            
+              frx=x
+              fry=y
+              first_region_point_set=.TRUE.
+              
+              write(*,*)'Saving first point of region: x=',frx,' y=',fry
+            
+            end if
           end if
                 
           pos=pos+3

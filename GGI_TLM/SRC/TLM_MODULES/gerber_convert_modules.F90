@@ -75,7 +75,11 @@ integer   :: A_nvars(1:maxDcodes)
 character*256    :: Avars(1:maxDcodes,1:maxAparams)
 
 integer :: aperture
+
 logical :: region
+logical :: first_region_point_set
+real*8  :: frx,fry
+
 integer :: operation
 integer :: interpolation_mode
 
