@@ -113,7 +113,7 @@ IMPLICIT NONE
 
   CALL triangle_normal(triangle,normal)
 
-! go throught the local grid transferring the surfaces
+! go through the local grid transferring the surfaces
 
   do ix=local_ixmin,local_ixmax
     do iy=local_iymin,local_iymax

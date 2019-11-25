@@ -113,7 +113,7 @@ echo "{
 # run sed and create a new file with replaced text
 sed -f sed_command ORIGINAL_FILE > NEW_FILE
 
-# run sed and replace text in the original file
+# run sed and replace text in the original files
 sed -i -f sed_command ORIGINAL_FILE 
 
 # run sed with action in command line (here replace in original file)
@@ -136,3 +136,7 @@ fi
 
 # read values from the last line of FILE into the variables f n re im mag magdb phase
       read -r f n re im mag magdb phase < <(tail -n1 FILE)
+
+### Convert CSV files to txt by replacing commas with spaces
+
+sed 's/,/\ /g' test_file.csv > test_file.txt
