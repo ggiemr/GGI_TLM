@@ -59,13 +59,17 @@ character*80 :: command_string
     
 ! Spice circuit simulation link update vcariables
   integer       :: spice_port_count
+  integer       :: spice_port_number
   integer       :: spice_node
    
 ! Material update parameters  
   integer material_type
   integer material_number
   
+  integer,allocatable :: spice_port_set(:)
+  
   integer :: i
+  integer :: port,n1,n2
   
 ! START
   
@@ -78,6 +82,9 @@ character*80 :: command_string
   face_number=0
   spice_port_count=0
   
+  ALLOCATE( spice_port_set(1:n_spice_ports) )
+  spice_port_set(1:n_spice_ports)=0
+  
 ! faces normal to x i.e. the y z plane
   do cz=nz1,nz2
     do cy=1,ny
@@ -85,10 +92,10 @@ character*80 :: command_string
       
         if (cx.NE.1) then
             
-          face_number=face_number+1
+         face_number=face_number+1
             
 	
-	if (face_update_code(face_number).NE.0) then   ! not free space
+	 if (face_update_code(face_number).NE.0) then   ! not free space
 
 !         face_update_code points to arrays which tell us about materials, excitations and outputs
 	
@@ -103,6 +110,14 @@ character*80 :: command_string
 	
 	  
             if (material_type.EQ.surface_material_type_SPICE) then	
+                
+              spice_port_number=surface_material_list(material_number)%Spice_circuit_file_port                
+              if (spice_port_set(spice_port_number).NE.0) then
+                write(*,*)'ERROR in ngspice_init_connect'
+                write(*,*)'Spice port number',spice_port_number,' has already been set in the mesh'
+                write(*,*)'Does the Spice surface cover more than one TLM cell face?'
+                STOP 1 
+              end if
              
 	      if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-y').OR.	&
 	          (surface_material_list(material_number)%Spice_port_direction.EQ.'+y') ) then
@@ -122,11 +137,9 @@ character*80 :: command_string
                 ng_cx2(spice_port_count)=cx-1
                 ng_cy2(spice_port_count)=cy
                 ng_cz2(spice_port_count)=cz
-                              	      
-               end if
-	    
- 	      if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-z').OR.  &
-	          (surface_material_list(material_number)%Spice_port_direction.EQ.'+z') ) then
+                              	      	    
+ 	      else if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-z').OR.  &
+	               (surface_material_list(material_number)%Spice_port_direction.EQ.'+z') ) then
   
                 spice_port_count=spice_port_count+1
                 
@@ -143,10 +156,19 @@ character*80 :: command_string
                 ng_cx2(spice_port_count)=cx-1
                 ng_cy2(spice_port_count)=cy
                 ng_cz2(spice_port_count)=cz
+                      
+              else
+              
+                write(*,*)'ERROR:'
+                write(*,*)'Found SPICE face at cell ',cx,cy,cz,' face= face_xmin'
+                write(*,*)'Spice port direction should be -y, +y, -z or +z'
+                STOP 1
                              	      
-               end if
+              end if
+              
+              spice_port_set(spice_port_number)=1
            
-	    end if  ! Spice link
+	    end if  ! Spice surface type
 	    
 	  end if  ! not free space scatter
 
@@ -176,6 +198,14 @@ character*80 :: command_string
 	
 	  
             if (material_type.EQ.surface_material_type_SPICE) then
+                
+              spice_port_number=surface_material_list(material_number)%Spice_circuit_file_port                
+              if (spice_port_set(spice_port_number).NE.0) then
+                write(*,*)'ERROR in ngspice_init_connect'
+                write(*,*)'Spice port number',spice_port_number,' has already been set in the mesh'
+                write(*,*)'Does the Spice surface cover more than one TLM cell face?'
+                STOP 1 
+              end if
             	 
 	      if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-x').OR.	&
 	          (surface_material_list(material_number)%Spice_port_direction.EQ.'+x') ) then
@@ -196,9 +226,7 @@ character*80 :: command_string
                 ng_cy2(spice_port_count)=cy-1
                 ng_cz2(spice_port_count)=cz
                             	      
-               end if
-                                   
-	      if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-z').OR.  &
+              else if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-z').OR.  &
 	          (surface_material_list(material_number)%Spice_port_direction.EQ.'+z') ) then
   
                 spice_port_count=spice_port_count+1
@@ -216,10 +244,20 @@ character*80 :: command_string
                 ng_cx2(spice_port_count)=cx
                 ng_cy2(spice_port_count)=cy-1
                 ng_cz2(spice_port_count)=cz
+                      
+              else
+              
+                write(*,*)'ERROR:'
+                write(*,*)'Found SPICE face at cell ',cx,cy,cz,' face= face_ymin'
+                write(*,*)'Spice port direction should be -x, +x, -z or +z'
+                STOP 1
+                             	      
                               	      
                end if
+              
+              spice_port_set(spice_port_number)=1
 	                
-	    end if  ! Spice link
+	    end if  ! Spice surface type
 	    
 	  end if  ! not free space scatter
 
@@ -248,6 +286,14 @@ character*80 :: command_string
 	  if (material_type.NE.0) then ! not free space scatter
 		  
             if (material_type.EQ.surface_material_type_SPICE) then	 
+                
+              spice_port_number=surface_material_list(material_number)%Spice_circuit_file_port                
+              if (spice_port_set(spice_port_number).NE.0) then
+                write(*,*)'ERROR in ngspice_init_connect'
+                write(*,*)'Spice port number',spice_port_number,' has already been set in the mesh'
+                write(*,*)'Does the Spice surface cover more than one TLM cell face?'
+                STOP 1 
+              end if
               
 	      if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-x').OR.	&
 	          (surface_material_list(material_number)%Spice_port_direction.EQ.'+x') ) then
@@ -268,9 +314,7 @@ character*80 :: command_string
                 ng_cy2(spice_port_count)=cy
                 ng_cz2(spice_port_count)=cz-1
                               	      
-               end if
-	      
-	       if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-y').OR.	&
+               else if ((surface_material_list(material_number)%Spice_port_direction.EQ.'-y').OR.	&
 	           (surface_material_list(material_number)%Spice_port_direction.EQ.'+y') ) then
   
                 spice_port_count=spice_port_count+1
@@ -288,10 +332,19 @@ character*80 :: command_string
                 ng_cx2(spice_port_count)=cx
                 ng_cy2(spice_port_count)=cy
                 ng_cz2(spice_port_count)=cz-1
+                      
+              else
+              
+                write(*,*)'ERROR:'
+                write(*,*)'Found SPICE face at cell ',cx,cy,cz,' face= face_zmin'
+                write(*,*)'Spice port direction should be -x, +x, -y or +y'
+                STOP 1                             	      
 
                end if	    
+              
+              spice_port_set(spice_port_number)=1
             
-	     end if  ! Spice link
+	     end if  ! Spice surface type
 	    
 	   end if  ! not free space scatter
 
@@ -308,7 +361,42 @@ character*80 :: command_string
     write(*,*)'spice_port_count=',spice_port_count,' n_spice_ports=',n_spice_ports
     STOP 1
   end if
-          
+  
+  do spice_port_count=1,n_spice_ports
+  
+    if (spice_port_set(spice_port_count).NE.1) then    
+      write(*,*)'ERROR in ngspice_init_connect'
+      write(*,*)'spice_port_count=',spice_port_count,' has not been found in the mesh'
+      STOP 1     
+    end if
+    
+    port=ng_spice_port(spice_port_count)
+    n1=ng_spice_node1(spice_port_count)
+    n2=ng_spice_node2(spice_port_count)
+    
+    write(*,*)'Checking port:'
+    write(*,*)'From input file  : port=',port,' node1=',n1,' node2=',n2
+    write(*,*)'From circuit file: port=',port,' node1=',cir_port_to_node1(port),' node2=',cir_port_to_node2(port)
+    
+    if ( (n1.EQ.cir_port_to_node1(port)).AND.(n2.EQ.cir_port_to_node2(port)) ) then
+! we have the two nodes identified in the correct orientation
+       
+       write(*,*)'Port definition is consistent between input file and Spice_TEMPLATE.cir file'
+       
+    else
+    
+      write(*,*)'ERROR :Port definition is NOT consistent between input file and Spice_TEMPLATE.cir file'
+      
+      write(*,*)'WARNING :Port definition is NOT consistent between input file and Spice_TEMPLATE.cir file'
+      write(*,*)'From input file  : port=',port,' node1=',n1,' node2=',n2
+      write(*,*)'From circuit file: port=',port,' node1=',cir_port_to_node1(port),' node2=',cir_port_to_node2(port)
+      
+    end if
+  
+  end do
+  
+  DEALLOCATE( spice_port_set )
+            
 #endif
   
   CALL write_line('FINISHED: ngspice_init_connect',0,timestepping_output_to_screen_flag)

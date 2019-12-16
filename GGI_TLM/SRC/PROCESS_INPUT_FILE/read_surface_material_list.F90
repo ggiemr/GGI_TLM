@@ -331,12 +331,36 @@ logical	:: file_exists
       
       read(input_line,*,ERR=100)surface_material_list(surface_material_number)%Spice_circuit_file_nodes(1),  &
                                 surface_material_list(surface_material_number)%Spice_circuit_file_nodes(2)
+
+! check that the node number is less than 100                                
+      if (surface_material_list(surface_material_number)%Spice_circuit_file_nodes(1).GT.99) then
+        write(*,*)'ERROR reading surface material number',surface_material_number
+        write(*,*)'Spice node number should be less than 100'
+        write(*,*)'Spice node number=',surface_material_list(surface_material_number)%Spice_circuit_file_nodes(1)
+        STOP 1
+      end if
+      
+      if (surface_material_list(surface_material_number)%Spice_circuit_file_nodes(2).GT.99) then
+        write(*,*)'ERROR reading surface material number',surface_material_number
+        write(*,*)'Spice node number should be less than 100'
+        write(*,*)'Spice node number=',surface_material_list(surface_material_number)%Spice_circuit_file_nodes(2)
+        STOP 1
+      end if
+      
       GOTO 110   ! node numbers read OK
       
 100   CONTINUE
 
 ! Read only a single node for this port i.e. the reference node is node zero
       read(input_line,*,ERR=9060)surface_material_list(surface_material_number)%Spice_circuit_file_nodes(1)
+
+! check that the node number is less than 100                                
+      if (surface_material_list(surface_material_number)%Spice_circuit_file_nodes(1).GT.99) then
+        write(*,*)'ERROR reading surface material number',surface_material_number
+        write(*,*)'Spice node number should be less than 100'
+        write(*,*)'Spice node number=',surface_material_list(surface_material_number)%Spice_circuit_file_nodes(1)
+        STOP 1
+      end if
 
 110   CONTINUE
     		     
@@ -375,6 +399,15 @@ logical	:: file_exists
     
     ALLOCATE( surface_material_list(surface_material_number)%surface_list(1:n_geometric_surfaces) )
     ALLOCATE( surface_material_list(surface_material_number)%surface_orientation_list(1:n_geometric_surfaces) )
+    
+    if ( (surface_material_list(surface_material_number)%type.EQ.surface_material_type_SPICE).AND.   &
+         (n_geometric_surfaces.NE.1) ) then
+      
+      write(*,*)'ERROR reading surface material number',surface_material_number
+      write(*,*)'Spice surfaces shoould only consist of a single geometric surface'
+      STOP 1
+    
+    end if 
     
     read(input_file_unit,*,err=9005)( surface_material_list(surface_material_number)%surface_list(i)	&
                                      ,i=1,n_geometric_surfaces )

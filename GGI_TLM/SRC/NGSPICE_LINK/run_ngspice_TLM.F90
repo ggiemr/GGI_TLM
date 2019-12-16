@@ -131,6 +131,14 @@ integer :: ng_spice_node1(100),ng_spice_node2(100)
 integer :: ng_face1(100),ng_cx1(100),ng_cy1(100),ng_cz1(100)
 integer :: ng_face2(100),ng_cx2(100),ng_cy2(100),ng_cz2(100)
 
+! Checklist of ngspice port to node numbering derived from the Spice_circuit_TEMPLATE.cir file
+
+integer :: cir_port_set(100)
+integer :: cir_port_to_node1(100)
+integer :: cir_port_to_node2(100)
+
+!
+
 real*8            :: t_eps
 
 ! Low pass filter stuff
@@ -172,7 +180,18 @@ character(LEN=256) :: dt_ngspice_string
 character(LEN=256) :: tmax_string
 character(LEN=256) :: command_string
 
+integer :: n_V_ports_found
+integer :: n_Z_ports_found
+integer :: port_from_V(100)
+integer :: node2_from_V(100)
+integer :: node1_from_Z(100)
+integer :: nodei_from_V(100)
+integer :: nodei_from_Z(100)
+
 logical :: Vbreak_found
+
+integer :: i,ii,port,v1,v2,vi
+logical :: Vi_Z_found  
   
 ! START
 
@@ -196,6 +215,9 @@ write(tmax_string,'(ES16.6)')simulation_time*1.0001d0 +dt
 ! Read the template circuit file and include the parameters relating to this GGI_TLM solution
 ! At the same time, check that Vbreak is included and connected to time_node
 
+n_V_ports_found=0
+n_Z_ports_found=0
+
 open(unit=ngspice_TEMPLATE_circuit_file_unit,file='Spice_circuit_TEMPLATE.cir',status='OLD',ERR=9000)
 open(unit=ngspice_circuit_file_unit,file='Spice_circuit.cir')
 
@@ -203,6 +225,9 @@ Vbreak_found=.FALSE.
 
 10 CONTINUE
   read(ngspice_TEMPLATE_circuit_file_unit,'(A256)',ERR=9010,END=1000)line
+  
+  CALL check_for_port_V(line,n_V_ports_found,port_from_V,node2_from_V,nodei_from_V)
+  CALL check_for_port_Z(line,n_Z_ports_found,node1_from_Z,nodei_from_Z)
     
 ! look for the string '#Z0_TLM' and replace with Z0
   CALL replace_in_string(line,'#Z0_TLM',Z0_string)
@@ -234,6 +259,76 @@ Vbreak_found=.FALSE.
 
 close(unit=ngspice_TEMPLATE_circuit_file_unit)
 close(unit=ngspice_circuit_file_unit)
+
+! Work out the ngspice node numbers for each port
+
+cir_port_set(:)=0
+cir_port_to_node1(:)=0
+cir_port_to_node2(:)=0
+
+write(*,*)'*********************************************'
+
+write(*,*)'n_V_ports_found=',n_V_ports_found
+write(*,*)'n_Z_ports_found=',n_Z_ports_found
+
+if (n_V_ports_found.NE.n_Z_ports_found) then
+  write(*,*)'ERROR in initialise_ngspice'
+  write(*,*)'n_V_ports_found.NE.n_Z_ports_found'
+  STOP 1
+end if
+
+do i=1,n_V_ports_found
+  write(*,*)'Vport=',i,' port=',port_from_V(i),' node i=',nodei_from_V(i),' node 2=',node2_from_V(i)
+end do
+do i=1,n_Z_ports_found
+  write(*,*)'Zport=',i,' node i=',nodei_from_Z(i),' node 1=',node1_from_Z(i)
+end do
+
+do i=1,n_V_ports_found
+
+  port=port_from_V(i)
+  vi=nodei_from_V(i)
+  v2=node2_from_V(i)
+
+! loop through the Z ports looking for node vi. This will allow us to determine node 2 for the port
+  Vi_Z_found=.FALSE.
+
+  do ii=1,n_Z_ports_found
+    
+    if (nodei_from_Z(ii).EQ.vi) then
+    
+      if (Vi_Z_found) then
+        write(*,*)'ERROR in initialise_ngspice'
+        write(*,*)'Internal port node ',vi,' found in more than one port impedance component, #z0_tlm'
+        STOP 1
+      end if
+      
+      v1=node1_from_Z(ii)
+      Vi_Z_found=.TRUE.
+      
+    end if
+      
+  end do ! next Z port
+  
+  if (.NOT.Vi_Z_found) then
+    write(*,*)'ERROR in initialise_ngspice'
+    write(*,*)'Internal port node ',vi,' not found in a port impedance component, #z0_tlm'
+    STOP 1  
+  end if
+  
+  cir_port_set(port)=1
+  cir_port_to_node1(port)=v1
+  cir_port_to_node2(port)=v2
+  
+end do ! next Vport
+
+do i=1,n_V_ports_found
+  if (cir_port_set(port).EQ.1) then
+    write(*,*)'port:',i,' node 1=',cir_port_to_node1(i),' node 2=',cir_port_to_node2(i)
+  end if
+end do
+
+write(*,*)'*********************************************'
 
 if (.NOT.vbreak_found) then  
 
@@ -560,3 +655,134 @@ RETURN
 
 END SUBROUTINE finish_ngspice
 !
+! ________________________________________________________________________________
+!  
+!
+SUBROUTINE check_for_port_V(line,nports,port,node1,nodei)
+
+IMPLICIT NONE
+
+character(LEN=256) :: line
+integer :: nports,port(100),node1(100),nodei(100)
+
+! local variables
+
+character(LEN=256) :: lcstring
+character(LEN=256) :: substring
+integer :: pos
+integer :: length
+
+! START
+
+!write(*,*)'CALLED: check_for_port_V, nports=',nports
+
+lcstring=line
+CALL convert_to_lower_case(lcstring,256)
+
+pos=INDEX(lcstring, 'vtlm')
+
+if (pos.EQ.0) RETURN
+
+nports=nports+1
+
+if (nports.GT.100) then
+  write(*,*)'ERROR in initialise_ngspice'
+  write(*,*)'The number of ports linking GGI_TLM and Ngspice should be less than 100'
+  write(*,*)'nports=',nports
+  STOP 1
+end if
+
+!write(*,*)'**** Found GGI_TLM V port in string ****'
+!write(*,*)'nports=',nports
+!write(*,*)trim(lcstring)
+!write(*,*)'position=',pos
+
+length=LEN(lcstring)
+substring=trim(lcstring(pos+4:length))
+
+!write(*,*)'Checking substring for port, nodei, node1'
+!write(*,*)trim(substring)
+
+read(substring,*)port(nports), nodei(nports), node1(nports)
+!write(*,*)'port=',port(nports)
+!write(*,*)'nodei=',nodei(nports)
+!write(*,*)'node1=',node1(nports)
+
+END SUBROUTINE check_for_port_V
+!
+! ________________________________________________________________________________
+!  
+!
+SUBROUTINE check_for_port_Z(line,nports,node2,nodei)
+
+IMPLICIT NONE
+
+character(LEN=256) :: line
+integer :: nports,node2(100),nodei(100)
+
+! local variables
+
+character(LEN=256) :: lcstring
+character(LEN=256) :: substring
+character(LEN=256) :: subsubstring
+integer :: pos
+integer :: length
+
+! START
+
+!write(*,*)'CALLED: check_for_port_Z, nports=',nports
+
+lcstring=line
+CALL convert_to_lower_case(lcstring,256)
+
+pos=INDEX(lcstring, '#z0_tlm')
+
+if (pos.EQ.0) RETURN
+
+nports=nports+1
+
+if (nports.GT.100) then
+  write(*,*)'ERROR in initialise_ngspice'
+  write(*,*)'The number of ports linking GGI_TLM and Ngspice should be less than 100'
+  write(*,*)'nports=',nports
+  STOP 1
+end if
+
+!write(*,*)'**** Found GGI_TLM Z port in string ****'
+!write(*,*)'nports=',nports
+!write(*,*)trim(lcstring)
+!write(*,*)'position=',pos
+
+! find the end of the resistive element string, starting with 'r'
+
+length=LEN(lcstring)
+pos=INDEX(lcstring,'r')
+
+if (pos.EQ.0) then
+  write(*,*)'ERROR in initialise_ngspice'
+  write(*,*)'Could not find port resistance specified. String:'
+  write(*,*)trim(lcstring)
+  STOP 1
+end if
+
+substring=lcstring(pos:length)
+pos=INDEX(substring,' ')
+
+if (pos.EQ.0) then
+  write(*,*)'ERROR in initialise_ngspice'
+  write(*,*)'Could not identify port resistance node numbers. String:'
+  write(*,*)trim(substring)
+  STOP 1
+end if
+
+length=LEN(substring)
+subsubstring=substring(pos+1:length)
+
+!write(*,*)'Checking substring for nodei, node1'
+!write(*,*)trim(subsubstring)
+
+read(subsubstring,*) nodei(nports), node2(nports)
+!write(*,*)'nodei=',nodei(nports)
+!write(*,*)'node2=',node2(nports)
+
+END SUBROUTINE check_for_port_Z
