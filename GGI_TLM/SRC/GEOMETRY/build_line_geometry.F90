@@ -66,6 +66,14 @@ integer	:: line_number
       
       CALL build_line_arc(line_number)
        
+    else if (problem_lines(line_number)%line_type.EQ.line_type_circle) then
+      
+      CALL build_line_circle(line_number)
+       
+    else if (problem_lines(line_number)%line_type.EQ.line_type_rectangle) then
+      
+      CALL build_line_rectangle(line_number)
+       
     else ! line type not yet defined
     
       GOTO 9000

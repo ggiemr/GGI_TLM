@@ -130,7 +130,7 @@ IMPLICIT NONE
               (surface_material_list(material_number)%type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE) )then
     
       fmin=surface_material_list(material_number)%fmin
-      fmax=surface_material_list(material_number)%fmax
+      fmax=surface_material_list(material_number)%fmax*4d0
       fstep=(fmax-fmin)/200d0
     
       sigma=0d0
@@ -182,7 +182,7 @@ IMPLICIT NONE
 
         if (.NOT.write_all_material_info_to_file) then
 ! only plot to the screen if we are operating in the interactive mode
-          write(local_file_unit,'(A)')'set term wxt 0'
+!          write(local_file_unit,'(A)')'set term wxt 0'
           write(local_file_unit,'(A,A,A)')'plot "',trim(z11_filename),'" u 1:2 title "Re{z11}" w lp,\'
           write(local_file_unit,'(A,A,A)')'     "',trim(z11_filename),'" u 1:3 title "Im{z11}" w lp'
           write(local_file_unit,'(A)')'pause 100'
@@ -225,7 +225,7 @@ IMPLICIT NONE
 
         if (.NOT.write_all_material_info_to_file) then
 ! only plot to the screen if we are operating in the interactive mode
-          write(local_file_unit,'(A)')'set term wxt 0'
+!          write(local_file_unit,'(A)')'set term wxt 0'
           write(local_file_unit,'(A,A,A)')'plot "',trim(z12_filename),'" u 1:2 title "Re{z12}" w lp,\'
           write(local_file_unit,'(A,A,A)')'     "',trim(z12_filename),'" u 1:3 title "Im{z12}" w lp'
           write(local_file_unit,'(A)')'pause 100'
@@ -268,7 +268,7 @@ IMPLICIT NONE
 
         if (.NOT.write_all_material_info_to_file) then
 ! only plot to the screen if we are operating in the interactive mode
-          write(local_file_unit,'(A)')'set term wxt 0'
+!          write(local_file_unit,'(A)')'set term wxt 0'
           write(local_file_unit,'(A,A,A)')'plot "',trim(z21_filename),'" u 1:2 title "Re{z21}" w lp,\'
           write(local_file_unit,'(A,A,A)')'     "',trim(z21_filename),'" u 1:3 title "Im{z21}" w lp'
           write(local_file_unit,'(A)')'pause 100'
@@ -311,7 +311,7 @@ IMPLICIT NONE
 
        if (.NOT.write_all_material_info_to_file) then
 ! only plot to the screen if we are operating in the interactive mode
-          write(local_file_unit,'(A)')'set term wxt 0'
+!          write(local_file_unit,'(A)')'set term wxt 0'
           write(local_file_unit,'(A,A,A)')'plot "',trim(z22_filename),'" u 1:2 title "Re{z22}" w lp,\'
           write(local_file_unit,'(A,A,A)')'     "',trim(z22_filename),'" u 1:3 title "Im{z22}" w lp'
           write(local_file_unit,'(A)')'pause 100'

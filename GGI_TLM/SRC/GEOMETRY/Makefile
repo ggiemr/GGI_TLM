@@ -37,6 +37,8 @@ build_volume_tet_mesh.o \
 build_line_straight_line.o \
 build_line_straight_line2.o \
 build_line_arc.o \
+build_line_circle.o \
+build_line_rectangle.o \
 build_PML_geometry.o
 
 default: $(GEOMETRY_OBJS)

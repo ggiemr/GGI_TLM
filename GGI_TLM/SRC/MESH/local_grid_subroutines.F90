@@ -1526,14 +1526,16 @@ IMPLICIT NONE
     
       do ix=local_ixmin,local_ixmax
       
-        CALL get_n_edges(ix,iy,iz,local_xface,1,n_edges_value_1)
-        CALL get_n_edges(ix,iy,iz,local_xface,2,n_edges_value_2)
+        CALL get_n_edges(ix,iy,iz,local_xface,1,n_edges_value_1)  ! number of edges with one face set
+        CALL get_n_edges(ix,iy,iz,local_xface,2,n_edges_value_2)  ! number of edges with two faces set
 	
 	if ( (n_edges_value_1.GE.n_edges_set).AND.(n_edges_value_2.EQ.0).AND.(local_x_faces(iface,1).EQ.not_set) ) then
 	
           CALL  add_face(ix,iy,iz,local_xface)
 	  n_faces_set=n_faces_set+1
 	  local_x_faces(iface,1)=ix
+          
+          EXIT
 	  
 	end if
 	
@@ -1561,6 +1563,8 @@ IMPLICIT NONE
           CALL  add_face(ix,iy,iz,local_yface)
 	  n_faces_set=n_faces_set+1
 	  local_y_faces(iface,2)=iy
+          
+          EXIT
 	  
 	end if
 
@@ -1588,6 +1592,8 @@ IMPLICIT NONE
           CALL  add_face(ix,iy,iz,local_zface)
 	  n_faces_set=n_faces_set+1
 	  local_z_faces(iface,3)=iz
+          
+          EXIT
 	  
 	end if
 

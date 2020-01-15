@@ -204,6 +204,8 @@ END TYPE point_type
   integer,parameter 	  :: line_type_straight_line=1  
   integer,parameter 	  :: line_type_straight_line2=2 
   integer,parameter 	  :: line_type_arc=3
+  integer,parameter 	  :: line_type_circle=4
+  integer,parameter 	  :: line_type_rectangle=5
 
 ! LINE END CONNECTION TYPES
 

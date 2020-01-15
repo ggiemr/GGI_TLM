@@ -108,6 +108,14 @@ logical	:: file_exists
     else if (input_line.eq.'arc') then
       n_params=3
       problem_lines(line_number)%line_type=line_type_arc
+
+    else if (input_line.eq.'circle') then
+      n_params=1
+      problem_lines(line_number)%line_type=line_type_circle
+	      
+    else if (input_line.eq.'rectangle') then
+      n_params=2
+      problem_lines(line_number)%line_type=line_type_rectangle
 	      
     else
     

@@ -250,6 +250,8 @@ GEOMETRY/build_volume_tet_mesh.o \
 GEOMETRY/build_line_straight_line.o \
 GEOMETRY/build_line_straight_line2.o \
 GEOMETRY/build_line_arc.o \
+GEOMETRY/build_line_circle.o \
+GEOMETRY/build_line_rectangle.o \
 GEOMETRY/build_PML_geometry.o
 
 PLOTTING_OBJS=  \
@@ -457,7 +459,8 @@ POST_PROCESSOR/create_filter_function.o \
 POST_PROCESSOR/interpolate.o \
 POST_PROCESSOR/subtract_dc.o \
 POST_PROCESSOR/Scale_frequency_domain_data.o \
-POST_PROCESSOR/process_conducted_emissions_data.o
+POST_PROCESSOR/process_conducted_emissions_data.o \
+POST_PROCESSOR/convert_data_to_sound.o
 
 
 OPTIMISATION_OBJS=  \

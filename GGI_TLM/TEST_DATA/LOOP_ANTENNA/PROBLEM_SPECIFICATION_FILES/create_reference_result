@@ -1,0 +1,5 @@
+cp loop.cable_current.tout PROBLEM_SPECIFICATION_FILES/loop.cable_current.tout_ref
+cp loop.field.tout PROBLEM_SPECIFICATION_FILES/loop.field.tout_ref
+cp loop.far_field.fout PROBLEM_SPECIFICATION_FILES/loop.far_field.fout_ref
+cp loop.impedance.fout PROBLEM_SPECIFICATION_FILES/loop.impedance.fout_ref
+

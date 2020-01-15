@@ -165,7 +165,7 @@ int ngspice_wrapper_step( double *tout, int *n_nodes_in, int *node_list_in, doub
 
     /* wait until simulation stops */
     for (;;) {
-        usleep (10);
+        usleep (200);
         if (no_bg)
             break;
     }
