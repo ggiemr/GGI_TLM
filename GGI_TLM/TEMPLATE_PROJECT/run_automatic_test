@@ -4,12 +4,12 @@ TEST_DATA_DIRECTORY=$( pwd )
 
 ## Use the following line if you are running the GGI_TLM/TEST_DATA test cases
 #GGI_TLM_DIRECTORY=$( dirname ${TEST_DATA_DIRECTORY} )
+
 ## If you are running anywhere else then GGI_TLM_DIRECTORY must be set appropriately so that the executables are in
 ## ${GGI_TLM_DIRECTORY}/bin
 ## EXAMPLE:
-#GGI_TLM_DIRECTORY=/home/chris/SOFTWARE/GGI_TLM/GGI_TLM
-
 GGI_TLM_DIRECTORY=/home/chris/GGI_TLM/GGI_TLM
+
 export GGI_TLM_DIRECTORY
 
 source ${GGI_TLM_DIRECTORY}/run_configuration_data
@@ -38,11 +38,12 @@ echo "Automatic testing of GGI_TLM"
 echo " "
 
 FULL_TEST_CASE_LIST="
-TEMPLATE_PROBLEM
 "
 
 QUICK_TEST_CASE_LIST="
-TEMPLATE_PROBLEM
+"
+
+NGSPICE_TEST_CASE_LIST="
 "
 
 ERROR_STRING="\
@@ -68,6 +69,7 @@ action=view_meshed_geometry  NAME     : View the meshed geometry; volumes, surfa
 action=view_mesh  NAME     : View the computational mesh; volume materials, surface materials and cables.
 action=document  NAME     : Create a document in rtf format with details of the problem i.e. geometry, materials, cables, mesh and results
 action=save  NAME  TAG   : Create a directory RESULTS_TAG and save results, .inp file, .info file and any .rtf files into it.
+action=set_permissions  NAME  : Set executable permissions on run_automatic_test and create_reference_restuls files
 
 NAME can be : One of the existing test cases ,
      	    : FULL_TEST_CASE_LIST to run all the test cases
@@ -84,11 +86,11 @@ if [ "$#" = "0" ] ; then
 else
 
 # set defaults...
-  ACTION=$1
+  ACTION_IN=$1
   NAME=$2
   NP="1"
 
-  if [ "$ACTION" = "run_mpi" ] ; then
+  if [ "$ACTION_IN" = "run_mpi" ] ; then
 # slightly different order of arguments, must include the number of processors to run on
 # check that we have an integer number of processors requested  
     echo $2 | grep "[^0-9]" > /dev/null 2>&1
@@ -130,6 +132,10 @@ else
   elif [ "$NAME" = "QUICK_TEST_CASE_LIST" ] ; then
   
     TEST_CASE_LIST=$QUICK_TEST_CASE_LIST
+  
+  elif [ "$NAME" = "NGSPICE_TEST_CASE_LIST" ] ; then
+  
+    TEST_CASE_LIST=$NGSPICE_TEST_CASE_LIST
     
   elif [ "$NAME" ] ; then
   
@@ -150,9 +156,9 @@ else
   rm -f progress
   touch progress
   
-  if [ "$ACTION" = "run_mpi" ] ; then
+  if [ "$ACTION_IN" = "run_mpi" ] ; then
     echo "Running MPI, np= $NP" >> progress 
-  elif [ "$ACTION" = "run_seq" ] ; then
+  elif [ "$ACTION_IN" = "run_seq" ] ; then
     echo "Running Sequential" >> progress 
   fi
   
@@ -166,75 +172,80 @@ else
     
       cd $TEST_CASE
       
+      ACTION=$ACTION_IN
      
       if [ "$ACTION" = "run_mpi" ] ; then
      
-        ./run_automatic_test $ACTION $NP $TEST_CASE
+        source ./run_automatic_test $ACTION $NP $TEST_CASE
      
       elif [ "$ACTION" = "run_seq" ] ; then
      
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
               
       elif [ "$ACTION" = "post_process" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
              
       elif [ "$ACTION" = "clean" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
              
       elif [ "$ACTION" = "clean_vtk" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
              
       elif [ "$ACTION" = "clean_all" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
     
       elif [ "$ACTION" = "plot" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
     
       elif [ "$ACTION" = "plot_jpg" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
        
       elif [ "$ACTION" = "plot_ref" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
        
       elif [ "$ACTION" = "plot_ref_jpg" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
       
       elif [ "$ACTION" = "reference" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
       
       elif [ "$ACTION" = "check_reference" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
       
       elif [ "$ACTION" = "document" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
       
       elif [ "$ACTION" = "view_geometry" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
       
       elif [ "$ACTION" = "view_meshed_geometry" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
       
       elif [ "$ACTION" = "view_mesh" ] ; then
        
-        ./run_automatic_test $ACTION $TEST_CASE
+        source ./run_automatic_test $ACTION $TEST_CASE
       
       elif [ "$ACTION" = "save" ] ; then
       
         TAG=$3
-        ./run_automatic_test $ACTION $TEST_CASE $TAG
+        source ./run_automatic_test $ACTION $TEST_CASE $TAG
+      
+      elif [ "$ACTION" = "set_permissions" ] ; then
+       
+        source ./run_automatic_test $ACTION $TEST_CASE
             
       else 
      

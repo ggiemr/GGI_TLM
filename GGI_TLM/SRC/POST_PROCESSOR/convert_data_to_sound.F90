@@ -14,7 +14,7 @@ character        :: ch
 character*256    :: ipfilename
 character*256    :: filename
 character*256    :: opfilename
-real*8           :: tin,ftin
+real*8           :: tin,dtin,ftin
 integer :: readloop
 
 real*8 :: dt
@@ -36,12 +36,13 @@ integer :: order
 real*8  :: fc,wc
 
 integer :: n_sub_segments
-integer :: nt_sub,nt_sub2
+integer :: nt_sub,nt_sub2,resample_factor
 integer :: step_sub
 integer :: n_sub_plot
 integer :: nt_sub_pad,nt_sub_pad2
 real*8    :: sub_sample_period
 real*8    :: dt_sub,t_sub_period
+integer   :: nt_sub_period
 real*8    :: tstart,tstop,time
 integer   :: ntstart,istart
 real*8    :: window_spacing
@@ -106,9 +107,15 @@ write(*,*)'Enter the number of header lines in the file'
 read(*,*)n_head
 write(record_user_inputs_unit,*)n_head,'  # number of header lines in the file'
 
-write(*,*)'Enter the column number for time data'
+write(*,*)'Enter the column number for time data or enter "0" if there is no time column'
 read(*,*)t_col
 write(record_user_inputs_unit,*)t_col,'  # time data column'
+
+if (t_col.EQ.0) then
+  write(*,*)'Enter the timestep for the input data'
+  read(*,*)dtin
+  write(record_user_inputs_unit,*)dtin,'  # timestep'
+end if
 
 write(*,*)'Enter the column number for function data'
 read(*,*)V_col
@@ -130,9 +137,17 @@ do readloop=1,2
 10 CONTINUE
 
   read(local_file_unit,*,END=100)(data_line(i),i=1,n_col)
-  tin =data_line(t_col)
-  ftin=data_line(V_col)
+  
   nt=nt+1
+  
+  if (t_col.NE.0) then 
+    tin =data_line(t_col)
+  else
+    tin=(nt-1)*dtin
+  end if
+  
+  ftin=data_line(V_col)
+  
   if (readloop.EQ.2) then
     t(nt)=tin
     ft(nt)=ftin
@@ -189,118 +204,143 @@ write(*,*)'Time of last sample with zero padding=',t(nt_pad)
 
 !2. APPLY LOW PASS AND HIGH PASS FILTERS TO INPUT TIME DOMAIN DATA AS REQUIRED
 
-! Work out the frequency for each sample
-ALLOCATE( frequency(1:nt_pad) )
-CALL FFT_set_frequencies(frequency,nt_pad,dt)
-
-ALLOCATE( ft_filtered(1:nt_pad) )
-
 write(*,*)'Enter the number of filters to apply to the input time domain data'
 read(*,*)n_filter
 write(record_user_inputs_unit,*)n_filter,'  # number of filters to apply'
 write(*,*)'number of filters=',n_filter
 
+ALLOCATE( ft_filtered(1:nt_pad) )
+
 ft_filtered(1:nt_pad)=dcmplx(ft(1:nt_pad))
 
+if (n_filter.GT.0) then
+
+! Work out the frequency for each sample
+  ALLOCATE( frequency(1:nt_pad) )
+  CALL FFT_set_frequencies(frequency,nt_pad,dt)
+
 ! allocate data for the impulse response
-ALLOCATE( ft_impulse(1:nt_pad) )
-ft_impulse(1:nt_pad)=(0d0,0d0)
-ft_impulse(1)=(1d0,0d0)
+  ALLOCATE( ft_impulse(1:nt_pad) )
+  ft_impulse(1:nt_pad)=(0d0,0d0)
+  ft_impulse(1)=(1d0,0d0)
 
 ! Fourier Transform the input funtion
   
-CALL FFT(ft_impulse,nt_pad)
-CALL FFT(ft_filtered,nt_pad)
+  CALL FFT(ft_impulse,nt_pad)
+  CALL FFT(ft_filtered,nt_pad)
   
-if (write_temp_files) then
-  filename='ft_freq.dat'
-  CALL write_FFT_data(frequency,ft_filtered,nt_pad,filename,local_file_unit)
-end if
+  if (write_temp_files) then
+    filename='ft_freq.dat'
+    CALL write_FFT_data(frequency,ft_filtered,nt_pad,filename,local_file_unit)
+  end if
 
-do filter=1,n_filter
+  do filter=1,n_filter
 
-  write(*,*)'Enter the filter type (LPF or HPF)'
-  read(*,*)ch
-  write(record_user_inputs_unit,'(A,A)')ch,'  # filter type (LPF or HPF)'
-  write(*,*)'Filter type=',ch
+    write(*,*)'Enter the filter type (LPF or HPF)'
+    read(*,*)ch
+    write(record_user_inputs_unit,'(A,A)')ch,'  # filter type (LPF or HPF)'
+    write(*,*)'Filter type=',ch
 
-  write(*,*)'Enter the filter order (integer)'
-  read(*,*)order
-  write(record_user_inputs_unit,*)order,'  # filter order'
-  write(*,*)'Order=',order
+    write(*,*)'Enter the filter order (integer)'
+    read(*,*)order
+    write(record_user_inputs_unit,*)order,'  # filter order'
+    write(*,*)'Order=',order
   
-  write(*,*)'Enter the filter 3dB frequency (Hz)'
-  read(*,*)fc
-  write(record_user_inputs_unit,*)fc,'  # filter cutoff frequency'
-  write(*,*)'cutoff frequency=',fc
-  wc=2d0*pi*fc
+    write(*,*)'Enter the filter 3dB frequency (Hz)'
+    read(*,*)fc
+    write(record_user_inputs_unit,*)fc,'  # filter cutoff frequency'
+    write(*,*)'cutoff frequency=',fc
+    wc=2d0*pi*fc
   
-  if( (ch.eq.'l').OR.(ch.eq.'L') ) then
+    if( (ch.eq.'l').OR.(ch.eq.'L') ) then
   
 ! Apply a low pass filter function in the frequency domain
   
-    CALL butterworth_LPF(frequency,ft_impulse,nt_pad,order,fc,dt)
-    CALL butterworth_LPF(frequency,ft_filtered,nt_pad,order,fc,dt)
+      CALL butterworth_LPF(frequency,ft_impulse,nt_pad,order,fc,dt)
+      CALL butterworth_LPF(frequency,ft_filtered,nt_pad,order,fc,dt)
     
-  else if( (ch.eq.'h').OR.(ch.eq.'H') ) then
+    else if( (ch.eq.'h').OR.(ch.eq.'H') ) then
   
 ! Apply a high pass filter function in the frequency domain
   
-    CALL butterworth_HPF(frequency,ft_impulse,nt_pad,order,fc,dt)
-    CALL butterworth_HPF(frequency,ft_filtered,nt_pad,order,fc,dt)
+      CALL butterworth_HPF(frequency,ft_impulse,nt_pad,order,fc,dt)
+      CALL butterworth_HPF(frequency,ft_filtered,nt_pad,order,fc,dt)
    
-  else
-    write(*,*)'The filter should be LPF or HPF'
-    STOP 1
-  end if
+    else
+      write(*,*)'The filter should be LPF or HPF'
+      STOP 1
+    end if
 
 ! Inverse Fourier Transform the filtered data to give the time response
   
-end do ! apply next filter function
+  end do ! apply next filter function
   
-if (write_temp_files) then
-  filename='filter_transfer_function.dat'
-  CALL write_FFT_data(frequency,ft_impulse,nt_pad,filename,local_file_unit)
+  if (write_temp_files) then
+    filename='filter_transfer_function.dat'
+    CALL write_FFT_data(frequency,ft_impulse,nt_pad,filename,local_file_unit)
   
-  filename='ft_filtered.dat'
-  CALL write_FFT_data(frequency,ft_filtered,nt_pad,filename,local_file_unit)
-end if
+    filename='ft_filtered.dat'
+    CALL write_FFT_data(frequency,ft_filtered,nt_pad,filename,local_file_unit)
+  end if
  
-CALL INVERSE_FFT(ft_impulse,nt_pad)
-CALL INVERSE_FFT(ft_filtered,nt_pad)
+  CALL INVERSE_FFT(ft_impulse,nt_pad)
+  CALL INVERSE_FFT(ft_filtered,nt_pad)
   
-if (write_temp_files) then
-  filename='filter_impulse_response.dat'
-  CALL write_FFT_data(t,ft_impulse,nt_pad,filename,local_file_unit)
+  if (write_temp_files) then
+    filename='filter_impulse_response.dat'
+    CALL write_FFT_data(t,ft_impulse,nt_pad,filename,local_file_unit)
+    
+    filename='ft_out.dat'
+    CALL write_FFT_data(t,ft_filtered,nt_pad,filename,local_file_unit)
+  end if
   
-  filename='ft_out.dat'
-  CALL write_FFT_data(t,ft_filtered,nt_pad,filename,local_file_unit)
-end if
+end if   ! number of filters .NE. 0
 
 !3 EXTRACT SUB-SAMPLE FROM THE INPUT DATASET
 
-write(record_user_inputs_unit,*)'Number of sub-segments of data to convert =1'
-
+!write(*,*)'Number of sub-segments of data to convert =1'
+write(*,*)
 write(*,*)'Total number of input samples=',nt
-
-write(*,*)'Period of input signal=',(t(nt)-t(1))
-
+write(*,*)
+write(*,*)'Start time of input signal=',0d0
+write(*,*)'End time of input signal=',(t(nt)-t(1))
+write(*,*)
 write(*,*)'Enter the start time of the data sub-segment'
 read(*,*)tstart
 write(record_user_inputs_unit,*)tstart,'  # start time of the data sub-segment'
-write(*,*)'start time of the data sub-segment=',tstart
 
-write(*,*)'Enter the end time of the data sub-segment'
+write(*,*)'Enter the end time of the data sub-segment or enter "0" to use the whole period of the signal'
 read(*,*)tstop
 write(record_user_inputs_unit,*)tstop,'  # end time of the data sub-segment'
-write(*,*)'end time of the data sub-segment=',tstop
+
+if (tstop.EQ.0d0) then
+  tstop=(t(nt)-t(1))
+end if
+
+write(*,*)'Start time of the data sub-segment=',tstart
+write(*,*)'End time of the data sub-segment  =',tstop
 
 t_sub_period=tstop-tstart
+nt_sub_period=t_sub_period/dt
 
-write(*,*)'Enter the number of samples in the data sub-segment'
-read(*,*)nt_sub
-write(record_user_inputs_unit,*)nt_sub,'  # number of samples in the data sub-segment'
-write(*,*)'number of samples in the data sub-segment=',nt_sub
+write(*,*)'Period of the data sub-segment           =',t_sub_period
+write(*,*)'Number of samples in the data sub-segment=',nt_sub_period
+write(*,'(A,ES10.3,A)')'At 44100 samples per second the waveform will play in',real(nt_sub_period)/real(44100),' seconds'
+write(*,'(A,ES10.3,A)')'Nyquist frequency for input waveform          :',0.5d0/dt,'Hz'
+write(*,'(A,ES10.3,A)')'At 44100 samples audio this transforms to     :',22050d0,'Hz'
+write(*,'(A,ES10.3,A,ES10.3,A)')'Frequency downshift ratio (f_audio/f_input) is:',44100d0*dt,' =(1/',1d0/(dt*44100d0),')'
+
+write(*,*)'Enter the resampling factor (e.g. a resampling factor of 10 will resample at 10 times '
+write(*,*)'the original sample rate and increase the frequency downshift ratio by a factor of 10'
+write(*,*)'and the period of the audio output will increase by a factor of 10'
+
+read(*,*)resample_factor
+write(record_user_inputs_unit,*)resample_factor,'  # resample factor'
+write(*,*)'resampling factor=',resample_factor
+
+nt_sub=nt_sub_period*resample_factor
+
+write(*,*)'Number of samples in the data sub-segment after resampling=',nt_sub
 
 n_sub_plot=1
 
@@ -322,7 +362,8 @@ write(*,*)'extract the sub-segments from the original filtered dataset'
 
   tstart=0d0
   
-  write(*,*)'Sub segment initial time: ',tstart  
+  write(*,*)'Sub segment start time: ',tstart 
+  write(*,*)'Sub segment end time  : ',tstop  
     
 ! Find the timesteps that bracket the initial time
     
@@ -338,7 +379,7 @@ write(*,*)'extract the sub-segments from the original filtered dataset'
     
   end do
     
-  write(*,*)'ERROR: Unable to find the intiial timestep for this sub-segment data'
+  write(*,*)'ERROR: Unable to find the intial timestep for this sub-segment data'
   STOP 1
     
 7000 CONTINUE   ! Jump here when we have the initial time for this sub-segment
@@ -477,13 +518,13 @@ close(unit=local_file_unit)
 
 !11. FINISH OFF
 
-DEALLOCATE( ft )
-DEALLOCATE( t )
-DEALLOCATE( frequency )
-DEALLOCATE( ft_filtered )
-DEALLOCATE( ft_impulse )
-DEALLOCATE( t_sub )
-DEALLOCATE( ft_sub )
+if (ALLOCATED( ft ) )  DEALLOCATE( ft )
+if (ALLOCATED( t ) )  DEALLOCATE( t )
+if (ALLOCATED( frequency ) )  DEALLOCATE( frequency )
+if (ALLOCATED( ft_filtered ) )  DEALLOCATE( ft_filtered )
+if (ALLOCATED( ft_impulse ) )  DEALLOCATE( ft_impulse )
+if (ALLOCATED( t_sub ) )  DEALLOCATE( t_sub )
+if (ALLOCATED( ft_sub ) )  DEALLOCATE( ft_sub )
 
 RETURN
 

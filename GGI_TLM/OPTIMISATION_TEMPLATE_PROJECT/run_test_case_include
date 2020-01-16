@@ -45,10 +45,12 @@ GGI_TLM_memory_usage.txt \
 *.vmat \
 *.smat \
 *.cable \
+*.cir \
 *.mode \
 *.fd_* \
 *.jpg \
 *.msh \
+*.stl \
 *.avi \
 *.info \
 IELF_value.out \
@@ -81,6 +83,7 @@ if [ "$#" = "0" ] ; then
   echo "action=view_mesh  NAME     : View the computational mesh; volume materials, surface materials and cables"
   echo "action=document  NAME     : Create a document in rtf format with details of the problem i.e. geometry, materials, cables, mesh and results"
   echo "action=save  NAME  TAG   : Create a directory RESULTS_TAG and save results, .inp file, .info file and any .rtf files into it."
+  echo "action=set_permissions  NAME  : Set executable permissions on run_automatic_test and create_reference_restuls files"
   echo " "
   echo "NAME can be one of the existing test cases or leave blank to run the whole set"
   echo " "
@@ -165,7 +168,7 @@ else
      
      cd ..
      RUN_NAME=${RUN_FILE_NAME%\.*}
-     echo "TEST_CASE:${TEST_CASE}  RUN_NAME:${RUN_NAME}"
+     echo "TEST_CASE:${TEST_CASE}  RUN_NAME:${RUN_NAME} ACTION:$ACTION"
      
      PROGRESS_FILENAME='progress'
      
@@ -200,9 +203,9 @@ else
 	   echo $VALUE | sed  "s/URANDOM//g" >> GGI_TLM_generate_random_numbers_in.txt
 	   echo "y
 random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt	   
-	   GGI_TLM_generate_random_numbers < GGI_TLM_generate_random_numbers_in.txt
+	   $EXECUTABLE_DIR/GGI_TLM_generate_random_numbers < GGI_TLM_generate_random_numbers_in.txt
 	   
-	   VALUE=$(GGI_TLM_generate_random_numbers < GGI_TLM_generate_random_numbers_in.txt)
+	   VALUE=$($EXECUTABLE_DIR/GGI_TLM_generate_random_numbers < GGI_TLM_generate_random_numbers_in.txt)
 	   
 	   read VALUE < random_number.dat
 	   
@@ -303,6 +306,9 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
          exit 1
        fi
 #       
+
+       sleep 1s
+       
        $SEQ_RUN_COMMAND $EXECUTABLE_DIR/GGI_TLM_post_process < PROBLEM_SPECIFICATION_FILES/GGI_TLM_post_process_in.txt
        read LINE < $PROGRESS_FILENAME
        if [ "$LINE" = "FINISHED: GGI_TLM_post_process" ] ; then
@@ -408,7 +414,7 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
       
      elif [ "$ACTION" = "reference" ] ; then
      
-       PROBLEM_SPECIFICATION_FILES/create_reference_result       
+       source PROBLEM_SPECIFICATION_FILES/create_reference_result       
        
        echo "FINISHED: $TEST_CASE: reference" > ./progress
       
@@ -497,7 +503,15 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
 
        echo "STARTING PARAVIEW....."
      
-       paraview --script=${SRC_DIR}/GGI_TLM_view_geometry.py &
+       if [ "$(expr substr $(uname -s) 1 6)" == "CYGWIN" ]; then
+    
+         paraview --script=c:/cygwin64/${SRC_DIR}/GGI_TLM_view_geometry.py &
+	 
+       else
+    
+         paraview --script=${SRC_DIR}/GGI_TLM_view_geometry.py &
+
+       fi     
        
        echo "FINISHED: $TEST_CASE: view_geometry" > ./progress
              
@@ -517,8 +531,16 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
        echo " "
        echo "STARTING PARAVIEW....."
        echo " "
+     
+       if [ "$(expr substr $(uname -s) 1 6)" == "CYGWIN" ]; then
+    
+         paraview --script=c:/cygwin64/${SRC_DIR}/GGI_TLM_view_meshed_geometry.py &
+	 
+       else
+    
+         paraview --script=${SRC_DIR}/GGI_TLM_view_meshed_geometry.py &
 
-       paraview --script=${SRC_DIR}/GGI_TLM_view_meshed_geometry.py &
+       fi     
        
        echo "FINISHED: $TEST_CASE: view_geometry" > ./progress
              
@@ -560,9 +582,17 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
        echo " "
        echo "STARTING PARAVIEW....."
        echo " "
-     
-       paraview --script=${SRC_DIR}/GGI_TLM_view_mesh.py &
-       
+
+       if [ "$(expr substr $(uname -s) 1 6)" == "CYGWIN" ]; then
+    
+         paraview --script=c:/cygwin64/${SRC_DIR}/GGI_TLM_view_mesh.py &
+	 
+       else
+    
+         paraview --script=${SRC_DIR}/GGI_TLM_view_mesh.py &
+
+       fi     
+            
        echo "FINISHED: $TEST_CASE: view_mesh" > ./progress
              
      elif [ "$ACTION" = "document" ] ; then
@@ -620,9 +650,17 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
        fi
 
 # Run python script to create the document
-     
-       pvpython ${SRC_DIR}/GGI_TLM_document.py
-       
+    
+       if [ "$(expr substr $(uname -s) 1 6)" == "CYGWIN" ]; then
+    
+         pvpython c:/cygwin64${SRC_DIR}/GGI_TLM_document.py
+	 
+       else
+    
+         pvpython ${SRC_DIR}/GGI_TLM_document.py
+
+       fi     
+
        echo "FINISHED: $TEST_CASE: document" > ./progress
       
      elif [ "$ACTION" = "save" ] ; then
@@ -657,6 +695,11 @@ random_number.dat" >> GGI_TLM_generate_random_numbers_in.txt
        cp *.rtf  RESULTS_$TAG
                                  
        echo "FINISHED: $TEST_CASE: save" > ./progress
+      
+     elif [ "$ACTION" = "set_permissions" ] ; then
+     
+       chmod +x ./run_automatic_test
+       chmod +x ./PROBLEM_SPECIFICATION_FILES/create_reference_result
 
      else 
      
