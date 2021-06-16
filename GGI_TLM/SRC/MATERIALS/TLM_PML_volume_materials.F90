@@ -75,8 +75,10 @@ IMPLICIT NONE
 ! START
   
   CALL write_line('CALLED: set_pml_volume_material_mesh',0,output_to_screen_flag)
-  
-  write_pml_data_to_info_file=.TRUE.
+
+! Flag to write PML data for every PML cell. Used for testing but produces a lot of data in the info file  
+!  write_pml_data_to_info_file=.TRUE.
+  write_pml_data_to_info_file=.FALSE.
 
 ! INITIALISE VOLUME MATERIALS  
     

@@ -447,10 +447,14 @@ FIXED in read_cable_geometry_list.F90
      as they run until the computer starts to use swap space. Note that the use of swap space doesn't seem to affect performance
      as the Ngspice memory is not actively used.
      
-142. Some systems may run slowly if there are very small voltages propagating in the mesh. This is thought to be die to the handling of 'denormalised numbers'. See for example: https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html, https://en.wikipedia.org/wiki/Denormal_number.
+142. Some systems may run slowly if there are very small voltages propagating in the mesh. This is thought to be die to the handling of 'denormalised numbers'. See for example: https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html, https://en.wikipedia.org/wiki/Denormal_number.  STARTED - can compile with a flag to prevent denormal numbers. Can also strip
+ small voltages from the mesh
 
 143. The Paraview process called from run_automatic_test script does not work properly in cygwin. The problem is that paraview is installed under windows and the path for the python script only works under cygwin. DONE 14/10/2019
 
 144 The Paraview process called from run_automatic_test script does not work properly in MAC OSX.
 
 145 The revised sphere geometry does not work properly when transformations are applied. Fixed 12/11/2019
+
+146 Need to document the developments to frequency_output_volumes : include xyz output and 'output_every' options
+146 

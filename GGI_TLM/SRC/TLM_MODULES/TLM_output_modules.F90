@@ -372,6 +372,11 @@ logical								:: PB_far_field_output_warning
 integer							:: n_frequency_output_surfaces
 type(frequency_output_surface_type),allocatable    	:: frequency_output_surface(:)
  
+integer,parameter	      :: frequency_output_volume_format_normal=1
+integer,parameter	      :: frequency_output_volume_format_xyz_field=2
+
+integer                       :: frequency_output_volume_format
+integer                       :: frequency_output_volume_output_every
 integer							:: n_frequency_output_volumes
 type(frequency_output_volume_type),allocatable    	:: frequency_output_volume(:)
  

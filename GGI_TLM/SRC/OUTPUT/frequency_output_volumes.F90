@@ -52,6 +52,10 @@ IMPLICIT NONE
   integer		:: cx,cy,cz
   type(ijk)		:: output_cell1
   type(ijk)		:: output_cell2
+  
+  integer		:: total_number_of_cells
+  integer		:: cell_count
+  integer		:: cxmin,cymin,czmin
 
 ! START
   
@@ -59,7 +63,7 @@ IMPLICIT NONE
     
   if (n_frequency_output_volumes.gt.0) then
 
-! FREQUENCY OUTPUT volumeS
+! FREQUENCY OUTPUT VOLUMES
 
     if (rank.eq.0) then
       write(info_file_unit,*)'Number of Frequency Output volumes=',n_frequency_output_volumes
@@ -68,7 +72,59 @@ IMPLICIT NONE
     do output_volume=1,n_frequency_output_volumes
     
       volume_number=frequency_output_volume(output_volume)%volume_number
-      number_of_cells=problem_volumes(volume_number)%number_of_cells
+      
+      if (frequency_output_volume_output_every.Eq.1) then
+        number_of_cells=problem_volumes(volume_number)%number_of_cells
+	total_number_of_cells=number_of_cells
+      else
+! we have to count the cells
+        total_number_of_cells=problem_volumes(volume_number)%number_of_cells
+	cxmin=nx
+	cymin=ny
+	czmin=nz
+        do output_cell=1,total_number_of_cells
+      
+! copy the cells from the geometry structure to the local
+! frequency_output_volume structure
+	
+          cx=problem_volumes(volume_number)%cell_list(output_cell)%cell%i
+          cy=problem_volumes(volume_number)%cell_list(output_cell)%cell%j
+          cz=problem_volumes(volume_number)%cell_list(output_cell)%cell%k
+	  
+	  cxmin=min(cxmin,cx)
+	  cymin=min(cymin,cy)
+	  czmin=min(czmin,cz)
+	  
+	end do
+
+        cell_count=0
+	
+        do output_cell=1,total_number_of_cells
+      
+! copy the cells from the geometry structure to the local
+! frequency_output_volume structure
+	
+          cx=problem_volumes(volume_number)%cell_list(output_cell)%cell%i
+          cy=problem_volumes(volume_number)%cell_list(output_cell)%cell%j
+          cz=problem_volumes(volume_number)%cell_list(output_cell)%cell%k
+	  
+	  if ( (MOD(cx-cxmin,frequency_output_volume_output_every).EQ.0).AND.   &
+	       (MOD(cy-cymin,frequency_output_volume_output_every).EQ.0).AND.   &
+	       (MOD(cz-czmin,frequency_output_volume_output_every).EQ.0) ) then
+! add this cell to the output list
+
+	     cell_count=cell_count+1
+	     
+	  end if
+	end do
+	 
+	number_of_cells=cell_count
+	
+      end if
+      
+      write(*,*)'Total number of cells in volume=',total_number_of_cells
+      write(*,*)'Number of output cells=',number_of_cells
+      
       frequency_output_volume(output_volume)%number_of_cells=number_of_cells
       
       if (rank.eq.0) then
@@ -78,7 +134,9 @@ IMPLICIT NONE
 ! allocate cell list for the output volume      
       ALLOCATE( frequency_output_volume(output_volume)%cell_list(1:number_of_cells) )
       
-      do output_cell=1,number_of_cells
+      cell_count=0
+      
+      do output_cell=1,total_number_of_cells
       
 ! copy the cells from the geometry structure to the local
 ! frequency_output_volume structure
@@ -86,22 +144,33 @@ IMPLICIT NONE
         cx=problem_volumes(volume_number)%cell_list(output_cell)%cell%i
         cy=problem_volumes(volume_number)%cell_list(output_cell)%cell%j
         cz=problem_volumes(volume_number)%cell_list(output_cell)%cell%k
+	
+	if ( (MOD(cx-cxmin,frequency_output_volume_output_every).EQ.0).AND.   &
+	     (MOD(cy-cymin,frequency_output_volume_output_every).EQ.0).AND.   &
+	     (MOD(cz-czmin,frequency_output_volume_output_every).EQ.0) ) then
+! add this cell to the output list
+
+	   cell_count=cell_count+1
  
-        if (rank.eq.cell_rank(cz)) then
+          if (rank.eq.cell_rank(cz)) then
 ! output point belongs to this processor
 	  
-          local_cell_output(cx  ,cy  ,cz  )=1 
+            local_cell_output(cx  ,cy  ,cz  )=1 
   
-        end if ! output point belongs to this processor
+          end if ! output point belongs to this processor
 
 ! preserve the cell which includes the normal information in the frequency_output_volume%cell_list	
-        frequency_output_volume(output_volume)%cell_list(output_cell)%i=cx
-        frequency_output_volume(output_volume)%cell_list(output_cell)%j=cy
-        frequency_output_volume(output_volume)%cell_list(output_cell)%k=cz
+          frequency_output_volume(output_volume)%cell_list(cell_count)%i=cx
+          frequency_output_volume(output_volume)%cell_list(cell_count)%j=cy
+          frequency_output_volume(output_volume)%cell_list(cell_count)%k=cz
+	     
+	end if
                  
       end do !next cell cell in this volume	  
   
     end do ! next frequency_output volume
+    
+    write(*,*)'Number of cells set in this frequency output volume=',cell_count
     
     if (rank.eq.0) then
       write(info_file_unit,*)'__________________________________________________________________'
@@ -200,15 +269,17 @@ IMPLICIT NONE
 
     if (rank.eq.0) then
 ! rank 0 process only: write header for volume field outputs. Could maybe use write_volume_mesh_list_vtk...
-  
-  
-!      OPEN(unit=frequency_output_volume_unit,file=trim(problem_name)//frequency_output_volume_extn)
-      CALL open_output_file_write(frequency_output_volume_unit,	&
-           trim(problem_name)//frequency_output_volume_extn,compress_output_files)
 
-      write(frequency_output_volume_unit,'(A)')'# NUMBER OF FREQUENCY OUTPUT VOLUMES:'
-      write(frequency_output_volume_unit,'(I10)')n_frequency_output_volumes
+      if (frequency_output_volume_format.EQ.frequency_output_volume_format_normal) then
+  
+        CALL open_output_file_write(frequency_output_volume_unit,	&
+             trim(problem_name)//frequency_output_volume_extn,compress_output_files)
 
+        write(frequency_output_volume_unit,'(A)')'# NUMBER OF FREQUENCY OUTPUT VOLUMES:'
+        write(frequency_output_volume_unit,'(I10)')n_frequency_output_volumes
+	
+      end if ! normal output format
+      
     end if ! rank 0 process
 
   end if ! n_frequency_output_volumes.GT.0
@@ -366,6 +437,8 @@ IMPLICIT NONE
   
   integer,allocatable	:: integer_array(:)
   complex*16,allocatable:: complex_array(:)
+  
+  character(LEN=2) :: number_string,trim_number_string
 
 ! START
 
@@ -434,9 +507,9 @@ IMPLICIT NONE
 	  local_frequency_output_volume%cell_list(volume_count)%k=	&
 	    frequency_output_volume(output_volume)%cell_list(volume_count)%k
 	  local_frequency_output_volume%value(volume_count)=	&
-	    frequency_output_volume(output_volume)%value(volume_count)
+	    frequency_output_volume(output_volume)%value(volume_count)	    
         end do ! next rank 0 process
-
+	
       end if
 
 #if defined(MPI)      
@@ -524,6 +597,10 @@ IMPLICIT NONE
 ! STAGE 5: The rank 0 process writes the data to file
 
       if (rank.eq.0) then
+      
+       if (frequency_output_volume_format.EQ.frequency_output_volume_format_normal) then
+
+! NORMAL FORMAT OUTPUT
 
 ! Write header data
         write(frequency_output_volume_unit,'(A,I10)')'# START volume FIELD FILE TEMPLATE, OUTPUT volume NUMBER:',	&
@@ -587,10 +664,36 @@ IMPLICIT NONE
 8020      format(3I8,3E16.8)
         
         end do !next cell cell in this volume	  
+      
+       else if (frequency_output_volume_format.EQ.frequency_output_volume_format_xyz_field) then
+
+! XYZ FORMAT OUTPUT
+
+        write(number_string,'(I2)')output_volume
+	trim_number_string=ADJUSTL(number_string)
+        OPEN(unit=frequency_output_volume_unit,file=trim(problem_name)//frequency_output_volume_extn//trim(trim_number_string))
+
+        do output_cell=1,local_n_cells
+	
+          CALL get_cell_centre_coordinate(local_frequency_output_volume%cell_list(output_cell),point1)
+	
+	  value=local_frequency_output_volume%value(output_cell)
+
+  	  write(frequency_output_volume_unit,8030)point1%x,point1%y,point1%z,    &
+	  	      dble(value ),     &
+	              dimag(value ), &
+          	      abs( value )
+8030      format(6E14.4)
+     			   
+        end do! next cell 
+	
+	CLOSE(unit=frequency_output_volume_unit)
   
-        DEALLOCATE ( n_volumes_rank )
-        DEALLOCATE( local_frequency_output_volume%cell_list )
-        DEALLOCATE( local_frequency_output_volume%value )
+       end if
+  
+       DEALLOCATE ( n_volumes_rank )
+       DEALLOCATE( local_frequency_output_volume%cell_list )
+       DEALLOCATE( local_frequency_output_volume%value )
    
       end if ! rank.eq.0
   

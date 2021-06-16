@@ -111,6 +111,8 @@ IMPLICIT NONE
   Max_cable_bundle_diameter_factor    =0.67d0
   
   run_ngspice=.FALSE.
+  
+  set_small_to_zero=.FALSE.
 
   CALL write_line('FINISHED: reset_packet_data',0,output_to_screen_flag)
   

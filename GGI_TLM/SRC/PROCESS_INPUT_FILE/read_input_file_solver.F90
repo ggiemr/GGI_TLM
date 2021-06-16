@@ -136,9 +136,13 @@ character*256	:: input_line
     
       CALL read_frequency_output_surface()
      
+    else if (input_line.EQ.'frequency_output_volume_list_xyz') then
+    
+      CALL read_frequency_output_volume(2)
+     
     else if (input_line.EQ.'frequency_output_volume_list') then
     
-      CALL read_frequency_output_volume()
+      CALL read_frequency_output_volume(1)
      
     else if (input_line.EQ.'frequency_domain_power_surface_list') then
                             
@@ -191,6 +195,10 @@ character*256	:: input_line
     else if (input_line.EQ.'ngspice_lpf_alpha') then
     
       CALL read_ngspice_LPF_alpha()
+      
+    else if (input_line.EQ.'set_small_to_zero') then
+    
+      CALL read_small_to_zero()
       
     end if
     

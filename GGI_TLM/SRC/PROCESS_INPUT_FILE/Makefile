@@ -52,6 +52,7 @@ read_random_number_seed.o \
 read_reduced_c.o \
 read_ngspice_timestep_factor.o \
 read_ngspice_LPF_alpha.o \
+read_small_to_zero.o \
 read_pml.o
 
 default: $(PROCESS_INPUT_FILE_OBJS)

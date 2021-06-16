@@ -21,7 +21,7 @@
 !     read_wrapping_boundary_conditions
 !
 ! DESCRIPTION
-!     read outer boundary reflection coefficients
+!     read wrapping boundary conditions
 !
 ! Example packet:
 !
@@ -51,7 +51,7 @@ IMPLICIT NONE
   
 ! START  
 
-  CALL write_line('CALLED: Read_wrapping_boundary_conditionss',0,output_to_screen_flag)
+  CALL write_line('CALLED: Read_wrapping_boundary_conditions',0,output_to_screen_flag)
 
 ! read reflection coefficient data
   read(input_file_unit,*,err=9000)WR_x,WR_y,WR_z

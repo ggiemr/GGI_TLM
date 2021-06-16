@@ -232,6 +232,10 @@ IMPLICIT NONE
       end if
       
     end if ! rank=0
+    
+    if ( (set_small_to_zero).AND.(mod(timestep,n_small_to_zero).EQ.0) ) then
+      CALL TLM_set_small_to_zero()
+    end if
 
     time=(timestep-1)*dt
     

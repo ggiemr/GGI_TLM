@@ -140,3 +140,10 @@ fi
 ### Convert CSV files to txt by replacing commas with spaces
 
 sed 's/,/\ /g' test_file.csv > test_file.txt
+
+# Test whether a file exists
+if [ -e mode_field_1.dat ]
+then
+   gnuplot field_plot.plt
+fi
+

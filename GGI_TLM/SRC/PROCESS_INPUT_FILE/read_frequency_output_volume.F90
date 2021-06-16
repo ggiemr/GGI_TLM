@@ -32,6 +32,17 @@
 !1.3E7 frequency for output
 !Ex
 !
+! Alternative for simple xyz output
+!
+!Frequency_output_volume_list_xyz
+!1    		! number of Frequency output volumes
+!output_every 5
+!1		! FREQUENCY OUTPUT VOLUME NUMBER
+!1     volume number
+!1.3E7 frequency for output
+!Ex
+!
+!
 ! COMMENTS
 !     
 !
@@ -40,7 +51,7 @@
 !     started 1/3/2013 CJS
 !
 !
-SUBROUTINE read_frequency_output_volume
+SUBROUTINE read_frequency_output_volume(format_type)
 
 USE TLM_general
 USE file_information
@@ -49,18 +60,56 @@ USE constants
 
 IMPLICIT NONE
 
+integer :: format_type
+
 ! local variables
 
   integer	:: i
   integer	:: read_number
   
+  character(LEN=80) :: ipline_local
+  character(LEN=80) :: ipline_local2
+  
 ! START  
 
   CALL write_line('CALLED: read_frequency_output_volume',0,output_to_screen_flag)
-  
+
   read(input_file_unit,*,err=9000)n_frequency_output_volumes
   
   CALL write_line_integer('number of frequency output volumes',n_frequency_output_volumes,0,output_to_screen_flag)
+    
+  if (format_type.EQ.frequency_output_volume_format_normal) then
+  
+    frequency_output_volume_format=frequency_output_volume_format_normal
+    frequency_output_volume_output_every=1
+  	  
+  else if (format_type.EQ.frequency_output_volume_format_xyz_field) then
+  
+    frequency_output_volume_format=frequency_output_volume_format_xyz_field
+
+! read optional 'output_every' line    
+
+    read(input_file_unit,'(A80)',err=9000)ipline_local
+    
+    write(*,*)'Read line:',ipline_local
+    
+    CALL convert_to_lower_case(ipline_local,80)
+    
+    if (ipline_local(1:12).EQ.'output_every') then
+      ipline_local2=ipline_local(13:LEN(ipline_local))
+      read(ipline_local2,*,err=9030)frequency_output_volume_output_every
+      write(*,*)'Output every=',frequency_output_volume_output_every
+    else
+      frequency_output_volume_output_every=1
+      backspace(input_file_unit)
+    end if
+    
+  else
+    
+    write(*,*)'Unknown frequency_output_volume_format:',format_type  
+    STOP 1
+    
+  end if
   
   if ( allocated( frequency_output_volume ) ) GOTO 9010
   
@@ -92,7 +141,7 @@ IMPLICIT NONE
   end do ! next frequency output volume    
   
   CALL write_line('FINISHED: read_frequency_output_volume',0,output_to_screen_flag)
-  
+    
   RETURN
     
 9000 CALL write_line('Error reading frequency_output_volume packet data from input file:',0,.TRUE.)
@@ -108,6 +157,9 @@ IMPLICIT NONE
      CALL write_line('frequency output volumes should be numbered in order',0,.TRUE.)
      CALL write_error_line(input_file_unit)
      STOP
+     
+9030 CALL write_line('Error reading output_every line',0,.TRUE.)
+     CALL write_error_line(input_file_unit)
      STOP
   
 END SUBROUTINE read_frequency_output_volume

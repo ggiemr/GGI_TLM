@@ -15,7 +15,8 @@ mode_stir.o \
 cable_bundles.o \
 cell_centre_cable_junction.o \
 face_cable_junction.o \
-TLM_parallel_pass_data.o 
+TLM_parallel_pass_data.o \
+TLM_set_small_to_zero.o 
 
 default: $(TLM_SOLVER_OBJS) 
 

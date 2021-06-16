@@ -1,0 +1,82 @@
+# TERMINALS
+
+set term pdfcairo font "Arial,12" size 6,4 noenhanced
+set output "lossy_slab_1.pdf"
+
+set term x11 font "Arial,12" size 650,400 noenhanced
+
+set term wxt size 800,500
+
+# DEALING WITH MISSING DATA
+set datafile missing '?'
+
+# KEY POSITION
+
+set key  top left
+
+#OR COORDINATE BASED
+
+set key at 9,3    
+
+# AXES
+set xrange[0:4e9]
+set x2range[0:4]
+
+plot "sigmae_0.05.cmplx_beta.dat" u  1: 3 axis x2y1 title "Complex beta: sigmae_0.05" w lp ,\
+"CJS_slab_only_sigma_loop_complex_beta.txt_1"  u 1:2 axis x1y1 title  "CST: sigma e=    0.0500" w l lc 1 
+
+# PAUSE STUFF
+
+pause -1
+
+pause mouse keypress "press any key in the plot window to continue" 
+
+# SURFACE PLOT EXAMPLE 
+
+set view 34,228
+splot "bp_temp_beta_omega.dat_1" u 1:2:3 w l
+
+# SURFACE PLOT WITH CONTOOURS
+set contour
+set cntrparam levels 20
+splot "ZA.dat_2.0GHz" u 2:3:6 w l
+
+#MULTIPLOT EXAMPLE
+
+set multiplot layout 3 , 1
+set xlabel "y(m)"
+set ylabel "Normalised field"
+set title "Hx, mode 1"
+plot "lossy_slabHx.dat_1" u 1:2 title "Re{Hx}" w l   ,"lossy_slabHx.dat_1" u 1:3 title "Im{Hx}" w l
+set title "Ey, mode 1"
+plot "lossy_slabEy.dat_1" u 1:2 title "Re{Ey/Z0}" w l   ,"lossy_slabEy.dat_1" u 1:3 title "Im{Ey/Z0}" w l
+set title "Ez, mode 1"
+plot "lossy_slabEz.dat_1" u 1:2 title "Re{Ez/Z0}" w l   ,"lossy_slabEz.dat_1" u 1:3 title "Im{Ez/Z0}" w l
+unset multiplot
+
+# Colour lines according to data 
+If col 1 has x values, col 2 has y values and col 3 has colour values then use:
+
+set palette model RGB
+set palette defined ( 0 "blue", 1 "yellow", 2 "red" )
+
+plot "Data.dat" u 1:2:3  w l  palette
+
+# plot size
+
+Plot half size
+     set size  0.5,0.5
+
+Set plot side length ratio ly/lx=2
+     set size ratio 2
+
+# plot individual point with label (example point 4,3, label 'point_1')
+
+plot "<echo '4 3    point_1	'"   with points pt 2 ps 5 lc 3, ''  with labels center offset -6,0 notitle
+
+# parametric plot
+  
+set samples 200
+set parametric
+set trange[-1.5708:1.5708]
+replot cos(t),sin(t) lc 1 notitle

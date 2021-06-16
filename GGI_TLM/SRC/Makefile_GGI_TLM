@@ -201,6 +201,7 @@ PROCESS_INPUT_FILE/read_random_number_seed.o \
 PROCESS_INPUT_FILE/read_reduced_c.o \
 PROCESS_INPUT_FILE/read_ngspice_timestep_factor.o \
 PROCESS_INPUT_FILE/read_ngspice_LPF_alpha.o \
+PROCESS_INPUT_FILE/read_small_to_zero.o \
 PROCESS_INPUT_FILE/read_pml.o
 
 F90_GENERAL_OBJS=  \
@@ -406,7 +407,8 @@ TLM_SOLVER/mode_stir.o \
 TLM_SOLVER/cable_bundles.o \
 TLM_SOLVER/cell_centre_cable_junction.o \
 TLM_SOLVER/face_cable_junction.o \
-TLM_SOLVER/Cable_parallel_pass_data.o 
+TLM_SOLVER/Cable_parallel_pass_data.o \
+TLM_SOLVER/TLM_set_small_to_zero.o 
 
 POST_PROCESSOR_OBJS=  \
 POST_PROCESSOR/allocate_post_data.o  \

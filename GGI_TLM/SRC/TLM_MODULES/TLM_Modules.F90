@@ -58,6 +58,10 @@ IMPLICIT NONE
 
   logical	:: write_info_file=.FALSE.
   
+  logical       :: set_small_to_zero
+  integer       :: n_small_to_zero
+  real*8        :: small_to_zero_value
+  
   logical	:: output_to_screen_flag=.TRUE.
   logical	:: timestepping_output_to_screen_flag=.FALSE.
   

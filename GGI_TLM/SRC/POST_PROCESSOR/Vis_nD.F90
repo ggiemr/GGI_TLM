@@ -484,10 +484,6 @@ integer	:: function_number
   if (ndim.eq.1) then
     plot_data(1:nxplot,2)=plot_data(1:nxplot,1)
   end if
- 
-  write(*,*)'Enter the filename visualisation data (without vtk extension)'
-  read(*,'(A)')filename
-  write(record_user_inputs_unit,'(A)')trim(filename)
 
 ! set the height (zrange) of the surface plot to be related to the x and y extent of the plot  
   zrange=max(dx*(nxplot-1),dy*(nyplot-1))/4d0
@@ -495,6 +491,32 @@ integer	:: function_number
   write(*,*)'minimum data value=',min_value
   write(*,*)'value_range       =',value_range
   write(*,*)'z_range           =',zrange
+ 
+  write(*,*)'Enter the filename visualisation data (without vtk extension) or change_range'
+  read(*,'(A)')filename
+  write(record_user_inputs_unit,'(A)')trim(filename)
+  
+  if (filename(1:12).EQ.'change_range') then
+  
+! Alter the range of the plot
+
+    write(*,*)'Enter the minimum value for the data plot'
+    read(*,*)min_value
+    write(record_user_inputs_unit,*)min_value
+    
+    write(*,*)'Enter the value range for the data plot'
+    read(*,*)value_range
+    write(record_user_inputs_unit,*)value_range
+    
+    write(*,*)'Enter the z range for the data plot'
+    read(*,*)zrange
+    write(record_user_inputs_unit,*)zrange
+    
+    write(*,*)'Enter the filename visualisation data (without vtk extension)'
+    read(*,'(A)')filename
+    write(record_user_inputs_unit,'(A)')trim(filename)
+    
+  end if
 
   filename2=trim(filename)//".vtk"
   CALL write_4D_vtk_data(nxplot,nyplot,x_values,y_values,plot_data,min_value,value_range,zrange,filename2)    
