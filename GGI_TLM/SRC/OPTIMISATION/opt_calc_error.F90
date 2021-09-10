@@ -50,38 +50,48 @@ IMPLICIT NONE
   end if
 
   if (write_values.eq.1) return
-  
+   
+  write(6,'(A)',advance='no')char(13)
+ 
   n_params_local=n_params
   p1=1
   p2=n_params_local
   if (n_params_local.ge.10) then
     p2=10
-    write(*,80010)parameters(p1:p2)
+    write(6,80010)parameters(p1:p2)
     p1=p2+1
     p2=n_params
     n_params_local=n_params_local-10
   end if
   
   if (n_params_local.eq.1) then
-    write(*,8001)parameters(p1:p2),function
+    write(6,8001,advance='no')parameters(p1:p2),function
   else if (n_params_local.eq.2) then
-    write(*,8002)parameters(p1:p2),function
+    write(6,8002,advance='no')parameters(p1:p2),function
   else if (n_params_local.eq.3) then
-    write(*,8003)parameters(p1:p2),function
+    write(6,8003,advance='no')parameters(p1:p2),function
   else if (n_params_local.eq.4) then
-    write(*,8004)parameters(p1:p2),function
+    write(6,8004,advance='no')parameters(p1:p2),function
   else if (n_params_local.eq.5) then
-    write(*,8005)parameters(p1:p2),function
+    write(6,8005,advance='no')parameters(p1:p2),function
   else if (n_params_local.eq.6) then
-    write(*,8006)parameters(p1:p2),function
+    write(6,8006,advance='no')parameters(p1:p2),function
   else if (n_params_local.eq.7) then
-    write(*,8007)parameters(p1:p2),function
+    write(6,8007,advance='no')parameters(p1:p2),function
   else if (n_params_local.eq.8) then
-    write(*,8008)parameters(p1:p2),function
+    write(6,8008,advance='no')parameters(p1:p2),function
   else if (n_params_local.eq.9) then
-    write(*,8009)parameters(p1:p2),function
+    write(6,8009,advance='no')parameters(p1:p2),function
   else if (n_params_local.eq.10) then
-    write(*,80010)parameters(p1:p2),function 
+    write(6,80010,advance='no')parameters(p1:p2),function 
+  end if
+  
+  if (evaluation_number.EQ.1) then
+    write(6,*)
+  end if
+  
+  if (last_call.EQ.1) then
+    write(6,*)
   end if
   
 8001  format(  F8.5,X,E10.4)

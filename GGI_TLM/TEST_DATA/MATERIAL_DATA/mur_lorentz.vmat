@@ -1,0 +1,16 @@
+# lorentz material model
+2e9 5e9  # frequency range of validity
+# permittivity filter
+1.0e10 # wnormalisation constant
+2   # a order
+2.0  3.1827e-1  4.0518e-1 # a coefficients
+2   # b order
+1.0  3.1827e-1  4.0518e-1   # b coefficients
+0.0 # electric conductivity
+# permeability filter
+1.0e10 # wnormalisation constant
+2   # a order
+2.0  3.1827e-1  4.0518e-1 # a coefficients
+2   # b order
+1.0  3.1827e-1  4.0518e-1   # b coefficients
+0.0  # magnetic conductivity

@@ -23,7 +23,7 @@ IMPLICIT NONE
 
 ! number of function evaluations in each dimension of the optimisation space
   n_dr=dble(max_evaluations)**(1d0/dble(n_params))
-  n_d=int(n_dr)
+  n_d=nint(n_dr)
   n_tot=n_d**n_params
   
   write(*,*)'max_evaluations=',max_evaluations

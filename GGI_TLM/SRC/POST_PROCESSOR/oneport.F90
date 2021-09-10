@@ -60,7 +60,7 @@ IMPLICIT NONE
   
   complex*16	:: FT(4)
   
-  complex*16	:: beta,Z,R,Ei,Er
+  complex*16	:: beta,Z,R,Ei,Er,Zs
   
   integer,parameter :: E1=1
   integer,parameter :: E2=2
@@ -152,13 +152,16 @@ IMPLICIT NONE
   read(*,*)filename
   write(record_user_inputs_unit,'(A)')trim(filename)
   
-  OPEN(unit=local_file_unit,file=filename)
+  OPEN(unit=local_file_unit,file=trim(filename))
+  OPEN(unit=local_file_unit2,file=trim(filename)//'.Zs')
 
   n_frequencies=function_of_frequency(1)%n_frequencies
   
   write(local_file_unit,'(A,A)'),	&
 	'    frequency       Re{Beta}     Im{Beta}       Re{Z}          Im{Z}',	&
 	'         Re{R}          Im{R}        |R|          |R|(dB)      Re{w/Beta} '
+ 
+  write(local_file_unit2,'(A)'),'    frequency        Re{Zs}       Im{Zs}'
   
   do frequency_loop=1,n_frequencies
   
@@ -173,15 +176,21 @@ IMPLICIT NONE
     CALL oneport_calc(FT(E1),FT(E2),FT(H1),FT(H2),d,beta,Z,Ei,Er)
         
     R=(Er/Ei)*exp(2d0*j*beta*l)
-
+    
+    Zs= Z*(1d0+R)/(1d0-R)
+    
     write(local_file_unit,8000)frequency,dble(beta),dimag(beta),dble(Z),dimag(Z),	&
                                          dble(R),dimag(R),abs(R),20d0*log10(abs(R)),dble(w/beta)	 
+    
+    write(local_file_unit2,8010)frequency,dble(zs),dimag(Zs),abs(Zs) 
 
 8000     format(10E14.5)
+8010     format(4E14.5)
     
   end do ! next frequency value
   
   CLOSE(unit=local_file_unit)
+  CLOSE(unit=local_file_unit2)
 
   CALL Deallocate_post_data()
 

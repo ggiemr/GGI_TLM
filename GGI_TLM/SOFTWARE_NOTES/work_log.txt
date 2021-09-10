@@ -694,6 +694,11 @@
 
 18/1/2020       CJS Add  xyz output and 'output_every' options into frequency_output_volumes so as to reduce the size of output
                          files for fine mesh problems. Needs to be documented
+
+1/9/2021        CJS Add a surface impedance output in the 'oneport' post processing option
+
+10/9/2021	CJS: Fix an error with Lorentz type dispersion relations where the filter order of the susceptibility
+                     needs to be reduced due to concellation of coefficients.
 			 
 Missing Packets...	
 		- SAR_output: DONE - not for dispersive materials though...

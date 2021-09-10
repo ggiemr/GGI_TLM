@@ -66,6 +66,7 @@ integer number_of_evaluations_performed
   write(*,*)'The optimisation techniques available are:'
   write(*,*)'bisection'
   write(*,*)'simplex'
+  write(*,*)'map'
   read(*,'(A1)')optimisation_technique
   write(*,*)'Optimisation technique=',optimisation_technique
   
@@ -178,6 +179,8 @@ integer number_of_evaluations_performed
   
   number_of_evaluations_performed = evaluation_number
   
+  write(*,*)
+  write(*,*)
   write(*,*)'Number of function evaluations performed=',number_of_evaluations_performed
   write(*,*)'Optimum point at evaluation number=',  min_evaluation_number
   write(*,*)''
@@ -200,10 +203,14 @@ integer number_of_evaluations_performed
   evaluation_number=min_evaluation_number-1
   last_call=1
 
-  if (min_evaluation_number.NE.number_of_evaluations_performed) then
+!  if (min_evaluation_number.NE.number_of_evaluations_performed) then
 ! recalculate the optimum solution so that the optimum solution is the active one.
-    call opt_calc_error()
-  end if
+!    call opt_calc_error()
+!  end if
+
+! Always recalculate the function at the optimum point
+
+  call opt_calc_error()
   
 ! close monitoring file  
   close(unit=55)

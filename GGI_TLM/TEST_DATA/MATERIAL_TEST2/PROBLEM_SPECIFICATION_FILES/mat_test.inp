@@ -1,0 +1,62 @@
+
+Mesh_outer_boundary_dimension
+-3.0e-3 3.0-3 -3.0-3 3.0-3 -3.0-3 3.0-3
+
+Mesh_dimensions_in_cells
+60 60 60  ( 3*integer)
+
+Outer_boundary_reflection_coefficient
+0.0 0.0 0.0 0.0 0.0 0.0
+
+volume_list
+1   Number of volumes (integer)
+1       volume_number (integer)
+rectangular_block 
+1.0e-3 1.0e-3 1.0e-3      volume parameters (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+Point_list
+2   Number of points (integer)
+1       point_number (integer)
+-1.2e-3 0.0e-3 0.0e-3    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+2       point_number (integer)
+1.2e-3  0.0e-3 0.0e-3    point coordinates (n*real)
+0.0 0.0 0.0
+0.0 0.0 0.0
+
+volume_material_list
+1   Number of volume materials (integer)
+1   volume MATERIAL NUMBER
+Dispersive
+MATERIAL_DIRECTORY/mur_lorentz
+1       number of volumes
+1       volume list
+
+Excitation_function_list
+1              ! number of excitations
+1              ! EXCITATION NUMBER
+gaussian
+1.0 1e-10  3e-10
+
+Excitation_point_list
+1	       ! number of output points
+1	       ! EXCITATION POINT NUMBER
+1	       ! excitation function number
+2	       ! excitation point
+Ex
+centre
+soft
+
+Output_point_list
+1    		! number of output points
+1		! OUTPUT NUMBER
+1		! output point
+Ex
+centre
+
+Simulation_time
+10e-10
+

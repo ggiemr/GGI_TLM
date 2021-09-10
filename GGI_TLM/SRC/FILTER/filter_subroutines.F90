@@ -1321,7 +1321,8 @@ IMPLICIT NONE
   type(Sfilter) :: ans
   type(Sfilter) :: res
   
-  integer i
+  integer :: i
+  integer :: op_aorder
 
 ! function definition
 
@@ -1344,6 +1345,18 @@ IMPLICIT NONE
   
   if (allocated(res%a%coeff) ) deallocate(res%a%coeff)
   if (allocated(res%b%coeff) ) deallocate(res%b%coeff)
+  
+! 10/9/2021. Reduce the numerator order if we have zero coefficients for higher order terms
+  
+  op_aorder=0
+  do i=0,ans%a%order
+    if (ans%a%coeff(i).NE.0d0) op_aorder=i
+  end do
+  
+  write(*,*)'Order of resulting filter function numerator=',op_aorder
+  
+  ans%a%order=op_aorder
+  
   res=ans
   
 END SUBROUTINE calculate_magnetic_susceptibility_impedance_Sfilter
@@ -1378,6 +1391,7 @@ IMPLICIT NONE
   type(Sfilter) :: res
   
   integer i
+  integer :: op_border
 
 ! function definition
 
@@ -1400,6 +1414,18 @@ IMPLICIT NONE
   
   if (allocated(res%a%coeff) ) deallocate(res%a%coeff)
   if (allocated(res%b%coeff) ) deallocate(res%b%coeff)
+  
+! 10/9/2021. Reduce the numerator order if we have zero coefficients for higher order terms
+  
+  op_border=0
+  do i=0,ans%b%order
+    if (ans%b%coeff(i).NE.0d0) op_border=i
+  end do
+  
+  write(*,*)'Order of resulting filter function denominator=',op_border
+
+  ans%b%order=op_border
+
   res=ans
   
 END SUBROUTINE calculate_electric_susceptibility_impedance_Sfilter
