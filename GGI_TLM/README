@@ -99,7 +99,7 @@ run by simply typing the name of the code. The GGI_TLM_MPI solver code may be ru
 single process in the same way however for a parallel run we require a command of the 
 form 
 
-mpirun.mpich2 -np  x   GGI_TLM_MPI
+mpirun.mpich2 -np  x   GGI_TLM_MPI 
 
 where x is the number of processors to run the solution on (this may be different depending on how you run with mpi)
 
