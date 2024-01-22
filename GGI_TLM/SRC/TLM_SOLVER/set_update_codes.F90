@@ -44,6 +44,7 @@ USE Cables
 USE geometry
 USE PML_module
 USE TLM_surface_materials
+USE TLM_volume_materials
 USE mesh
 USE File_information
 
@@ -58,6 +59,9 @@ IMPLICIT NONE
   
   logical excitation_in_material_flag
   logical excitation_on_cable_flag
+  
+  integer :: local_material
+  integer,allocatable :: material_intersects_PML(:)
 
 ! START
   
@@ -69,6 +73,8 @@ IMPLICIT NONE
   PML_material_intersection_flag=.FALSE.
   PML_cable_intersection_flag=.FALSE.
   PML_excitation_intersection_flag=.FALSE.
+  
+  ALLOCATE( material_intersects_PML(1:n_volume_materials) )
   
   number_of_cell_centre_codes=nx*ny*nz
   
@@ -85,6 +91,9 @@ IMPLICIT NONE
   total_number_output_cells=0
   total_number_cable_cells=0
   
+  total_number_of_PML_material_cells=0
+  total_number_of_PML_free_space_cells=0
+
   do cz=nz1,nz2
     do cy=1,ny
       do cx=1,nx
@@ -112,7 +121,12 @@ IMPLICIT NONE
           
          if ( (local_cell_PML(cx,cy,cz,0).NE.0).AND.	&
 	       (local_cell_material(cx,cy,cz).NE.0)   ) then	    
-	    PML_material_intersection_flag=.TRUE.
+	    total_number_of_PML_material_cells=total_number_of_PML_material_cells+1
+	    PML_material_intersection_flag=.TRUE. 
+	    material_intersects_PML(local_cell_material(cx,cy,cz))=1
+	  else if ( (local_cell_PML(cx,cy,cz,0).NE.0).AND.	&
+	       (local_cell_material(cx,cy,cz).EQ.0)   ) then	    
+	    total_number_of_PML_free_space_cells=total_number_of_PML_free_space_cells+1
 	  end if
           
          if ( (local_cell_PML(cx,cy,cz,0).NE.0).AND.	&
@@ -243,8 +257,10 @@ IMPLICIT NONE
   CALL write_line_integer('Number of special cells',special_cell_count,0,output_to_screen_flag)
   CALL write_line_integer('Total number of cable cells',total_number_cable_cells,0,output_to_screen_flag)
   CALL write_line_integer('Total number of excitation cells',total_number_excitation_cells,0,output_to_screen_flag)
-  CALL write_line_integer('Total number of output cells',total_number_output_cells,0,output_to_screen_flag)
- 
+  CALL write_line_integer('Total number of PML cells',total_number_of_PML_cells,0,output_to_screen_flag)
+  CALL write_line_integer('Total number of PML material cells',total_number_of_PML_material_cells,0,output_to_screen_flag)
+  CALL write_line_integer('Total number of PML free space cells',total_number_of_PML_free_space_cells,0,output_to_screen_flag)
+
   if (rank.eq.0) then
     write(info_file_unit,*)' ____________________________________________________'
     write(info_file_unit,*)''
@@ -253,6 +269,9 @@ IMPLICIT NONE
     CALL write_line_integer(' Total number of cable cells',total_number_cable_cells,info_file_unit,.TRUE.)
     CALL write_line_integer(' Total number of excitation cells',total_number_excitation_cells,info_file_unit,.TRUE.)
     CALL write_line_integer(' Total number of output cells',total_number_output_cells,info_file_unit,.TRUE.)
+    CALL write_line_integer(' Total number of PML cells',total_number_of_PML_cells,info_file_unit,.TRUE.)
+    CALL write_line_integer(' Total number of PML material cells',total_number_of_PML_material_cells,info_file_unit,.TRUE.)
+    CALL write_line_integer(' Total number of PML free space cells',total_number_of_PML_free_space_cells,info_file_unit,.TRUE.)
   end if
   
   n_special_cells=special_cell_count
@@ -269,23 +288,73 @@ IMPLICIT NONE
   end if  
   
   if (PML_material_intersection_flag) then
+  
     CALL write_line('Warning in set_cell_update_codes:',warning_file_unit,.TRUE.)
     CALL write_line('Material intersects PML',warning_file_unit,.TRUE.)
-    STOP 1
+    
+    write(*,*)'Warning in set_cell_update_codes:'
+    write(*,*)'Material intersects PML'
+    
+    do local_material=1,n_volume_materials
+      if ( material_intersects_PML(local_material).NE.0 ) then
+      
+        write(*,*)
+        write(warning_file_unit,*)'Material number:',local_material,' type=',volume_material_list(local_material)%type
+	
+	if ( volume_material_list(local_material)%type.EQ.volume_material_type_DISPERSIVE ) then
+	
+	  write(*,*)'DISPERSIVE MATERIAL'
+	  write(*,*)'Permittivity aorder, border:',volume_material_list(local_material)%eps_S%a%order, &
+	                                           volume_material_list(local_material)%eps_S%b%order          
+	  
+	  write(*,*)'Permeability aorder, border:',volume_material_list(local_material)%mu_S%a%order,  &
+	                                           volume_material_list(local_material)%mu_S%b%order          
+
+! Check for dispersive materials	  
+	  if (volume_material_list(local_material)%eps_S%a%order.NE.0) then
+	    write(*,*)'PML fatal error: dispersive material found, material number',local_material
+	    STOP 1
+	  end if
+	  if (volume_material_list(local_material)%eps_S%b%order.NE.0) then
+	    write(*,*)'PML fatal error: dispersive material found, material number',local_material
+	    STOP 1
+	  end if
+	  if (volume_material_list(local_material)%mu_S%a%order.NE.0) then
+	    write(*,*)'PML fatal error: dispersive material found, material number',local_material
+	    STOP 1
+	  end if
+	  if (volume_material_list(local_material)%mu_S%b%order.NE.0) then
+	    write(*,*)'PML fatal error: dispersive material found, material number',local_material
+	    STOP 1
+	  end if
+	
+	end if
+      
+      end if
+      
+    end do
+        
   end if  
   
   if (PML_cable_intersection_flag) then
     CALL write_line('Warning in set_cell_update_codes:',warning_file_unit,.TRUE.)
     CALL write_line('Cable intersects PML',warning_file_unit,.TRUE.)
+    write(*,*)'Warning in set_cell_update_codes:'
+    write(*,*)'Cable intersects PML'
+    
     STOP 1
   end if  
   
   if (PML_excitation_intersection_flag) then
     CALL write_line('Warning in set_cell_update_codes:',warning_file_unit,.TRUE.)
     CALL write_line('Excitation intersects PML',warning_file_unit,.TRUE.)
+    write(*,*)'Warning in set_cell_update_codes:'
+    write(*,*)'Excitation intersects PML'
     STOP 1
   end if  
-  
+    
+  DEALLOCATE( material_intersects_PML )
+
   CALL write_line('FINISHED: set_cell_update_codes',0,output_to_screen_flag)
 
 

@@ -795,6 +795,14 @@ IMPLICIT NONE
     
       first_external=face_junction_list(cable_face)%external_conductor_count(jface)+1
 
+! ************ TEMP FOR TESTING ************      
+     write(*,*)'cable=',cable
+     write(*,*)'junction=',junction
+     write(*,*)'first_internal=',first_internal
+     write(*,*)'n_internal=',n_internal
+     write(*,*)'first_external=',first_external
+! ************ TEMP FOR TESTING ************      
+
 ! copy P matrix from cable_junction_list into face_junction_list   
 
       face_junction_list(cable_face)%P_matrix_list(jface)%	&

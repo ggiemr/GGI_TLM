@@ -1173,6 +1173,7 @@ IMPLICIT NONE
   if (allocated( V_pbc_y_save )) DEALLOCATE (V_pbc_y_save)
   
   if (allocated( PML_cell_data )) DEALLOCATE ( PML_cell_data )
+  if (allocated( PML_material_cell_data )) DEALLOCATE ( PML_material_cell_data )
   if (allocated( PML_parameters )) DEALLOCATE ( PML_parameters )
   
   CALL write_line('FINISHED: deallocate_mesh',0,output_to_screen_flag)

@@ -154,7 +154,8 @@ END TYPE excitation_mode_type
   integer,parameter	:: excitation_function_type_differential_gaussian=9
   integer,parameter	:: excitation_function_type_noise=10
   integer,parameter	:: excitation_function_type_sinusoidal_pulse=11
-  integer,parameter	:: excitation_function_type_file=12
+  integer,parameter	:: excitation_function_type_ring_wave=12
+  integer,parameter	:: excitation_function_type_file=13
   
   integer,parameter	:: source_type_hard=0
   integer,parameter	:: source_type_soft=1

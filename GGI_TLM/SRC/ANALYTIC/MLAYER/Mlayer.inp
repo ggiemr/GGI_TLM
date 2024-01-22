@@ -1,4 +1,4 @@
-1
+1            : number of layers
 0.0          : incident angle (measured from normal)
 TE           : incident polarisation (TE/TM)
 1e6 1e9 1e6  : fmin,fmax fstep
@@ -6,6 +6,13 @@ TE           : incident polarisation (TE/TM)
 THIN_LAYER     : layer type (MATERIAL or THIN_LAYER)
 /home/cs/EM_MODEL_DATA/MATERIAL_DATA/Rsheet=377
 
+1            : number of layers
+0.0          : incident angle (measured from normal)
+TE           : incident polarisation (TE/TM)
+1e6 1e9 1001  log : fmin,fmax nf log
+1	     : LAYER NUMBER
+THIN_LAYER     : layer type (MATERIAL or THIN_LAYER)
+/home/cs/EM_MODEL_DATA/MATERIAL_DATA/Rsheet=377
 
 
 2            : number of layers

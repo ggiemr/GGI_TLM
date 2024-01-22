@@ -20,7 +20,7 @@ TLM_set_small_to_zero.o
 
 default: $(TLM_SOLVER_OBJS) 
 
-%.o: %.F90 connect_normal_to_x.F90  connect_normal_to_y.F90  connect_normal_to_z.F90 scatter_PML.F90
+%.o: %.F90 connect_normal_to_x.F90  connect_normal_to_y.F90  connect_normal_to_z.F90 scatter_PML.F90 scatter_PML_material.F90
 	$(FC) $(FLAGS) -c $<
 
 clean:

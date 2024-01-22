@@ -147,6 +147,8 @@ IMPLICIT NONE
   
   CALL allocate_volume_material_filter_data()
   
+  CALL allocate_PML_material_data()
+  
   CALL allocate_surface_material_filter_data()
   
   CALL initialise_wrap_outer_boundary()

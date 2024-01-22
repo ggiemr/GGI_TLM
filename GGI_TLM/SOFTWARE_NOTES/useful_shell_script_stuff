@@ -121,7 +121,10 @@ sed -i s/OLD_TEXT/NEW_TEXT/g file.txt
 
 # replace tabs with spaces in file and replace in the original file
 sed -i 's/\t/    /g' file.txt
-      
+
+# multiple replacements
+sed "s/#X11/$X11/g ; s/#X22/$X22/g" input_file_TEMPLATE.inp > input_file.inp
+
 ### Check the status of the process just finished
 RETURN_CODE=$?        
 if [[ $RETURN_CODE != 0 ]] ; then

@@ -169,6 +169,7 @@ IMPLICIT NONE
   
   real*8	:: amplitude
   real*8	:: delay,width
+  real*8        :: time2
   real*8	:: frequency,phase
   real*8	:: gaussian_function
   real*8	:: alpha
@@ -198,6 +199,7 @@ IMPLICIT NONE
     do timestep=1,n_timesteps
     
       time=(timestep-1)*dt
+      time2=time+dt/2d0     ! half timestep advanced for face excitation value
 
       if (excitation_functions(excitation_number)%type.EQ.excitation_function_type_impulse) then
 
@@ -226,10 +228,11 @@ IMPLICIT NONE
 	else
 	  excitation_functions(excitation_number)%value(timestep)=0D0
 	end if
-	
-	if (abs(time+dt/2d0-delay).lt.width*5) then
+
+! Value on face	
+	if (abs(time2-delay).lt.width*5) then
 	  excitation_functions(excitation_number)%value_face(timestep)=	&
-		                               amplitude*( exp(-((time+dt/2d0-delay)/width)**2) )
+		                               amplitude*( exp(-((time2-delay)/width)**2) )
 	else
 	  excitation_functions(excitation_number)%value_face(timestep)=0D0
 	end if
@@ -254,11 +257,12 @@ IMPLICIT NONE
 	  excitation_functions(excitation_number)%value(timestep)=amplitude
 	end if
 	
-	if (time-dt/2d0.LT.delay) then
+! Value on face	
+	if (time2.LT.delay) then
 	
-	  if (abs(time-dt/2d0-delay).lt.width*5) then
+	  if (abs(time2-delay).lt.width*5) then
 	    excitation_functions(excitation_number)%value_face(timestep)=	&
-		                               amplitude*( exp(-((time-dt/2d0-delay)/width)**2) )
+		                               amplitude*( exp(-((time2-delay)/width)**2) )
 	  else
 	    excitation_functions(excitation_number)%value_face(timestep)=0D0
 	  end if
@@ -279,7 +283,8 @@ IMPLICIT NONE
 	  excitation_functions(excitation_number)%value(timestep)=0D0
 	end if
 	
-	if (time+dt/2d0.GE.delay) then
+! Value on face	
+	if (time2.GE.delay) then
 	  excitation_functions(excitation_number)%value_face(timestep)=amplitude
 	else
 	  excitation_functions(excitation_number)%value_face(timestep)=0D0
@@ -294,8 +299,9 @@ IMPLICIT NONE
 	excitation_functions(excitation_number)%value(timestep)=	&
                              amplitude*sin(2d0*pi*frequency*time-phase)
 
+! Value on face	
 	excitation_functions(excitation_number)%value_face(timestep)=	&
-                             amplitude*sin(2d0*pi*frequency*(time+dt/2d0)-phase)
+                             amplitude*sin(2d0*pi*frequency*time2-phase)
 	
       else if (excitation_functions(excitation_number)%type.EQ.excitation_function_type_gaussian_sinusoid) then
       
@@ -315,15 +321,15 @@ IMPLICIT NONE
 	excitation_functions(excitation_number)%value(timestep)=	&
                              amplitude*gaussian_function*sin(2d0*pi*frequency*(time-delay)-phase)
 
-! half timestep evaluation	
-	if (abs(time+dt/2d0-delay).lt.width*5) then
-	  gaussian_function=( exp(-((time+dt/2d0-delay)/width)**2) )
+! Value on face	
+	if (abs(time2-delay).lt.width*5) then
+	  gaussian_function=( exp(-((time2-delay)/width)**2) )
 	else
 	  gaussian_function=0D0
 	end if
 
 	excitation_functions(excitation_number)%value_face(timestep)=	&
-                             amplitude*gaussian_function*sin(2d0*pi*frequency*(time+dt/2d0)-phase)
+                             amplitude*gaussian_function*sin(2d0*pi*frequency*(time2-delay)-phase)
 
 	
       else if (excitation_functions(excitation_number)%type.EQ.excitation_function_type_gaussian_step_sinusoid) then
@@ -350,12 +356,11 @@ IMPLICIT NONE
 	excitation_functions(excitation_number)%value(timestep)=	&
                              amplitude*gaussian_function*sin(2d0*pi*frequency*time-phase)
 
-! half timestep evaluation	
+! Value on face	
+	if (time2.LT.delay) then
 	
-	if (time-dt/2d0.LT.delay) then
-	
-	  if (abs(time-dt/2d0-delay).lt.width*5) then
-	    gaussian_function=( exp(-((time-dt/2d0-delay)/width)**2) )
+	  if (abs(time2-delay).lt.width*5) then
+	    gaussian_function=( exp(-((time2-delay)/width)**2) )
 	  else
 	    gaussian_function=0D0
 	  end if
@@ -365,7 +370,7 @@ IMPLICIT NONE
 	end if
 
 	excitation_functions(excitation_number)%value_face(timestep)=	&
-                             amplitude*gaussian_function*sin(2d0*pi*frequency*(time+dt/2d0)-phase)
+                             amplitude*gaussian_function*sin(2d0*pi*frequency*time2-phase)
 
       else if (excitation_functions(excitation_number)%type.EQ.excitation_function_type_double_exponential) then
 
@@ -386,9 +391,8 @@ IMPLICIT NONE
       
         end if  
 
-! half timestep evaluation	
-
-        if (time-dt/2d0.ge.0d0) then
+! Value on face	
+        if (time2.ge.0d0) then
     
           amplitude=1d0/excitation_functions(excitation_number)%parameters(1)
           alpha=1d0/excitation_functions(excitation_number)%parameters(2)
@@ -397,7 +401,7 @@ IMPLICIT NONE
           fpeak=(exp(-alpha*tpeak)-exp(-beta*tpeak))
                                  
           excitation_functions(excitation_number)%value_face(timestep)=	&
-              (amplitude/fpeak)*(exp(-alpha*time-dt/2d0)-exp(-beta*time-dt/2d0))
+              (amplitude/fpeak)*(exp(-alpha*time2)-exp(-beta*time2))
       
         else
     
@@ -422,9 +426,10 @@ IMPLICIT NONE
 	  excitation_functions(excitation_number)%value(timestep)=0D0
 	end if
 	
-	if (abs(time+dt/2d0-delay).lt.width*5) then
+! Value on face	
+	if (abs(time2-delay).lt.width*5) then
 	  excitation_functions(excitation_number)%value_face(timestep)=	&
-		              -2d0*((time+dt/2d0-delay)/width**2)*amplitude*( exp(-((time+dt/2d0-delay)/width)**2) )/fpeak
+		              -2d0*((time2-delay)/width**2)*amplitude*( exp(-((time2-delay)/width)**2) )/fpeak
 	else
 	  excitation_functions(excitation_number)%value_face(timestep)=0D0
 	end if
@@ -436,6 +441,7 @@ IMPLICIT NONE
         CALL random_number(r_random)
 	excitation_functions(excitation_number)%value(timestep)=amplitude*(r_random-0.5d0)
 	  
+! Value on face	
         CALL random_number(r_random)
 	excitation_functions(excitation_number)%value_face(timestep)=	amplitude*(r_random-0.5d0)
 	
@@ -462,19 +468,58 @@ IMPLICIT NONE
 	excitation_functions(excitation_number)%value(timestep)=	&
 	     amplitude*pulse_amplitude*sin(2d0*pi*frequency*time-phase)
 	  
-! half timestep excitation	  
+! Value on face	
 ! work out the trapezoidal pulse amplitude (between 0 and 1)	
 	pulse_amplitude=0d0
-	if ( (time+dt/2d0.ge.t1).AND.(time+dt/2d0.lt.t2) ) then
-	  pulse_amplitude=(time+dt/2d0-t1)/(t2-t1)
-	else if ( (time+dt/2d0.ge.t2).AND.(time+dt/2d0.le.t3) ) then
+	if ( (time2.ge.t1).AND.(time2.lt.t2) ) then
+	  pulse_amplitude=(time2-t1)/(t2-t1)
+	else if ( (time2.ge.t2).AND.(time2.le.t3) ) then
 	  pulse_amplitude=1d0
-	else if ( (time+dt/2d0.ge.t3).AND.(time+dt/2d0.le.t4) ) then
-	  pulse_amplitude=(t4-(time+dt/2d0))/(t4-t3)
+	else if ( (time2.ge.t3).AND.(time2.le.t4) ) then
+	  pulse_amplitude=(t4-time2)/(t4-t3)
 	end if
 	  
 	excitation_functions(excitation_number)%value_face(timestep)=	&
-	     amplitude*pulse_amplitude*sin(2d0*pi*frequency*(time+dt/2d0)-phase)
+	     amplitude*pulse_amplitude*sin(2d0*pi*frequency*time2-phase)
+
+      else if (excitation_functions(excitation_number)%type.EQ.excitation_function_type_ring_wave) then
+
+        if (time.ge.0d0) then
+    
+          amplitude=excitation_functions(excitation_number)%parameters(1)
+          alpha=1d0/excitation_functions(excitation_number)%parameters(2)
+          beta=1d0/excitation_functions(excitation_number)%parameters(3)
+          frequency=excitation_functions(excitation_number)%parameters(4)
+          tpeak=(log(beta)-log(alpha))/(beta-alpha)
+          fpeak=(exp(-alpha*tpeak)-exp(-beta*tpeak))
+      
+          excitation_functions(excitation_number)%value(timestep)=	&
+           (amplitude/fpeak)*(exp(-alpha*time)-exp(-beta*time))*sin(2d0*pi*frequency*time)
+      
+        else
+    
+          excitation_functions(excitation_number)%value(timestep)=0d0
+      
+        end if  
+
+! Value on face	
+        if (time2.ge.0d0) then
+    
+          amplitude=1d0/excitation_functions(excitation_number)%parameters(1)
+          alpha=1d0/excitation_functions(excitation_number)%parameters(2)
+          beta=1d0/excitation_functions(excitation_number)%parameters(3)
+          frequency=excitation_functions(excitation_number)%parameters(4)
+          tpeak=(log(beta)-log(alpha))/(beta-alpha)
+          fpeak=(exp(-alpha*tpeak)-exp(-beta*tpeak))
+          
+	  excitation_functions(excitation_number)%value_face(timestep)=	&
+	     (amplitude/fpeak)*(exp(-alpha*time2)-exp(-beta*time2))*sin(2d0*pi*frequency*time2)
+      
+        else
+    
+          excitation_functions(excitation_number)%value_face(timestep)=0d0
+      
+        end if  
 
       else if (excitation_functions(excitation_number)%type.EQ.excitation_function_type_file) then
       
@@ -489,8 +534,9 @@ IMPLICIT NONE
 	                               excitation_functions(excitation_number)%time_values_from_file,	&
 	                               excitation_functions(excitation_number)%function_values_from_file)
 	
+! Value on face	
 	excitation_functions(excitation_number)%value_face(timestep)=					&
-	amplitude*interpolate_function(time+dt/2d0-delay,						&
+	amplitude*interpolate_function(time2-delay,						&
 	                               excitation_functions(excitation_number)%n_values_from_file,	&
 	                               excitation_functions(excitation_number)%time_values_from_file,	&
 	                               excitation_functions(excitation_number)%function_values_from_file)

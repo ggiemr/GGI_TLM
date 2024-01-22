@@ -161,6 +161,11 @@ real*8,allocatable	  :: read_data(:)
     
       n_params=7
       excitation_functions(excitation_number)%type=excitation_function_type_sinusoidal_pulse
+   
+    else if (input_line.eq.'ring_wave') then
+    
+      n_params=4
+      excitation_functions(excitation_number)%type=excitation_function_type_ring_wave
 
     else
 

@@ -159,7 +159,7 @@ IMPLICIT NONE
   
   write(local_file_unit,'(A,A)'),	&
 	'    frequency       Re{Beta}     Im{Beta}       Re{Z}          Im{Z}',	&
-	'         Re{R}          Im{R}        |R|          |R|(dB)      Re{w/Beta} '
+	'         Re{R}          Im{R}        |R|          |R|(dB)      Re{w/Beta}    1-|R|**2'
  
   write(local_file_unit2,'(A)'),'    frequency        Re{Zs}       Im{Zs}'
   
@@ -180,11 +180,12 @@ IMPLICIT NONE
     Zs= Z*(1d0+R)/(1d0-R)
     
     write(local_file_unit,8000)frequency,dble(beta),dimag(beta),dble(Z),dimag(Z),	&
-                                         dble(R),dimag(R),abs(R),20d0*log10(abs(R)),dble(w/beta)	 
+                                         dble(R),dimag(R),abs(R),20d0*log10(abs(R)),    &
+					 dble(w/beta),1d0-abs(R)**2
     
     write(local_file_unit2,8010)frequency,dble(zs),dimag(Zs),abs(Zs) 
 
-8000     format(10E14.5)
+8000     format(11E14.5)
 8010     format(4E14.5)
     
   end do ! next frequency value

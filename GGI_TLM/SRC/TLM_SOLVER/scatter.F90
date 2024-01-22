@@ -112,6 +112,7 @@ IMPLICIT NONE
 ! PML parameters
 
   integer       :: PML_cell
+  integer       :: PML_material_cell
   integer       :: PML_parameter
   real*8        :: sx,sy,sz
   real*8        :: ax,ay,az
@@ -120,12 +121,29 @@ IMPLICIT NONE
   real*8        :: Vyxt,Vzxt,Vxyt,Vzyt,Vyzt,Vxzt
   
   real*8        :: Ixt,Iyt,Izt
+  
   real*8        :: last_Ixt,last_Iyt,last_Izt
   real*8        :: last_Ix,last_Iy,last_Iz
   real*8        :: last_Vi(12)
   
   real*8        :: last_Vxt,last_Vyt,last_Vzt
   real*8        :: last_Vyxt,last_Vzxt,last_Vxyt,last_Vzyt,last_Vyzt,last_Vxzt
+
+! new notation for PML in materials
+  
+  real*8        :: Ixt_m1,Iyt_m1,Izt_m1
+  real*8        :: Ix_m1,Iy_m1,Iz_m1
+  real*8        :: Vi_m1(12)
+  
+  real*8        :: Vxt_m1,Vyt_m1,Vzt_m1
+  real*8        :: Vyxt_m1,Vzxt_m1,Vxyt_m1,Vzyt_m1,Vyzt_m1,Vxzt_m1
+  
+  real*8        :: Ixt_m2,Iyt_m2,Izt_m2
+  real*8        :: Ix_m2,Iy_m2,Iz_m2
+  real*8        :: Vi_m2(12)
+  
+  real*8        :: Vxt_m2,Vyt_m2,Vzt_m2
+  real*8        :: Vyxt_m2,Vzxt_m2,Vxyt_m2,Vzyt_m2,Vyzt_m2,Vxzt_m2
   
   real*8        :: Vx_PML_shunt,Vy_PML_shunt,Vz_PML_shunt
   real*8        :: Vyx_PML_series,Vzx_PML_series,Vxy_PML_series,Vzy_PML_series,Vyz_PML_series,Vxz_PML_series
@@ -134,12 +152,49 @@ IMPLICIT NONE
   real*8        :: Vxny_PML,Vxpy_PML,Vzny_PML,Vzpy_PML  
   real*8        :: Vxnz_PML,Vxpz_PML,Vynz_PML,Vypz_PML
   
+  real*8        :: Vosx,Vosx_m1,Vosx_m2
+  real*8        :: Vosy,Vosy_m1,Vosy_m2
+  real*8        :: Vosz,Vosz_m1,Vosz_m2
+  
+  real*8        :: Vssx
+  real*8        :: Vssy
+  real*8        :: Vssz
+  
+  real*8        :: Vcx,Vcx_m1,Vcx_m2
+  real*8        :: Vcy,Vcy_m1,Vcy_m2
+  real*8        :: Vcz,Vcz_m1,Vcz_m2
+
   real*8        :: exp_x,exp_y,exp_z
   real*8        :: exp_xi,exp_yi,exp_zi
   real*8        :: exp_xr,exp_yr,exp_zr
   real*8        :: Csx,Csy,Csz
   real*8        :: Csx2,Csy2,Csz2
   real*8        :: Csy_sz,Csz_sx,Csx_sy
+  
+  real*8        :: Ax0,Ax1,Ax2, Ay0,Ay1,Ay2, Az0,Az1,Az2
+  real*8        :: Bx0,Bx1,Bx2, By0,By1,By2, Bz0,Bz1,Bz2
+  real*8        :: Cx0,Cx1,Cx2, Cy0,Cy1,Cy2, Cz0,Cz1,Cz2
+  real*8        :: Dx0,Dx1,Dx2, Dy0,Dy1,Dy2, Dz0,Dz1,Dz2
+  
+  real*8        :: Sx0,Sx1,Sx2, Sy0,Sy1,Sy2, Sz0,Sz1,Sz2 
+  real*8        :: Tx0,Tx1,Tx2, Ty0,Ty1,Ty2, Tz0,Tz1,Tz2 
+
+  real*8        :: Uxy0,Uxy1, Uyz0,Uyz1, Uzx0,Uzx1
+  real*8        :: Uyx0,Uyx1, Uzy0,Uzy1, Uxz0,Uxz1
+  real*8        :: Wxy0,Wxy1, Wyz0,Wyz1, Wzx0,Wzx1
+  real*8        :: Wyx0,Wyx1, Wzy0,Wzy1, Wxz0,Wxz1
+  
+  real*8        :: GpY2
+  real*8        :: ZpR
+  
+  real*8        :: Px0,Px1,Px2, Py0,Py1,Py2, Pz0,Pz1,Pz2 
+  real*8        :: Qx0,Qx1,Qx2, Qy0,Qy1,Qy2, Qz0,Qz1,Qz2 
+  
+  real*8        :: Vsx_m1,Vsx_m2
+  real*8        :: Vsy_m1,Vsy_m2
+  real*8        :: Vsz_m1,Vsz_m2
+  
+  real*8        :: Vsx_temp,Vsy_temp,Vsz_temp
   
   real*8        :: loss_dist_inc,loss_dist_ref
   
@@ -492,8 +547,34 @@ IMPLICIT NONE
   	    V(Vz_ymax,cx,cy,cz)=Vz-Z0*Ix-V_min        
           
           else
-          
+
+! We are in a PML cell
+	    material_number=cell_update_code_to_material_data(special_cell_count,1)
+	    if (material_number.ne.0) then
+	      material_type=volume_material_list(material_number)%type
+	    else
+	      material_type=0
+	    end if
+
+            if (material_type.eq.volume_material_type_PEC) then  
+
+              write(*,*)'ERROR: PEC volume material in PML'
+	      STOP 1
+	    
+            else if (material_type.eq.volume_material_type_PMC) then
+
+              write(*,*)'ERROR: PMC volume material in PML'
+	      STOP 1
+
+            else if (material_type.eq.volume_material_type_DISPERSIVE) then
+	      	       
+#include "scatter_PML_material.F90"
+ 	      
+	    else
+ 
 #include "scatter_PML.F90"
+
+            end if      ! material or free space PML update 
   
           end if  ! PML
  

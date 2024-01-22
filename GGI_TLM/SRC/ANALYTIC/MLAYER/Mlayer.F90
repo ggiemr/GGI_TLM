@@ -71,12 +71,24 @@ IMPLICIT NONE
   
   overflow_error=.FALSE.
   
-  n_frequencies=int( (fmax-fmin)/fstep )+1
-
+  if (logf_flag) then
+    n_frequencies=nf
+    logfmin=log10(fmin)
+    logfmax=log10(fmax)
+    logfstep=(logfmax-logfmin)/dble(nf-1)
+  else
+    n_frequencies=int( (fmax-fmin)/fstep )+1
+  end if
+  
   do frequency_loop=1,n_frequencies
 
-    f=fmin+(frequency_loop-1)*fstep
-  
+    if (logf_flag) then
+      logf=logfmin+(frequency_loop-1)*logfstep
+      f=10d0**logf
+    else
+      f=fmin+(frequency_loop-1)*fstep    
+    end if
+    
     w=2d0*pi*f
   
     call calc_Sparams()

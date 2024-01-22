@@ -70,6 +70,10 @@ IMPLICIT NONE
   integer polarisation
   
   real*8 w,f,fmin,fmax,fstep
+  integer :: nf
+  logical :: logf_flag
+  
+  real*8 logf,logfmin,logfmax,logfstep
   
   integer,allocatable :: layer_type(:)
   real*8,allocatable  :: layer_thickness(:)

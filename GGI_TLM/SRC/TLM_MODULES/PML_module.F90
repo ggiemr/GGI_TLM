@@ -117,6 +117,8 @@ TYPE::PML_data_type
 
   integer :: PML_parameter_array_pos ! position in PML_parameters array to find the correct constants for this cell
   
+  integer :: PML_material_array_pos ! position in PML_in_material_data array to find the correct data for material cells
+  
   real*8  :: Vxt,Vyt,Vzt
   real*8  :: Ix,Iy,Iz
   real*8  :: Ixt,Iyt,Izt
@@ -124,6 +126,33 @@ TYPE::PML_data_type
   real*8  :: Vyxt,Vzxt,Vxyt,Vzyt,Vyzt,Vxzt
 
 END TYPE PML_data_type
+
+! data for each PML cell i.e. voltage and current values to be saved for each cell
+TYPE::PML_material_data_type
+  
+  real*8  :: Vxt_m1,Vyt_m1,Vzt_m1
+  real*8  :: Ix_m1,Iy_m1,Iz_m1
+  real*8  :: Ixt_m1,Iyt_m1,Izt_m1
+  real*8  :: Vi_m1(12)
+  real*8  :: Vyxt_m1,Vzxt_m1,Vxyt_m1,Vzyt_m1,Vyzt_m1,Vxzt_m1
+  
+  real*8  :: Vosxr,Vosx,Vosx_m1
+  real*8  :: Vosyr,Vosy,Vosy_m1
+  real*8  :: Voszr,Vosz,Vosz_m1
+  
+  real*8  :: Vssxr
+  real*8  :: Vssyr
+  real*8  :: Vsszr
+  
+  real*8  :: Vsx,Vsx_m1
+  real*8  :: Vsy,Vsy_m1
+  real*8  :: Vsz,Vsz_m1
+  
+  real*8  :: Vcx,Vcx_m1
+  real*8  :: Vcy,Vcy_m1
+  real*8  :: Vcz,Vcz_m1
+
+END TYPE PML_material_data_type
 
 integer :: PML_array_size
 integer :: PML_n_parameters
@@ -133,5 +162,11 @@ type(PML_material_type),allocatable :: PML_parameters(:)
 integer	:: total_number_of_PML_cells
 
 type(PML_data_type),allocatable :: PML_cell_data(:)
+
+type(PML_material_data_type),allocatable :: PML_material_cell_data(:)
+
+integer	:: total_number_of_PML_material_cells
+
+integer	:: total_number_of_PML_free_space_cells
 
 END MODULE PML_module

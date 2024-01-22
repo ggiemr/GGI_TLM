@@ -158,6 +158,8 @@ IMPLICIT NONE
   integer   material_name_length
   integer   thin_layer_name_length
   
+  character(LEN=80) ::  line_in
+  
   type(SFilter) :: filter_in
   
 ! START
@@ -194,13 +196,38 @@ IMPLICIT NONE
   write(*,*)'Polarisation type=',polarisation
   write(info_file_unit,*)'Polarisation type=',polarisation
   
-  read(input_file_unit,*,END=9000,ERR=9010)fmin,fmax,fstep
-  write(*,*)'fmin=',fmin
-  write(*,*)'fmax=',fmax
-  write(*,*)'fstep=',fstep
-  write(info_file_unit,*)'fmin=',fmin
-  write(info_file_unit,*)'fmax=',fmax
-  write(info_file_unit,*)'fstep=',fstep
+  
+  read(input_file_unit,'(A80)',END=9000,ERR=9010)line_in
+  
+  if(index(line_in,'log').NE.0) then
+  
+    logf_flag=.TRUE.
+    read(line_in,*,END=9000,ERR=9010)fmin,fmax,nf
+    write(*,*)'logarithmic Frequency range'
+    write(*,*)'fmin=',fmin
+    write(*,*)'fmax=',fmax
+    write(*,*)'nf=',nf
+    write(info_file_unit,*)'logarithmic Frequency range'
+    write(info_file_unit,*)'fmin=',fmin
+    write(info_file_unit,*)'fmax=',fmax
+    write(info_file_unit,*)'nf=',nf
+  
+  else
+  
+    read(line_in,*,END=9000,ERR=9010)fmin,fmax,fstep
+  
+    logf_flag=.FALSE.
+    write(*,*)'linear Frequency range'
+    write(*,*)'fmin=',fmin
+    write(*,*)'fmax=',fmax
+    write(*,*)'fstep=',fstep
+    write(info_file_unit,*)'linear Frequency range'
+    write(info_file_unit,*)'fmin=',fmin
+    write(info_file_unit,*)'fmax=',fmax
+    write(info_file_unit,*)'fstep=',fstep
+  
+  end if
+  
   
   call allocate_memory()
   

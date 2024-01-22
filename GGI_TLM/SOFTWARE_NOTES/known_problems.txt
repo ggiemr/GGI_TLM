@@ -457,4 +457,7 @@ FIXED in read_cable_geometry_list.F90
 145 The revised sphere geometry does not work properly when transformations are applied. Fixed 12/11/2019
 
 146 Need to document the developments to frequency_output_volumes : include xyz output and 'output_every' options
-146 
+
+147 Need to sort out some half timestep discrepancies in face excitation function calculation in excitation.F90
+			
+148 Document ring_wave function in excitation.F90 to model emissions from power converters

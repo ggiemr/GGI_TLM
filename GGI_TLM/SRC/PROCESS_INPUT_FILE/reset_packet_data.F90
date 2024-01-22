@@ -113,6 +113,7 @@ IMPLICIT NONE
   run_ngspice=.FALSE.
   
   set_small_to_zero=.FALSE.
+  n_small_to_zero=1
 
   CALL write_line('FINISHED: reset_packet_data',0,output_to_screen_flag)
   

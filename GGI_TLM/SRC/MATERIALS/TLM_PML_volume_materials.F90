@@ -54,7 +54,7 @@ IMPLICIT NONE
 
   integer	:: volume_number
   integer	:: cell,number_of_cells
-  integer	:: total_number_of_PML_cells_all_procsesses
+  integer	:: total_number_of_PML_cells_all_processes
   integer	:: n_data
   integer	:: cx,cy,cz
   integer	:: dist_xmin,dist_xmax,dist_ymin,dist_ymax,dist_zmin,dist_zmax
@@ -218,6 +218,8 @@ IMPLICIT NONE
   do i=1,total_number_of_PML_cells
 
     PML_cell_data(i)%PML_parameter_array_pos=0
+
+    PML_cell_data(i)%PML_material_array_pos=0
   
     PML_cell_data(i)%Vxt=0d0
     PML_cell_data(i)%Vyt=0d0
@@ -235,7 +237,7 @@ IMPLICIT NONE
     PML_cell_data(i)%Vzyt=0d0
     PML_cell_data(i)%Vyzt=0d0
     PML_cell_data(i)%Vxzt=0d0
-  
+     
   end do
   
   CALL write_line_integer('PML xmin=',pml_xmin,0,output_to_screen_flag)
@@ -320,9 +322,9 @@ IMPLICIT NONE
           PML_parameters(PML_n_parameters)%d_y=pml_y
           PML_parameters(PML_n_parameters)%d_z=pml_z
           
-          sigma_x=PML_conductivity(pml_x,pml_xmin,pml_xmax,pml_s0_xmin,pml_s0_xmax,pml_order)
-          sigma_y=PML_conductivity(pml_y,pml_ymin,pml_ymax,pml_s0_ymin,pml_s0_ymax,pml_order)
-          sigma_z=PML_conductivity(pml_z,pml_zmin,pml_zmax,pml_s0_zmin,pml_s0_zmax,pml_order)
+          sigma_x=PML_conductivity(pml_x,pml_xmin,pml_xmax,pml_s0_xmin,pml_s0_xmax,pml_order) 
+          sigma_y=PML_conductivity(pml_y,pml_ymin,pml_ymax,pml_s0_ymin,pml_s0_ymax,pml_order) 
+          sigma_z=PML_conductivity(pml_z,pml_zmin,pml_zmax,pml_s0_zmin,pml_s0_zmax,pml_order) 
           
           PML_parameters(PML_n_parameters)%sx=sigma_x
           PML_parameters(PML_n_parameters)%sy=sigma_y
@@ -399,19 +401,19 @@ IMPLICIT NONE
 #if defined(MPI)
 
   n_data=1
-  call MPI_REDUCE(total_number_of_PML_cells,total_number_of_PML_cells_all_procsesses , &
+  call MPI_REDUCE(total_number_of_PML_cells,total_number_of_PML_cells_all_processes , &
                     n_data,MPI_INTEGER, MPI_SUM, 0,MPI_COMM_WORLD,ierror)
 		    
 #elif defined(SEQ)
 
-  total_number_of_PML_cells_all_procsesses=total_number_of_PML_cells
+  total_number_of_PML_cells_all_processes=total_number_of_PML_cells
     
 #endif			
 
   if (rank.eq.0) then
     CALL write_line_integer('Total number of PML cells=',	&
-                            total_number_of_PML_cells_all_procsesses,0,output_to_screen_flag)
-    write(info_file_unit,'(A,I14)')'Total number of PML cells=',total_number_of_PML_cells_all_procsesses
+                            total_number_of_PML_cells_all_processes,0,output_to_screen_flag)
+    write(info_file_unit,'(A,I14)')'Total number of PML cells=',total_number_of_PML_cells_all_processes
   end if
  
   if (rank.eq.0) then
@@ -483,7 +485,7 @@ END SUBROUTINE calc_pml_dist
 !
 ! DESCRIPTION
 !     
-!     work out the dconductivity of the first PML cell from which the other cell conductivites are derived
+!     work out the conductivity of the first PML cell from which the other cell conductivites are derived
 !     
 ! COMMENTS
 !     
@@ -507,7 +509,7 @@ IMPLICIT NONE
 ! START
 
   pml_s0=-(eps0*c0/2d0)*log(pml_r)/( dl*abs(N)**(o+1) )
-
+  
 END SUBROUTINE calc_sigma_0
 !
 ! NAME
@@ -577,3 +579,161 @@ else
 end if
 
 END FUNCTION PML_conductivity
+!
+! NAME
+!     SUBROUTINE allocate_PML_material_data()
+!
+! DESCRIPTION
+!     
+!     Allocate the additional data required when material regions intersect PML layers
+!     
+! COMMENTS
+!     
+!
+! HISTORY
+!
+!     started 20/4/2020 CJS
+!
+SUBROUTINE allocate_PML_material_data()
+
+USE Constants
+USE TLM_general
+USE geometry
+USE PML_module
+USE TLM_volume_materials
+USE mesh
+USE cell_parameters
+USE file_information
+
+IMPLICIT NONE
+
+! local variables
+
+  integer	:: cx,cy,cz
+  integer	:: i
+  integer       :: cell_number
+  integer       :: special_cell_count
+  integer       :: material_number
+  integer       :: material_type
+  integer       :: pml_cell
+  integer       :: pml_material_cell
+
+! START
+
+  pml_material_cell=0
+  
+  do cz=nz1,nz2
+    do cy=1,ny
+      do cx=1,nx
+      
+        cell_number=cell_number+1
+	
+	if (cell_centre_update_code(cell_number).NE.0) then   ! special cell update
+	
+	  special_cell_count=cell_centre_update_code(cell_number)
+          
+          PML_cell=cell_update_code_to_PML_data(special_cell_count)
+	  
+          if (PML_cell.NE.0) then
+	  
+! This is a PML cell so check if this is a material cell too
+
+	    material_number=cell_update_code_to_material_data(special_cell_count,1) 
+	    if (material_number.ne.0) then
+	      material_type=volume_material_list(material_number)%type
+	    else
+	      material_type=0
+	    end if
+	    
+	    if (material_type.eq.volume_material_type_DISPERSIVE) then
+            
+	      pml_material_cell=pml_material_cell+1
+                              
+              PML_cell_data(PML_cell)%PML_material_array_pos=pml_material_cell
+	    
+	    else
+	  
+              PML_cell_data(PML_cell)%PML_material_array_pos=0
+	  
+	    end if
+	    
+	  end if
+          
+        end if
+	
+      end do
+    end do
+  end do
+  
+! Check that we have counted correctly...
+  write(*,*)'rank=',rank
+  write(*,*)'pml_material_cell                 =',pml_material_cell
+  write(*,*)'total_number_of_PML_material_cells=',total_number_of_PML_material_cells
+
+  if (pml_material_cell.NE.total_number_of_PML_material_cells) then
+    write(*,*)'PML material cell count discrepancy: pml_material_cell.NE.total_number_of_PML_material_cells'
+    STOP 1
+  end if
+  
+  if (total_number_of_PML_material_cells.Eq.0) RETURN
+
+  ALLOCATE( PML_material_cell_data(1:total_number_of_PML_material_cells) )
+  
+! Reset PML_cell_data
+
+  do i=1,total_number_of_PML_material_cells
+  
+    PML_material_cell_data(i)%Vxt_m1=0d0
+    PML_material_cell_data(i)%Vyt_m1=0d0
+    PML_material_cell_data(i)%Vzt_m1=0d0
+    PML_material_cell_data(i)%Ix_m1=0d0
+    PML_material_cell_data(i)%Iy_m1=0d0
+    PML_material_cell_data(i)%Iz_m1=0d0
+    PML_material_cell_data(i)%Ixt_m1=0d0
+    PML_material_cell_data(i)%Iyt_m1=0d0
+    PML_material_cell_data(i)%Izt_m1=0d0
+    PML_material_cell_data(i)%Vi_m1(1:12)=0d0
+    PML_material_cell_data(i)%Vyxt_m1=0d0
+    PML_material_cell_data(i)%Vzxt_m1=0d0
+    PML_material_cell_data(i)%Vxyt_m1=0d0
+    PML_material_cell_data(i)%Vzyt_m1=0d0
+    PML_material_cell_data(i)%Vyzt_m1=0d0
+    PML_material_cell_data(i)%Vxzt_m1=0d0
+    
+    PML_material_cell_data(i)%Vosxr=0d0
+    PML_material_cell_data(i)%Vosyr=0d0
+    PML_material_cell_data(i)%Voszr=0d0
+     
+    PML_material_cell_data(i)%Vosx=0d0
+    PML_material_cell_data(i)%Vosy=0d0
+    PML_material_cell_data(i)%Vosz=0d0
+       
+    PML_material_cell_data(i)%Vosx_m1=0d0
+    PML_material_cell_data(i)%Vosy_m1=0d0
+    PML_material_cell_data(i)%Vosz_m1=0d0
+     
+    PML_material_cell_data(i)%Vsx=0d0
+    PML_material_cell_data(i)%Vsy=0d0
+    PML_material_cell_data(i)%Vsz=0d0
+     
+    PML_material_cell_data(i)%Vsx_m1=0d0
+    PML_material_cell_data(i)%Vsy_m1=0d0
+    PML_material_cell_data(i)%Vsz_m1=0d0
+     
+    PML_material_cell_data(i)%Vssxr=0d0
+    PML_material_cell_data(i)%Vssyr=0d0
+    PML_material_cell_data(i)%Vsszr=0d0
+     
+    PML_material_cell_data(i)%Vcx=0d0
+    PML_material_cell_data(i)%Vcy=0d0
+    PML_material_cell_data(i)%Vcz=0d0
+       
+    PML_material_cell_data(i)%Vcx_m1=0d0
+    PML_material_cell_data(i)%Vcy_m1=0d0
+    PML_material_cell_data(i)%Vcz_m1=0d0
+   
+  end do
+
+  RETURN
+
+END SUBROUTINE allocate_PML_material_data

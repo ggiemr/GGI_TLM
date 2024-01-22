@@ -24,7 +24,7 @@
 ! STAGE 1: get the parameters for this PML cell
 
             PML_parameter=PML_cell_data(PML_cell)%PML_parameter_array_pos
-   
+	    
             sx=PML_parameters(PML_parameter)%sx
             sy=PML_parameters(PML_parameter)%sy
             sz=PML_parameters(PML_parameter)%sz
@@ -39,14 +39,14 @@
             exp_z=PML_parameters(PML_parameter)%exp_z
 
 ! Loss factor as applied to incident fields            
-            exp_xi=exp_x  !1d0
-            exp_yi=exp_y  !1d0
-            exp_zi=exp_z  !1d0
+            exp_xi=exp_x  
+            exp_yi=exp_y  
+            exp_zi=exp_z  
 
 ! Loss factor as applied to scattered fields
-            exp_xr=exp_x  !exp(-dt*sx)
-            exp_yr=exp_y  !exp(-dt*sy)
-            exp_zr=exp_z  !exp(-dt*sz)           
+            exp_xr=exp_x  
+            exp_yr=exp_y  
+            exp_zr=exp_z  	   
           
             Csx=PML_parameters(PML_parameter)%Csx
             Csy=PML_parameters(PML_parameter)%Csy
@@ -310,4 +310,4 @@
             V(Vynz,cx,cy,cz)=V(Vynz,cx,cy,cz)*exp_yr
             V(Vypz,cx,cy,cz)=V(Vypz,cx,cy,cz)*exp_yr
             
-9999 CONTINUE
+!9999 CONTINUE

@@ -31,6 +31,9 @@ pause -1
 
 pause mouse keypress "press any key in the plot window to continue" 
 
+# ADDING LABELS: screen coordinates are in the range 0 to 1 
+set label "frequency(GHz)" at screen 0.97,0.65 front rotate by -90
+
 # SURFACE PLOT EXAMPLE 
 
 set view 34,228
@@ -80,3 +83,19 @@ set samples 200
 set parametric
 set trange[-1.5708:1.5708]
 replot cos(t),sin(t) lc 1 notitle
+
+# polar plot
+
+set polar
+
+# Greek characters
+
+set termoption enhanced
+
+set xlabel "{/Symbol b}'_x" enhanced
+set ylabel "{/Symbol b}'_y" enhanced
+
+# labels and arrows on the plot
+
+set label " {/Symbol b}'_x=-82.5 \n {/Symbol b}'_y143.0=" at -73,164    
+set arrow from 143.04,0 length 60 angle 30 

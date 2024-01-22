@@ -1,0 +1,26 @@
+# WR90 waveguide mode impedance
+8e9 12e9  # frequency range of validity
+# Z11 filter
+75398223684.0000  # wnormalisation constant
+2   # a order
+   176.954882553514    0.0  1499.38774569197 # a coefficients  
+2   # b order
+   1.00000000000000    0.0  3.94726504660646 # b coefficients
+# Z12 filter
+75398223684.0000  # wnormalisation constant
+0   # a order
+1.0e-12 # a coefficients  
+0   # b order
+1.0 # b coefficients
+# Z21 filter
+75398223684.0000  # wnormalisation constant
+0   # a order
+1.0e-12 # a coefficients  
+0   # b order
+1.0 # b coefficients
+# Z22 filter
+75398223684.0000  # wnormalisation constant
+2   # a order
+   176.954882553514    0.0  1499.38774569197 # a coefficients  
+2   # b order
+   1.00000000000000    0.0  3.94726504660646 # b coefficients

@@ -699,7 +699,13 @@
 
 10/9/2021	CJS: Fix an error with Lorentz type dispersion relations where the filter order of the susceptibility
                      needs to be reduced due to concellation of coefficients.
-			 
+			
+14/12/2023      CJS: implement ring_wave function in excitation.F90 to model emissions from power converters
+			
+14/12/2023      CJS: Sorted out some half timestep discrepancies in face excitation function calculation in excitation.F90 
+
+5/1/2024        CJS: add log frequency option in GGI_Mlayer
+
 Missing Packets...	
 		- SAR_output: DONE - not for dispersive materials though...
 		- Periodic structures: STARTED

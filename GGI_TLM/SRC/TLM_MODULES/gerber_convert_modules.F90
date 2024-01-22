@@ -36,9 +36,9 @@ MODULE gerber_parameters
 IMPLICIT NONE
 
 integer,parameter :: line_length=1000
-integer,parameter :: maxDcodes=100
-integer,parameter :: maxAparams=10                ! note, this includes aperture macros
-integer,parameter :: maxAM=10                     ! maximum number of aperture macros
+integer,parameter :: maxDcodes=10000
+integer,parameter :: maxAparams=100               ! note, this includes aperture macros
+integer,parameter :: maxAM=100                    ! maximum number of aperture macros
 integer,parameter :: maxAM_primitives=100         ! maximum number aperture macro primitives
 integer,parameter :: maxAM_modifiers=100          ! maximum number of modifiers in an aperture macro primitive
 
