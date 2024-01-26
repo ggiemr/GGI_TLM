@@ -7,6 +7,7 @@ rm compilation_date.inc
 cd ..
 cd TEST_DATA
 run_automatic_test clean_all
+run_automatic_test clean_all NGSPICE_TEST_CASE_LIST
 cd ..
 cd ANALYTIC_TEST_DATA
 run_automatic_test clean
