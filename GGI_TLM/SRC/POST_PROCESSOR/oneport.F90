@@ -157,11 +157,11 @@ IMPLICIT NONE
 
   n_frequencies=function_of_frequency(1)%n_frequencies
   
-  write(local_file_unit,'(A,A)'),	&
+  write(local_file_unit,'(A,A)')	&
 	'    frequency       Re{Beta}     Im{Beta}       Re{Z}          Im{Z}',	&
 	'         Re{R}          Im{R}        |R|          |R|(dB)      Re{w/Beta}    1-|R|**2'
  
-  write(local_file_unit2,'(A)'),'    frequency        Re{Zs}       Im{Zs}'
+  write(local_file_unit2,'(A)')'    frequency        Re{Zs}       Im{Zs}'
   
   do frequency_loop=1,n_frequencies
   

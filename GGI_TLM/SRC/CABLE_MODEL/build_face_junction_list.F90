@@ -126,7 +126,9 @@ IMPLICIT NONE
     ix  =cable_segment%segment_point(1)%cell%i
     iy  =cable_segment%segment_point(1)%cell%j
     iz  =cable_segment%segment_point(1)%cell%k
-    CALL get_cell_segment_face(cable_segment%segment_point,face)      
+    
+!    CALL get_cell_segment_face(cable_segment%segment_point,face)   ! type error found 26/1/2024   
+    CALL get_cell_segment_face(cable_segment,face)      
     
     if (bundle_segment_number(ix,iy,iz,face).EQ.0) then
       bundle_segment_number(ix,iy,iz,face)=segment

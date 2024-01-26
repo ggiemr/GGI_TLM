@@ -142,7 +142,7 @@ huygens_test.volume_field.tout
            2  Output surface y
            3  Output surface z
 0
-y
+n
 vector_field
 0 POST PROCESSING OPTION:Quit
 

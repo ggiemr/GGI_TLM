@@ -549,7 +549,7 @@ IMPLICIT NONE
           frequency=               frequency_domain_power_surface(output_surface)%fmin+	&
                 (frequency_loop-1)*frequency_domain_power_surface(output_surface)%fstep
 		
-          write(frequency_domain_power_surface_unit,frequency_domain_output_format),				&
+          write(frequency_domain_power_surface_unit,frequency_domain_output_format)				&
 	        frequency,output_surface,dble(local_Power(frequency_loop)),dimag(local_Power(frequency_loop)),	&
 		dabs(dble(local_Power(frequency_loop))),							&
 		atan2( imag(local_Power(frequency_loop)),dble(local_Power(frequency_loop)) ),			&

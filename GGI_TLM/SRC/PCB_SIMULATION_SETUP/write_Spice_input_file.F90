@@ -70,8 +70,8 @@ character(LEN=256) :: line
     
     write(30,'(A20,I4,A13,I4,A4,I4)')'* GGI_TLM link port ',i,' using nodes ',ngspice_link_node1,' and',ngspice_link_node2
     
-    write(GGI_TLM_voltage_source_name,'(A4,I0)'),'Vtlm',i
-    write(GGI_TLM_resistance_name,'(A4,I0)'),'Rtlm',i
+    write(GGI_TLM_voltage_source_name,'(A4,I0)')'Vtlm',i
+    write(GGI_TLM_resistance_name,'(A4,I0)')'Rtlm',i
     
     write(30,'(A)')'*'
     write(30,'(A)')'* Voltage source with series resistance: equivalent circuit of TLM link'

@@ -202,7 +202,7 @@ IMPLICIT NONE
     mean=mean+f(sample)
   end do
   mean=mean/n_samples
-  write(*,2010),'mean f=     ',mean
+  write(*,2010)'mean f=     ',mean
 
 ! calculate variance       
   variance=0.0       
@@ -210,8 +210,8 @@ IMPLICIT NONE
     variance=variance+((f(sample)-mean)**2)
   end do
   variance=variance/n_samples
-  write(*,2010),'variance f= ',variance
-  write(*,2010),'standard deviation f = ',sqrt(variance)
+  write(*,2010)'variance f= ',variance
+  write(*,2010)'standard deviation f = ',sqrt(variance)
 
 ! get the number of bins for the distribution data
 
@@ -279,7 +279,7 @@ IMPLICIT NONE
   do i=1,nbins
     mean=mean+pdfx(i)*x(i)*dx
   end do
-  write(*,2010),'mean f=     ',mean
+  write(*,2010)'mean f=     ',mean
 2010 format(A,E14.6)
 
 ! calculate variance       
@@ -287,8 +287,8 @@ IMPLICIT NONE
   do i=1,nbins
     variance=variance+((x(i)-mean)**2)*pdfx(i)*dx
   end do
-  write(*,2010),'variance f= ',variance
-  write(*,2010),'sigma f   = ',sqrt(variance)
+  write(*,2010)'variance f= ',variance
+  write(*,2010)'sigma f   = ',sqrt(variance)
        
   DEALLOCATE ( x )
   DEALLOCATE ( binx1 )

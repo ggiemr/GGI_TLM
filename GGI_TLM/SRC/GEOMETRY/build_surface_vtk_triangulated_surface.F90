@@ -81,7 +81,7 @@ character*256 	:: ipline
 ! read up to the first coordinate  
 10  CONTINUE
 
-    read(local_file_unit,'(A)',err=9000),ipline
+    read(local_file_unit,'(A)',err=9000)ipline
     call convert_to_lower_case(ipline,256)
     if (ipline(1:6).NE.'points') then
       GOTO 10
@@ -119,7 +119,7 @@ character*256 	:: ipline
     CALL write_line('Starting to read polygons',0,.TRUE.)
 20  CONTINUE
 
-    read(local_file_unit,'(A)',err=9000),ipline
+    read(local_file_unit,'(A)',err=9000)ipline
     call convert_to_lower_case(ipline,256)
     if (ipline(1:8).NE.'polygons') then
       GOTO 20

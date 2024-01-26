@@ -1,0 +1,198 @@
+Running GGI_TLM on Windows. Installation notes 2024.
+
+GGI_TLM may be run on windows machines by using cygwin. Cygwin creates a unix type environment in which GGI_TLM can be compiled and run. This document describes the installation of paraview (used for result visualisation), cygwin and the download, setup and compilation of GGI_TLM. This document should be sufficient to get the system running and give a brief check that it is working correctly. The user is referred to the documentation which comes along with the installation (user guide, theory manual, test case documentation) for further information.  
+
+The following notes have been made from a test installation on a laptop PC under Windows 11 in January 2024.
+I have tried to ensure that this process will work however the details may vary for different machines or 
+if things change in the future.
+
+STAGE 1: 
+Paraview installation
+
+Install paraview for windows from the website:
+
+www.paraview.org
+
+(Note that Paraview version 4.0 is recommended at the moment. later versions may not support the file types used by GGI_TLM.)
+
+select version 4.0 and then select the download file:
+ParaView-4.0.0-Windows-64bit.exe
+
+Once the file is downloaded, open the file to run the installation and follow the instructions. Note the Destination folder
+(e.g. C:\Program Files (x86)\Paraview 4.0.1 in which the executable will be found in C:\Program Files (x86)\Paraview 4.0.1\bin)
+
+STAGE 2:
+Cygwin installation
+Go to the website www.cygwin.com
+
+Under the heading Installing Cygwin
+
+Download the cygwin setup for your machine i.e. click setup-x86_64.exe 
+
+The file will download. Click on the 'Open file' link to run it (or run it from the Downloads directory). 
+The following notes relate to version 2.9.26 (64 bit) but it is hoped that the process will not be too different
+for other versions. 
+
+Click next at the copyright page
+
+Choose a download source:
+(e.g. Install from Internet)
+Then click next
+
+Choose Root directory:
+(e.g. C:\cygwin64)
+Select Install for all users
+Then click next
+
+Select Local Package Directory
+(e.g. \Documents\GGI_TLM_SUPPORT_SOFTWARE)
+Then click next
+
+Select Your Internet Connection as appropriate
+(e.g. Direct Connection)
+Then click next
+
+Choose a download Site
+(e.g. cygwin.mirror.uk.sargasso.net works fine in the UK)
+Then click next
+
+At this point the Cygwin Setup - Select Packages window appears.
+
+click the small + next to All to expand the list.
+
+We now need to select Packages (i.e. what to install) Default indicates a minimal install 
+but we need some extra stuff so add the following (by clicking the down arrow next to where 
+it says 'default' and change to 'install'):
+
+Devel
+X11
+
+In the following click the + sign to expand the top level list (e.g. Editors) , 
+find the package in the list (e.g. nedit), then click the down arrow where it says 
+'skip' and select the version number to be installed. 
+
+Editors->nedit          (selected version 5.5-6)
+Graphics->gnuplot-X11   (slected version 5.4.7-1)
+Libs->libopenmpi-devel  (selected version 4.1.2-1)
+Libs->libopenmpifh2     (selected version 1.10.4-1)
+
+Then click next
+
+Resolving_dependencies
+Ensure that the 'Accept default problem solutions' box is ticked
+Then click next
+
+Click 'Next' at the Review and confirm changes window.
+
+The Cygwin setup proceeds. this takes quite a long time ... 
+(a couple of errors were produced but the process carried on to completion)
+
+An icon 'Cygwin64 Terminal' appears on the desktop
+
+A description of how to set up the Cygwin environment is beyond the scope
+of this document however the user will need to ensure that Xlaunch works 
+correctly with multiple windows. The system can be tested by running 
+gnuplot and nedit and ensuring that they work correctly. 
+
+Start a cygwin terminal.
+
+run xlaunc and select:
+-multiple widows
+-start no client
+-Native OpenGL
+
+launch an xterm with the command
+xterm &
+
+(note that if a terminal cannot be opened the you may need the run the command:
+export DISPLAY=:0.0
+
+before trying again)
+
+Find the name of your cygwin home directory with the command
+pwd
+(The result will be something like /home/user)
+
+Compiling and running GGI_TLM
+
+Goto the website 
+www.github.com/ggiemr/GGI_TLM
+
+click 'download ZIP' button on the right hand side.
+
+save (or copy) the file (GGI_TLM-master.zip) to the cygwin home directory (From windows it will look something like C:\cygwin64\home\user)
+
+From a cygwin xterm look at the files in your home directory with the command
+ls
+This should include the file GGI_TLM-master.zip
+
+Expand the zip file with the command
+unzip GGI_TLM-master.zip
+
+You should now have the following directory in you home directory (use ls)
+GGI_TLM-master
+
+In your home directory, edit the .bash_profile (command nedit .bash_profile) file 
+nedit .bash_profile &
+(note: following a command with & runs the command in the background and returns control to the terminal. If  you get an error: 'Error: Can't open display' then use the following command: export DISPLAY=:0.0 and try nedit again.)
+
+add the following lines at the end of the .bash_profile file:
+PATH="${HOME}/GGI_TLM-master/GGI_TLM/bin:.:${PATH}"
+export DISPLAY=:0 
+Then save the file and exit nedit.
+(this only needs to be done once when you set up the system, once you have edited the file, exit the cygwin terminal and restart it)
+
+The next stage is to set things up to make GGI_TLM. First go into the main GGI_TLM directory
+cd GGI_TLM-master/GGI_TLM
+
+edit the file make_configuration_data with
+nedit make_configuration_data &
+and set the name of the fortran compiler correctly for cygwin
+
+FC=mpif90
+
+Also set the MPI_INCLUDE directory correctly for cygwin
+
+MPI_INCLUDE=/usr/include
+
+The compilation flags MAY need to be changed for Cygwin:
+Failure to run (Segmentation fault) has been seen if the optimisaton 
+flag -O4 is used. This has not yet been resolved  - the solution 
+at the moment is to compile without opimisation.
+
+
+Edit the file run_configuration_data with the command:
+
+nedit run_configuration_data &
+
+and set the MPI_RUN_COMMAND for cygwin
+
+MPI_RUN_COMMAND="mpirun -np "
+
+The SEQ_RUN_COMMAND should be "" but this shouldn't require changing.
+
+Go into the source code directory
+cd SRC
+
+and make both sequential and mpi versions of GGI_TLM with the commands:
+make clean
+make all
+
+This process may take a few minutes...
+
+Once the system is made correctly you can try to run some of the test cases.
+
+Go into the TEST_DATA directory
+
+cd GGI_TLM-master/GGI_TLM/TEST_DATA
+
+run the DIPOLE test case for example with
+run_automatic_test run_seq DIPOLE
+plot the results of the simulations against the reference results to check everything is OK with
+run_automatic_test plot_ref DIPOLE
+A gnuplot window should appear with plots (hit enter in the terminal window to step through the sequence) of time domain electric field, time domain current at the dipole feed point and dipole impedance as a function of frequency.
+
+This test case produces some results which can be viewed with paraview. Start paraview and open files in the DIPOLE directory (the path will be something like
+ C:\cygwin64\home\user\GGI_TLM-master\GGI_TLM\TEST_DATA\DIPOLE)
+For example the file E_field_13MHz.frame...vtk shows an animation of the vector E field at 13MHz on a plane close to the dipole antenna. Other files are available with the dipole geometry, mesh, outer boundary etc. These are described in the documentation. 
+ 

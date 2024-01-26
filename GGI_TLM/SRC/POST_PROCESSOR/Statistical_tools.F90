@@ -270,7 +270,7 @@ IMPLICIT NONE
   do i=1,nbins
     mean=mean+pdfx(i)*x(i)*dx
   end do
-  write(*,2010),'mean f=     ',mean
+  write(*,2010)'mean f=     ',mean
 2010 format(A,E14.6)
 
 ! calculate variance       
@@ -278,8 +278,8 @@ IMPLICIT NONE
   do i=1,nbins
     variance=variance+((x(i)-mean)**2)*pdfx(i)*dx
   end do
-  write(*,2010),'variance f= ',variance
-  write(*,2010),'sigma f   = ',sqrt(variance)
+  write(*,2010)'variance f= ',variance
+  write(*,2010)'sigma f   = ',sqrt(variance)
        
   DEALLOCATE ( x )
   DEALLOCATE ( binx1 )

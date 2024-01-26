@@ -4701,7 +4701,16 @@ subroutine comqr2 ( n, low, igh, ortr, orti, hr, hi, wr, wi, zr, zi, ierr )
 !  left by CORTH.
 !
   iend = igh - low - 1
-  if ( iend ) 180, 150, 105
+
+!  if ( iend ) 180, 150, 105
+! Replaced arithemtif if with if, else if, else structure
+  if ( iend.LT.0 ) then
+    GOTO 180
+  else if (iend.EQ.0) then
+    GOTO 150
+  else 
+    GOTO 105
+  end if
 
 105 continue
 
@@ -6997,7 +7006,16 @@ subroutine hqr2 ( n, low, igh, h, wr, wi, z, ierr )
      p = wr(en)
      q = wi(en)
      na = en - 1
-     if ( q ) 710, 600, 800
+!     if ( q ) 710, 600, 800
+! Replaced arithemtif if with if, else if, else structure
+     if ( q.LT.0 ) then
+       GOTO 710
+     else if (q.EQ.0) then
+       GOTO 600
+     else 
+       GOTO 800
+     end if
+     
 !
 !  Real vector
 !

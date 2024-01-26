@@ -130,7 +130,7 @@ IMPLICIT NONE
 
   write(*,*)'Reading frequency_output_surface file:'
   
-  read(local_file_unit,'(A80)'),ipline
+  read(local_file_unit,'(A80)')ipline
   read(local_file_unit,*)n_surfaces
   
   ALLOCATE ( surface_animation(1:n_surfaces) )
@@ -138,21 +138,21 @@ IMPLICIT NONE
 ! read header information  
   do surface=1,n_surfaces
     
-    read(local_file_unit,'(A80)'),ipline
-    read(local_file_unit,'(A80)'),ipline
+    read(local_file_unit,'(A80)')ipline
+    read(local_file_unit,'(A80)')ipline
     read(local_file_unit,*)n_points
     surface_animation(surface)%n_points=n_points
      
      
     write(*,*)'Number of points=',surface_animation(surface)%n_points
   
-    read(local_file_unit,'(A80)'),ipline
+    read(local_file_unit,'(A80)')ipline
     read(local_file_unit,*)n_quads
     surface_animation(surface)%n_quads=n_quads
      
     write(*,*)'Number of quads=',surface_animation(surface)%n_quads
   
-    read(local_file_unit,'(A80)'),ipline
+    read(local_file_unit,'(A80)')ipline
     read(local_file_unit,*)n_frames
     surface_animation(surface)%n_frames=n_frames
      

@@ -461,3 +461,17 @@ FIXED in read_cable_geometry_list.F90
 147 Need to sort out some half timestep discrepancies in face excitation function calculation in excitation.F90
 			
 148 Document ring_wave function in excitation.F90 to model emissions from power converters
+
+149 The mpi version does not give any speed up of the software on the test cases if the software is compiled with full optimisation and run on a multi-core processor. Not sure why...
+
+150 tests with ngspice-41 sometimes hang (but not always, sometimes it runs to compltetion) Not sure why
+
+151 TEST_CASE:NGSPICE_CONVERTER_MODEL does not give the reference result with ngspice-41. Again, not sure why yet...
+    The test case has been left in. Note that the other NGspice test cases appear to work OK and reproduce the reference results.
+    
+152 26/1/2024 CJS: On Cygwin I get an error compiling for MPI. A type mismatch in MPI_SEND is found when the 
+                     first call sends a single number and a second call sends an array of numbers. A type mismatch 
+                     error also occurs. Not sure yet how to deal with this... Could use -fallow-argument-mismatch
+
+153 26/1/2024 CJS:  Segmentation fault found on the latest Cygwin when compiling with optimisation flag -O4
+                     It works OK without though...

@@ -239,14 +239,14 @@ IMPLICIT NONE
     write(*,*)             'reading layer number',layer
     write(info_file_unit,*)'reading layer number',layer
   
-    read(input_file_unit,*,END=9000,ERR=9020),layer_number
+    read(input_file_unit,*,END=9000,ERR=9020)layer_number
     if (layer_number.ne.layer) then
       write(*,*)'Layers out of order, expecting layer',layer
       write(*,*)'Layer numbered ',layer_number
       stop
     end if
 
-    read(input_file_unit,'(A1)',END=9000,ERR=9020),layer_type_in
+    read(input_file_unit,'(A1)',END=9000,ERR=9020)layer_type_in
     
     if ( (layer_type_in.eq."M").OR.(layer_type_in.eq."m") ) then
     
@@ -269,7 +269,7 @@ IMPLICIT NONE
     
     if (layer_type(layer).eq.material) then
 ! read material data
-      read(input_file_unit,*,END=9000,ERR=9020),layer_thickness(layer)
+      read(input_file_unit,*,END=9000,ERR=9020)layer_thickness(layer)
       write(*,*)             'Material layer thickness=',layer_thickness(layer)
       write(info_file_unit,*)'Material layer thickness=',layer_thickness(layer)
    

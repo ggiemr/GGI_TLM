@@ -135,7 +135,7 @@ IMPLICIT NONE
 
   write(*,*)'Reading surface_field file:'
   
-  read(local_file_unit,'(A80)'),ipline
+  read(local_file_unit,'(A80)')ipline
   read(local_file_unit,*)n_surfaces
   
   ALLOCATE ( surface_animation(1:n_surfaces) )
@@ -144,21 +144,21 @@ IMPLICIT NONE
   do surface=1,n_surfaces
   
     write(*,*)'Surface number',surface
-    read(local_file_unit,'(A80)'),ipline
+    read(local_file_unit,'(A80)')ipline
   
-    read(local_file_unit,'(A80)'),ipline
+    read(local_file_unit,'(A80)')ipline
     read(local_file_unit,*)n_points
     surface_animation(surface)%n_points=n_points
      
     write(*,*)'Number of points=',surface_animation(surface)%n_points
   
-    read(local_file_unit,'(A80)'),ipline
+    read(local_file_unit,'(A80)')ipline
     read(local_file_unit,*)n_quads
     surface_animation(surface)%n_quads=n_quads
      
     write(*,*)'Number of quads=',surface_animation(surface)%n_quads
   
-    read(local_file_unit,'(A80)'),ipline
+    read(local_file_unit,'(A80)')ipline
     read(local_file_unit,*)n_frames
     surface_animation(surface)%n_frames=n_frames
      
@@ -194,7 +194,7 @@ IMPLICIT NONE
       surface_animation(surface)%quads(quad,4)=point4
     end do
   
-    read(local_file_unit,'(A80)'),ipline
+    read(local_file_unit,'(A80)')ipline
   
     write(*,*)'Finished reading GGI_TLM geometry data'
     
@@ -216,16 +216,16 @@ IMPLICIT NONE
 !          72
 !# SURFACE FIELD DATA
 
-    read(local_file_unit,'(A80)',end=30),ipline
+    read(local_file_unit,'(A80)',end=30)ipline
     
-    read(local_file_unit,'(A80)',end=30),ipline
-    read(local_file_unit,*,end=30),surface
+    read(local_file_unit,'(A80)',end=30)ipline
+    read(local_file_unit,*,end=30)surface
     
-    read(local_file_unit,'(A80)',end=30),ipline
-    read(local_file_unit,*,end=30),frame
+    read(local_file_unit,'(A80)',end=30)ipline
+    read(local_file_unit,*,end=30)frame
     
-    read(local_file_unit,'(A80)',end=30),ipline
-    read(local_file_unit,*,end=30),n_quads
+    read(local_file_unit,'(A80)',end=30)ipline
+    read(local_file_unit,*,end=30)n_quads
   
     write(*,*)'Reading surface:',surface,' frame:',frame,' n_values:',n_quads
     

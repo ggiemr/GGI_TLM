@@ -384,7 +384,7 @@ if (pad_factor2.NE.pad_factor) then
 end if
 
 write(*,*)'Enter z to pad with zeros or p to create a periodic continuation of the sub-signal'
-read(*,'(A)'),pad_type
+read(*,'(A)')pad_type
 if ( (pad_type.NE.'z').AND.(pad_type.NE.'p') ) then
   write(*,*)'Pad type should be z or p'
   STOP 1

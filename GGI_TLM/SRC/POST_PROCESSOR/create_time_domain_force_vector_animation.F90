@@ -172,7 +172,7 @@ IMPLICIT NONE
 
   write(*,*)'Reading volume_field file:'
   
-  read(local_file_unit,'(A80)'),ipline
+  read(local_file_unit,'(A80)')ipline
   read(local_file_unit,*)n_volumes
   
   ALLOCATE ( volume_animation(1:n_volumes) )
@@ -181,21 +181,21 @@ IMPLICIT NONE
   do volume=1,n_volumes
   
     write(*,*)'volume number',volume
-    read(local_file_unit,'(A80)'),ipline
+    read(local_file_unit,'(A80)')ipline
   
-    read(local_file_unit,'(A80)'),ipline
+    read(local_file_unit,'(A80)')ipline
     read(local_file_unit,*)n_points
     volume_animation(volume)%n_points=n_points
      
     write(*,*)'Number of points=',volume_animation(volume)%n_points
   
-    read(local_file_unit,'(A80)'),ipline
+    read(local_file_unit,'(A80)')ipline
     read(local_file_unit,*)n_quads
     volume_animation(volume)%n_quads=n_quads
      
     write(*,*)'Number of quads=',volume_animation(volume)%n_quads
   
-    read(local_file_unit,'(A80)'),ipline
+    read(local_file_unit,'(A80)')ipline
     read(local_file_unit,*)n_frames
     volume_animation(volume)%n_frames=n_frames
      
@@ -232,7 +232,7 @@ IMPLICIT NONE
       volume_animation(volume)%quads(quad,4)=point4
     end do
   
-    read(local_file_unit,'(A80)'),ipline
+    read(local_file_unit,'(A80)')ipline
   
     write(*,*)'Finished reading fieldsolve geometry data'
     
@@ -254,16 +254,16 @@ IMPLICIT NONE
 !          72
 !# VOLUME FIELD DATA
 
-    read(local_file_unit,'(A80)',end=30),ipline
+    read(local_file_unit,'(A80)',end=30)ipline
     
-    read(local_file_unit,'(A80)',end=30),ipline
-    read(local_file_unit,*,end=30),volume
+    read(local_file_unit,'(A80)',end=30)ipline
+    read(local_file_unit,*,end=30)volume
     
-    read(local_file_unit,'(A80)',end=30),ipline
-    read(local_file_unit,*,end=30),frame
+    read(local_file_unit,'(A80)',end=30)ipline
+    read(local_file_unit,*,end=30)frame
     
-    read(local_file_unit,'(A80)',end=30),ipline
-    read(local_file_unit,*,end=30),n_quads
+    read(local_file_unit,'(A80)',end=30)ipline
+    read(local_file_unit,*,end=30)n_quads
   
     write(*,*)'Reading volume:',volume,' frame:',frame,' n_values:',n_quads
     

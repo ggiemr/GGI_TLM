@@ -61,13 +61,13 @@ IMPLICIT NONE
        close(unit=99)
 
        print*,'Enter the time domain source input file'
-       read(*,'(A256)'),ipfile1       
+       read(*,'(A256)')ipfile1       
        open(unit=10,file=ipfile1)
        print*,'Enter the output number to transform'
-       read(*,*),op_number1     
+       read(*,*)op_number1     
        
        print*,'Enter the sphere near field filename (from RCS_sphere code)'
-       read(*,'(A256)'),ipfile2       
+       read(*,'(A256)')ipfile2       
        open(unit=11,file=ipfile2)
        
 ! read ipfile1             
@@ -147,14 +147,14 @@ IMPLICIT NONE
               
        print*,' '
        print*,'Enter the file name for the fourier transformed pulse'
-       read(*,'(A256)'),opfile1       
+       read(*,'(A256)')opfile1       
        open(unit=12,file=opfile1)
        print*,' '
        print*,'Enter the output file name for the time domain near field'
-       read(*,'(A256)'),opfile2       
+       read(*,'(A256)')opfile2       
        open(unit=13,file=opfile2)
        print*,'Enter the time shift to be applied to the time domain near field'
-       read(*,*),time_shift 
+       read(*,*)time_shift 
 
 ! transform pulse to frequency domain and calculate 
 ! response in the frequency domain

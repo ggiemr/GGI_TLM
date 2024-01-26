@@ -706,6 +706,11 @@
 
 5/1/2024        CJS: add log frequency option in GGI_Mlayer
 
+25/1/2024       CJS: rerun all test cases sequentially
+
+26/1/2024       CJS: fix error in build_face_junction_list.F90. Type error found in subroutine CALL at line 129.
+                     create a CABLE_TEST_CASE_LIST in run_automatic_test for cable model testing. The fix makes
+                     no difference to the results of the test cases.
 Missing Packets...	
 		- SAR_output: DONE - not for dispersive materials though...
 		- Periodic structures: STARTED

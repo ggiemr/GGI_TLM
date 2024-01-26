@@ -844,7 +844,7 @@ integer			:: face_point
               ' j=',cell_segment_in%segment_point(2)%cell%j,	&
               ' k=',cell_segment_in%segment_point(2)%cell%k,	&
               ' face=',cell_segment_in%segment_point(2)%point
-    STOP
+    STOP 1
   end if
   
   RETURN
@@ -967,6 +967,6 @@ IMPLICIT NONE
      write(*,*)'Number of processors greater than z dimension'
      write(*,*)'Np=',np,' nz=',nz
 
-     STOP
+     STOP 1
   
 END SUBROUTINE mesh_partition

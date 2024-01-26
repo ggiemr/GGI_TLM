@@ -7,8 +7,10 @@
 FC=mpif90
 
 # 2. MPI_INCLUDE :This is the path to the file mpif.h 
+# Search for this directory with something like:
+# find /usr -name mpif.h
 
-MPI_INCLUDE=/usr/include/mpich
+MPI_INCLUDE=/usr/include/x86_64-linux-gnu/mpich/
 
 # 3. Set the compilation flags. Three options are given below for the mpif90 compiler
 #    These flags may be quite different for another compiler.
@@ -17,6 +19,7 @@ MPI_INCLUDE=/usr/include/mpich
 #                                        MPI directory in the search path
 #         -fdefault-real-8 ensures that all reals are defined as real*8
 #         -finit-real=nan -finit-integer=nan sets all integers and reals to NaN initially. 
+#         -fallow-argument-mismatch  may be required on the latest gfortran for compiling MPI version
 
 # Compilation flags, Option 1. Here we compile with bounds check - slow but good for development testing...
 
@@ -30,7 +33,7 @@ MPI_INCLUDE=/usr/include/mpich
 
 #FLAGS= -D$(MODE) -D$(NGSPICE_MODE) -cpp -J$(MOD_DIR) -I$(MOD_DIR) -I$(MPI_INCLUDE) -O4
 
-# Compilation flags, Option 4.  Compilation flags, Here we compile with optimisation - fastest and include -funsafe-math-optimizations
+# Compilation flags, Option 4.  Compilation flags, Here we compile with optimisation -O4 and include -funsafe-math-optimizations
 # which attempts to fix a problem with denormal numbers
 
 FLAGS= -D$(MODE) -D$(NGSPICE_MODE) -cpp -J$(MOD_DIR) -I$(MOD_DIR) -I$(MPI_INCLUDE) -O4 -funsafe-math-optimizations

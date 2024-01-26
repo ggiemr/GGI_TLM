@@ -99,7 +99,7 @@ character*256 	:: ipline
 
   line_number=0
   
-  read(local_file_unit,'(A)',err=9000),ipline
+  read(local_file_unit,'(A)',err=9000)ipline
   line_number=line_number+1
   call convert_to_lower_case(ipline,256)
   found=INDEX(ipline,'solid')
@@ -110,7 +110,7 @@ character*256 	:: ipline
   
 ! Triangle reading loop
 10  CONTINUE
-    read(local_file_unit,'(A)',err=9000),ipline
+    read(local_file_unit,'(A)',err=9000)ipline
     line_number=line_number+1
     call convert_to_lower_case(ipline,256)
 
@@ -126,7 +126,7 @@ character*256 	:: ipline
     if (found.NE.0) then
 ! read a triangle
 
-      read(local_file_unit,'(A)',err=9000),ipline
+      read(local_file_unit,'(A)',err=9000)ipline
       line_number=line_number+1
       call convert_to_lower_case(ipline,256)
       
@@ -136,7 +136,7 @@ character*256 	:: ipline
  
         do point=1,3
 
-          read(local_file_unit,'(A)',err=9000),ipline
+          read(local_file_unit,'(A)',err=9000)ipline
           line_number=line_number+1
           call convert_to_lower_case(ipline,256)
 	  CALL read_vertex_coordinates(ipline,'vertex',x,y,z,found)
@@ -151,7 +151,7 @@ character*256 	:: ipline
       end if ! reading triangle
       
 ! finish reading triangle
-      read(local_file_unit,'(A)',err=9000),ipline
+      read(local_file_unit,'(A)',err=9000)ipline
       line_number=line_number+1
       call convert_to_lower_case(ipline,256)
       found=INDEX(ipline,'endloop')
@@ -161,7 +161,7 @@ character*256 	:: ipline
       end if
       
 ! finish reading triangle
-      read(local_file_unit,'(A)',err=9000),ipline
+      read(local_file_unit,'(A)',err=9000)ipline
       line_number=line_number+1
       call convert_to_lower_case(ipline,256)
       found=INDEX(ipline,'endfacet')
@@ -193,17 +193,17 @@ character*256 	:: ipline
 
 ! we have checked the file format so we can read it without further checks here
 
-  read(local_file_unit,'(A)',err=9000),ipline  
+  read(local_file_unit,'(A)',err=9000)ipline  
   
   do triangle=1,n_triangles
 
 ! read two lines
-    read(local_file_unit,'(A)',err=9000),ipline  
-    read(local_file_unit,'(A)',err=9000),ipline  
+    read(local_file_unit,'(A)',err=9000)ipline  
+    read(local_file_unit,'(A)',err=9000)ipline  
 
 ! read three vertices
     
-    read(local_file_unit,'(A)',err=9000),ipline
+    read(local_file_unit,'(A)',err=9000)ipline
     line_number=line_number+1
     call convert_to_lower_case(ipline,256)
     CALL read_vertex_coordinates(ipline,'vertex',x,y,z,found)
@@ -211,7 +211,7 @@ character*256 	:: ipline
     triangle_point1%y=y*scale_factor
     triangle_point1%z=z*scale_factor
     
-    read(local_file_unit,'(A)',err=9000),ipline
+    read(local_file_unit,'(A)',err=9000)ipline
     line_number=line_number+1
     call convert_to_lower_case(ipline,256)
     CALL read_vertex_coordinates(ipline,'vertex',x,y,z,found)
@@ -219,7 +219,7 @@ character*256 	:: ipline
     triangle_point2%y=y*scale_factor
     triangle_point2%z=z*scale_factor
     
-    read(local_file_unit,'(A)',err=9000),ipline
+    read(local_file_unit,'(A)',err=9000)ipline
     line_number=line_number+1
     call convert_to_lower_case(ipline,256)
     CALL read_vertex_coordinates(ipline,'vertex',x,y,z,found)
@@ -243,8 +243,8 @@ character*256 	:: ipline
     end if
 
 ! read two lines
-    read(local_file_unit,'(A)',err=9000),ipline  
-    read(local_file_unit,'(A)',err=9000),ipline  
+    read(local_file_unit,'(A)',err=9000)ipline  
+    read(local_file_unit,'(A)',err=9000)ipline  
 
   end do ! next triangle
   

@@ -88,7 +88,7 @@ character*256 	:: ipline
 ! read up to the first coordinate  
 10  CONTINUE
 
-    read(local_file_unit,'(A)',err=9000),ipline
+    read(local_file_unit,'(A)',err=9000)ipline
     call convert_to_lower_case(ipline,256)
     if (ipline(1:11).NE.'coordinates') then
       goto 10
@@ -99,7 +99,7 @@ character*256 	:: ipline
     CALL write_line('starting to read coordinates',0,.TRUE.)
 20  CONTINUE
 
-    read(local_file_unit,'(A)',err=9000),ipline
+    read(local_file_unit,'(A)',err=9000)ipline
     call convert_to_lower_case(ipline,256)
     if (ipline(1:15).NE.'end coordinates') then
       n_tet_points=n_tet_points+1
@@ -111,7 +111,7 @@ character*256 	:: ipline
 ! read up to the first tet  
 30  CONTINUE
 
-    read(local_file_unit,'(A)',err=9000),ipline
+    read(local_file_unit,'(A)',err=9000)ipline
     call convert_to_lower_case(ipline,256)
     if (ipline(1:8).NE.'elements') then
       goto 30
@@ -120,7 +120,7 @@ character*256 	:: ipline
 ! read tets 
 40  CONTINUE
 
-    read(local_file_unit,'(A)',err=9000),ipline
+    read(local_file_unit,'(A)',err=9000)ipline
     call convert_to_lower_case(ipline,256)
     if (ipline(1:12).NE.'end elements') then
       n_tets=n_tets+1
@@ -135,7 +135,7 @@ character*256 	:: ipline
 ! read up to the first coordinate  
 50  CONTINUE
 
-    read(local_file_unit,'(A)',err=9000),ipline
+    read(local_file_unit,'(A)',err=9000)ipline
     call convert_to_lower_case(ipline,256)
     if (ipline(1:11).NE.'coordinates') then
       goto 50
@@ -151,7 +151,7 @@ character*256 	:: ipline
 ! read up to the first tet  
 55  CONTINUE
 
-    read(local_file_unit,'(A)',err=9000),ipline
+    read(local_file_unit,'(A)',err=9000)ipline
     call convert_to_lower_case(ipline,256)
     if (ipline(1:8).NE.'elements') then
       goto 55
@@ -181,7 +181,7 @@ character*256 	:: ipline
 ! read up to the first coordinate  
 60  CONTINUE
 
-    read(local_file_unit,'(A)',err=9000),ipline
+    read(local_file_unit,'(A)',err=9000)ipline
     call convert_to_lower_case(ipline,256)
     if (ipline(1:11).NE.'coordinates') then
       goto 60
@@ -202,7 +202,7 @@ character*256 	:: ipline
 ! read up to the first tet  
 70  CONTINUE
 
-    read(local_file_unit,'(A)',err=9000),ipline
+    read(local_file_unit,'(A)',err=9000)ipline
     call convert_to_lower_case(ipline,256)
     if (ipline(1:8).NE.'elements') then
       goto 70
