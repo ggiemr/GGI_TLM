@@ -174,6 +174,10 @@ else
      elif [ "$ACTION" = "clean" ] ; then
 
        rm -f ${CLEANING_LIST}
+     
+     elif [ "$ACTION" = "clean_all" ] ; then
+
+       rm -f ${CLEANING_LIST}
     
      elif [ "$ACTION" = "plot" ] ; then
      

@@ -175,6 +175,11 @@ else
 
 # clean any existing problem specification files   
        rm -f $CLEANING_LIST
+     
+     elif [ "$ACTION" = "clean_all" ] ; then
+
+# clean any existing problem specification files   
+       rm -f $CLEANING_LIST
     
      elif [ "$ACTION" = "plot" ] ; then
      

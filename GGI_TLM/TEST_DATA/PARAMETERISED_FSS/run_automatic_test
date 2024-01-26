@@ -144,4 +144,12 @@ elif [ "$ACTION" = "clean" ] ; then
 # RUN THE DEFAULT TEST CASE SEQUENCE
     source ../run_test_case_include
   
+elif [ "$ACTION" = "clean_all" ] ; then
+  
+    rm -f parameter_list
+    rm -f RESULTS/*fout*
+  
+# RUN THE DEFAULT TEST CASE SEQUENCE
+    source ../run_test_case_include
+  
 fi
