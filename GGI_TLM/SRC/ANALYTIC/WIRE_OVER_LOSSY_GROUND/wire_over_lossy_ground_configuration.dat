@@ -1,0 +1,7 @@
+   1.30000003E-02   wire radius (m)
+   20.0000000       wire height over the ground (m)
+   1.00000005E-03   ground electrical conductivity (S/m)
+   1.00000000       ground relative permittivity
+   10000.0000       minimum frequency for analysis
+   10000000.0       maximum frequency for analysis
+          30   number of frequencies to evaluate (log frequency scale)

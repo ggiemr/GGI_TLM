@@ -475,3 +475,9 @@ FIXED in read_cable_geometry_list.F90
 
 153 26/1/2024 CJS:  Segmentation fault found on the latest Cygwin when compiling with optimisation flag -O4
                      It works OK without though...
+                    
+154 31/1/2024 CJS:  EMI reciever model post process to apply to time domain data needs proper testing and validation...
+                    
+155 31/1/2024 CJS:  Implementation of the Carson and Wait analysis of the complex propagation constant of modes
+                    on a wire over lossy ground needs proper testing and validation...
+

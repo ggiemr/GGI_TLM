@@ -711,6 +711,12 @@
 26/1/2024       CJS: fix error in build_face_junction_list.F90. Type error found in subroutine CALL at line 129.
                      create a CABLE_TEST_CASE_LIST in run_automatic_test for cable model testing. The fix makes
                      no difference to the results of the test cases.
+                     
+31/1/2024       CJS: Add an EMI reciever model post process to apply to time domain data.
+
+31/1/2024       CJS: Add an implementation of the Carson and Wait analysis of the complex propagation constant of modes
+                     on a wire over lossy ground.
+                     
 Missing Packets...	
 		- SAR_output: DONE - not for dispersive materials though...
 		- Periodic structures: STARTED

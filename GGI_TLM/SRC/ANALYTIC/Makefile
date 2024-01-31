@@ -6,7 +6,8 @@ skin_depth \
 rcs_cylinder \
 rcs_sphere \
 cable_loss \
-transmission_line
+transmission_line \
+wire_over_lossy_ground
 
 clean: \
 clean_rectangular_waveguide \
@@ -16,7 +17,8 @@ clean_skin_depth \
 clean_rcs_cylinder \
 clean_rcs_sphere \
 clean_cable_loss \
-clean_transmission_line
+clean_transmission_line \
+clean_wire_over_lossy_ground
 
 rectangular_waveguide:
 	( cd RECTANGULAR_WAVEGUIDE ; $(MAKE) )
@@ -34,6 +36,9 @@ cable_loss:
 	( cd CABLE_LOSS ; $(MAKE) )
 transmission_line:
 	( cd TRANSMISSION_LINE ; $(MAKE) )
+wire_over_lossy_ground:
+	( cd WIRE_OVER_LOSSY_GROUND ; $(MAKE) )
+        
 #
 clean_rectangular_waveguide:
 	( cd RECTANGULAR_WAVEGUIDE ; make clean )
@@ -51,3 +56,5 @@ clean_cable_loss:
 	( cd CABLE_LOSS ; make clean )
 clean_transmission_line:
 	( cd TRANSMISSION_LINE ; make clean )
+clean_wire_over_lossy_ground:
+	( cd WIRE_OVER_LOSSY_GROUND ; make clean )

@@ -1,9 +1,9 @@
  
 
-LICENSE ( last update: Friday 3rd May 2013 )
+LICENSE ( last update: 31 January 2024 )
 --------------------------------------------
 
-There are 2 license types used in GGI_TLM.
+The license types used in GGI_TLM are as follows:
 
 
 GPL - GNU General Public License v.3
@@ -20,3 +20,8 @@ Applies to all source coded with the exception of the eispack library in /src/ei
 LGPL
 Applies to the eispack library in /src/eispack	 
 
+The fortran module for calculation of bessel functions of
+complex order and complex argument, mod_zbes.f90 was downloaded from:
+dl.acm.org/doi/10.1145/1916461.1916471
+It is our understanding that the ACM software license conditions for this module apply
+which may be found at acm.org/publications/policies/software-copyright-notice.
