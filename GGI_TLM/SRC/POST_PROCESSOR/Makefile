@@ -51,7 +51,8 @@ interpolate.o \
 subtract_dc.o \
 Scale_frequency_domain_data.o \
 process_conducted_emissions_data.o \
-convert_data_to_sound.o
+convert_data_to_sound.o \
+EMI_receiver_model.o
 
 default: $(POST_PROCESSOR_OBJS)
 

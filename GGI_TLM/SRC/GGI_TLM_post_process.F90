@@ -128,6 +128,7 @@ IMPLICIT NONE
   write(*,*)'57. Scale Frequency domain Data'
   write(*,*)'58. Post processing for time domain conducted emissions data'
   write(*,*)'59. Convert time domain waveform to sound (.wav file)'
+  write(*,*)'60. Apply EMI reciever model to time domain data'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -618,6 +619,14 @@ IMPLICIT NONE
     write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: CONVERT TIME DOMAIN WAVEFORM TO SOUND (.WAV FILE)'
     write(post_process_info_unit,*)'Convert time domain waveform to sound (.wav file)'
     CALL Convert_data_to_sound()
+    
+  else if (option.EQ.60) then
+
+    write(*,*)'Apply EMI reciever model to time domain data'
+    
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: APPLY EMI RECIEVER MODEL TO TIME DOMAIN DATA'
+    write(post_process_info_unit,*)'Apply EMI reciever model to time domain data'
+    CALL EMI_receiver_model()
       
   else
    

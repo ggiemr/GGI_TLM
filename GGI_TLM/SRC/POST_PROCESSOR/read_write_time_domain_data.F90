@@ -142,9 +142,9 @@ real*8,allocatable :: data_line(:)
     read(*,*)t_col
     write(record_user_inputs_unit,*)t_col,'  # time data column'
 
-    write(*,*)'Enter the column number for voltage data'
+    write(*,*)'Enter the column number for function data'
     read(*,*)V_col
-    write(record_user_inputs_unit,*)V_col,'  # Voltage data column'
+    write(record_user_inputs_unit,*)V_col,'  # Function data column'
     
     file_type_tout=.FALSE.
     output_point=1
