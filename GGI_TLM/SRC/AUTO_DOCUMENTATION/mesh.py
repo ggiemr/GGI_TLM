@@ -33,10 +33,10 @@ def Build_mesh_section( name , info_file_contents , doc ) :
 
 #  plot the mesh files using calls to paraview
 
-	boundary_mesh_files= glob.glob("./*b_mesh.vtk.*")
-	volume_mesh_files= glob.glob("./*v_mesh.vtk.*")
-	surface_mesh_files= glob.glob("./*s_mesh.vtk.*")
-	line_mesh_files= glob.glob("./*l_mesh.vtk.*")
+	boundary_mesh_files= glob.glob("./*.b_mesh.vtk.*")
+	volume_mesh_files= glob.glob("./*.v_mesh.vtk.*")
+	surface_mesh_files= glob.glob("./*.s_mesh.vtk.*")
+	line_mesh_files= glob.glob("./*.l_mesh.vtk.*")
 
 
 	for b_mesh_file in boundary_mesh_files:

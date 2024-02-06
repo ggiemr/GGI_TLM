@@ -60,7 +60,7 @@ IMPLICIT NONE
 
   CALL write_line('CALLED: read_frequency_domain_power_surface',0,output_to_screen_flag)
   
-  read(input_file_unit,*,err=9000)n_frequency_domain_power_surfaces
+  read(input_file_unit,*,err=9000,end=9000)n_frequency_domain_power_surfaces
   
   CALL write_line_integer('number of frequency output surfaces',n_frequency_domain_power_surfaces,0,output_to_screen_flag)
   
@@ -72,12 +72,12 @@ IMPLICIT NONE
   
     CALL write_line_integer('Reading frequency_domain_surface number',i,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9000)read_number
+    read(input_file_unit,*,err=9000,end=9000)read_number
     if (read_number.ne.i) GOTO 9020
   
-    read(input_file_unit,*,err=9000)frequency_domain_power_surface(i)%surface_number
+    read(input_file_unit,*,err=9000,end=9000)frequency_domain_power_surface(i)%surface_number
     
-    read(input_file_unit,*,err=9000)side_of_surface_for_output
+    read(input_file_unit,*,err=9000,end=9000)side_of_surface_for_output
     
     if (side_of_surface_for_output.eq.1) then
       frequency_domain_power_surface(i)%output_on_outward_normal=.TRUE.
@@ -87,9 +87,9 @@ IMPLICIT NONE
       GOTO 9030
     end if
     
-    read(input_file_unit,*,err=9000)	frequency_domain_power_surface(i)%fmin,	&
-    					frequency_domain_power_surface(i)%fmax,	&
-    					frequency_domain_power_surface(i)%n_frequencies
+    read(input_file_unit,*,err=9000,end=9000)	frequency_domain_power_surface(i)%fmin,	&
+    					        frequency_domain_power_surface(i)%fmax,	&
+    					        frequency_domain_power_surface(i)%n_frequencies
 					
     if (i.ne.1) then
       if (frequency_domain_power_surface(i)%n_frequencies.NE.frequency_domain_power_surface(1)%n_frequencies) then
@@ -109,26 +109,26 @@ IMPLICIT NONE
     
 9000 CALL write_line('Error reading frequency_domain_power_surface packet data from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9010 CALL write_line('Error allocating frequency_domain_power_surface:',0,.TRUE.)
      CALL write_line('frequency_domain_power_surface already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9020 CALL write_line('Error reading frequency_domain_power_surface packet',0,.TRUE.)
      CALL write_line('frequency output surfaces should be numbered in order',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9030 CALL write_line('Error reading frequency_domain_power_surface packet',0,.TRUE.)
      CALL write_line("Side of surface for output should be +1 or -1",0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9040 CALL write_line('Error reading frequency_domain_power_surface packet',0,.TRUE.)
      CALL write_line("All surfaces should have the same number of frequencies at the moment...",0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_frequency_domain_power_surface

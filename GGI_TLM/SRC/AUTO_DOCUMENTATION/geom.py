@@ -34,11 +34,11 @@ def Build_geometry_section( name , info_file_contents , doc ) :
 
 #  plot the geom files using calls to paraview
 
-	volume_geom_files= glob.glob("./*v_geom.vtk.*")
-	surface_geom_files= glob.glob("./*s_geom.vtk.*")
-	line_geom_files= glob.glob("./*l_geom.vtk.*")
+	volume_geom_files= glob.glob("./*.v_geom.vtk.*")
+	surface_geom_files= glob.glob("./*.s_geom.vtk.*")
+	line_geom_files= glob.glob("./*.l_geom.vtk.*")
 
-	boundary_mesh_files= glob.glob("./*b_mesh.vtk.*")
+	boundary_mesh_files= glob.glob("./*.b_mesh.vtk.*")
 
 	for b_mesh_file in boundary_mesh_files:
 		print b_mesh_file

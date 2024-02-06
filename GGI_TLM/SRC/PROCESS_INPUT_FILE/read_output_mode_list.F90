@@ -66,7 +66,7 @@ logical	:: file_exists
 
   CALL write_line('CALLED: read_output_mode_list',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9005)n_output_modes
+  read(input_file_unit,*,err=9005,end=9005)n_output_modes
   
   CALL write_line_integer('number of output modes',n_output_modes,0,output_to_screen_flag)
   
@@ -78,12 +78,12 @@ logical	:: file_exists
   
     CALL write_line_integer('Reading mode number',mode_number,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9005)read_number
+    read(input_file_unit,*,err=9005,end=9005)read_number
     if (read_number.ne.mode_number) goto 9010
  
-    read(input_file_unit,*,err=9005)output_mode_list(mode_number)%surface_number
+    read(input_file_unit,*,err=9005,end=9005)output_mode_list(mode_number)%surface_number
        
-    read(input_file_unit,*,err=9005)side_of_surface_for_output
+    read(input_file_unit,*,err=9005,end=9005)side_of_surface_for_output
     
     if (side_of_surface_for_output.eq.1) then
       output_mode_list(mode_number)%output_on_outward_normal=.TRUE.
@@ -95,7 +95,7 @@ logical	:: file_exists
      
     CALL read_field_component(input_file_unit,output_mode_list(mode_number)%field_component)
 
-    read(input_file_unit,'(A)',err=9005)output_mode_list(mode_number)%mode_file_name 
+    read(input_file_unit,'(A)',err=9005,end=9005)output_mode_list(mode_number)%mode_file_name 
 
     CALL write_line('Checking the existance of file:',0,.TRUE.)
     CALL write_line(trim(output_mode_list(mode_number)%mode_file_name),0,.TRUE.)
@@ -107,10 +107,10 @@ logical	:: file_exists
       goto 9030
     end if
     
-    read(input_file_unit,*,err=9005)output_mode_list(mode_number)%xcol
-    read(input_file_unit,*,err=9005)output_mode_list(mode_number)%ycol
-    read(input_file_unit,*,err=9005)output_mode_list(mode_number)%zcol
-    read(input_file_unit,*,err=9005)output_mode_list(mode_number)%mode_col
+    read(input_file_unit,*,err=9005,end=9005)output_mode_list(mode_number)%xcol
+    read(input_file_unit,*,err=9005,end=9005)output_mode_list(mode_number)%ycol
+    read(input_file_unit,*,err=9005,end=9005)output_mode_list(mode_number)%zcol
+    read(input_file_unit,*,err=9005,end=9005)output_mode_list(mode_number)%mode_col
     
   end do ! next mode in output_mode_list
 
@@ -121,27 +121,27 @@ logical	:: file_exists
 9000 CALL write_line('Error allocating output_mode_list:',0,.TRUE.)
      CALL write_line('output_mode_list already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading output_mode_list packet from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9010 CALL write_line('Error reading output_mode_list packet from input file:',0,.TRUE.)
      CALL write_line('output modes should be numbered in order at the moment...',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9020 CALL write_line('Error reading output_mode_list packet',0,.TRUE.)
      CALL write_line("Side of surface for output should be +1 or -1",0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9030 CALL write_line('Error reading output_mode_list packet',0,.TRUE.)
      CALL write_line('Mode field file does not exist. Filename:',0,.TRUE.)
      CALL write_line(trim(output_mode_list(mode_number)%mode_file_name),0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 
 END SUBROUTINE read_output_mode_list

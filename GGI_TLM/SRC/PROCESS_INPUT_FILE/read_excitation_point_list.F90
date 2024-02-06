@@ -62,7 +62,7 @@ character*256	:: input_line
 
   CALL write_line('CALLED: read_excitation_point_list',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9005)n_excitation_points
+  read(input_file_unit,*,err=9005,end=9005)n_excitation_points
   
   CALL write_line_integer('number of excitation points',n_excitation_points,0,output_to_screen_flag)
   
@@ -74,12 +74,12 @@ character*256	:: input_line
   
     CALL write_line_integer('Reading excitation number',excitation_number,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9005)read_number
+    read(input_file_unit,*,err=9005,end=9005)read_number
     if (read_number.ne.excitation_number) goto 9010
 
-    read(input_file_unit,*,err=9005)excitation_points(excitation_number)%excitation_function_number
+    read(input_file_unit,*,err=9005,end=9005)excitation_points(excitation_number)%excitation_function_number
 
-    read(input_file_unit,*,err=9005)excitation_points(excitation_number)%point_number
+    read(input_file_unit,*,err=9005,end=9005)excitation_points(excitation_number)%point_number
     
     CALL get_point(excitation_points(excitation_number)%point_number,	&
                    excitation_points(excitation_number)%cell_point%cell,			&
@@ -89,7 +89,7 @@ character*256	:: input_line
 
     CALL read_centre_or_face(input_file_unit,excitation_points(excitation_number)%cell_point%point)
 
-    read(input_file_unit,'(A)',err=9005)input_line
+    read(input_file_unit,'(A)',err=9005,end=9005)input_line
     
     if (input_line.eq.'soft') then
     
@@ -114,20 +114,20 @@ character*256	:: input_line
 9000 CALL write_line('Error allocating excitation_points:',0,.TRUE.)
      CALL write_line('excitation_points already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading excitation point list packet data from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9010 CALL write_line('Error reading excitation point list packet',0,.TRUE.)
      CALL write_line('Excitation points should be numbered in order',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9020 CALL write_line('Error reading excitation point list packet',0,.TRUE.)
      CALL write_line("Excitation type should be 'hard' or 'soft'",0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_excitation_point_list

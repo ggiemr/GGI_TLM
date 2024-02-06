@@ -52,6 +52,7 @@
 !
 !     started 6/08/2012 CJS
 !     surface roughness 13/8/2015 CJS
+!       Feb 2024 CJS Improve read error handling
 !
 !
 SUBROUTINE read_surface_list
@@ -98,7 +99,7 @@ logical	:: file_exists
     problem_surfaces(surface_number)%surface_number=read_number
  
 ! read surface type string
-    read(input_file_unit,'(A)',end=9010)input_line
+    read(input_file_unit,'(A)',err=9010,end=9010)input_line
    
     CALL write_line( '...STARTED reading surface_type:'//trim(input_line),0,.TRUE. )
     
@@ -172,7 +173,7 @@ logical	:: file_exists
 
 ! for a triangulated surface, read the mesh filename and check that the file exists
       
-      read(input_file_unit,'(A)',end=9010)tri_surface_filename
+      read(input_file_unit,'(A)',err=9010,end=9010)tri_surface_filename
       problem_surfaces(surface_number)%filename=tri_surface_filename
       
       CALL write_line('Checking the existance of file:',0,.TRUE.)
@@ -192,7 +193,7 @@ logical	:: file_exists
 
 ! for a triangulated surface, read the mesh filename and check that the file exists
       
-      read(input_file_unit,'(A)',end=9010)tri_surface_filename
+      read(input_file_unit,'(A)',err=9010,end=9010)tri_surface_filename
       problem_surfaces(surface_number)%filename=tri_surface_filename
       
       CALL write_line('Checking the existance of file:',0,.TRUE.)
@@ -212,7 +213,7 @@ logical	:: file_exists
 
 ! for a triangulated surface, read the mesh filename and check that the file exists
       
-      read(input_file_unit,'(A)',end=9010)tri_surface_filename
+      read(input_file_unit,'(A)',err=9010,end=9010)tri_surface_filename
       problem_surfaces(surface_number)%filename=tri_surface_filename
       
       CALL write_line('Checking the existance of file:',0,.TRUE.)
@@ -234,7 +235,7 @@ logical	:: file_exists
 ! read parameters
     problem_surfaces(surface_number)%n_surface_parameters=n_params
     if (n_params.gt.0) then
-      read(input_file_unit,*,end=9020)    &
+      read(input_file_unit,*,err=9020,end=9020)    &
       (problem_surfaces(surface_number)%surface_parameters(i),i=1,n_params)
     end if
     
@@ -242,17 +243,17 @@ logical	:: file_exists
     problem_surfaces(surface_number)%roughness_flag=.FALSE.
     problem_surfaces(surface_number)%roughness_p1=0d0
     problem_surfaces(surface_number)%roughness_p2=0d0
-    read(input_file_unit,'(A17)',end=9100)input_line
+    read(input_file_unit,'(A17)',err=9100,end=9100)input_line
     CALL convert_to_lower_case(input_line,256)
     
     if (input_line.EQ.'surface_roughness') then
       problem_surfaces(surface_number)%roughness_flag=.TRUE.
       if (problem_surfaces(surface_number)%surface_type.EQ.surface_type_sphere) then
 ! read a single roughness parameter
-        read(input_file_unit,*,end=9100)problem_surfaces(surface_number)%roughness_p1
+        read(input_file_unit,*,err=9100,end=9100)problem_surfaces(surface_number)%roughness_p1
       else
 ! read two roughness parameters
-        read(input_file_unit,*,end=9100)problem_surfaces(surface_number)%roughness_p1,  &
+        read(input_file_unit,*,err=9100,end=9100)problem_surfaces(surface_number)%roughness_p1,  &
 	                                problem_surfaces(surface_number)%roughness_p2
       end if
     else
@@ -263,7 +264,7 @@ logical	:: file_exists
 ! read transformation
     problem_surfaces(surface_number)%trans%trans_type='euler'
     problem_surfaces(surface_number)%trans%trans_number=1
-    read(input_file_unit,*,end=9040)    &
+    read(input_file_unit,*,err=9040,end=9040)    &
     (problem_surfaces(surface_number)%trans%parameters(i),i=1,6)
     
 ! convert euler angles to radians
@@ -282,44 +283,44 @@ logical	:: file_exists
 9000 CALL write_line('Error allocating problem_surfaces:',0,.TRUE.)
      CALL write_line('problem_surfaces already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading surface_list packet from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
 
 9010 CALL write_line('Error reading Surface_list_packet_data',0,.TRUE.)
      CALL write_line('surfaces should be numbered in order at the moment...',0,.TRUE.)
-     STOP
+     STOP 1
   
 9020 CALL write_line('Error reading Surface_list_packet_data',0,.TRUE.)
      CALL write_line_integer('Number of paramters expected=',n_params,0,.TRUE.)
-     STOP
+     STOP 1
   
 9030 CALL write_line('Error reading Surface_list_packet_data',0,.TRUE.)
      CALL write_line('Unknown surface type:'//trim(input_line),0,.TRUE.)
-     STOP
+     STOP 1
   
 9040 CALL write_line('Error reading Surface_list_packet_data',0,.TRUE.)
      CALL write_line('Error reading transformation data',0,.TRUE.)
-     STOP
+     STOP 1
   
 9050 CALL write_line('Error in read_Surface_list_packet_data',0,.TRUE.)
      CALL write_line('Triangulated surface file not found',0,.TRUE.)
      CALL write_line(trim(problem_surfaces(surface_number)%filename),0,.TRUE.)
-     STOP
+     STOP 1
   
 9060 CALL write_line('Error in read_Surface_list_packet_data',0,.TRUE.)
      CALL write_line('Vtk format triangulated surface file not found',0,.TRUE.)
      CALL write_line(trim(problem_surfaces(surface_number)%filename),0,.TRUE.)
-     STOP
+     STOP 1
   
 9070 CALL write_line('Error in read_Surface_list_packet_data',0,.TRUE.)
      CALL write_line('stl format triangulated surface file not found',0,.TRUE.)
      CALL write_line(trim(problem_surfaces(surface_number)%filename),0,.TRUE.)
-     STOP
+     STOP 1
   
 9100 CALL write_line('Error in read_Surface_list_packet_data',0,.TRUE.)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_surface_list

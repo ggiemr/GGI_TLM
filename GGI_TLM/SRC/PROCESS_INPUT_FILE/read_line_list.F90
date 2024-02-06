@@ -44,6 +44,7 @@
 ! HISTORY
 !
 !     started 6/08/2012 CJS
+!       Feb 2024 CJS Improve read error handling
 !
 !
 SUBROUTINE read_line_list
@@ -72,7 +73,7 @@ logical	:: file_exists
 
   CALL write_line('CALLED: Read_line_list',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9005)n_lines
+  read(input_file_unit,*,err=9005,end=9005)n_lines
   
   CALL write_line_integer('number of lines',n_lines,0,output_to_screen_flag)
   
@@ -84,13 +85,13 @@ logical	:: file_exists
   
     CALL write_line_integer('Reading line number',line_number,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9005)read_number
+    read(input_file_unit,*,err=9005,end=9005)read_number
     if (read_number.ne.line_number) goto 9010
     
     problem_lines(line_number)%line_number=read_number
  
 ! read line type string
-    read(input_file_unit,'(A)',end=9010)input_line
+    read(input_file_unit,'(A)',err=9010,end=9010)input_line
    
     CALL write_line( '...STARTED reading line_type:'//trim(input_line),0,.TRUE. )
     
@@ -126,14 +127,14 @@ logical	:: file_exists
 ! read parameters
     problem_lines(line_number)%n_line_parameters=n_params
     if (n_params.gt.0) then
-      read(input_file_unit,*,end=9020)    &
+      read(input_file_unit,*,err=9020,end=9020)    &
       (problem_lines(line_number)%line_parameters(i),i=1,n_params)
     end if
         
 ! read transformation
     problem_lines(line_number)%trans%trans_type='euler'
     problem_lines(line_number)%trans%trans_number=1
-    read(input_file_unit,*,end=9040)    &
+    read(input_file_unit,*,err=9040,end=9040)    &
     (problem_lines(line_number)%trans%parameters(i),i=1,6)
     
 ! convert euler angles to radians
@@ -152,31 +153,31 @@ logical	:: file_exists
 9000 CALL write_line('Error allocating problem_lines:',0,.TRUE.)
      CALL write_line('problem_lines already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading line_list packet from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
 
 9010 CALL write_line('Error reading line_list_packet_data',0,.TRUE.)
      CALL write_line('lines should be numbered in order at the moment...',0,.TRUE.)
-     STOP
+     STOP 1
   
 9020 CALL write_line('Error reading line_list_packet_data',0,.TRUE.)
      CALL write_line_integer('Number of paramters expected=',n_params,0,.TRUE.)
-     STOP
+     STOP 1
   
 9030 CALL write_line('Error reading line_list_packet_data',0,.TRUE.)
      CALL write_line('Unknown line type:'//trim(input_line),0,.TRUE.)
-     STOP
+     STOP 1
   
 9040 CALL write_line('Error reading line_list_packet_data',0,.TRUE.)
      CALL write_line('Error reading transformation data',0,.TRUE.)
-     STOP
+     STOP 1
   
 9050 CALL write_line('Error in read_line_list_packet_data',0,.TRUE.)
      CALL write_line('Triangulated line file not found',0,.TRUE.)
      CALL write_line(trim(problem_lines(line_number)%filename),0,.TRUE.)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_line_list

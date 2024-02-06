@@ -74,7 +74,7 @@ integer :: format_type
 
   CALL write_line('CALLED: read_frequency_output_volume',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9000)n_frequency_output_volumes
+  read(input_file_unit,*,err=9000,end=9000)n_frequency_output_volumes
   
   CALL write_line_integer('number of frequency output volumes',n_frequency_output_volumes,0,output_to_screen_flag)
     
@@ -89,7 +89,7 @@ integer :: format_type
 
 ! read optional 'output_every' line    
 
-    read(input_file_unit,'(A80)',err=9000)ipline_local
+    read(input_file_unit,'(A80)',err=9000,end=9000)ipline_local
     
     write(*,*)'Read line:',ipline_local
     
@@ -97,7 +97,7 @@ integer :: format_type
     
     if (ipline_local(1:12).EQ.'output_every') then
       ipline_local2=ipline_local(13:LEN(ipline_local))
-      read(ipline_local2,*,err=9030)frequency_output_volume_output_every
+      read(ipline_local2,*,err=9030,end=9030)frequency_output_volume_output_every
       write(*,*)'Output every=',frequency_output_volume_output_every
     else
       frequency_output_volume_output_every=1
@@ -119,12 +119,12 @@ integer :: format_type
   
     CALL write_line_integer('Reading frequency_output_volume number',i,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9000)read_number
+    read(input_file_unit,*,err=9000,end=9000)read_number
     if (read_number.ne.i) GOTO 9020
   
-    read(input_file_unit,*,err=9000)frequency_output_volume(i)%volume_number
+    read(input_file_unit,*,err=9000,end=9000)frequency_output_volume(i)%volume_number
        
-    read(input_file_unit,*,err=9000)frequency_output_volume(i)%frequency
+    read(input_file_unit,*,err=9000,end=9000)frequency_output_volume(i)%frequency
       	
     CALL read_field_component(input_file_unit,frequency_output_volume(i)%field_component)
     
@@ -146,20 +146,20 @@ integer :: format_type
     
 9000 CALL write_line('Error reading frequency_output_volume packet data from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9010 CALL write_line('Error allocating frequency_output_volume:',0,.TRUE.)
      CALL write_line('frequency_output_volume already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9020 CALL write_line('Error reading frequency_output_volume packet',0,.TRUE.)
      CALL write_line('frequency output volumes should be numbered in order',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9030 CALL write_line('Error reading output_every line',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_frequency_output_volume

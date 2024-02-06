@@ -65,7 +65,7 @@ character*256	:: input_line
 
   CALL write_line('CALLED: read_output_volume_average_list',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9005)n_output_volume_averages
+  read(input_file_unit,*,err=9005,end=9005)n_output_volume_averages
   
   CALL write_line_integer('number of output volume_averages',n_output_volume_averages,0,output_to_screen_flag)
   
@@ -77,10 +77,10 @@ character*256	:: input_line
   
     CALL write_line_integer('Reading output number',output_number,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9005)read_number
+    read(input_file_unit,*,err=9005,end=9005)read_number
     if (read_number.ne.output_number) goto 9010
     
-    read(input_file_unit,*,err=9005)output_volume_averages(output_number)%volume_number
+    read(input_file_unit,*,err=9005,end=9005)output_volume_averages(output_number)%volume_number
       	
     CALL read_field_component(input_file_unit,output_volume_averages(output_number)%field_component)
       	
@@ -103,15 +103,15 @@ character*256	:: input_line
 9000 CALL write_line('Error allocating output_volume_averages:',0,.TRUE.)
      CALL write_line('output_volume_averages already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading output volume_average list packet data from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9010 CALL write_line('Error reading output volume_average list packet',0,.TRUE.)
      CALL write_line('output volume_averages should be numbered in order',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_output_volume_average_list

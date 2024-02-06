@@ -100,7 +100,7 @@ logical	:: file_exists
 
   CALL write_line('CALLED: Read_surface_material_list',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9005)n_surface_materials
+  read(input_file_unit,*,err=9005,end=9005)n_surface_materials
   
   CALL write_line_integer('number of surface_materials',n_surface_materials,0,output_to_screen_flag)
   
@@ -114,11 +114,11 @@ logical	:: file_exists
   
     CALL write_line_integer('Reading surface_material number',surface_material_number,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9005)read_number
+    read(input_file_unit,*,err=9005,end=9005)read_number
     if (read_number.ne.surface_material_number) goto 9010
  
 ! read surface material type string
-    read(input_file_unit,'(A)',end=9010)input_line
+    read(input_file_unit,'(A)',err=9010,end=9010)input_line
    
     CALL write_line('...STARTED reading surface_material_type:'//trim(input_line),0,.TRUE. )
     
@@ -143,7 +143,7 @@ logical	:: file_exists
 ! DISPERSIVE THIN LAYER, the following line of the input file should be the name of a surface material file
     
 ! read thin layer material file name   
-      read(input_file_unit,'(A)',end=9010)input_line
+      read(input_file_unit,'(A)',err=9010,end=9010)input_line
       surface_material_list(surface_material_number)%name=strip_path(input_line,256)
       material_file_name=trim(input_line)//surface_material_file_extn
   
@@ -158,28 +158,30 @@ logical	:: file_exists
 
       surface_material_list(surface_material_number)%type=surface_material_type_DISPERSIVE
       
-      read(surface_material_file_unit,'(A)')material_label    ! read material label
+      read(surface_material_file_unit,'(A)',err=9030,end=9030)material_label    ! read material label
       
 ! check material label for anisotropic material
       call convert_to_lower_case(material_label,256)
 
 ! read frequency range of validity
-      read(surface_material_file_unit,*)surface_material_list(surface_material_number)%fmin,	&
+      read(surface_material_file_unit,*,err=9030,end=9030)surface_material_list(surface_material_number)%fmin,	&
                                 surface_material_list(surface_material_number)%fmax
 ! READ X POLARISATION FILTER
-      read(surface_material_file_unit,*)    ! read comment line
+      write(*,*)'Read x polarisation filter:'
+
+      read(surface_material_file_unit,*,err=9030,end=9030)    ! read comment line
       call read_Sfilter(filter_in,surface_material_file_unit) ! read Z11 filter
       surface_material_list(surface_material_number)%Z11_S(1)=filter_in
 
-      read(surface_material_file_unit,*)    ! read comment line
+      read(surface_material_file_unit,*,err=9030,end=9030)    ! read comment line
       call read_Sfilter(filter_in,surface_material_file_unit) ! read Z12 filter
       surface_material_list(surface_material_number)%Z12_S(1)=filter_in
 
-      read(surface_material_file_unit,*)    ! read comment line
+      read(surface_material_file_unit,*,err=9030,end=9030)    ! read comment line
       call read_Sfilter(filter_in,surface_material_file_unit) ! read Z21 filter
       surface_material_list(surface_material_number)%Z21_S(1)=filter_in
 
-      read(surface_material_file_unit,*)    ! read comment line
+      read(surface_material_file_unit,*,err=9030,end=9030)    ! read comment line
       call read_Sfilter(filter_in,surface_material_file_unit) ! read Z22 filter
       surface_material_list(surface_material_number)%Z22_S(1)=filter_in
 
@@ -217,7 +219,7 @@ logical	:: file_exists
 
       surface_material_list(surface_material_number)%type=surface_material_type_ANISOTROPIC_DISPERSIVE
       
-      read(surface_material_file_unit,'(A)')material_label    ! read material label
+      read(surface_material_file_unit,'(A)',err=9030,end=9030)material_label    ! read material label
       
 ! check material label for anisotropic material
       call convert_to_lower_case(material_label,256)
@@ -227,53 +229,56 @@ logical	:: file_exists
                                 surface_material_list(surface_material_number)%fmax
 
 ! READ X POLARISATION FILTER
-      read(surface_material_file_unit,*)    ! read comment line
+      write(*,*)'Read x polarisation filter:'
+      read(surface_material_file_unit,*,err=9030,end=9030)    ! read comment line
       call read_Sfilter(filter_in,surface_material_file_unit) ! read Z11 filter
       surface_material_list(surface_material_number)%Z11_S(1)=filter_in
 
-      read(surface_material_file_unit,*)    ! read comment line
+      read(surface_material_file_unit,*,err=9030,end=9030)    ! read comment line
       call read_Sfilter(filter_in,surface_material_file_unit) ! read Z12 filter
       surface_material_list(surface_material_number)%Z12_S(1)=filter_in
 
-      read(surface_material_file_unit,*)    ! read comment line
+      read(surface_material_file_unit,*,err=9030,end=9030)    ! read comment line
       call read_Sfilter(filter_in,surface_material_file_unit) ! read Z21 filter
       surface_material_list(surface_material_number)%Z21_S(1)=filter_in
 
-      read(surface_material_file_unit,*)    ! read comment line
+      read(surface_material_file_unit,*,err=9030,end=9030)    ! read comment line
       call read_Sfilter(filter_in,surface_material_file_unit) ! read Z22 filter
       surface_material_list(surface_material_number)%Z22_S(1)=filter_in
 
 ! READ Y POLARISATION FILTER
-      read(surface_material_file_unit,*)    ! read comment line
+      write(*,*)'Read y polarisation filter:'
+      read(surface_material_file_unit,*,err=9030,end=9030)    ! read comment line
       call read_Sfilter(filter_in,surface_material_file_unit) ! read Z11 filter
       surface_material_list(surface_material_number)%Z11_S(2)=filter_in
 
-      read(surface_material_file_unit,*)    ! read comment line
+      read(surface_material_file_unit,*,err=9030,end=9030)    ! read comment line
       call read_Sfilter(filter_in,surface_material_file_unit) ! read Z12 filter
       surface_material_list(surface_material_number)%Z12_S(2)=filter_in
 
-      read(surface_material_file_unit,*)    ! read comment line
+      read(surface_material_file_unit,*,err=9030,end=9030)    ! read comment line
       call read_Sfilter(filter_in,surface_material_file_unit) ! read Z21 filter
       surface_material_list(surface_material_number)%Z21_S(2)=filter_in
 
-      read(surface_material_file_unit,*)    ! read comment line
+      read(surface_material_file_unit,*,err=9030,end=9030)    ! read comment line
       call read_Sfilter(filter_in,surface_material_file_unit) ! read Z22 filter
       surface_material_list(surface_material_number)%Z22_S(2)=filter_in
 
 ! READ Z POLARISATION FILTER
-      read(surface_material_file_unit,*)    ! read comment line
+      write(*,*)'Read z polarisation filter:'
+      read(surface_material_file_unit,*,err=9030,end=9030)    ! read comment line
       call read_Sfilter(filter_in,surface_material_file_unit) ! read Z11 filter
       surface_material_list(surface_material_number)%Z11_S(3)=filter_in
 
-      read(surface_material_file_unit,*)    ! read comment line
+      read(surface_material_file_unit,*,err=9030,end=9030)    ! read comment line
       call read_Sfilter(filter_in,surface_material_file_unit) ! read Z12 filter
       surface_material_list(surface_material_number)%Z12_S(3)=filter_in
 
-      read(surface_material_file_unit,*)    ! read comment line
+      read(surface_material_file_unit,*,err=9030,end=9030)    ! read comment line
       call read_Sfilter(filter_in,surface_material_file_unit) ! read Z21 filter
       surface_material_list(surface_material_number)%Z21_S(3)=filter_in
 
-      read(surface_material_file_unit,*)    ! read comment line
+      read(surface_material_file_unit,*,err=9030,end=9030)    ! read comment line
       call read_Sfilter(filter_in,surface_material_file_unit) ! read Z22 filter
       surface_material_list(surface_material_number)%Z22_S(3)=filter_in
       
@@ -284,7 +289,7 @@ logical	:: file_exists
       surface_material_list(surface_material_number)%type=surface_material_type_DIODE
 
 ! read diode parameters      
-     read(input_file_unit,*,err=9005)surface_material_list(surface_material_number)%Diode_Is,	&
+     read(input_file_unit,*,err=9005,end=9005)surface_material_list(surface_material_number)%Diode_Is,	&
                                      surface_material_list(surface_material_number)%Diode_nVt,	&
                                      surface_material_list(surface_material_number)%Diode_Rs,	&
 				     surface_material_list(surface_material_number)%Diode_Cj
@@ -317,14 +322,14 @@ logical	:: file_exists
 
 ! read the Ngspice node(s) for this surface 
       n_spice_ports=n_spice_ports+1
-      read(input_file_unit,*,err=9005)surface_material_list(surface_material_number)%Spice_circuit_file_port
+      read(input_file_unit,*,err=9005,end=9005)surface_material_list(surface_material_number)%Spice_circuit_file_port
       
       if (surface_material_list(surface_material_number)%Spice_circuit_file_port.NE.n_spice_ports) then
         write(*,*)'ERROR in read_surface_material_list: Spice ports should be numbered in order at the moment'
         STOP 1
       end if
       
-      read(input_file_unit,'(A)')input_line  ! read the nodes for this port
+      read(input_file_unit,'(A)',err=9005,end=9005)input_line  ! read the nodes for this port
       
       surface_material_list(surface_material_number)%Spice_circuit_file_nodes(1)=0
       surface_material_list(surface_material_number)%Spice_circuit_file_nodes(2)=0
@@ -430,29 +435,34 @@ logical	:: file_exists
 9000 CALL write_line('Error allocating surface_material_list:',0,.TRUE.)
      CALL write_line('surface_material_list already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading surface_material_list packet from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
 
 9010 CALL write_line('Error reading surface_material_list_packet_data',0,.TRUE.)
      CALL write_line('surface_materials should be numbered in order at the moment...',0,.TRUE.)
-     STOP
+     STOP 1
   
 9020 CALL write_line('Error reading surface_material_list_packet_data',0,.TRUE.)
      CALL write_line('Problem opening surface material file:'//trim(material_file_name),0,.TRUE.)
-     STOP
-  
+     STOP 1
+    
+9030 CALL write_line('Error reading surface_material_list_packet_data',0,.TRUE.)
+     CALL write_line('Error reading surface_material file',0,.TRUE.)
+     CALL write_error_line(input_file_unit)
+     STOP 1
+
 9040 CALL write_line('Error reading surface_material_list_packet_data',0,.TRUE.)
      CALL write_line('Unrecognised material type:'//trim(material_name),0,.TRUE.)
-     STOP
+     STOP 1
   
 9050 CALL write_line('Error reading surface_material_list_packet_data',0,.TRUE.)
      CALL write_line('Surface orientation should be +1 or -1',0,.TRUE.)
-     STOP
+     STOP 1
 
 9060 CALL write_line('Error reading the Ngspice node numbers for the surface',0,.TRUE.)
-     STOP
+     STOP 1
     
 END SUBROUTINE read_surface_material_list

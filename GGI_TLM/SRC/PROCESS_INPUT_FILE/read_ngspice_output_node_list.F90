@@ -61,7 +61,7 @@ character*256	:: input_line
 
   CALL write_line('CALLED: read_ngspice_output_node_list',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9005)n_ngspice_output_nodes
+  read(input_file_unit,*,err=9005,end=9005)n_ngspice_output_nodes
   
   CALL write_line_integer('number of output points',n_ngspice_output_nodes,0,output_to_screen_flag)
   
@@ -73,22 +73,22 @@ character*256	:: input_line
   
     CALL write_line_integer('Reading ngspice output node number',output_number,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9005)read_number
+    read(input_file_unit,*,err=9005,end=9005)read_number
     if (read_number.ne.output_number) goto 9010
           
-      read(input_file_unit,'(A)')input_line  ! read the nodes for this ngspice output
+      read(input_file_unit,'(A)',err=9005,end=9005)input_line  ! read the nodes for this ngspice output
       
       ngspice_output_nodes(output_number,1)=0
       ngspice_output_nodes(output_number,2)=0
       
-      read(input_line,*,ERR=100)ngspice_output_nodes(output_number,1),  &
+      read(input_line,*,ERR=100,END=9005)ngspice_output_nodes(output_number,1),  &
                                 ngspice_output_nodes(output_number,2)
       GOTO 110   ! node numbers read OK
       
 100   CONTINUE
 
 ! Read only a single node for this port i.e. the reference node is node zero
-      read(input_line,*,ERR=9020)ngspice_output_nodes(output_number,1)
+      read(input_line,*,ERR=9020,END=9020)ngspice_output_nodes(output_number,1)
 
 110   CONTINUE
     
@@ -102,20 +102,20 @@ character*256	:: input_line
 9000 CALL write_line('Error allocating ngspice_output_node_list:',0,.TRUE.)
      CALL write_line('ngspice_output_node_list already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading ngspice_output_node_list packet data from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9010 CALL write_line('Error reading ngspice_output_node_list packet',0,.TRUE.)
      CALL write_line('output nodes should be numbered in order',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
 
 9020 CALL write_line('Error reading the Ngspice output node numbers',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
   
 END SUBROUTINE read_ngspice_output_node_list

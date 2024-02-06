@@ -78,7 +78,7 @@ character*256	:: strip_path
 
   CALL write_line('CALLED: Read_volume_material_list',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9005)n_volume_materials
+  read(input_file_unit,*,err=9005,end=9005)n_volume_materials
   
   CALL write_line_integer('number of volume_materials',n_volume_materials,0,output_to_screen_flag)
   
@@ -90,11 +90,11 @@ character*256	:: strip_path
   
     CALL write_line_integer('Reading volume_material number',volume_material_number,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9005)read_number
+    read(input_file_unit,*,err=9005,end=9005)read_number
     if (read_number.ne.volume_material_number) goto 9010
  
 ! read volume material type string
-    read(input_file_unit,'(A)',end=9010)input_line
+    read(input_file_unit,'(A)',err=9010,end=9010)input_line
    
     CALL write_line('...STARTED reading volume_material_type:'//trim(input_line),0,.TRUE. )
     
@@ -115,7 +115,7 @@ character*256	:: strip_path
 ! dispersive thin layer, the following line of the input file should be the name of a volume material file
     
 ! read thin layer material file name   
-      read(input_file_unit,'(A)',end=9010)input_line
+      read(input_file_unit,'(A)',err=9010,end=9010)input_line
       volume_material_list(volume_material_number)%name=strip_path(input_line,256)
       material_file_name=trim(input_line)//volume_material_file_extn
   
@@ -130,28 +130,30 @@ character*256	:: strip_path
 
       volume_material_list(volume_material_number)%type=volume_material_type_DISPERSIVE
       
-      read(volume_material_file_unit,'(A)')material_label    ! read material label
+      write(*,*)'Reading volume material file:'
+      
+      read(volume_material_file_unit,'(A)',err=9030,end=9030)material_label    ! read material label
       
 ! check material label for anisotropic material
       call convert_to_lower_case(material_label,256)
 
 ! read frequency range of validity
-      read(volume_material_file_unit,*)volume_material_list(volume_material_number)%fmin,	&
+      read(volume_material_file_unit,*,err=9030,end=9030)volume_material_list(volume_material_number)%fmin,	&
                                 volume_material_list(volume_material_number)%fmax
 
-      read(volume_material_file_unit,*)    ! read comment line
+      read(volume_material_file_unit,*,err=9030,end=9030)    ! read comment line
 ! read permittivity filter
       call read_Sfilter(filter_in,volume_material_file_unit) 
       volume_material_list(volume_material_number)%eps_S=filter_in
 ! read electric conductivity
-      read(volume_material_file_unit,*)volume_material_list(volume_material_number)%sigma_e
+      read(volume_material_file_unit,*,err=9030,end=9030)volume_material_list(volume_material_number)%sigma_e
 
-      read(volume_material_file_unit,*)    ! read comment line
+      read(volume_material_file_unit,*,err=9030,end=9030)    ! read comment line
 ! read permeability filter
       call read_Sfilter(filter_in,volume_material_file_unit) 
       volume_material_list(volume_material_number)%mu_S=filter_in
 ! read magnetic conductivity
-      read(volume_material_file_unit,*)volume_material_list(volume_material_number)%sigma_m
+      read(volume_material_file_unit,*,err=9030,end=9030)volume_material_list(volume_material_number)%sigma_m
       
       close(UNIT=volume_material_file_unit)
       
@@ -163,12 +165,12 @@ character*256	:: strip_path
     end if
     
 ! now read the volume number which have this material property
-    read(input_file_unit,*,err=9030)n_geometric_volumes
+    read(input_file_unit,*,err=9005,end=9005)n_geometric_volumes
     volume_material_list(volume_material_number)%n_volumes=n_geometric_volumes
     
     ALLOCATE( volume_material_list(volume_material_number)%volume_list(1:n_geometric_volumes) )
     
-    read(input_file_unit,*,err=9030)( volume_material_list(volume_material_number)%volume_list(i)	&
+    read(input_file_unit,*,err=9005,end=9005)( volume_material_list(volume_material_number)%volume_list(i)	&
                                      ,i=1,n_geometric_volumes )
   
     CALL write_line( '...FINISHED reading volume_material_type:'//trim(input_line),0,.TRUE. )
@@ -182,26 +184,26 @@ character*256	:: strip_path
 9000 CALL write_line('Error allocating volume_material_list:',0,.TRUE.)
      CALL write_line('volume_material_list already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading volume_material_list packet from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
 
 9010 CALL write_line('Error reading volume_material_list_packet_data',0,.TRUE.)
      CALL write_line('volume_materials should be numbered in order at the moment...',0,.TRUE.)
-     STOP
+     STOP 1
   
 9020 CALL write_line('Error reading volume_material_list_packet_data',0,.TRUE.)
      CALL write_line('Problem opening volume material file:'//trim(material_file_name),0,.TRUE.)
-     STOP
+     STOP 1
   
 9030 CALL write_line('Error reading volume_material_list_packet_data',0,.TRUE.)
      CALL write_line('Problem reading volume material file:'//trim(material_file_name),0,.TRUE.)
-     STOP
+     STOP 1
   
 9040 CALL write_line('Error reading volume_material_list_packet_data',0,.TRUE.)
      CALL write_line('Unrecognised material type:'//trim(material_name),0,.TRUE.)
-     STOP
+     STOP 1
     
 END SUBROUTINE read_volume_material_list

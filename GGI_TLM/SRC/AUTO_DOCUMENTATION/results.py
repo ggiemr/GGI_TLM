@@ -2,6 +2,7 @@
 #  write the results section
 
 import os
+import subprocess
 import sys
 import time
 import glob
@@ -29,9 +30,11 @@ def Build_results_section( name , info_file_contents , doc ) :
 	sed_command_file.write("s/#OUTPUT_TO_FILE/ /g } \n")
 	sed_command_file.close()
 
-	os.system("sed -f sed_command PROBLEM_SPECIFICATION_FILES/plot_result.plt > plot_result.plt")
+#	os.system("sed -f sed_command PROBLEM_SPECIFICATION_FILES/plot_result.plt > plot_result.plt")
+#	os.system("gnuplot plot_result.plt")
 
-	os.system("gnuplot plot_result.plt")
+	subprocess.call("sed -f sed_command PROBLEM_SPECIFICATION_FILES/plot_result.plt > plot_result.plt")
+	subprocess.call("gnuplot plot_result.plt")
 
 	result_file_list= glob.glob("*.jpg")
 

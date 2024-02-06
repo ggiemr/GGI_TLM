@@ -50,6 +50,7 @@
 !
 !     started 29/08/2012 CJS
 !     1/11/2018 CJS:  Allow volumes to be created by filling surfaces
+!       Feb 2024 CJS Improve read error handling
 !
 !
 SUBROUTINE read_volume_list
@@ -96,7 +97,7 @@ logical	:: file_exists
     problem_volumes(volume_number)%volume_number=read_number
  
 ! read volume type string
-    read(input_file_unit,'(A)',end=9010)input_line
+    read(input_file_unit,'(A)',err=9010,end=9010)input_line
    
     CALL write_line( '...STARTED reading volume_type:'//trim(input_line),0,.TRUE. )
     
@@ -137,7 +138,7 @@ logical	:: file_exists
 
 ! for a tet volume mesh, read the mesh filename and check that the file exists
       
-      read(input_file_unit,'(A)',end=9005)tet_volume_filename
+      read(input_file_unit,'(A)',err=9005,end=9005)tet_volume_filename
       problem_volumes(volume_number)%filename=tet_volume_filename
       
       CALL write_line('Checking the existance of file:',0,.TRUE.)
@@ -163,14 +164,14 @@ logical	:: file_exists
 ! read parameters
     problem_volumes(volume_number)%n_volume_parameters=n_params
     if (n_params.gt.0) then
-      read(input_file_unit,*,end=9020)    &
+      read(input_file_unit,*,err=9020,end=9020)    &
       (problem_volumes(volume_number)%volume_parameters(i),i=1,n_params)
     end if
         
 ! read transformation
     problem_volumes(volume_number)%trans%trans_type='euler'
     problem_volumes(volume_number)%trans%trans_number=1
-    read(input_file_unit,*,end=9040)    &
+    read(input_file_unit,*,err=9040,end=9040)    &
     (problem_volumes(volume_number)%trans%parameters(i),i=1,6)
     
 ! convert euler angles to radians
@@ -189,31 +190,31 @@ logical	:: file_exists
 9000 CALL write_line('Error allocating problem_volumes:',0,.TRUE.)
      CALL write_line('problem_volumes already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading volume_list packet from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
 
 9010 CALL write_line('Error reading volume_list_packet_data',0,.TRUE.)
      CALL write_line('volumes should be numbered in order at the moment...',0,.TRUE.)
-     STOP
+     STOP 1
   
 9020 CALL write_line('Error reading volume_list_packet_data',0,.TRUE.)
      CALL write_line_integer('Number of paramters expected=',n_params,0,.TRUE.)
-     STOP
+     STOP 1
   
 9030 CALL write_line('Error reading volume_list_packet_data',0,.TRUE.)
      CALL write_line('Unknown volume type:'//trim(input_line),0,.TRUE.)
-     STOP
+     STOP 1
   
 9040 CALL write_line('Error reading volume_list_packet_data',0,.TRUE.)
      CALL write_line('Error reading transformation data',0,.TRUE.)
-     STOP
+     STOP 1
   
 9050 CALL write_line('Error in read_volume_list_packet_data',0,.TRUE.)
      CALL write_line('Tet volume file not found',0,.TRUE.)
      CALL write_line(trim(problem_volumes(volume_number)%filename),0,.TRUE.)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_volume_list

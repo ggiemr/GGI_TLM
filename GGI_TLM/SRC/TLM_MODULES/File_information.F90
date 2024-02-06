@@ -58,6 +58,8 @@ END MODULE File_general
 ! HISTORY
 !
 !     started 6/08/2012 CJS
+!     2/2/2024: CJS. Change the extension of PML vtk output files to prevent automatic plotting with volume mesh
+!                    as the PML volumes obscure the main parts of the geometry 
 !
 !
 MODULE File_information
@@ -72,11 +74,13 @@ IMPLICIT NONE
   character(len=8)	:: warning_file_extension='.warning'
   integer,parameter	:: warning_file_unit=11
   
-  character(len=15)	:: pml_tet_volume_file_extension='.pml_v_geom.vtk'
+!  character(len=15)	:: pml_tet_volume_file_extension='.pml_v_geom.vtk'
+  character(len=15)	:: pml_tet_volume_file_extension='.v_pml_geom.vtk'
   character(len=11)	:: tet_volume_file_extension='.v_geom.vtk'
   integer,parameter	:: tet_volume_file_unit=12
   
-  character(len=15)	:: pml_volume_mesh_file_extension='.pml_v_mesh.vtk'
+!  character(len=15)	:: pml_volume_mesh_file_extension='.pml_v_mesh.vtk'
+  character(len=15)	:: pml_volume_mesh_file_extension='.v_pml_mesh.vtk'
   character(len=11)	:: volume_mesh_file_extension='.v_mesh.vtk'
   integer,parameter	:: volume_mesh_file_unit=13
   

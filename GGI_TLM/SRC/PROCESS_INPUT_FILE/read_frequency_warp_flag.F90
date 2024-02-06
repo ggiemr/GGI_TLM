@@ -51,7 +51,7 @@ character*256	:: input_line
 
   CALL write_line('CALLED: read_bicubic_warp_flag',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9000)bicubic_warp_flag
+  read(input_file_unit,*,err=9000,end=9000)bicubic_warp_flag
 
   CALL write_line('FINISHED: read_bicubic_warp_flag',0,output_to_screen_flag)
   
@@ -59,6 +59,6 @@ character*256	:: input_line
   
 9000 CALL write_line('Error reading bicubic_warp_flag:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_bicubic_warp_flag

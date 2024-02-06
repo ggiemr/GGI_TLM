@@ -121,6 +121,6 @@ character*256	:: input_line
 9000 CALL write_line('Error in read_input_file_cables:',0,.TRUE.)
      CALL write_line('Cannot include cables with periodic boundaries at the moment...',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_input_file_cables

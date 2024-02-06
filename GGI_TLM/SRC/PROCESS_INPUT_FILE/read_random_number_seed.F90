@@ -70,7 +70,7 @@ IMPLICIT NONE
   
   write(*,*)'Number of random number seed values required=',n
   
-  read(input_file_unit,*,err=9000)nvalues
+  read(input_file_unit,*,err=9000,end=9000)nvalues
     
   if (nvalues.eq.0) then
   
@@ -106,11 +106,11 @@ IMPLICIT NONE
   
 9000 CALL write_line('Error reading random_number_seed packet data from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9010 CALL write_line('Error reading random_number_seed packet data from input file:',0,.TRUE.)
      CALL write_line_integer('Number of values should be at least ',n,0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
        
 END SUBROUTINE read_random_number_seed

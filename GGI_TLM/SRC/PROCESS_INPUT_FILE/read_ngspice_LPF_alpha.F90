@@ -52,7 +52,7 @@ IMPLICIT NONE
 
   CALL write_line('CALLED: read_ngspice_LPF_alpha',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9000)LPF_alpha
+  read(input_file_unit,*,err=9000,end=9000)LPF_alpha
   
   if (LPF_alpha.LT.0.0) then
     CALL write_line('low pass filter coefficient should be greater than zero',0,output_to_screen_flag)
@@ -65,6 +65,6 @@ IMPLICIT NONE
   
 9000 CALL write_line('Error reading low pass filter coefficient:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
     
 END SUBROUTINE read_ngspice_LPF_alpha

@@ -76,7 +76,7 @@ IMPLICIT NONE
   
   if (n_far_field_surfaces.NE.0) GOTO 9000
   
-  read(input_file_unit,*,err=9005)n_far_field_surfaces
+  read(input_file_unit,*,err=9005,end=9005)n_far_field_surfaces
   
   ALLOCATE( far_field_surface(1:n_far_field_surfaces) )
   
@@ -84,12 +84,12 @@ IMPLICIT NONE
   
     CALL write_line_integer('Reading far field surface number',surface,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9005)read_number
+    read(input_file_unit,*,err=9005,end=9005)read_number
     if (read_number.ne.surface) goto 9007
   
-    read(input_file_unit,*,err=9005)far_field_surface(surface)%surface_number
+    read(input_file_unit,*,err=9005,end=9005)far_field_surface(surface)%surface_number
     
-    read(input_file_unit,*,err=9005)side_of_surface_for_output
+    read(input_file_unit,*,err=9005,end=9005)side_of_surface_for_output
     
     if (side_of_surface_for_output.eq.1) then
       far_field_surface(surface)%output_on_outward_normal=.TRUE.
@@ -99,13 +99,13 @@ IMPLICIT NONE
       GOTO 9010
     end if
     
-    read(input_file_unit,*,err=9000)far_field_surface(surface)%frequency
+    read(input_file_unit,*,err=9005,end=9005)far_field_surface(surface)%frequency
       
-    read(input_file_unit,*,err=9000)far_field_surface(surface)%theta_min,        &
+    read(input_file_unit,*,err=9005,end=9005)far_field_surface(surface)%theta_min,        &
   				    far_field_surface(surface)%theta_max,        &
   				    far_field_surface(surface)%theta_step
       
-    read(input_file_unit,*,err=9000)far_field_surface(surface)%phi_min,  &
+    read(input_file_unit,*,err=9005,end=9005)far_field_surface(surface)%phi_min,  &
   				    far_field_surface(surface)%phi_max,  &
                                     far_field_surface(surface)%phi_step
     
@@ -130,7 +130,7 @@ IMPLICIT NONE
     
       far_field_surface(surface)%dim=2
       
-      read(input_file_unit,'(A)',err=9020)ch
+      read(input_file_unit,'(A)',err=9020,end=9020)ch
       
       if ( (ch.eq.'x').OR.(ch.eq.'X') ) then
         far_field_surface(surface)%direction=1
@@ -169,25 +169,25 @@ IMPLICIT NONE
   RETURN
     
 9000 CALL write_line('Error: far_field_surface_list data already set',0,.TRUE.)
-     STOP
+     STOP 1
     
 9005 CALL write_line('Error reading far_field_surface_list packet data from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9007 CALL write_line('Error reading far_field_surface_list list packet',0,.TRUE.)
      CALL write_line('Far field surfaces should be numbered in order',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
         
 9010 CALL write_line('Error reading far_field_surface_list packet',0,.TRUE.)
      CALL write_line("Side of surface for output should be +1 or -1",0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
        
 9020 CALL write_line('Error reading far_field_surface_list packet',0,.TRUE.)
      CALL write_line("Problem with 2D far field transformation specification",0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
 
 END SUBROUTINE read_far_field_surface

@@ -60,9 +60,9 @@ IMPLICIT NONE
   
   n_rcs_surfaces=1
   
-  read(input_file_unit,*,err=9000)rcs_surface%surface_number
+  read(input_file_unit,*,err=9000,end=9000)rcs_surface%surface_number
     
-  read(input_file_unit,*,err=9000)side_of_surface_for_output
+  read(input_file_unit,*,err=9000,end=9000)side_of_surface_for_output
     
   if (side_of_surface_for_output.eq.1) then
     rcs_surface%output_on_outward_normal=.TRUE.
@@ -72,13 +72,13 @@ IMPLICIT NONE
     GOTO 9010
   end if
   
-  read(input_file_unit,*,err=9000)rcs_surface%fmin,        &
-  				  rcs_surface%fmax,        &
-  				  rcs_surface%fstep
+  read(input_file_unit,*,err=9000,end=9000)rcs_surface%fmin,        &
+  				           rcs_surface%fmax,        &
+  				           rcs_surface%fstep
       
-  read(input_file_unit,*,err=9000)rcs_surface%theta
+  read(input_file_unit,*,err=9000,end=9000)rcs_surface%theta
       
-  read(input_file_unit,*,err=9000)rcs_surface%phi
+  read(input_file_unit,*,err=9000,end=9000)rcs_surface%phi
     
 ! convert angles to radians
   rcs_surface%theta =(pi/180d0)*rcs_surface%theta 
@@ -91,11 +91,11 @@ IMPLICIT NONE
     
 9000 CALL write_line('Error reading rcs_surface packet data from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
        
 9010 CALL write_line('Error reading rcs_surface packet',0,.TRUE.)
      CALL write_line("Side of surface for output should be +1 or -1",0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
 
 END SUBROUTINE read_rcs_surface

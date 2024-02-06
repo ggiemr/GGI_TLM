@@ -50,7 +50,7 @@ IMPLICIT NONE
 
   CALL write_line('CALLED: read_mesh_cell_dimension',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9000) dl
+  read(input_file_unit,*,err=9000,end=9000) dl
 
 ! check: dl greater than 0
   if ( dl.le.0d0) GOTO 9010
@@ -61,11 +61,11 @@ IMPLICIT NONE
   
 9000 CALL write_line('Error reading mesh_dimensions_in_cells packet from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9010 CALL write_line('Error reading mesh_dimensions_in_cells packet',0,.TRUE.)
      CALL write_line('dl should all be greater than 0',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_mesh_cell_dimension

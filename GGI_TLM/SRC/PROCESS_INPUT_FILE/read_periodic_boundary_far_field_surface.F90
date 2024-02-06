@@ -70,7 +70,7 @@ IMPLICIT NONE
 
   CALL write_line('CALLED: read_periodic_boundary_far_field_surface',0,output_to_screen_flag)
   
-  read(input_file_unit,*,err=9000)n_PB_far_field_surfaces
+  read(input_file_unit,*,err=9000,end=9000)n_PB_far_field_surfaces
   
   CALL write_line_integer('number of periodic boundary far field surfaces',n_PB_far_field_surfaces,0,output_to_screen_flag)
  
@@ -80,12 +80,12 @@ IMPLICIT NONE
   
   do surface=1,n_PB_far_field_surfaces
   
-    read(input_file_unit,*,err=9000)PB_surface_number
+    read(input_file_unit,*,err=9000,end=9000)PB_surface_number
     if (PB_surface_number.ne.surface) goto 9020
   
-    read(input_file_unit,*,err=9000)PB_far_field_surface(surface)%surface_number
+    read(input_file_unit,*,err=9000,end=9000)PB_far_field_surface(surface)%surface_number
     
-    read(input_file_unit,*,err=9000)side_of_surface_for_output
+    read(input_file_unit,*,err=9000,end=9000)side_of_surface_for_output
     
     if (side_of_surface_for_output.eq.1) then
       PB_far_field_surface(surface)%output_on_outward_normal=.TRUE.
@@ -95,13 +95,13 @@ IMPLICIT NONE
       GOTO 9030
     end if
     
-    read(input_file_unit,*,err=9000)PB_far_field_surface(surface)%fmin,        &
+    read(input_file_unit,*,err=9000,end=9000)PB_far_field_surface(surface)%fmin,        &
   				    PB_far_field_surface(surface)%fmax,        &
   				    PB_far_field_surface(surface)%fstep
       
  ! check for reflection or transmission side of surface
     
-    read(input_file_unit,'(A)',err=9000)ch
+    read(input_file_unit,'(A)',err=9000,end=9000)ch
     
     if ( (ch.eq.'r').OR.(ch.eq.'R') ) then    
       PB_far_field_surface(surface)%r_t_option='r'     
@@ -111,7 +111,7 @@ IMPLICIT NONE
       GOTO 9040  
     end if
     
-    read(input_file_unit,*,err=9000)PB_far_field_surface(surface)%m,PB_far_field_surface(surface)%n
+    read(input_file_unit,*,err=9000,end=9000)PB_far_field_surface(surface)%m,PB_far_field_surface(surface)%n
     
   end do ! next periodic_boundary_far_field_surfac
   
@@ -121,26 +121,26 @@ IMPLICIT NONE
     
 9000 CALL write_line('Error reading periodic_boundary_far_field_surface packet data from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
     
 9010 CALL write_line('Error in periodic_boundary_far_field_surface packet data from input file:',0,.TRUE.)
      CALL write_line('far_field_surface packet data is already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9020 CALL write_line('Error in periodic_boundary_far_field_surface packet data from input file:',0,.TRUE.)
      CALL write_line('Periodic boundary far field surfaces should be numbered in order',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
        
 9030 CALL write_line('Error reading periodic_boundary_far_field_surface packet',0,.TRUE.)
      CALL write_line("Side of surface for output should be +1 or -1",0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
        
 9040 CALL write_line('Error reading periodic_boundary_far_field_surface packet',0,.TRUE.)
      CALL write_line("Expecting either Reflection or Transmission to be specified...",0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
 
 END SUBROUTINE read_periodic_boundary_far_field_surface

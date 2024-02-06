@@ -74,7 +74,7 @@ character*256	:: input_line
 
   CALL write_line('CALLED: read_output_point_list',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9005)n_output_points
+  read(input_file_unit,*,err=9005,end=9005)n_output_points
   
   CALL write_line_integer('number of output points',n_output_points,0,output_to_screen_flag)
   
@@ -86,10 +86,10 @@ character*256	:: input_line
   
     CALL write_line_integer('Reading output number',output_number,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9005)read_number
+    read(input_file_unit,*,err=9005,end=9005)read_number
     if (read_number.ne.output_number) goto 9010
     
-    read(input_file_unit,*,err=9005)output_points(output_number)%point_number
+    read(input_file_unit,*,err=9005,end=9005)output_points(output_number)%point_number
     
     CALL get_point(output_points(output_number)%point_number,	&
                    output_points(output_number)%cell_point%cell,			&
@@ -118,20 +118,20 @@ character*256	:: input_line
 9000 CALL write_line('Error allocating output_points:',0,.TRUE.)
      CALL write_line('output_points already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading output point list packet data from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9010 CALL write_line('Error reading output point list packet',0,.TRUE.)
      CALL write_line('output points should be numbered in order',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9020 CALL write_line('Error reading excitation point list packet',0,.TRUE.)
      CALL write_line("Output type should be 'centre','xmin','xmax','ymin','ymax','zmin','zmax'",0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_output_point_list

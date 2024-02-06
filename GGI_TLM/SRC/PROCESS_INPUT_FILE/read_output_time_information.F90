@@ -61,7 +61,7 @@ IMPLICIT NONE
 character*256	:: input_line
 
 ! START  
-    read(file_unit,'(A)',err=9000)input_line
+    read(file_unit,'(A)',err=9000,end=9000)input_line
 
 ! convert text to lower case
     CALL convert_to_lower_case(input_line,256)
@@ -70,17 +70,17 @@ character*256	:: input_line
     
       specified_timestep_information=.TRUE.
       specified_time_information=.FALSE.
-      read(file_unit,*)first_timestep
-      read(file_unit,*)last_timestep
-      read(file_unit,*)timestep_interval
+      read(file_unit,*,err=9000,end=9000)first_timestep
+      read(file_unit,*,err=9000,end=9000)last_timestep
+      read(file_unit,*,err=9000,end=9000)timestep_interval
       
     else if (input_line.eq.'output_time_information') then   
     
       specified_time_information=.TRUE.
       specified_timestep_information=.FALSE.
-      read(file_unit,*)first_time
-      read(file_unit,*)last_time
-      read(file_unit,*)time_interval
+      read(file_unit,*,err=9000,end=9000)first_time
+      read(file_unit,*,err=9000,end=9000)last_time
+      read(file_unit,*,err=9000,end=9000)time_interval
 
     else
 
@@ -99,11 +99,11 @@ character*256	:: input_line
   
 9000 CALL write_line('Error reading output time information from file:',0,.TRUE.)
      CALL write_error_line(file_unit)
-     STOP
+     STOP 1
      
 9010 CALL write_line('Error reading output time information',0,.TRUE.)
      CALL write_line("Expecting either 'output_timestep_information' or 'output_time_information'",0,.TRUE.)
      CALL write_error_line(file_unit)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_output_time_information

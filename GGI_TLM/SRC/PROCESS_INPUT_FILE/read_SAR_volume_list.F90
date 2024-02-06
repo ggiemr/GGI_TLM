@@ -66,7 +66,7 @@ character*256	:: input_line
 
   CALL write_line('CALLED: read_SAR_volume_list',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9005)n_SAR_volumes
+  read(input_file_unit,*,err=9005,end=9005)n_SAR_volumes
   
   CALL write_line_integer('number of output surfaces',n_SAR_volumes,0,output_to_screen_flag)
   
@@ -78,14 +78,14 @@ character*256	:: input_line
   
     CALL write_line_integer('Reading output number',output_number,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9005)read_number
+    read(input_file_unit,*,err=9005,end=9005)read_number
     if (read_number.ne.output_number) goto 9010
     
-    read(input_file_unit,*,err=9005)SAR_volume_list(output_number)%material_number
+    read(input_file_unit,*,err=9005,end=9005)SAR_volume_list(output_number)%material_number
     
-    read(input_file_unit,*,err=9005)SAR_volume_list(output_number)%frequency
+    read(input_file_unit,*,err=9005,end=9005)SAR_volume_list(output_number)%frequency
     
-    read(input_file_unit,*,err=9005)SAR_volume_list(output_number)%density
+    read(input_file_unit,*,err=9005,end=9005)SAR_volume_list(output_number)%density
     
   end do ! next SAR volume
 
@@ -96,15 +96,15 @@ character*256	:: input_line
 9000 CALL write_line('Error allocating SAR_volume_list:',0,.TRUE.)
      CALL write_line('SAR_volume_list already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading SAR volume list packet data from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9010 CALL write_line('Error reading SAR volume list packet',0,.TRUE.)
      CALL write_line('SAR volumes should be numbered in order',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_SAR_volume_list

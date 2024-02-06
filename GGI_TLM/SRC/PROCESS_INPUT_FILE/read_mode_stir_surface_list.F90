@@ -70,7 +70,7 @@ integer	:: i
 
   CALL write_line('CALLED: read_mode_stir_surface_list',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9005)n_mode_stir_surfaces
+  read(input_file_unit,*,err=9005,end=9005)n_mode_stir_surfaces
   
   CALL write_line_integer('number of mode stir surfaces',n_mode_stir_surfaces,0,output_to_screen_flag)
   
@@ -82,21 +82,21 @@ integer	:: i
   
     CALL write_line_integer('Reading surface number',surface_number,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9005)read_number
+    read(input_file_unit,*,err=9005,end=9005)read_number
     if (read_number.ne.surface_number) goto 9010
 
-    read(input_file_unit,*,err=9005)mode_stir_surface_list(surface_number)%R_ms
-    read(input_file_unit,*,err=9005)mode_stir_surface_list(surface_number)%impulse_amplitude
+    read(input_file_unit,*,err=9005,end=9005)mode_stir_surface_list(surface_number)%R_ms
+    read(input_file_unit,*,err=9005,end=9005)mode_stir_surface_list(surface_number)%impulse_amplitude
     
-    read(input_file_unit,*,err=9005)mode_stir_surface_list(surface_number)%number_of_surfaces
+    read(input_file_unit,*,err=9005,end=9005)mode_stir_surface_list(surface_number)%number_of_surfaces
     n_geometric_surfaces=mode_stir_surface_list(surface_number)%number_of_surfaces
     
     ALLOCATE(mode_stir_surface_list(surface_number)%surface_list(1:n_geometric_surfaces))
     ALLOCATE(mode_stir_surface_list(surface_number)%surface_orientation_list(1:n_geometric_surfaces))
     
-    read(input_file_unit,*,err=9020)( mode_stir_surface_list(surface_number)%surface_list(i)	&
+    read(input_file_unit,*,err=9020,end=9020)( mode_stir_surface_list(surface_number)%surface_list(i)	&
                                      ,i=1,n_geometric_surfaces )
-    read(input_file_unit,*,err=9030)( mode_stir_surface_list(surface_number)%surface_orientation_list(i)	&
+    read(input_file_unit,*,err=9030,end=9020)( mode_stir_surface_list(surface_number)%surface_orientation_list(i)	&
                                      ,i=1,n_geometric_surfaces )
 
 ! check orientation flag is +1 or -1				     
@@ -113,26 +113,26 @@ integer	:: i
 9000 CALL write_line('Error allocating mode_stir_surfaces:',0,.TRUE.)
      CALL write_line('mode_stir_surfaces already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading mode_stir_surface_list packet from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
 
 9010 CALL write_line('Error reading mode_stir_surface_list packet data',0,.TRUE.)
      CALL write_line('Surfaces should be numbered in order at the moment...',0,.TRUE.)
-     STOP
+     STOP 1
   
 9020 CALL write_line('Error reading mode_stir_surface_list_packet_data',0,.TRUE.)
      CALL write_line('Problem in reading surface_list',0,.TRUE.)
-     STOP
+     STOP 1
     
 9030 CALL write_line('Error reading mode_stir_surface_list_packet_data',0,.TRUE.)
      CALL write_line('Problem in reading surface_orientation_list',0,.TRUE.)
-     STOP
+     STOP 1
     
 9040 CALL write_line('Error reading mode_stir_surface_list_packet_data',0,.TRUE.)
      CALL write_line('Surface_orientation should be +1 or -1',0,.TRUE.)
-     STOP
+     STOP 1
  
 END SUBROUTINE read_mode_stir_surface_list

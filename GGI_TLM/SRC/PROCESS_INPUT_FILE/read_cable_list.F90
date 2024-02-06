@@ -47,6 +47,7 @@
 ! HISTORY
 !
 !     started 19/09/2012 CJS
+!       Feb 2024 CJS Improve read error handling
 !
 !
 SUBROUTINE read_cable_list
@@ -72,7 +73,7 @@ character*256	:: input_line
 
   CALL write_line('CALLED: read_cable_list',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9005)n_cables
+  read(input_file_unit,*,err=9005,end=9005)n_cables
   
   CALL write_line_integer('number of cables',n_cables,0,output_to_screen_flag)
   
@@ -84,26 +85,26 @@ character*256	:: input_line
   
     CALL write_line_integer('Reading cable number',cable_number,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9005)read_number
+    read(input_file_unit,*,err=9005,end=9005)read_number
     if (read_number.ne.cable_number) goto 9010
  
 ! read the cable geometry number 
-    read(input_file_unit,*,err=9005)cable_list(cable_number)%cable_geometry_number
+    read(input_file_unit,*,err=9005,end=9005)cable_list(cable_number)%cable_geometry_number
  
 ! read the number of lines on the cable route   
-    read(input_file_unit,*,err=9005)cable_list(cable_number)%n_lines
+    read(input_file_unit,*,err=9005,end=9005)cable_list(cable_number)%n_lines
     
     if (cable_list(cable_number)%n_lines.gt.0) then
 ! allocate and read the line list
     
       ALLOCATE ( cable_list(cable_number)%line_list(1:cable_list(cable_number)%n_lines) )
 
-      read(input_file_unit,*,err=9020)(cable_list(cable_number)%line_list(i),i=1,cable_list(cable_number)%n_lines)
+      read(input_file_unit,*,err=9020,end=9020)(cable_list(cable_number)%line_list(i),i=1,cable_list(cable_number)%n_lines)
       
     end if   ! n_lines.GT.0
     
-    read(input_file_unit,*,err=9005)cable_list(cable_number)%junction_1
-    read(input_file_unit,*,err=9005)cable_list(cable_number)%junction_2
+    read(input_file_unit,*,err=9005,end=9005)cable_list(cable_number)%junction_1
+    read(input_file_unit,*,err=9005,end=9005)cable_list(cable_number)%junction_2
       
   end do ! next cable 
 
@@ -114,19 +115,19 @@ character*256	:: input_line
 9000 CALL write_line('Error allocating cable_list:',0,.TRUE.)
      CALL write_line('cable_list already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading cable_list packet from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
 
 9010 CALL write_line('Error reading cable_list packet data',0,.TRUE.)
      CALL write_line('Cables should be numbered in order',0,.TRUE.)
-     STOP
+     STOP 1
 
 9020 CALL write_line('Error reading cable_list packet data',0,.TRUE.)
      CALL write_line_integer('Error reading the line list, cable=',cable_number,0,.TRUE.)
-     STOP
+     STOP 1
   
   
 END SUBROUTINE read_cable_list

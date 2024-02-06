@@ -50,8 +50,8 @@ character*256	:: input_line
 
   CALL write_line('CALLED: read_frequency_scale_flag',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9000)frequency_scale_flag
-  read(input_file_unit,*,err=9000)frequency_scale
+  read(input_file_unit,*,err=9000,end=9000)frequency_scale_flag
+  read(input_file_unit,*,err=9000,end=9000)frequency_scale
 
   CALL write_line('FINISHED: read_frequency_scale_flag',0,output_to_screen_flag)
   
@@ -59,6 +59,6 @@ character*256	:: input_line
   
 9000 CALL write_line('Error reading frequency_scale_flag:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_frequency_scale_flag

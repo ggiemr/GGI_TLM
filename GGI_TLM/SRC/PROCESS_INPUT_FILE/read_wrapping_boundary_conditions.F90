@@ -54,7 +54,7 @@ IMPLICIT NONE
   CALL write_line('CALLED: Read_wrapping_boundary_conditions',0,output_to_screen_flag)
 
 ! read reflection coefficient data
-  read(input_file_unit,*,err=9000)WR_x,WR_y,WR_z
+  read(input_file_unit,*,err=9000,end=9000)WR_x,WR_y,WR_z
 
 ! check to ensure that wrapping boundary coefficients are equal to 0 or 1
   if ((WR_x.NE.1).AND.(WR_x.NE.0)) GOTO 9010
@@ -71,11 +71,11 @@ IMPLICIT NONE
   
 9000 CALL write_line('Error reading wrapping_boundary_conditions packet data from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9010 CALL write_line('Error reading wrapping_boundary_conditions packet data from input file:',0,.TRUE.)
      CALL write_line('Wrapping boundary falg should be 1 or 0 ',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
        
 END SUBROUTINE read_wrapping_boundary_conditions

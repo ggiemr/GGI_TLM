@@ -15,7 +15,10 @@ Mesh_dimensions_in_cells
 Outer_boundary_reflection_coefficient
 0.0 0.0 0.0 0.0 0.0 0.0
 
-New_mesh_generation
+PML
+0.2 0.2   0.2 0.2   0.2 0.2 ! PML thickness on each outer boundary surface: xmin,xmax, ymin,ymax, zmin,zmax
+1e-4 1e-4    1e-4 1e-4  1e-4  1e-4      ! PML reflection_coefficient
+2                                       ! PML order
 
 Volume_list
 4   Number of volumes (integer)

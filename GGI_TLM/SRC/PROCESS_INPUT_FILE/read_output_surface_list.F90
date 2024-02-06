@@ -75,7 +75,7 @@ character*256	:: input_line
 
   CALL write_line('CALLED: read_output_surface_list',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9005)n_output_surfaces
+  read(input_file_unit,*,err=9005,end=9005)n_output_surfaces
   
   CALL write_line_integer('number of output surfaces',n_output_surfaces,0,output_to_screen_flag)
   
@@ -87,11 +87,11 @@ character*256	:: input_line
   
     CALL write_line_integer('Reading output number',output_number,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9005)read_number
+    read(input_file_unit,*,err=9005,end=9005)read_number
     if (read_number.ne.output_number) goto 9010
     
-    read(input_file_unit,*,err=9005)output_surfaces(output_number)%surface_number
-    read(input_file_unit,*,err=9005)side_of_surface_for_output
+    read(input_file_unit,*,err=9005,end=9005)output_surfaces(output_number)%surface_number
+    read(input_file_unit,*,err=9005,end=9005)side_of_surface_for_output
     
     if (side_of_surface_for_output.eq.1) then
       output_surfaces(output_number)%output_on_outward_normal=.TRUE.
@@ -138,25 +138,25 @@ character*256	:: input_line
 9000 CALL write_line('Error allocating output_surfaces:',0,.TRUE.)
      CALL write_line('output_surfaces already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading output surface list packet data from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9010 CALL write_line('Error reading output surface list packet',0,.TRUE.)
      CALL write_line('output surfaces should be numbered in order',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9020 CALL write_line('Error reading output surface list packet',0,.TRUE.)
      CALL write_line("Side of surface for output should be +1, -1 or 0",0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9030 CALL write_line('Error reading output surface list packet',0,.TRUE.)
      CALL write_line("If the side of surface for output is 0 only Jx, Jy, Jz or Jm can be output",0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_output_surface_list

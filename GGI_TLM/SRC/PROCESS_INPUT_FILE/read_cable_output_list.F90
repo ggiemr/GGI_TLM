@@ -37,6 +37,7 @@
 ! HISTORY
 !
 !     started 19/09/2012 CJS
+!       Feb 2024 CJS Improve read error handling
 !
 !
 SUBROUTINE read_cable_output_list
@@ -62,7 +63,7 @@ character*256	:: input_line
 
   CALL write_line('CALLED: read_cable_output_list',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9005)n_cable_outputs
+  read(input_file_unit,*,err=9005,end=9005)n_cable_outputs
   
   CALL write_line_integer('number of cable outputs',n_cable_outputs,0,output_to_screen_flag)
   
@@ -74,14 +75,14 @@ character*256	:: input_line
   
     CALL write_line_integer('Reading cable output number',cable_output_number,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9005)read_number
+    read(input_file_unit,*,err=9005,end=9005)read_number
     if (read_number.ne.cable_output_number) goto 9010
  
 ! read the cable number
-    read(input_file_unit,*,err=9005)cable_output_list(cable_output_number)%cable_number
+    read(input_file_unit,*,err=9020,end=9020)cable_output_list(cable_output_number)%cable_number
  
 ! read the closest output point number
-    read(input_file_unit,*,err=9005)cable_output_list(cable_output_number)%closest_point_number
+    read(input_file_unit,*,err=9020,end=9020)cable_output_list(cable_output_number)%closest_point_number
       
   end do ! next cable output
 
@@ -92,19 +93,19 @@ character*256	:: input_line
 9000 CALL write_line('Error allocating cable_output_list:',0,.TRUE.)
      CALL write_line('cable_output_list already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading cable_output_list packet from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
 
 9010 CALL write_line('Error reading cable_output_list packet data',0,.TRUE.)
      CALL write_line('Cables should be numbered in order',0,.TRUE.)
-     STOP
+     STOP 1
 
 9020 CALL write_line('Error reading cable_output_list packet data',0,.TRUE.)
      CALL write_line_integer('Error reading the line list, cable=',cable_output_number,0,.TRUE.)
-     STOP
+     STOP 1
   
   
 END SUBROUTINE read_cable_output_list

@@ -54,20 +54,20 @@ IMPLICIT NONE
   
   set_small_to_zero=.TRUE.
 
-  read(input_file_unit,*,err=9000)n_small_to_zero
+  read(input_file_unit,*,err=9000,end=9000)n_small_to_zero
   
-  read(input_file_unit,*,err=9010)small_to_zero_value
+  read(input_file_unit,*,err=9010,end=9010)small_to_zero_value
 
-  CALL write_line('FINISHED: ngspice_timestep_factor',0,output_to_screen_flag)
+  CALL write_line('FINISHED: read_small_to_zero',0,output_to_screen_flag)
   
   RETURN
   
 9000 CALL write_line('Error reading n_small_to_zero:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9010 CALL write_line('Error reading small_to_zero_value:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
     
 END SUBROUTINE read_small_to_zero

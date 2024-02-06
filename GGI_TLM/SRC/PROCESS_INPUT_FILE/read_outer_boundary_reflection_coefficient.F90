@@ -51,7 +51,7 @@ IMPLICIT NONE
   CALL write_line('CALLED: Read_outer_boundary_reflection_coefficients',0,output_to_screen_flag)
 
 ! read reflection coefficient data
-  read(input_file_unit,*,err=9000)R_xmin,R_xmax,R_ymin,R_ymax,R_zmin,R_zmax
+  read(input_file_unit,*,err=9000,end=9000)R_xmin,R_xmax,R_ymin,R_ymax,R_zmin,R_zmax
 
 ! check to ensure that reflection coefficients are less than or equal to 1
   if ( (abs(R_xmin).GT.1d0).OR.(abs(R_xmax).GT.1d0).OR.	&
@@ -64,11 +64,11 @@ IMPLICIT NONE
   
 9000 CALL write_line('Error reading outer_boundary_reflection_coefficient packet data from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9010 CALL write_line('Error magnitude of outer boundary reflection coefficients should be lsee than or equal to zero',0,.TRUE.)
      CALL write_line('input_filename',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_outer_boundary_reflection_coefficient

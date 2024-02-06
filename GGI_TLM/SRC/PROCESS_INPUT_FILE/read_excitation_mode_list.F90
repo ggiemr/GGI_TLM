@@ -71,7 +71,7 @@ character*256	:: input_line
 
   CALL write_line('CALLED: read_excitation_mode_list',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9005)n_excitation_modes
+  read(input_file_unit,*,err=9005,end=9005)n_excitation_modes
   
   CALL write_line_integer('number of excitation modes',n_excitation_modes,0,output_to_screen_flag)
   
@@ -83,13 +83,13 @@ character*256	:: input_line
   
     CALL write_line_integer('Reading mode number',mode_number,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9005)read_number
+    read(input_file_unit,*,err=9005,end=9005)read_number
     if (read_number.ne.mode_number) goto 9010
  
-    read(input_file_unit,*,err=9005)excitation_mode_list(mode_number)%excitation_function_number
-    read(input_file_unit,*,err=9005)excitation_mode_list(mode_number)%surface_number
+    read(input_file_unit,*,err=9005,end=9005)excitation_mode_list(mode_number)%excitation_function_number
+    read(input_file_unit,*,err=9005,end=9005)excitation_mode_list(mode_number)%surface_number
        
-    read(input_file_unit,*,err=9005)side_of_surface_for_excitation
+    read(input_file_unit,*,err=9005,end=9005)side_of_surface_for_excitation
     
     if (side_of_surface_for_excitation.eq.1) then
       excitation_mode_list(mode_number)%excitation_on_outward_normal=.TRUE.
@@ -101,7 +101,7 @@ character*256	:: input_line
     
     CALL read_field_component(input_file_unit,excitation_mode_list(mode_number)%field_component)
 
-    read(input_file_unit,'(A)',err=9005)input_line
+    read(input_file_unit,'(A)',err=9005,end=9005)input_line
     
     if (input_line.eq.'soft') then
     
@@ -117,7 +117,7 @@ character*256	:: input_line
       
     end if
  
-    read(input_file_unit,'(A)',err=9005)excitation_mode_list(mode_number)%mode_file_name 
+    read(input_file_unit,'(A)',err=9005,end=9005)excitation_mode_list(mode_number)%mode_file_name 
 
     CALL write_line('Checking the existance of file:',0,.TRUE.)
     CALL write_line(trim(excitation_mode_list(mode_number)%mode_file_name),0,.TRUE.)
@@ -129,10 +129,10 @@ character*256	:: input_line
       goto 9040
     end if
     
-    read(input_file_unit,*,err=9005)excitation_mode_list(mode_number)%xcol
-    read(input_file_unit,*,err=9005)excitation_mode_list(mode_number)%ycol
-    read(input_file_unit,*,err=9005)excitation_mode_list(mode_number)%zcol
-    read(input_file_unit,*,err=9005)excitation_mode_list(mode_number)%mode_col
+    read(input_file_unit,*,err=9005,end=9005)excitation_mode_list(mode_number)%xcol
+    read(input_file_unit,*,err=9005,end=9005)excitation_mode_list(mode_number)%ycol
+    read(input_file_unit,*,err=9005,end=9005)excitation_mode_list(mode_number)%zcol
+    read(input_file_unit,*,err=9005,end=9005)excitation_mode_list(mode_number)%mode_col
   
   end do ! next mode in Excitation_mode_list
 
@@ -143,31 +143,31 @@ character*256	:: input_line
 9000 CALL write_line('Error allocating Excitation_mode_list:',0,.TRUE.)
      CALL write_line('Excitation_mode_list already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading excitation_mode_list packet from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9010 CALL write_line('Error reading excitation_mode_list packet from input file:',0,.TRUE.)
      CALL write_line('Excitation modes should be numbered in order at the moment...',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9020 CALL write_line('Error reading excitation_mode_list packet',0,.TRUE.)
      CALL write_line("Side of surface for excitation should be +1 or -1",0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9030 CALL write_line('Error reading excitation_mode_list packet',0,.TRUE.)
      CALL write_line("Excitation type should be 'hard' or 'soft'",0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9040 CALL write_line('Error reading excitation_mode_list packet',0,.TRUE.)
      CALL write_line('Mode field file does not exist. Filename:',0,.TRUE.)
      CALL write_line(trim(excitation_mode_list(mode_number)%mode_file_name),0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_excitation_mode_list

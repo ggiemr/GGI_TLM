@@ -38,6 +38,7 @@
 ! HISTORY
 !
 !     started 10/08/2012 CJS
+!       Feb 2024 CJS Improve read error handling
 !
 !
 SUBROUTINE read_point_list
@@ -65,7 +66,7 @@ logical	:: file_exists
 
   CALL write_line('CALLED: Read_point_list',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9005)n_points
+  read(input_file_unit,*,err=9005,end=9005)n_points
   
   CALL write_line_integer('number of points',n_points,0,output_to_screen_flag)
   
@@ -77,17 +78,17 @@ logical	:: file_exists
   
     CALL write_line_integer('Reading point number',point_number,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9005)read_number
+    read(input_file_unit,*,err=9005,end=9005)read_number
     if (read_number.ne.point_number) goto 9010
     
 ! read coordinates
-    read(input_file_unit,*,end=9020)problem_points(point_number)%point%x,	&
-    				    problem_points(point_number)%point%y,	&
-    				    problem_points(point_number)%point%z
+    read(input_file_unit,*,err=9020,end=9020)problem_points(point_number)%point%x,	&
+    				             problem_points(point_number)%point%y,	&
+    				             problem_points(point_number)%point%z
     
     problem_points(point_number)%trans%trans_type='euler'
     problem_points(point_number)%trans%trans_number=1
-    read(input_file_unit,*,end=9030)    &
+    read(input_file_unit,*,err=9030,end=9030)    &
     (problem_points(point_number)%trans%parameters(i),i=1,6)
     
 ! convert euler angles to radians
@@ -103,22 +104,22 @@ logical	:: file_exists
 9000 CALL write_line('Error allocating problem_points:',0,.TRUE.)
      CALL write_line('problem_points already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading point_list packet from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
 
 9010 CALL write_line('Error reading point_list_packet_data',0,.TRUE.)
      CALL write_line('points should be numbered in order at the moment...',0,.TRUE.)
-     STOP
+     STOP 1
   
 9020 CALL write_line('Error reading point_list_packet_data',0,.TRUE.)
      CALL write_line('Expecting coordinate data (3*real)',0,.TRUE.)
-     STOP
-  
+     STOP 1
+   
 9030 CALL write_line('Error reading point_list_packet_data',0,.TRUE.)
      CALL write_line('Error reading transformation data',0,.TRUE.)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_point_list

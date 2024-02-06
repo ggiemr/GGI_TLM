@@ -71,7 +71,7 @@ IMPLICIT NONE
   
   PML_flag=.TRUE.
   
-  read(input_file_unit,'(A)',err=9000)line
+  read(input_file_unit,'(A)',err=9000,end=9000)line
   
   ! attempt to read 6 values for PML layer thickness. If there are not six values, read one value
   ! and use it for all  mesh boundaries
@@ -80,7 +80,7 @@ IMPLICIT NONE
   GOTO 1010 ! read six values OK
   
 1000 CONTINUE
-     read(line,*,err=9000)pml_txmin
+     read(line,*,err=9000,end=9000)pml_txmin
      pml_txmax=pml_txmin
      pml_tymin=pml_txmin
      pml_tymax=pml_txmin
@@ -106,7 +106,7 @@ IMPLICIT NONE
        
   end if
  
-  read(input_file_unit,'(A)',err=9000)line
+  read(input_file_unit,'(A)',err=9000,end=9000)line
   
   ! attempt to read 6 values for PML layer reflection coefficient. If there are not six values, read one value
   ! and use it for all  mesh boundaries
@@ -115,7 +115,7 @@ IMPLICIT NONE
   GOTO 2010 ! read six values OK
   
 2000 CONTINUE
-     read(line,*,err=9005)pml_r_xmin
+     read(line,*,err=9005,end=9005)pml_r_xmin
      pml_r_xmax=pml_r_xmin
      pml_r_ymin=pml_r_xmin
      pml_r_ymax=pml_r_xmin

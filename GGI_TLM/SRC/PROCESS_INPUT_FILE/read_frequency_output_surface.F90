@@ -60,7 +60,7 @@ IMPLICIT NONE
 
   CALL write_line('CALLED: read_frequency_output_surface',0,output_to_screen_flag)
   
-  read(input_file_unit,*,err=9000)n_frequency_output_surfaces
+  read(input_file_unit,*,err=9000,end=9000)n_frequency_output_surfaces
   
   CALL write_line_integer('number of frequency output surfaces',n_frequency_output_surfaces,0,output_to_screen_flag)
   
@@ -72,12 +72,12 @@ IMPLICIT NONE
   
     CALL write_line_integer('Reading requency_output_surface number',i,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9000)read_number
+    read(input_file_unit,*,err=9000,end=9000)read_number
     if (read_number.ne.i) GOTO 9020
   
-    read(input_file_unit,*,err=9000)frequency_output_surface(i)%surface_number
+    read(input_file_unit,*,err=9000,end=9000)frequency_output_surface(i)%surface_number
     
-    read(input_file_unit,*,err=9000)side_of_surface_for_output
+    read(input_file_unit,*,err=9000,end=9000)side_of_surface_for_output
     
     if (side_of_surface_for_output.eq.1) then
       frequency_output_surface(i)%output_on_outward_normal=.TRUE.
@@ -87,7 +87,7 @@ IMPLICIT NONE
       GOTO 9030
     end if
     
-    read(input_file_unit,*,err=9000)frequency_output_surface(i)%frequency
+    read(input_file_unit,*,err=9000,end=9000)frequency_output_surface(i)%frequency
       	
     CALL read_field_component_frequency_surface_output(input_file_unit,frequency_output_surface(i)%field_component)
     
@@ -109,21 +109,21 @@ IMPLICIT NONE
     
 9000 CALL write_line('Error reading frequency_output_surface packet data from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9010 CALL write_line('Error allocating frequency_output_surface:',0,.TRUE.)
      CALL write_line('frequency_output_surface already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9020 CALL write_line('Error reading frequency_output_surface packet',0,.TRUE.)
      CALL write_line('frequency output surfaces should be numbered in order',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9030 CALL write_line('Error reading frequency_output_surface packet',0,.TRUE.)
      CALL write_line("Side of surface for output should be +1 or -1",0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_frequency_output_surface

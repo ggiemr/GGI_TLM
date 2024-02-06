@@ -48,7 +48,7 @@ IMPLICIT NONE
 character*256	:: input_line
 
 ! START  
-    read(file_unit,'(A)')input_line
+    read(file_unit,'(A)',err=9000,end=9000)input_line
 
 ! convert text to lower case
     CALL convert_to_lower_case(input_line,256)
@@ -73,12 +73,12 @@ character*256	:: input_line
   
 9000 CALL write_line('Error reading field component from file:',0,.TRUE.)
      CALL write_error_line(file_unit)
-     STOP
+     STOP 1
      
 9010 CALL write_line('Error reading field component',0,.TRUE.)
      CALL write_line("Expecting field compoent 'Ex', 'Ey', 'Ez', 'Hx', 'Hy' or 'Hz'",0,.TRUE.)
      CALL write_error_line(file_unit)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_field_component
 !
@@ -111,7 +111,7 @@ IMPLICIT NONE
 character*256	:: input_line
 
 ! START  
-    read(file_unit,'(A)')input_line
+    read(file_unit,'(A)',err=9000,end=9000)input_line
 
 ! convert text to lower case
     CALL convert_to_lower_case(input_line,256)
@@ -142,12 +142,12 @@ character*256	:: input_line
   
 9000 CALL write_line('Error reading field component from file:',0,.TRUE.)
      CALL write_error_line(file_unit)
-     STOP
+     STOP 1
      
 9010 CALL write_line('Error reading field component',0,.TRUE.)
      CALL write_line("Expecting field compoent 'Ex', 'Ey', 'Ez', 'Hx', 'Hy', 'Hz', Ix', 'Iy' or 'Iz'",0,.TRUE.)
      CALL write_error_line(file_unit)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_field_or_currrent_component
 
@@ -182,7 +182,7 @@ IMPLICIT NONE
 character*2	:: input_line
 
 ! START  
-    read(file_unit,'(A2)')input_line
+    read(file_unit,'(A2)',err=9000,end=9000)input_line
 
 ! convert text to lower case
     CALL convert_to_lower_case(input_line,2)
@@ -220,13 +220,13 @@ character*2	:: input_line
 9000 CALL write_line('Error reading field component for surface_output from file:',0,.TRUE.)
      CALL write_line('input_filename',0,.TRUE.)
      CALL write_error_line(file_unit)
-     STOP
+     STOP 1
      
 9010 CALL write_line('Error reading field component for surface_output',0,.TRUE.)
      CALL write_line("Expecting field compoent 'Ex', 'Ey', 'Ez', 'Hx', 'Hy', 'Hz', 'Em', 'Hm', 'Jx', 'Jy', 'Jz', 'Jm', 'Power'"&
                      ,0,.TRUE.)
      CALL write_error_line(file_unit)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_field_component_surface_output
 ! SUBROUTINE read_field_component_frequency_surface_output
@@ -260,7 +260,7 @@ IMPLICIT NONE
 character*2	:: input_line
 
 ! START  
-    read(file_unit,'(A2)')input_line
+    read(file_unit,'(A2)',err=9000,end=9000)input_line
 
 ! convert text to lower case
     CALL convert_to_lower_case(input_line,2)
@@ -292,12 +292,12 @@ character*2	:: input_line
 9000 CALL write_line('Error reading field component for surface_output from file:',0,.TRUE.)
      CALL write_line('input_filename',0,.TRUE.)
      CALL write_error_line(file_unit)
-     STOP
+     STOP 1
      
 9010 CALL write_line('Error reading field component for surface_output',0,.TRUE.)
      CALL write_line("Expecting field compoent 'Ex', 'Ey', 'Ez', 'Hx', 'Hy', 'Hz', 'Jx', 'Jy', 'Jz',  "&
                      ,0,.TRUE.)
      CALL write_error_line(file_unit)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_field_component_frequency_surface_output

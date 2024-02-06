@@ -51,7 +51,7 @@ IMPLICIT NONE
 
   CALL write_line('CALLED: ngspice_timestep_factor',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9000)ngspice_timestep_factor
+  read(input_file_unit,*,err=9000,end=9000)ngspice_timestep_factor
   
   if (ngspice_timestep_factor.LT.1) then
     CALL write_line('ngspice_timestep_factor should be at least 1',0,output_to_screen_flag)
@@ -64,6 +64,6 @@ IMPLICIT NONE
   
 9000 CALL write_line('Error reading ngspice_timestep_factor:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
     
 END SUBROUTINE read_ngspice_timestep_factor

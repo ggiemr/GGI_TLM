@@ -47,7 +47,7 @@ IMPLICIT NONE
 character*256	:: input_line
 
 ! START  
-    read(file_unit,'(A)',err=9000)input_line
+    read(file_unit,'(A)',err=9000,end=9000)input_line
 
 ! convert text to lower case
     CALL convert_to_lower_case(input_line,256)

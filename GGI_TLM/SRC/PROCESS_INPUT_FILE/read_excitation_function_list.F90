@@ -82,7 +82,7 @@ real*8,allocatable	  :: read_data(:)
 
   CALL write_line('CALLED: read_excitation_function_list',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9005)n_excitation_functions
+  read(input_file_unit,*,err=9005,end=9005)n_excitation_functions
   
   CALL write_line_integer('number of excitation functions',n_excitation_functions,0,output_to_screen_flag)
   
@@ -94,11 +94,11 @@ real*8,allocatable	  :: read_data(:)
   
     CALL write_line_integer('Reading excitation number',excitation_number,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9005)read_number
+    read(input_file_unit,*,err=9005,end=9005)read_number
     if (read_number.ne.excitation_number) goto 9010
  
 ! read excitation type string
-    read(input_file_unit,'(A)',end=9010)input_line
+    read(input_file_unit,'(A)',err=9010,end=9010)input_line
    
     CALL write_line( '...Reading excitation_function_type:'//trim(input_line),0,.TRUE. )
 ! save the original input line before converting to lower case - may be needed if it is a file name
@@ -185,13 +185,13 @@ real*8,allocatable	  :: read_data(:)
            ERR=9030)
 	   
       write(*,*)'Enter the number of lines to ignore at the top of the data file'
-      read(input_file_unit,*)n_ignore
+      read(input_file_unit,*,err=9035,end=9035)n_ignore
       
       write(*,*)'Enter the column number for time data'
-      read(input_file_unit,*)n_time
+      read(input_file_unit,*,err=9035,end=9035)n_time
       
       write(*,*)'Enter the column number for function data'
-      read(input_file_unit,*)n_function
+      read(input_file_unit,*,err=9035,end=9035)n_function
       
       n_max_read=max(n_time,n_function)
       
@@ -246,7 +246,7 @@ real*8,allocatable	  :: read_data(:)
 ! read parameters
     excitation_functions(excitation_number)%n_parameters=n_params
     if (n_params.gt.0) then
-      read(input_file_unit,*,end=9020)(excitation_functions(excitation_number)%parameters(i),i=1,n_params)
+      read(input_file_unit,*,err=9020,end=9020)(excitation_functions(excitation_number)%parameters(i),i=1,n_params)
     end if
 
   end do ! next excitation function
@@ -258,33 +258,38 @@ real*8,allocatable	  :: read_data(:)
 9000 CALL write_line('Error allocating excitation_functions:',0,.TRUE.)
      CALL write_line('excitation_functions already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading excitation function list packet data from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9010 CALL write_line('Error reading excitation function list packet',0,.TRUE.)
      CALL write_line('Excitation functions should be numbered in order',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9020 CALL write_line('Error reading excitation function list packet',0,.TRUE.)
      CALL write_line('Error reading parameters',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9030 CALL write_line('Error reading excitation function list packet',0,.TRUE.)
      CALL write_line('Unrecognised excitation function:',0,.TRUE.)
      write(*,*)trim(input_line)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
+     
+9035 CALL write_line('Error reading excitation function list packet',0,.TRUE.)
+     CALL write_line('Problem reading excitation function information:',0,.TRUE.)
+     CALL write_error_line(input_file_unit)
+     STOP 1
      
 9040 CALL write_line('Error reading excitation function list packet',0,.TRUE.)
      CALL write_line('Problem reading excitation function from file:',0,.TRUE.)
      write(*,*)trim(input_line)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
   
 END SUBROUTINE read_excitation_function_list

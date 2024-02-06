@@ -62,7 +62,7 @@ character*256	:: input_line
 
   CALL write_line('CALLED: read_excitation_volume_list',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9005)n_excitation_volumes
+  read(input_file_unit,*,err=9005,end=9005)n_excitation_volumes
   
   CALL write_line_integer('number of excitation volumes',n_excitation_volumes,0,output_to_screen_flag)
   
@@ -74,16 +74,16 @@ character*256	:: input_line
   
     CALL write_line_integer('Reading excitation number',excitation_number,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9005)read_number
+    read(input_file_unit,*,err=9005,end=9005)read_number
     if (read_number.ne.excitation_number) goto 9010
 
-    read(input_file_unit,*,err=9005)excitation_volumes(excitation_number)%excitation_function_number
+    read(input_file_unit,*,err=9005,end=9005)excitation_volumes(excitation_number)%excitation_function_number
 
-    read(input_file_unit,*,err=9005)excitation_volumes(excitation_number)%volume_number 
+    read(input_file_unit,*,err=9005,end=9005)excitation_volumes(excitation_number)%volume_number 
            
     CALL read_field_component(input_file_unit,excitation_volumes(excitation_number)%field_component)
 
-    read(input_file_unit,'(A)',err=9005)input_line
+    read(input_file_unit,'(A)',err=9005,end=9005)input_line
     
     if (input_line.eq.'soft') then
     
@@ -108,25 +108,25 @@ character*256	:: input_line
 9000 CALL write_line('Error allocating excitation_volumes:',0,.TRUE.)
      CALL write_line('excitation_volumes already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading excitation volume list packet data from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9010 CALL write_line('Error reading excitation volume list packet',0,.TRUE.)
      CALL write_line('Excitation volumes should be numbered in order',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9020 CALL write_line('Error reading excitation volume list packet',0,.TRUE.)
      CALL write_line("Side of volume for excitation should be 0, +1 or -1",0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
      
 9030 CALL write_line('Error reading excitation volume list packet',0,.TRUE.)
      CALL write_line("Excitation type should be 'hard' or 'soft'",0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 END SUBROUTINE read_excitation_volume_list

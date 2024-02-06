@@ -78,6 +78,7 @@
 !                              frequency dependent loads, current sources, etc
 !	19/11/2012 CJS Include termination to surfaces
 !       13/12/2012 CJS Start to include frequency dependent impedances at junctions
+!       Feb 2024 CJS Improve read error handling
 !
 SUBROUTINE read_cable_junction_list
 
@@ -115,7 +116,7 @@ character	:: ch
 
   CALL write_line('CALLED: read_cable_junction_list',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9005)n_cable_junctions
+  read(input_file_unit,*,err=9005,end=9005)n_cable_junctions
   
   CALL write_line_integer('number of cable junctions',n_cable_junctions,0,output_to_screen_flag)
   
@@ -127,18 +128,18 @@ character	:: ch
   
     CALL write_line_integer('Reading cable junction number',cable_junction_number,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9005)read_number
+    read(input_file_unit,*,err=9005,end=9005)read_number
     if (read_number.ne.cable_junction_number) goto 9010
  
 ! read the junction point number 
-    read(input_file_unit,*,err=9005)cable_junction_list(cable_junction_number)%point_number
+    read(input_file_unit,*,err=9005,end=9005)cable_junction_list(cable_junction_number)%point_number
  
 ! read the number of internal connection nodes
-    read(input_file_unit,*,err=9005)n_int
+    read(input_file_unit,*,err=9005,end=9005)n_int
     cable_junction_list(cable_junction_number)%n_internal_connection_nodes=n_int
 
 ! read the number of cables connecting to the junction
-    read(input_file_unit,*,err=9005)number_of_cables
+    read(input_file_unit,*,err=9005,end=9005)number_of_cables
     cable_junction_list(cable_junction_number)%number_of_cables=number_of_cables
 
     if (number_of_cables.gt.0) then
@@ -152,29 +153,31 @@ character	:: ch
       ALLOCATE ( cable_junction_list(cable_junction_number)%resistance(1:number_of_cables) )
 
 ! read the cable list
-      read(input_file_unit,*,err=9020)(cable_junction_list(cable_junction_number)%cable_list(i),i=1,number_of_cables)
+      read(input_file_unit,*,err=9020,end=9020)(cable_junction_list(cable_junction_number)%cable_list(i) &
+                                                                                   ,i=1,number_of_cables)
 
 ! read the cable end list
-      read(input_file_unit,*,err=9030)(cable_junction_list(cable_junction_number)%cable_end_list(i),i=1,number_of_cables)
+      read(input_file_unit,*,err=9030,end=9030)(cable_junction_list(cable_junction_number)%cable_end_list(i) &
+                                                                                       ,i=1,number_of_cables)
       
       do cable_number=1,number_of_cables
       
-        read(input_file_unit,*,err=9030)n_ext
+        read(input_file_unit,*,err=9030,end=9030)n_ext
 	cable_junction_list(cable_junction_number)%n_external_conductors(cable_number)=n_ext
                                                    
 ! allocate and read P matrix
         ALLOCATE ( cable_junction_list(cable_junction_number)%Pmatrix(cable_number)%P(n_int,n_ext) )
         do row=1,n_int
-	  read(input_file_unit,*,err=9040)	&
+	  read(input_file_unit,*,err=9040,end=9040)	&
 	       (cable_junction_list(cable_junction_number)%Pmatrix(cable_number)%P(row,i),i=1,n_ext)
 	end do 
 	
         ALLOCATE ( cable_junction_list(cable_junction_number)%excitation_function(cable_number)%value(1:n_ext) )
-	read(input_file_unit,*,err=9050)	&
+	read(input_file_unit,*,err=9050,end=9050)	&
 	          (cable_junction_list(cable_junction_number)%excitation_function(cable_number)%value(i),i=1,n_ext)
 	
         ALLOCATE ( cable_junction_list(cable_junction_number)%resistance(cable_number)%value(1:n_ext) )	       
-	read(input_file_unit,*,err=9060)	&
+	read(input_file_unit,*,err=9060,end=9060)	&
 	          (cable_junction_list(cable_junction_number)%resistance(cable_number)%value(i),i=1,n_ext)
       
       end do ! next cable connected to the junction
@@ -183,7 +186,7 @@ character	:: ch
 
 ! Read the number of internal impedances and the associated data
 
-    read(input_file_unit,*,err=9005)n_Z
+    read(input_file_unit,*,err=9005,end=9005)n_Z
     cable_junction_list(cable_junction_number)%number_of_internal_impedances=n_Z
     if (nz.ne.0) then
     
@@ -193,14 +196,14 @@ character	:: ch
     
       do i=1,n_Z
       
-        read(input_file_unit,*)impedance_number
+        read(input_file_unit,*,err=9081,end=9081)impedance_number
 	
 	if (impedance_number.NE.i) GOTO 9080
 	
-        read(input_file_unit,*)cable_junction_list(cable_junction_number)%node_1(i),	&
+        read(input_file_unit,*,err=9082,end=9082)cable_junction_list(cable_junction_number)%node_1(i),	&
 	                       cable_junction_list(cable_junction_number)%node_2(i)
 			       
-        read(input_file_unit,*)			! comment line before filter data   
+        read(input_file_unit,*,err=9083,end=9083)			! comment line before filter data   
  
         call read_Sfilter(filter_in,input_file_unit) 	! read impedance filter
         cable_junction_list(cable_junction_number)%Sfilter(i)=filter_in
@@ -214,7 +217,7 @@ character	:: ch
 
     cable_junction_list(cable_junction_number)%junction_type=junction_type_cell
     
-    read(input_file_unit,'(A1)',err=1000)ch
+    read(input_file_unit,'(A1)',err=1000,end=1000)ch
     
     if ( (ch.eq.'f').OR.(ch.eq.'F') ) then
     
@@ -222,7 +225,7 @@ character	:: ch
       
 ! allocate and read boundary condition data
       ALLOCATE ( cable_junction_list(cable_junction_number)%BC(1:n_int) )	       
-      read(input_file_unit,*,err=9070)	&
+      read(input_file_unit,*,err=9070,end=9070)	&
 	          (cable_junction_list(cable_junction_number)%BC(i),i=1,n_int)
 		  
 ! Check that only one internal connection node is set to -1
@@ -255,54 +258,66 @@ character	:: ch
 9000 CALL write_line('Error allocating cable_junction_list:',0,.TRUE.)
      CALL write_line('cable_junction_list already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading cable_junction_list packet from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
 
 9010 CALL write_line('Error reading cable_junction_list packet data',0,.TRUE.)
      CALL write_line('Cable junctions should be numbered in order',0,.TRUE.)
-     STOP
+     STOP 1
 
 9020 CALL write_line('Error reading cable_junction_list packet data',0,.TRUE.)
      CALL write_line_integer('Error in cable list, cable junction:',cable_junction_number,0,.TRUE.)
-     STOP
+     STOP 1
 
 9030 CALL write_line('Error reading cable_junction_list packet data',0,.TRUE.)
      CALL write_line_integer('Error in cable end list, cable junction:',cable_junction_number,0,.TRUE.)
-     STOP
+     STOP 1
 
 9040 CALL write_line('Error reading cable_junction_list packet data',0,.TRUE.)
      CALL write_line_integer('Error reading P matrix, cable junction:',cable_junction_number,0,.TRUE.)
      CALL write_line_integer('Connecting cable number:',cable_number,0,.TRUE.)
-     STOP
+     STOP 1
 
 9050 CALL write_line('Error reading cable_junction_list packet data',0,.TRUE.)
      CALL write_line_integer('Error reading excitation function vector, cable junction:',cable_junction_number,0,.TRUE.)
      CALL write_line_integer('Connecting cable number:',cable_number,0,.TRUE.)
-     STOP
+     STOP 1
 
 9060 CALL write_line('Error reading cable_junction_list packet data',0,.TRUE.)
      CALL write_line_integer('Error reading resistance vector, cable junction:',cable_junction_number,0,.TRUE.)
      CALL write_line_integer('Connecting cable number:',cable_number,0,.TRUE.)
-     STOP
+     STOP 1
 
 9070 CALL write_line('Error reading cable_junction_list packet data',0,.TRUE.)
      CALL write_line_integer('Error reading boundary condition vector, cable junction:',cable_junction_number,0,.TRUE.)
-     STOP
+     STOP 1
 
 9080 CALL write_line('Error reading cable_junction_list packet data',0,.TRUE.)
      CALL write_line('Internal impedances should be numbered in order',0,.TRUE.)
-     STOP
+     STOP 1
+
+9081 CALL write_line('Error reading cable_junction_list packet data',0,.TRUE.)
+     CALL write_line('Error reading impedance number',0,.TRUE.)
+     STOP 1
+
+9082 CALL write_line('Error reading cable_junction_list packet data',0,.TRUE.)
+     CALL write_line('Error reading junction nodes',0,.TRUE.)
+     STOP 1
+
+9083 CALL write_line('Error reading cable_junction_list packet data',0,.TRUE.)
+     CALL write_line('Error reading comment line before filter data',0,.TRUE.)
+     STOP 1
 
 9090 CALL write_line('Error reading cable_junction_list packet data',0,.TRUE.)
      CALL write_line('Boundary conditions on internal connection nodes should be 0 or -1',0,.TRUE.)
-     STOP
+     STOP 1
 
 9100 CALL write_line('Error reading cable_junction_list packet data',0,.TRUE.)
      CALL write_line('At most only one boundary condition on internal connection nodes should be -1',0,.TRUE.)
-     STOP
+     STOP 1
 
   
   

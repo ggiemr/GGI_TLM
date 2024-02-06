@@ -349,7 +349,7 @@ output point is 'inside' the PEC/PMC and sees no field.
 109. Some of the test cases give different answers when GGI_TLM uses different machines and compilers. This is due to the mesh generation in some of the test cases. Some of the test cases are sensitive to the way in which dimensions are rounded and subsequent decision of which cell a point belongs to. This problem could be removed by ensuring that no points lie on cell boundaries.
      STARTED to make the test cases unambiguous. Most Differences due to geometry have been resolved
 
-110. Similar to 109. Cable bunble geometry may be machine dependent due to tolerances in the calculations in create_bundle_cross_section_geometry.F90
+110. Similar to 109. Cable bundle geometry may be machine dependent due to tolerances in the calculations in create_bundle_cross_section_geometry.F90
 
 111. Equation 3.1.18 should have a CdV /dt term not just C V in cable model theory document.
 
@@ -398,10 +398,12 @@ output point is 'inside' the PEC/PMC and sees no field.
      Portability of binary formats may be an issue...We could maybe consider using gzip for large ascii data files out of GGI_TLM maybe?
 
 124. Need to document new surface geometry types 'annulus' and 'split-ring', also the SPLIT_RING_RESONATOR test case
+DONE
 
 125. Need to document random parameter specification in the parameter_definitions.dat file
 
 126. Need to document sinusoidal pulse excitation function (implemented 7/1/2015)
+DONE
 
 127. The Mlayer code needs proper testing, especially for lossy materials and at arbirary angles - no validation exists yet apart from
      some rough and ready comparisons for waveguide loaded with dielectric material samples
@@ -420,8 +422,10 @@ output point is 'inside' the PEC/PMC and sees no field.
 130. Cable modelling theoory docuement: equation 3.1.21 - maybe need too change notation for inductance - L is used for more than one quantitiy. 
 
 131. GGI_TLM_theory document: pg 20. equation references are missing.
+OK now I think
 
 132. GGI_TLM_user_guide: Far_field_surface_list needs updating (at the moment the name is far_field_surface etc)
+DONE Feb 2024
 
 133. The Huygens surface on the outer boundary requires boundary reflection coefficients of 0 on all outer boundaries or we run into problems...
      STARTED: this problem has been addressed and (maybe) solved but it needs proper testing.
@@ -440,6 +444,7 @@ FIXED in read_cable_geometry_list.F90
 138. Mlayer documentation needs to be checked. Coordinate system consistency between software message and documentation. Also need to include the material file name in the input file format description
 
 139. Need to check and update cygwin installation notes  DONE
+DONE Jan 2024
 
 140. Need to check and complete ngspice link documentation STARTED
 
@@ -457,21 +462,25 @@ FIXED in read_cable_geometry_list.F90
 145 The revised sphere geometry does not work properly when transformations are applied. Fixed 12/11/2019
 
 146 Need to document the developments to frequency_output_volumes : include xyz output and 'output_every' options
+DONE Feb 2024
 
 147 Need to sort out some half timestep discrepancies in face excitation function calculation in excitation.F90
+DONE
 			
 148 Document ring_wave function in excitation.F90 to model emissions from power converters
+DONE
 
 149 The mpi version does not give any speed up of the software on the test cases if the software is compiled with full optimisation and run on a multi-core processor. Not sure why...
 
-150 tests with ngspice-41 sometimes hang (but not always, sometimes it runs to compltetion) Not sure why
+150 tests with ngspice-41 sometimes hang (but not always, sometimes it runs to completion) Not sure why
 
 151 TEST_CASE:NGSPICE_CONVERTER_MODEL does not give the reference result with ngspice-41. Again, not sure why yet...
     The test case has been left in. Note that the other NGspice test cases appear to work OK and reproduce the reference results.
     
 152 26/1/2024 CJS: On Cygwin I get an error compiling for MPI. A type mismatch in MPI_SEND is found when the 
                      first call sends a single number and a second call sends an array of numbers. A type mismatch 
-                     error also occurs. Not sure yet how to deal with this... Could use -fallow-argument-mismatch
+                     error also occurs. 
+Not sure yet how to deal with this... Could use -fallow-argument-mismatch: This is the current solution.
 
 153 26/1/2024 CJS:  Segmentation fault found on the latest Cygwin when compiling with optimisation flag -O4
                      It works OK without though...
@@ -481,3 +490,6 @@ FIXED in read_cable_geometry_list.F90
 155 31/1/2024 CJS:  Implementation of the Carson and Wait analysis of the complex propagation constant of modes
                     on a wire over lossy ground needs proper testing and validation...
 
+156 2/2/2024 CJS : automatic documentation process fails to create results and material frequency response plots.
+                   The error is : gnuplot: ~/PARAVIEW/ParaView-4.0.1-Linux-64bit/lib/paraview-4.0/libz.so.1: version `ZLIB_1.2.9' not found (required by /lib/x86_64-linux-gnu/libpng16.so.16).
+                    

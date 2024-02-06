@@ -40,6 +40,7 @@
 !
 !     started 19/09/2012 CJS
 !     Correct sign of transfer impedance for coax 22/2/2017
+!       Feb 2024 CJS Improve read error handling
 !
 !
 SUBROUTINE read_cable_geometry_list
@@ -71,7 +72,7 @@ character(LEN=256) :: input_line
 
   CALL write_line('CALLED: read_cable_geometry_list',0,output_to_screen_flag)
 
-  read(input_file_unit,*,err=9005)n_cable_geometries
+  read(input_file_unit,*,err=9005,end=9005)n_cable_geometries
   
   CALL write_line_integer('number of cable geometries',n_cable_geometries,0,output_to_screen_flag)
   
@@ -83,11 +84,11 @@ character(LEN=256) :: input_line
   
     CALL write_line_integer('Reading cable geometry number',cable_geometry_number,0,output_to_screen_flag)
     
-    read(input_file_unit,*,err=9005)read_number
+    read(input_file_unit,*,err=9005,end=9005)read_number
     if (read_number.ne.cable_geometry_number) goto 9010
  
 ! read cable geometry specification filename    
-    read(input_file_unit,'(A)',end=9010)input_line
+    read(input_file_unit,'(A)',err=9010,end=9010)input_line
     
     cable_geometry_filename=trim(input_line)//cable_geometry_file_extn
    
@@ -95,7 +96,7 @@ character(LEN=256) :: input_line
     
     open(UNIT=cable_geometry_file_unit,FILE=cable_geometry_filename,STATUS='old',ERR=9020)
 
-    read(cable_geometry_file_unit,'(A)',end=9030)input_line
+    read(cable_geometry_file_unit,'(A)',err=9030,end=9030)input_line
     
 ! convert text to lower case
     CALL convert_to_lower_case(input_line,256)
@@ -134,10 +135,10 @@ character(LEN=256) :: input_line
     end if
 
 ! read the number of conductors    
-    read(cable_geometry_file_unit,*,err=9005)cable_geometry_list(cable_geometry_number)%n_conductors
+    read(cable_geometry_file_unit,*,err=9005,end=9005)cable_geometry_list(cable_geometry_number)%n_conductors
 
 ! allocate and read parameters
-    read(cable_geometry_file_unit,*,err=9005)n_params
+    read(cable_geometry_file_unit,*,err=9005,end=9005)n_params
     cable_geometry_list(cable_geometry_number)%n_parameters=n_params
     
     if (n_params.gt.0) then
@@ -145,14 +146,14 @@ character(LEN=256) :: input_line
       ALLOCATE ( cable_geometry_list(cable_geometry_number)%parameters(1:n_params) )
       
       do i=1,n_params
-        read(cable_geometry_file_unit,*,err=9050)    &
+        read(cable_geometry_file_unit,*,err=9050,end=9050)    &
                  cable_geometry_list(cable_geometry_number)%parameters(i)
       end do
       
     end if
     
 ! allocate and read filters
-    read(cable_geometry_file_unit,*,err=9005)n_filters
+    read(cable_geometry_file_unit,*,err=9005,end=9005)n_filters
     cable_geometry_list(cable_geometry_number)%n_filters=n_filters
     
     if (n_filters.gt.0) then
@@ -198,38 +199,38 @@ character(LEN=256) :: input_line
 9000 CALL write_line('Error allocating cable_geometry_list:',0,.TRUE.)
      CALL write_line('cable_geometry_list already allocated',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
   
 9005 CALL write_line('Error reading cable_geometry_list packet from input file:',0,.TRUE.)
      CALL write_error_line(input_file_unit)
-     STOP
+     STOP 1
 
 9010 CALL write_line('Error reading cable_geometry_list packet data',0,.TRUE.)
      CALL write_line('Cable geometries should be numbered in order',0,.TRUE.)
-     STOP
+     STOP 1
   
 9020 CALL write_line('Error reading cable_geometry_list packet data',0,.TRUE.)
      CALL write_line('Cable geometry file des not exist. Filename:',0,.TRUE.)
      CALL write_line(trim(cable_geometry_filename),0,.TRUE.)
-     STOP
+     STOP 1
   
 9030 CALL write_line('Error reading cable file',0,.TRUE.)
      CALL write_line('Filename:',0,.TRUE.)
      CALL write_line(trim(cable_geometry_filename),0,.TRUE.)
-     STOP
+     STOP 1
   
 9040 CALL write_line('Error reading cable file',0,.TRUE.)
      CALL write_line('Filename:',0,.TRUE.)
      CALL write_line(trim(cable_geometry_filename),0,.TRUE.)
      CALL write_line('Unknown cable geometry type:'&
          //trim(cable_geometry_list(cable_geometry_number)%cable_geometry_type_string),0,.TRUE.)
-     STOP
+     STOP 1
   
 9050 CALL write_line('Error reading cable file',0,.TRUE.)
      CALL write_line('Filename:',0,.TRUE.)
      CALL write_line(trim(cable_geometry_filename),0,.TRUE.)
      CALL write_line('Error reading parameters',0,.TRUE.)
-     STOP
+     STOP 1
   
   
 END SUBROUTINE read_cable_geometry_list
