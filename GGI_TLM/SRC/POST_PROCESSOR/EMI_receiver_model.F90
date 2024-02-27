@@ -69,7 +69,7 @@ IMPLICIT NONE
 
   integer :: nf0,nfm,nfp
 
-  real*8 :: Vpeak,Vrms,Vavg,Vquasi_peak,Vout
+  real*8 :: Vpeak,Vrms,Vavg,Vquasi_peak,Vout,Vscale
 
   integer :: i,ii,ij,ik
   integer :: op_period
@@ -187,8 +187,20 @@ IMPLICIT NONE
     read(*,*)TC
     write(record_user_inputs_unit,'(E16.7,A)')TC,' quasi-peak charging time constant, TC'
     write(post_process_info_unit,*)'quasi-peak charging time constant, TC=',TC
-  
+
   end if
+  
+  write(*,*)
+  write(*,*)'Scaling from the input to the required output quantitiy:'
+  write(*,*)'Example 1. if the time domain input is in Volts and the required output is in dBm for a 50 ohm system'
+  write(*,*)'then Vscale=sqrt(1000/50)=4.472 and the output in dBm in in column 7 of the output file.'
+  write(*,*)'Example 2. if the time domain input is in Amps and required output is in dBuA '
+  write(*,*)'then Vscale=1E6 and the output in uA in in column 3 and in dBuA in column 7of the output file.'
+  write(*,*)'Please enter the scaling from input to output quantitiy:'
+
+  read(*,*)Vscale
+  write(record_user_inputs_unit,'(E16.7,A)')Vscale,' scaling from input to output quantitiy, Vscale'
+  write(post_process_info_unit,*)'scaling from input to output quantitiy, Vscale=',Vscale
 
 ! The frequency step is related to the filter resolution bandwidth
 
@@ -215,7 +227,7 @@ IMPLICIT NONE
   write(*,*)'EMI filter fmax =',real(FFILTER_fmax),' Hz'
   write(*,*)'EMI filter fstep=',real(FFILTER_fstep),' Hz'
   write(*,*)'EMI filter nf   =',FFILTER_nf
-  write(*,*)'FILTER_c       =',real(FILTER_c),' Hz'
+  write(*,*)'FILTER_c        =',real(FILTER_c),' Hz'
   write(*,*)
 
   write(post_process_info_unit,*)
@@ -224,7 +236,7 @@ IMPLICIT NONE
   write(post_process_info_unit,*)'EMI filter fmax =',real(FFILTER_fmax),' Hz'
   write(post_process_info_unit,*)'EMI filter fstep=',real(FFILTER_fstep),' Hz'
   write(post_process_info_unit,*)'EMI filter nf   =',FFILTER_nf
-  write(post_process_info_unit,*)'FILTER_c       =',real(FILTER_c),' Hz'
+  write(post_process_info_unit,*)'FILTER_c        =',real(FILTER_c),' Hz'
   write(post_process_info_unit,*)
 
   ALLOCATE( filter_response(-FFILTER_nf:FFILTER_nf) )
@@ -249,7 +261,7 @@ IMPLICIT NONE
   write(*,*)'fmin  =',fmin,' Hz'
   write(*,*)'fmax  =',fmax,' Hz'
   write(*,*)'fstep =',fstep,' Hz'
-  write(*,*)'n_frequencies==',n_frequencies
+  write(*,*)'n_frequencies=',n_frequencies
   write(post_process_info_unit,*)'Fourier transform parameters:'
   write(post_process_info_unit,*)'fmin  =',fmin,' Hz'
   write(post_process_info_unit,*)'fmax  =',fmax,' Hz'
@@ -297,6 +309,9 @@ IMPLICIT NONE
   ALLOCATE ( function_of_frequency(freq_function_number)%dB(1:n_frequencies) )
 
 ! calculate the Fourier integral at each of the frequencies specified
+  write(*,*)
+  write(*,*)'calculate the Fourier integral at each of the frequencies specified'
+  
   do frequency_loop=1,n_frequencies
     
     w=2d0*pi*function_of_frequency(freq_function_number)%frequency(frequency_loop)
@@ -311,8 +326,9 @@ IMPLICIT NONE
     end do ! next timestep
 
 ! Set the value at this frequency with scaling appropriate for RMS output for EMI receiver
+! with the appropriate voltage scaling included
 
-    function_of_frequency(freq_function_number)%value(frequency_loop)=integral*sqrt(2d0)/tmax
+    function_of_frequency(freq_function_number)%value(frequency_loop)=Vscale*integral*sqrt(2d0)/tmax
     
     function_of_frequency(freq_function_number)%magnitude(frequency_loop)=	&
                     abs(function_of_frequency(freq_function_number)%value(frequency_loop))
@@ -324,7 +340,12 @@ IMPLICIT NONE
 
   end do ! next frequency 
   
+  write(*,*)'FINISHED calculating the Fourier integral at each of the frequencies specified'
+  write(*,*)
+  
 ! Write the raw Fourier transform data to file
+  
+  write(*,*)'Write the raw Fourier integral data to file:'
   
   CALL write_Frequency_Domain_Data(freq_function_number)
 
@@ -341,6 +362,10 @@ IMPLICIT NONE
   ALLOCATE ( function_of_frequency(EMI_function_number)%magnitude(1:n_FSWEEP) )
   ALLOCATE ( function_of_frequency(EMI_function_number)%phase(1:n_FSWEEP) )
   ALLOCATE ( function_of_frequency(EMI_function_number)%dB(1:n_FSWEEP) )
+
+  write(*,*)
+  write(*,*)'Sweep over frequency calculating the output of the EMI receiver with chosen detector model:'
+  write(*,*)
  
   do frequency_loop=1,n_FSWEEP
 
@@ -473,11 +498,11 @@ IMPLICIT NONE
     
     end if
     
-    write(*,*)'frequency=',real(f),'Vpeak=',real(20.0*log10(1e6*Vpeak)), &
-                                   ' Vrms=',real(20.0*log10(1e6*Vrms)),  &
-                                   ' Vquasi-peak=',real(20.0*log10(1e6*Vquasi_peak)), &
-                                   ' Vavg=',real(20.0*log10(1e6*Vavg))
-
+!    write(*,*)'frequency=',real(f),'Vpeak=',real(20.0*log10(1e6*Vpeak)), &
+!                                   ' Vrms=',real(20.0*log10(1e6*Vrms)),  &
+!                                   ' Vquasi-peak=',real(20.0*log10(1e6*Vquasi_peak)), &
+!                                   ' Vavg=',real(20.0*log10(1e6*Vavg))
+    
     function_of_frequency(EMI_function_number)%value(frequency_loop)=Vout
     
     function_of_frequency(EMI_function_number)%magnitude(frequency_loop)=	&
