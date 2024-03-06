@@ -463,8 +463,8 @@ POST_PROCESSOR/subtract_dc.o \
 POST_PROCESSOR/Scale_frequency_domain_data.o \
 POST_PROCESSOR/process_conducted_emissions_data.o \
 POST_PROCESSOR/convert_data_to_sound.o \
-POST_PROCESSOR/EMI_receiver_model.o
-
+POST_PROCESSOR/EMI_receiver_model.o\
+POST_PROCESSOR/equivalent_source_model.o
 
 OPTIMISATION_OBJS=  \
 OPTIMISATION/opt_module.o \

@@ -129,6 +129,7 @@ IMPLICIT NONE
   write(*,*)'58. Post processing for time domain conducted emissions data'
   write(*,*)'59. Convert time domain waveform to sound (.wav file)'
   write(*,*)'60. Apply EMI reciever model to time domain data'
+  write(*,*)'61. Equivalent source model for near field scan data'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -627,6 +628,14 @@ IMPLICIT NONE
     write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: APPLY EMI RECIEVER MODEL TO TIME DOMAIN DATA'
     write(post_process_info_unit,*)'Apply EMI reciever model to time domain data'
     CALL EMI_receiver_model()
+    
+  else if (option.EQ.61) then
+
+    write(*,*)'Equivalent source model for near field scan data'
+    
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: EQUIVALENT SOURCE MODEL FOR NEAR FIELD SCAN DATA'
+    write(post_process_info_unit,*)'Equivalent source model for near field scan data'
+    CALL equivalent_source_model()
       
   else
    

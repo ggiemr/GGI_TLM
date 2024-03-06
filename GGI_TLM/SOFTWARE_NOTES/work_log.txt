@@ -717,6 +717,9 @@
 31/1/2024       CJS: Add an implementation of the Carson and Wait analysis of the complex propagation constant of modes
                      on a wire over lossy ground.
                      
+6/3/2024        CJS: Start to implement an equivalent source modelling post-process for near field scans. This can be applied
+                     to complex frequency domain GGI_TLM or measured data.
+
 Missing Packets...	
 		- SAR_output: DONE - not for dispersive materials though...
 		- Periodic structures: STARTED

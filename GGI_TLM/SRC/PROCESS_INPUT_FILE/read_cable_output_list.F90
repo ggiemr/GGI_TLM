@@ -100,7 +100,7 @@ character*256	:: input_line
      STOP 1
 
 9010 CALL write_line('Error reading cable_output_list packet data',0,.TRUE.)
-     CALL write_line('Cables should be numbered in order',0,.TRUE.)
+     CALL write_line('Cable outputs should be numbered in order',0,.TRUE.)
      STOP 1
 
 9020 CALL write_line('Error reading cable_output_list packet data',0,.TRUE.)
