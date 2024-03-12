@@ -30,6 +30,7 @@
 ! HISTORY
 !
 !     started 5/12/2012 CJS
+!     8/3/2024 CJS write 1/dt scaling factor to header line
 !
 !
 SUBROUTINE set_far_field_surfaces_in_mesh
@@ -666,8 +667,8 @@ IMPLICIT NONE
   
         OPEN(unit=far_field_output_unit,file=trim(numbered_filename))
         
-        write(far_field_output_unit,8010)'# ',n_theta_local,n_phi_local
-8010      format(A2,2I6)
+        write(far_field_output_unit,8010)'# ',n_theta_local,n_phi_local,1d0/dt
+8010      format(A2,2I6,ES16.6)
     
 ! loop over theta and phi
      

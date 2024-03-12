@@ -32,6 +32,8 @@
 ! HISTORY
 !
 !     started 6/3/2024 CJS
+!     8/3/2024 CJS write scaling factor to far field header line. here set to 1.0
+!
 !
 SUBROUTINE equivalent_source_model()
 
@@ -536,26 +538,26 @@ integer	:: function_number
         CALL magnetic_dipole_source(xs0,ys0,zs0,x,y,z,k0,Hx_Mx,Hx_My,Hx_Mz,Hy_Mx,Hy_My,Hy_Mz,use_PEC_plane,z_PEC)
       
         col_offset=col_offset+1          
-! contribution to Hx from Px  
+! contribution to Hx from Mx  
         G(row+1,col+col_offset)=Hx_Mx
       
-! contribution to Hy from Px  
+! contribution to Hy from Mx  
         G(row+2,col+col_offset)=Hy_Mx
       
         col_offset=col_offset+1        
-! contribution to Hx from Py  
+! contribution to Hx from My  
         G(row+1,col+col_offset)=Hx_My
       
-! contribution to Hy from Py 
+! contribution to Hy from My 
         G(row+2,col+col_offset)=Hy_My
         
         if (.NOT.use_tangential_dipoles_only) then
         
           col_offset=col_offset+1        
-! contribution to Hx from Pz  
+! contribution to Hx from Mz  
           G(row+1,col+col_offset)=Hx_Mz
       
-! contribution to Hy from Pz 
+! contribution to Hy from Mz 
           G(row+2,col+col_offset)=Hy_Mz
         
         end if  ! use z component of source dipoles
@@ -576,7 +578,7 @@ integer	:: function_number
 !      write(*,*)ix,iy,cmplx(G(ix,iy))
 !    end do
 !  end do
-  
+ 
 ! Solve the system of equations using Moore_Penrose inverse
 
   CALL cinvert_Moore_Penrose(G,n_LHS,n_RHS,GI,matdim)
@@ -625,7 +627,7 @@ integer	:: function_number
     write(*,*)'Writing magnetic dipole data to file: Magnetic_dipoles.dat'
     open(unit=local_file_unit2, file='Magnetic_dipoles.dat')
   end if
-  
+    
   col=0
   do i_source=1,n_source
   
@@ -651,14 +653,9 @@ integer	:: function_number
         Pz=(0d0,0d0)        
       end if  ! use z component of source dipoles
        
-!      write(*,*)'Electric Dipoles for Source point ',i_source
-!      write(*,*)'Px=',cmplx(Px)
-!      write(*,*)'Py=',cmplx(Py)
-!      write(*,*)'Pz=',cmplx(Pz)
-
        write(local_file_unit,'(6ES12.4)')xs0,ys0,zs0,abs(Px),abs(Py),abs(Pz)
-             
-    end if ! contributions from electric dipoles
+            
+    end if ! contributions from electric dipoles   
     
     if (use_magnetic_dipoles) then
 
@@ -675,11 +672,6 @@ integer	:: function_number
         Mz=(0d0,0d0)                
       end if  ! use z component of source dipoles
       
-!      write(*,*)'Magnetic Dipoles for Source point ',i_source
-!      write(*,*)'Mx=',cmplx(Mx)
-!      write(*,*)'My=',cmplx(My)
-!      write(*,*)'Mz=',cmplx(Mz)
-
       write(local_file_unit2,'(6ES12.4)')xs0,ys0,zs0,abs(Mx),abs(My),abs(Mz)
       
     end if ! contributions from magnetic dipoles
@@ -828,8 +820,8 @@ integer	:: function_number
     	  Ntheta=Ntheta+(Px*ct*cp+Py*ct*sp-Pz*st)*prop
     	  Nphi=Nphi+(-Px*sp+Py*cp)*prop
         
-    	  Ltheta=Ltheta+(Mx*ct*cp+My*ct*sp-Mz*st)*prop
-    	  Lphi=Lphi+(-Mx*sp+My*cp)*prop
+    	  Ltheta=Ltheta+(Mx*ct*cp+My*ct*sp-Mz*st)*prop *j*w*mu0
+    	  Lphi=Lphi+(-Mx*sp+My*cp)*prop *j*w*mu0
           
 ! add image sources if present
           if (use_PEC_plane) then
@@ -855,8 +847,8 @@ integer	:: function_number
     	    Ntheta=Ntheta+(Px*ct*cp+Py*ct*sp-Pz*st)*prop
     	    Nphi=Nphi+(-Px*sp+Py*cp)*prop
         
-    	    Ltheta=Ltheta+(Mx*ct*cp+My*ct*sp-Mz*st)*prop
-    	    Lphi=Lphi+(-Mx*sp+My*cp)*prop
+    	    Ltheta=Ltheta+(Mx*ct*cp+My*ct*sp-Mz*st)*prop *j*w*mu0
+    	    Lphi=Lphi+(-Mx*sp+My*cp)*prop *j*w*mu0
           
           end if ! use_PEC_plane
           
@@ -878,8 +870,8 @@ integer	:: function_number
  
     OPEN(unit=far_field_output_unit,file='Far_field_from_equivalent_source.fout')
         
-    write(far_field_output_unit,8010)'# ',n_theta,n_phi
-8010  format(A2,2I6)
+    write(far_field_output_unit,8010)'# ',n_theta,n_phi,1d0
+8010  format(A2,2I6,ES16.6)
 
 ! loop over theta and phi
      
@@ -1038,22 +1030,19 @@ real*8 ::xs0p,ys0p,zs0p          ! Image coordinates
   
     C1=(j*k0*exp(-j*k0*r)/(4d0*pi*r*r) )*(1d0+1d0/(j*k0*r))
 
-! Reverse Px, Py
+! Reverse Px, Py, only include non-zero terms
 
 ! x->y y->z z->x
-    Hx_Px=(0d0,0d0)  
-    Hy_Px= C1*(z-zs0p)
-    Hz_Px=-C1*(y-ys0p)
+    Hy_Px=Hy_Px+ C1*(z-zs0p)
+    Hz_Px=Hz_Px-C1*(y-ys0p)
 
 ! x->z y->x z->y
-    Hx_Py=-C1*(z-zs0p)
-    Hy_Py=(0d0,0d0)  
-    Hz_Py= C1*(x-xs0p)
+    Hx_Py=Hx_Py-C1*(z-zs0p)
+    Hz_Py=Hz_Py+C1*(x-xs0p)
 
 ! x->x y->y z->z          ! ORIGINAL, not rotated
-    Hx_Pz=-C1*(y-ys0p)
-    Hy_Pz= C1*(x-xs0p)
-    Hz_Pz=(0d0,0d0)
+    Hx_Pz=Hx_Pz-C1*(y-ys0p)
+    Hy_Pz=Hy_Pz+C1*(x-xs0p)
   
   end if
 
@@ -1131,19 +1120,19 @@ real*8 ::xs0p,ys0p,zs0p          ! Image coordinates
   C3b=(j*k0*k0*exp(-j*k0*r)/(4d0*pi*r) )*(j+1d0/(k0*r)+1d0/(j*k0*k0*r*r))
 
 ! x->y y->z z->x
-  Hy_Mx=C1*(y-ys0)*(z-zs0)
+  Hy_Mx=C1*(y-ys0)*(x-xs0)
   Hz_Mx=C2*(z-zs0)*(x-xs0)
   Hx_Mx=C3a*(x-xs0)*(x-xs0)-C3b
 
 ! x->z y->x z->y
-  Hz_My=C1*(z-zs0)*(x-xs0)
+  Hz_My=C1*(z-zs0)*(y-ys0)
   Hx_My=C2*(x-xs0)*(y-ys0)
   Hy_My=C3a*(y-ys0)*(y-ys0)-C3b
 
 ! x->x y->y z->z          ! ORIGINAL, not rotated
-  Hx_Mz=C1*(x-xs0)*(y-ys0)
+  Hx_Mz=C1*(x-xs0)*(z-zs0)
   Hy_Mz=C2*(y-ys0)*(z-zs0)
-   Hz_Mz=C3a*(z-zs0)*(z-zs0)-C3b
+  Hz_Mz=C3a*(z-zs0)*(z-zs0)-C3b
   
   if (add_image) then
 
@@ -1162,21 +1151,21 @@ real*8 ::xs0p,ys0p,zs0p          ! Image coordinates
     C3b=(j*k0*k0*exp(-j*k0*r)/(4d0*pi*r) )*(j+1d0/(k0*r)+1d0/(j*k0*k0*r*r))
 
 ! Reverse Mz only
-
+    
 ! x->y y->z z->x
-    Hy_Mx=C1*(y-ys0p)*(z-zs0p)
-    Hz_Mx=C2*(z-zs0p)*(x-xs0p)
-    Hx_Mx=C3a*(x-xs0p)*(x-xs0p)-C3b
+    Hy_Mx=Hy_Mx+C1*(y-ys0)*(x-xs0)
+    Hz_Mx=Hz_Mx+C2*(z-zs0)*(x-xs0)
+    Hx_Mx=Hx_Mx+C3a*(x-xs0)*(x-xs0)-C3b
 
 ! x->z y->x z->y
-    Hz_My=C1*(z-zs0p)*(x-xs0p)
-    Hx_My=C2*(x-xs0p)*(y-ys0p)
-    Hy_My=C3a*(y-ys0p)*(y-ys0p)-C3b
+    Hz_My=Hz_My+C1*(z-zs0)*(y-ys0)
+    Hx_My=Hx_My+C2*(x-xs0)*(y-ys0)
+    Hy_My=Hy_My+C3a*(y-ys0)*(y-ys0)-C3b
 
 ! x->x y->y z->z          ! ORIGINAL, not rotated
-    Hx_Mz=-C1*(x-xs0p)*(y-ys0p)
-    Hy_Mz=-C2*(y-ys0p)*(z-zs0p)
-    Hz_Mz=-(C3a*(z-zs0p)*(z-zs0p)-C3b)
+    Hx_Mz=Hx_Mz-C1*(x-xs0)*(z-zs0)
+    Hy_Mz=Hy_Mz-C2*(y-ys0)*(z-zs0)
+    Hz_Mz=Hz_Mz-(C3a*(z-zs0)*(z-zs0)-C3b)
   
   end if
 

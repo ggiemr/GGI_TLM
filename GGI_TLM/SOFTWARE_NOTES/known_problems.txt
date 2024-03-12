@@ -493,3 +493,7 @@ Not sure yet how to deal with this... Could use -fallow-argument-mismatch: This 
 156 2/2/2024 CJS : automatic documentation process fails to create results and material frequency response plots.
                    The error is : gnuplot: ~/PARAVIEW/ParaView-4.0.1-Linux-64bit/lib/paraview-4.0/libz.so.1: version `ZLIB_1.2.9' not found (required by /lib/x86_64-linux-gnu/libpng16.so.16).
                     
+157 8/3/2024 CJS: It would be very useful to keep a scaling factor for far field patterns - at the moment 
+                  the GGI_TLM far field pattern is scaled by the timeatep but the far field pattern from the 
+                  equivalent source model post process is not...
+                  STARTED: This has disabled the possibility of plotting far field as dBi though..

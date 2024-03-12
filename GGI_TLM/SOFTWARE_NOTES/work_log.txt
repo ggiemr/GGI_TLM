@@ -719,6 +719,11 @@
                      
 6/3/2024        CJS: Start to implement an equivalent source modelling post-process for near field scans. This can be applied
                      to complex frequency domain GGI_TLM or measured data.
+                     
+8/3/2024        CJS: Apply a scaling factor for far field patterns  so that
+                     the GGI_TLM far field pattern and the far field pattern from the 
+                     equivalent source model post process may be plotted consistently.
+                     This has disabled the possibility of plotting far field as dBi though..
 
 Missing Packets...	
 		- SAR_output: DONE - not for dispersive materials though...

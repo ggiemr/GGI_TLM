@@ -29,6 +29,7 @@
 ! HISTORY
 !
 !     started 6/05/2014 CJS
+!     8/3/2024 CJS include scaling factor from far field header line
 !
 !
 SUBROUTINE generate_far_field_plot
@@ -44,6 +45,7 @@ IMPLICIT NONE
   character(len=256)	:: filename
   
   character(len=256)	:: command
+  character(len=256)	:: line
   character		:: ch
   
   integer	:: op_type
@@ -82,6 +84,8 @@ IMPLICIT NONE
   real*8	:: x,y,z,r
   
   real*8        :: Ptot,dtheta,dphi,Pave
+  
+  real*8        :: scale
   
   character*32 :: field_name
 
@@ -125,8 +129,20 @@ IMPLICIT NONE
 
 ! READ THE FAR FIELD FILE
 
-  read(local_file_unit,*)ch2,n_theta,n_phi
+  read(local_file_unit,'(A)')line
+  read(line,*,ERR=10,END=10)ch2,n_theta,n_phi,scale
+  GOTO 20
 
+10 CONTINUE
+
+  scale=1d0
+  read(line,*,ERR=9010,END=9010)ch2,n_theta,n_phi
+
+20 CONTINUE
+
+  write(*,*)' Far field file: n_theta=',n_theta,' n_phi=',n_phi
+  write(*,*)'Scale factor=',scale
+  
   allocate( theta(1:n_theta) )
   allocate( phi(1:n_phi) )
   allocate( E(1:n_theta,1:n_phi) )
@@ -141,7 +157,10 @@ IMPLICIT NONE
     do phi_loop=1,n_phi
 
       read(local_file_unit,*)theta(theta_loop),phi(phi_loop),E_theta,E_phi
-      
+
+      E_theta=E_theta*scale
+      E_phi=E_phi*scale
+
       if (op_type.EQ.op_type_E_theta) then
       
         E(theta_loop,phi_loop)=E_theta
@@ -192,9 +211,9 @@ IMPLICIT NONE
   
   write(*,*)'Ptot=',Ptot
   
-  if (Ptot.NE.0d0) then 
-    E(:,:)=E(:,:)/sqrt(Ptot)   
-  end if   
+!  if (Ptot.NE.0d0) then 
+!    E(:,:)=E(:,:)/sqrt(Ptot)   
+!  end if   
   
   min_E=1d30
   max_E=0d0
@@ -206,8 +225,8 @@ IMPLICIT NONE
     end do   
   end do
   
-  write(*,*)'Maximum far field value scaled to isotropic radiator :',max_E
-  write(*,*)'Minimum far field value scaled to isotropic radiator :',min_E
+  write(*,*)'Maximum far E field value :',max_E
+  write(*,*)'Minimum far E field value :',min_E
   
   write(*,*)'Enter scale for far field (log or lin)'
   read(*,'(A3)')scale_string
@@ -229,16 +248,16 @@ IMPLICIT NONE
   if (ch.eq.'y') then
     normalise=.TRUE.
     if (scale_string(1:3).eq.'log') then
-      field_name=trim(field_name)//'(dB)'
+      field_name=trim(field_name)//'(dBV/m)'
     else if (scale_string(1:3).eq.'lin') then
       field_name=trim(field_name)//'(V/m)'
     end if
   else
     normalise=.FALSE.
     if (scale_string(1:3).eq.'log') then
-      field_name=trim(field_name)//'(dBi)'
+      field_name=trim(field_name)//'normalised_far_field (dB)'
     else if (scale_string(1:3).eq.'lin') then
-      field_name=trim(field_name)//'(V/m)'
+      field_name=trim(field_name)//'normalised_far_field'
     end if
   end if
 
@@ -417,7 +436,13 @@ IMPLICIT NONE
   write(*,*)'Error opening output file'
   write(*,*)'Filename='
   write(*,*)trim(filename)
-  stop
+  STOP 1
+  
+9010 continue
+  write(*,*)'Error reading header line from file'
+  write(*,*)'Filename='
+  write(*,*)trim(filename)
+  STOP 1
 
   RETURN
   
