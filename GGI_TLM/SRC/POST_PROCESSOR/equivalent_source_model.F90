@@ -64,8 +64,18 @@ integer	:: function_number
   integer                :: Hy_n_lines
   complex*16,allocatable :: Hy_measured(:)
 
+! Error data
+  real*8                 :: Hx_err,Hy_err,Htot,Hx_percentage_err,Hy_percentage_err
+
 ! combined data
   integer               :: n_lines
+  
+  integer :: Hx_number_of_comment_lines
+  integer :: Hx_number_of_data_lines
+  
+  integer :: Hy_number_of_comment_lines
+  integer :: Hy_number_of_data_lines
+  
   integer               :: nx_measured,ny_measured,n_measured
 
   real*8,allocatable    :: x_measured(:)
@@ -80,6 +90,9 @@ integer	:: function_number
   real*8  :: xmin_source,xmax_source,dx_source
   real*8  :: ymin_source,ymax_source,dy_source
   real*8  :: z_source
+  
+  real*8  :: origin_x,origin_y,min_offset_x,min_offset_y,dl
+  logical :: dxOK,dyOK
 
   real*8,allocatable    :: x_source(:)
   real*8,allocatable    :: y_source(:)
@@ -127,7 +140,7 @@ integer	:: function_number
 
   logical :: calc_FF
   
-  integer :: theta_loop,n_theta
+  integer :: theta_loop,n_theta,n_theta2
   real*8  :: Theta_min,Theta_max,Theta_step
   
   integer :: phi_loop,n_phi
@@ -156,7 +169,7 @@ integer	:: function_number
   real*8 :: hzs   ! height (z value) of near field source plane
 
   integer :: line
-  real*8  :: x,y,z,re,im
+  real*8  :: x,y,z,re,im,dx,dy
   real*8  :: xs0,ys0,zs0
   
   integer :: ix,iy
@@ -168,10 +181,17 @@ integer	:: function_number
   integer :: n_LHS,n_RHS
   integer :: Gn_rows,Gn_cols
   
+  integer :: n_additional_output_planes,output_plane
+  real*8  :: op_plane_z
+  
   character :: ch
-
+  character :: number_string
+  
+  logical		:: calc_fields_from_measurement_plane
 
 ! START
+
+  calc_fields_from_measurement_plane=.TRUE. 
 
   write(*,*)
   write(*,*)'Output files:'
@@ -190,10 +210,9 @@ integer	:: function_number
 
   OPEN(unit=local_file_unit,file=Hx_filename)
 
-  CALL write_file_format_information(local_file_unit,Hx_n_lines)
+  CALL write_file_format_information(local_file_unit,Hx_n_lines,Hx_number_of_comment_lines,Hx_number_of_data_lines)
   
   rewind(unit=local_file_unit)
-
 
 ! get the filename for the Hy data
 
@@ -207,10 +226,16 @@ integer	:: function_number
 
   OPEN(unit=local_file_unit2,file=Hy_filename)
 
-  CALL write_file_format_information(local_file_unit2,Hy_n_lines)
+  CALL write_file_format_information(local_file_unit2,Hy_n_lines,Hy_number_of_comment_lines,Hy_number_of_data_lines)
   
   rewind(unit=local_file_unit2)
+  
+! The number of lines should be reduced by the number of comment lines so
+! that it equals the number of data lines only, not the total number of lines in the file
 
+  Hx_n_lines=Hx_n_lines-Hx_number_of_comment_lines
+  Hy_n_lines=Hy_n_lines-Hy_number_of_comment_lines
+  
 ! Initial checks:
  
   if (Hx_n_lines.NE.Hy_n_lines) then
@@ -229,6 +254,16 @@ integer	:: function_number
   ALLOCATE( z_measured(n_lines) )
   ALLOCATE( Hx_measured(n_lines) )
   ALLOCATE( Hy_measured(n_lines) )
+  
+! read header comments
+
+  do line=1,Hx_number_of_comment_lines
+    read(local_file_unit,*)
+  end do
+  
+  do line=1,Hy_number_of_comment_lines
+    read(local_file_unit2,*)
+  end do
   
   do line=1,n_lines
 
@@ -276,16 +311,31 @@ integer	:: function_number
   n_measured=n_lines
   
 ! Work out the dimensions of the measured scan plane
+! and the discretisation in x and y
+
   xmin_measured= 1e30
   xmax_measured=-1e30
   ymin_measured= 1e30
   ymax_measured=-1e30
+  
+  origin_x=x_measured(1)
+  origin_y=y_measured(1)
+  min_offset_x=1e30
+  min_offset_y=1e30
   
   do line=1,n_lines
     xmin_measured=min(xmin_measured,x_measured(line))
     xmax_measured=max(xmax_measured,x_measured(line))
     ymin_measured=min(ymin_measured,y_measured(line))
     ymax_measured=max(ymax_measured,y_measured(line))
+    
+    if (x_measured(line).NE.origin_x) then
+      min_offset_x=min(min_offset_x,abs(origin_x-x_measured(line)))
+    end if
+    if (y_measured(line).NE.origin_y) then
+      min_offset_y=min(min_offset_y,abs(origin_y-y_measured(line)))
+    end if
+    
   end do
   
   write(*,*)'xmin_measured=',xmin_measured
@@ -293,7 +343,42 @@ integer	:: function_number
   write(*,*)'ymin_measured=',ymin_measured
   write(*,*)'ymax_measured=',ymax_measured
   write(*,*)'z_measured=',hzm
-
+  
+  write(*,*)'min_offset_x=',min_offset_x
+  write(*,*)'min_offset_y=',min_offset_y
+  
+  dxOK=.FALSE.
+  dyOK=.FALSE.
+  
+  if ((min_offset_x.NE.0d0).AND.(min_offset_x.LT.1d10)) then
+    dx=min_offset_x
+    dxOK=.TRUE.
+  end if
+  
+  if ((min_offset_y.NE.0d0).AND.(min_offset_y.LT.1d10)) then
+    dy=min_offset_y
+    dyOK=.TRUE.
+  end if
+  
+  if (dxOK.AND.(.NOT.dyOK)) then
+    dy=dx
+  else if (dyOK.AND.(.NOT.dxOK)) then
+    dx=dy
+  else if (dxOK.AND.dyOK) then
+    if (dx.NE.dy) then
+      write(*,*)'dx-dy discrepancy'
+      write(*,*)'dx=',dx
+      write(*,*)'dy=',dy
+      dl=sqrt(dx*dy)
+      dx=dl
+      dy=dl
+    end if
+  end if
+  
+  write(*,*)'Final discretisation values:'
+  write(*,*)'dx=',dx
+  write(*,*)'dy=',dy
+  
 ! read the analysis frequency
   write(*,*)
   write(*,*)'Enter the frequency at which the H fields have been measured (Hz)'
@@ -459,11 +544,11 @@ integer	:: function_number
 
   matdim=n_LHS
 
-  ALLOCATE( LHS(matdim) )
-  ALLOCATE( LHS2(matdim) )
-  ALLOCATE( RHS(matdim) )
-  ALLOCATE( G(matdim,matdim) )
-  ALLOCATE( GI(matdim,matdim) )
+  ALLOCATE( LHS(n_LHS) )
+  ALLOCATE( LHS2(n_LHS) )
+  ALLOCATE( RHS(n_RHS) )
+  ALLOCATE( G(n_LHS,n_RHS) )
+  ALLOCATE( GI(n_RHS,n_LHS) )
   
   LHS(:)=(0d0,0d0)
   LHS2(:)=(0d0,0d0)
@@ -581,19 +666,64 @@ integer	:: function_number
  
 ! Solve the system of equations using Moore_Penrose inverse
 
-  CALL cinvert_Moore_Penrose(G,n_LHS,n_RHS,GI,matdim)
+  CALL cinvert_Moore_Penrose2(G,n_LHS,n_RHS,GI)
   
-  CALL cmatvmul(GI,n_RHS,n_LHS,LHS,n_LHS,RHS,matdim)
-  
+  RHS=MATMUL(GI,LHS)
+    
 ! Now we have the RHS vector of source dipoles, calcuulate LHS2=[G](RHS)
 ! to determine the field on the measurement plane prediicted by these sources
+  
+  LHS2=MATMUL(G,RHS)
 
-  CALL cmatvmul(G,n_LHS,n_RHS,RHS,n_RHS,LHS2,matdim)
+! Calculate the error measures for the equivalent source field on the scan plane
+  
+  Hx_err=0d0
+  Hy_err=0d0
+  Htot=0d0
+  
+  row=0
+  do i_measured=1,n_measured
+
+! Coordinates of measured data point  
+    x=x_measured(i_measured)
+    y=y_measured(i_measured)
+    z=hzm
+    
+    Hx=LHS2(row+1)
+    Hy=LHS2(row+2)
+    
+    Hx_err=Hx_err+abs(Hx_measured(i_measured)-Hx)
+    Hy_err=Hy_err+abs(Hy_measured(i_measured)-Hy)
+    
+    Htot=Htot+sqrt( abs(Hx_measured(i_measured))**2 + abs(Hy_measured(i_measured))**2)
+    
+    row=row+2
+  end do ! next measured point
+
+! relative error    
+  Hx_err=Hx_err/Htot  
+  Hy_err=Hy_err/Htot  
+  
+! percentage error  
+  Hx_percentage_err=Hx_err*100d0
+  Hy_percentage_err=Hy_err*100d0
   
 ! Write the equivalent source field on measurement plane to file
 
+  write(*,*)'Writing the equivalent source field on measurement plane to files:'
+  write(*,*)'Hx_from_equiv_sources.dat'
+  write(*,*)'Hy_from_equiv_sources.dat'
+
   open(unit=local_file_unit , file='Hx_from_equiv_sources.dat')
   open(unit=local_file_unit2, file='Hy_from_equiv_sources.dat')
+  
+  write(local_file_unit, '(A,F7.2,A,F7.2)')'# Hx percentage err=',Hx_percentage_err,   &
+                                 ' Hy percentage err=',Hy_percentage_err
+  write(local_file_unit, '(A)')'#'
+  
+  write(local_file_unit2,'(A,F7.2,A,F7.2)')'# Hx percentage err=',Hx_percentage_err,   &
+                                 ' Hy percentage err=',Hy_percentage_err
+  write(local_file_unit2,'(A)')'#'
   
   row=0
   do i_measured=1,n_measured
@@ -892,12 +1022,295 @@ integer	:: function_number
       end do ! next phi
 
     end do ! next theta
+    
+    if (calc_fields_from_measurement_plane) then
 
+      Etheta(1:n_data)      =(0d0,0d0)
+      Ephi(1:n_data)        =(0d0,0d0)
+
+! Calculate far field data
+      r0=1d0
+      prop2=j*k0*exp(j*k0*r0)/(4d0*pi*r0)
+
+! loop over theta and phi
+     
+      count=0
+      
+      n_theta2=0
+ 
+      do theta_loop=1,n_theta
+        theta= theta_min+(theta_loop-1)*theta_step
+
+! Count the number of samples for which theta<= 90 degrees        
+        if (theta.LE.pi/2d0) n_theta2=n_theta2+1
+
+        do phi_loop=1,n_phi
+          phi= phi_min+(phi_loop-1)*phi_step
+
+! Observation point       
+          r(1)=r0*sin(theta)*cos(phi)
+          r(2)=r0*sin(theta)*sin(phi)
+          r(3)=r0*cos(theta)
+    
+      	  Ntheta=(0d0,0d0)
+          Nphi  =(0d0,0d0)
+          Ltheta=(0d0,0d0)
+          Lphi  =(0d0,0d0)
+
+          ct=cos(theta)
+          st=sin(theta)
+          cp=cos(phi)
+          sp=sin(phi)  
+
+! Loop over sources, adding contributions to the far field  
+          do i_source=1,n_measured
+
+! Coordinates of source dipole point  
+            xs0=x_measured(i_source)
+            ys0=y_measured(i_source)
+            zs0=z_measured(i_source)
+       
+            rp(1)=xs0
+            rp(2)=ys0
+            rp(3)=zs0
+          
+            rp_cos_psi=r(1)*rp(1)+r(2)*rp(2)+r(3)*rp(3)
+       
+            Px=-2d0*Hy_measured(i_source)*dx*dy
+            Py= 2d0*Hx_measured(i_source)*dx*dy
+            Pz=(0d0,0d0)
+                
+    	    prop=exp(j*k0*rp_cos_psi)
+    
+    	    Ntheta=Ntheta+(Px*ct*cp+Py*ct*sp-Pz*st)*prop
+    	    Nphi=Nphi+(-Px*sp+Py*cp)*prop
+            
+            Lphi=(0d0,0d0)
+            Ltheta=(0d0,0d0)
+            
+          end do ! next source point
+                
+          count=count+1
+                                    
+          Etheta(count)=-prop2*(Lphi+Z0*Ntheta)
+          Ephi(count)  = prop2*(Ltheta-Z0*Nphi)
+        
+        end do ! next phi
+
+      end do ! next theta
+
+! Write far field data to file
+ 
+      OPEN(unit=far_field_output_unit,file='Far_field_from_equivalent_sourceB.fout')
+        
+      write(far_field_output_unit,8010)'# ',n_theta2,n_phi,1d0
+
+! loop over theta and phi
+     
+      count=0
+ 
+      do theta_loop=1,n_theta
+        theta= theta_min+(theta_loop-1)*theta_step
+
+        do phi_loop=1,n_phi
+          phi= phi_min+(phi_loop-1)*phi_step
+      
+          count=count+1
+
+! Only write the far field for theta<+90 degrees due to the presence of the magnetic conductor           
+          if (theta.LE.pi/2d0) then
+                                    
+            write(far_field_output_unit,8020)theta*180.0/pi,phi*180.0/pi,        &
+                                          abs(Etheta(count)),abs(Ephi(count))
+          end if
+          
+        end do ! next phi
+
+      end do ! next theta
+
+    end if  ! calc_fields_from_measurement_plane
     
     DEALLOCATE( Etheta )
     DEALLOCATE( Ephi )
  
   end if ! calc_FF
+  
+  write(*,*)'Do you want to calculate the near field on other z planes? (y/n)'
+  read(*,'(A)')ch
+  write(record_user_inputs_unit,'(A1,A)')ch,'   # calculate the near field on other z planes? (y/n)'
+
+  if ( (ch.EQ.'y').OR.(ch.EQ.'Y') ) then
+  
+    write(*,*)'Enter the number of additional near field plane outputs (<10)'
+    read(*,*)n_additional_output_planes
+    write(record_user_inputs_unit,'(I4,A)')n_additional_output_planes,'   # number of additional near field plane outputs'
+
+    if ( (n_additional_output_planes.GT.9).OR.(n_additional_output_planes.LT.0) ) then
+      write(*,*)'ERROR: number of additional near field plane outputs should be between 0 and 9'
+      write(*,*)'n_additional_output_planes=',n_additional_output_planes
+      STOP 1
+    end if
+    
+    do output_plane=1,n_additional_output_planes
+    
+      write(*,*)'Enter the z coordinate of output plane',output_plane
+      read(*,*)op_plane_z
+      write(record_user_inputs_unit,'(ES14.6,A,I4)')op_plane_z,'   # z coordinate of output plane',output_plane     
+    
+! Write the equivalent source field on output plane to file based on the equivalent dipole model
+
+      write(number_string,'(I1)')output_plane
+
+      write(*,*)'Writing the equivalent source field on measurement plane to files:'
+      write(*,*)'Hx_from_equiv_sources.dat'//number_string
+      write(*,*)'Hy_from_equiv_sources.dat'//number_string
+      write(*,*)'Hmag_from_equiv_sources.dat'//number_string
+
+      open(unit=local_file_unit , file='Hx_from_equiv_sources.dat'//number_string)
+      open(unit=local_file_unit2, file='Hy_from_equiv_sources.dat'//number_string)
+      open(unit=local_file_unit3, file='Hmag_from_equiv_sources.dat'//number_string)
+    
+      row=0
+      do i_measured=1,n_measured
+
+! Coordinates of field output data point: x and y as for measured near field scan data
+        x=x_measured(i_measured)
+        y=y_measured(i_measured)
+        z=op_plane_z
+
+! Calculate the H field at the observation point    
+        Hx=(0d0,0d0)
+        Hy=(0d0,0d0)
+        
+! loop over source dipoles, summing contributions
+        col=0
+        do i_source=1,n_source
+
+! Coordinates of source dipole point  
+          xs0=x_source(i_source)
+          ys0=y_source(i_source)
+          zs0=z_source
+      
+          col_offset=0
+    
+          if (use_electric_dipoles) then
+          
+            CALL electric_dipole_source(xs0,ys0,zs0,x,y,z,k0,Hx_Px,Hx_Py,Hx_Pz,Hy_Px,Hy_Py,Hy_Pz,use_PEC_plane,z_PEC)
+     
+            col_offset=col_offset+1          
+            Px=RHS(col+col_offset)
+      
+            col_offset=col_offset+1        
+            Py=RHS(col+col_offset)
+              
+            if (.NOT.use_tangential_dipoles_only) then       
+              col_offset=col_offset+1        
+              Pz=RHS(col+col_offset)      
+            else
+              Pz=(0d0,0d0)        
+            end if  ! use z component of source dipoles
+ 
+            Hx=Hx + Hx_Px*Px + Hx_Py*Py +Hx_Pz*Pz 
+            Hy=Hy + Hy_Px*Px + Hy_Py*Py +Hy_Pz*Pz 
+      
+          end if ! contributions from electric dipoles
+            
+          if (use_magnetic_dipoles) then
+      
+            CALL magnetic_dipole_source(xs0,ys0,zs0,x,y,z,k0,Hx_Mx,Hx_My,Hx_Mz,Hy_Mx,Hy_My,Hy_Mz,use_PEC_plane,z_PEC)
+      
+            col_offset=col_offset+1          
+            Mx=RHS(col+col_offset)
+      
+            col_offset=col_offset+1        
+            My=RHS(col+col_offset)
+              
+            if (.NOT.use_tangential_dipoles_only) then        
+              col_offset=col_offset+1        
+              Mz=RHS(col+col_offset)
+            else
+              Mz=(0d0,0d0)                
+            end if  ! use z component of source dipoles
+     
+            Hx=Hx + Hx_Mx*Mx + Hx_My*My +Hx_Mz*Mz 
+            Hy=Hy + Hy_Mx*Mx + Hy_My*My +Hy_Mz*Mz 
+             
+          end if ! contributions from magnetic dipoles
+          
+          col=col+n_unknows_per_source_point
+  
+        end do ! next source point
+    
+        write(local_file_unit ,'(6ES12.4)')x,y,z,real(Hx),imag(Hx),abs(Hx)
+        write(local_file_unit2,'(6ES12.4)')x,y,z,real(Hy),imag(Hy),abs(Hy)    
+        write(local_file_unit3,'(6ES12.4)')x,y,z,sqrt( abs(Hx)**2 + abs(Hy)**2 )    
+
+      end do ! next field data point
+  
+      close(unit=local_file_unit)
+      close(unit=local_file_unit2)
+      close(unit=local_file_unit3)
+      
+      if (calc_fields_from_measurement_plane) then
+      
+! Write the equivalent source field on output plane to file based on the 
+! surface equivalent principle: magnetic conductor equivalent
+
+        write(*,*)'Writing the equivalent source field on measurement plane to files:'
+        write(*,*)'Hx_from_equiv_sourcesB.dat'//number_string
+        write(*,*)'Hy_from_equiv_sourcesB.dat'//number_string
+        write(*,*)'Hmag_from_equiv_sourcesB.dat'//number_string
+
+        open(unit=local_file_unit , file='Hx_from_equiv_sourcesB.dat'//number_string)
+        open(unit=local_file_unit2, file='Hy_from_equiv_sourcesB.dat'//number_string)
+        open(unit=local_file_unit3, file='Hmag_from_equiv_sourcesB.dat'//number_string)
+    
+        row=0
+        do i_measured=1,n_measured
+
+! Coordinates of field output data point: x and y as for measured near field scan data
+          x=x_measured(i_measured)
+          y=y_measured(i_measured)
+          z=op_plane_z
+
+! Calculate the H field at the observation point    
+          Hx=(0d0,0d0)
+          Hy=(0d0,0d0)
+        
+! loop over equivalent source dipoles on the measurement plane, summing contributions
+          do i_source=1,n_measured
+
+! Coordinates of source dipole point  
+            xs0=x_measured(i_source)
+            ys0=y_measured(i_source)
+            zs0=z_measured(i_source)
+                    
+            CALL electric_dipole_source(xs0,ys0,zs0,x,y,z,k0,Hx_Px,Hx_Py,Hx_Pz,Hy_Px,Hy_Py,Hy_Pz,use_PEC_plane,z_PEC)
+                    
+            Px=-2d0*Hy_measured(i_source)*dx*dy
+            Py= 2d0*Hx_measured(i_source)*dx*dy
+            Pz=(0d0,0d0)
+
+            Hx=Hx + Hx_Px*Px + Hx_Py*Py +Hx_Pz*Pz 
+            Hy=Hy + Hy_Px*Px + Hy_Py*Py +Hy_Pz*Pz 
+          
+          end do ! next source point
+    
+          write(local_file_unit ,'(6ES12.4)')x,y,z,real(Hx),imag(Hx),abs(Hx)
+          write(local_file_unit2,'(6ES12.4)')x,y,z,real(Hy),imag(Hy),abs(Hy)    
+          write(local_file_unit3,'(6ES12.4)')x,y,z,sqrt( abs(Hx)**2 + abs(Hy)**2 )    
+
+        end do ! next field data point
+  
+        close(unit=local_file_unit)
+        close(unit=local_file_unit2)
+        close(unit=local_file_unit3)
+
+       end if   ! calc_fields_from_measurement_plane
+  
+    end do   ! next near field output plane
+    
+  end if   ! calculate the near field on other z planes
 
 
   DEALLOCATE( x_measured )

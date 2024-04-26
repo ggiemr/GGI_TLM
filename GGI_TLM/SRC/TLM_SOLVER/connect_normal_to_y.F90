@@ -73,6 +73,35 @@
 	
               Vz_min=V(Vz_ymin,cx,cy,cz)+V(Vz_ymax,cx,cy-1,cz)
 	      Vz_max=Vz_min
+              
+	    else if (material_type.EQ.surface_material_type_SWITCH) then	 
+	    
+	      t_on =surface_material_list(material_number)%switch_t_on
+	      t_off =surface_material_list(material_number)%switch_t_off
+	      t_period =surface_material_list(material_number)%switch_period
+              
+              CALL get_switch_impedance(time,t_on,t_off,t_period,switch_on)
+
+! Calculate switch surface voltages
+              if (switch_on) then
+! PEC surface update
+	  
+                Vx_min=0D0
+	        Vx_max=0D0
+	
+                Vz_min=0D0
+	        Vz_max=0D0
+
+              else
+! FREE_SPACE surface update
+	     
+                Vx_min=V(Vx_ymin,cx,cy,cz)+V(Vx_ymax,cx,cy-1,cz)
+	        Vx_max=Vx_min
+	
+                Vz_min=V(Vz_ymin,cx,cy,cz)+V(Vz_ymax,cx,cy-1,cz)
+	        Vz_max=Vz_min
+
+              end if             
 	  
 	    else if (material_type.EQ.surface_material_type_DIODE) then	 
 	    

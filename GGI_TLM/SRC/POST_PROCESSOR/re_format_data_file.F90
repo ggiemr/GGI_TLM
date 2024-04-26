@@ -61,6 +61,9 @@ integer	:: function_number
   integer   		:: last_line
   
   integer   		:: n_lines
+
+  integer               :: number_of_comment_lines
+  integer               :: number_of_data_lines
   
   integer   		:: n_columns
   
@@ -110,20 +113,20 @@ integer	:: function_number
   
   OPEN(unit=local_file_unit,file=filename)
   
-  CALL write_file_format_information(local_file_unit,n_lines)
+  CALL write_file_format_information(local_file_unit,n_lines,number_of_comment_lines,number_of_data_lines)
   
   rewind(unit=local_file_unit)
   
-  write(*,*)'Enter the first line of the data file to process'
+  write(*,*)'Enter the first line of the numeric data to process'
   read(*,*)first_line
-  write(record_user_inputs_unit,*)first_line,' First line of the data file to process'
+  write(record_user_inputs_unit,*)first_line,' First line of the numeric data to process'
   
-  write(*,*)'Enter the last line of the data file to process or 0 to read the whole file'
+  write(*,*)'Enter the last line of the numeric data to process or 0 to read the whole file'
   read(*,*)last_line
-  write(record_user_inputs_unit,*)last_line,' Last line of the data file to process or 0 to read the whole file'
+  write(record_user_inputs_unit,*)last_line,' Last line of the numeric data to process or 0 to read the whole file'
   
-  if ( (last_line.EQ.0).OR.(last_line.GT.n_lines) ) then
-    last_line=n_lines
+  if ( (last_line.EQ.0).OR.(last_line.GT.(n_lines-number_of_comment_lines)) ) then
+    last_line=n_lines-number_of_comment_lines
   end if 
   
   if (last_line.LT.first_line) then
@@ -156,7 +159,7 @@ integer	:: function_number
   do loop=1,2
 
 ! read lines to ignore
-    do i=1,first_line-1
+    do i=1,number_of_comment_lines
       read(local_file_unit,*,ERR=9000)
     end do
     
@@ -385,19 +388,19 @@ END SUBROUTINE re_format_data_file
 ! _________________________________________________________________________________
 !
 !
-SUBROUTINE write_file_format_information(unit,number_of_lines)
+SUBROUTINE write_file_format_information(unit,number_of_lines,number_of_comment_lines,number_of_data_lines)
 
 IMPLICIT NONE
 
 integer :: unit
 integer :: number_of_lines
+integer :: number_of_comment_lines
+integer :: number_of_data_lines
 
 ! local variables
 
 character*256 input_line
 
-integer :: number_of_data_lines
-integer :: number_of_comment_lines
 
 logical :: was_last_line_a_number
 logical :: is_line_a_number

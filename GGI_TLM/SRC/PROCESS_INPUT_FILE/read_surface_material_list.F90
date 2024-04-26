@@ -27,7 +27,7 @@
 !
 !
 !Surface_material_list
-!3   Number of surface materials (integer)
+!5   Number of surface materials (integer)
 !1   SURFACE NUMBER 1
 !PEC
 !3       number of surfaces
@@ -53,6 +53,12 @@
 !1       number of surfaces
 !7       surface list
 !1       surface orientation list
+!5       SURFACE MATERIAL NUMBER 
+!SWITCH
+!0.5e-7 0.75e-7 1e-7                                   ! time_to switch_on  time_to_switch_off period
+!1       number of surfaces
+!7       surface list
+!1       surface orientation list
 !
 ! COMMENTS
 !     
@@ -63,6 +69,7 @@
 !    2/12/2013 		CJS: Implement anisotropic impedance boundary conditions
 !    3/09/2014		CJS: Implement simple diode impedance boundary conditions
 !    11/03/2019		CJS: Implement SPICE circuit model link
+!    20/03/2024		CJS: Implement SWITCH model
 !
 !
 SUBROUTINE read_surface_material_list
@@ -390,7 +397,16 @@ logical	:: file_exists
       end if  
       
       run_ngspice=.TRUE.
-            
+   
+    else if (material_name.eq.'switch') then
+    
+      surface_material_list(surface_material_number)%type=surface_material_type_SWITCH
+      
+! Read switch_t_on switch_t_off switch_period
+      read(input_file_unit,*,err=9005,end=9005)surface_material_list(surface_material_number)%switch_t_on, &
+                                     surface_material_list(surface_material_number)%switch_t_off,	   &
+                                     surface_material_list(surface_material_number)%switch_period
+
     else
 ! not a recognised material type so an error
 

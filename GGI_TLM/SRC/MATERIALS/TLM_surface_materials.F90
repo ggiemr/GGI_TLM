@@ -42,6 +42,7 @@
 !     frequency warping included 12/02/2013 CJS
 !    2/12/2013 		CJS: Implement anisotropic impedance boundary conditions
 !    11/03/2019		CJS: Implement SPICE circuit model link
+!    20/03/2024		CJS: Implement SWITCH surface model
 !
 !
 SUBROUTINE set_surface_material_mesh
@@ -110,6 +111,8 @@ IMPLICIT NONE
       else if (surface_material_list(material_number)%type.EQ.surface_material_type_ANISOTROPIC_DISPERSIVE) then
         write(info_file_unit,*)'Material_type : ANISOTROPIC_DISPERSIVE'
         write(info_file_unit,*)'Material name: ',trim(surface_material_list(material_number)%name)
+      else if (surface_material_list(material_number)%type.EQ.surface_material_type_SWITCH) then
+        write(info_file_unit,*)'Material type: SWITCH model'
       end if
       
       CALL write_line_integer('Number of geometric surfaces=',	&

@@ -15,7 +15,8 @@
 !    You should have received a copy of the GNU General Public License
 !    along with this program.  If not, see <http://www.gnu.org/licenses/>.   
 !
-! SUBROUTINE diode_calc
+! SUBROUTINE diode_calc(Vs_in,R_in,Is,nVt,Rs,Zc,Vcs,Vd,Id,Ic,direction)
+! SUBROUTINE get_switch_impedance(time,t_on,t_off,t_period,switch_on)
 !
 ! NAME
 !     diode_calc
@@ -227,3 +228,47 @@ integer :: itloop
   RETURN
 
 END SUBROUTINE diode_calc
+!
+! NAME
+!     get_switch_impedance(time,t_on,t_off,t_period,switch_on)
+!
+! DESCRIPTION
+!     
+! determine whether the switch should be on or off at this time
+!     
+!     
+! COMMENTS
+!     
+!
+! HISTORY
+!
+!     started 20/3/2024 CJS
+!
+!
+SUBROUTINE get_switch_impedance(time,t_on,t_off,t_period,switch_on)
+
+IMPLICIT NONE
+
+real*8 	:: time,t_on,t_off,t_period
+logical :: switch_on
+
+! local variables
+
+integer :: n_periods
+real*8 	:: time_in_period
+
+! START
+
+  n_periods=INT(time/t_period)
+
+  time_in_period=time-t_period*n_periods
+
+  if ( (time_in_period.LT.t_on).OR.(time_in_period.GT.t_off) ) then
+    switch_on=.FALSE.
+  else
+    switch_on=.TRUE.
+  end if
+
+RETURN
+
+END SUBROUTINE get_switch_impedance

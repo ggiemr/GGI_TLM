@@ -725,6 +725,15 @@
                      equivalent source model post process may be plotted consistently.
                      This has disabled the possibility of plotting far field as dBi though..
 
+12/3/2024       CJS: Fix error in image sources in equivalent source modelling post-process
+
+13/3/2024       CJS: Small change to reading files for multi-dimensional visualisation and re-formatting data files
+                     Read number of lines not including comment lines at the top of the file.
+                     Also in multi-dimensional visualisation, only plot the tile map file if requested. Default is
+                     to not write the .map.vtk file. 
+
+20/3/2024       CJS: Add a switch type surface which periodically switches impedance between PEC and infinity.                      This can be used to model simplified switching converters.
+
 Missing Packets...	
 		- SAR_output: DONE - not for dispersive materials though...
 		- Periodic structures: STARTED

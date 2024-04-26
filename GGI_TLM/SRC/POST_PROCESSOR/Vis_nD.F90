@@ -56,6 +56,7 @@ integer	:: function_number
   character(len=256)	:: filename2
   
   character(len=256)	:: command
+  character(len=256)	:: line
   
   logical		:: file_exists
 	   
@@ -63,6 +64,9 @@ integer	:: function_number
   integer   		:: last_line
   integer   		:: n_lines
   
+  integer :: number_of_comment_lines
+  integer :: number_of_data_lines
+
   integer		:: nDim
   integer		:: Dim(4)
   
@@ -111,6 +115,8 @@ integer	:: function_number
   integer 		:: num,den
     
   character		:: ch
+  
+  logical :: write_map
 
 ! compression stuff
   logical	:: compression_flag
@@ -156,20 +162,20 @@ integer	:: function_number
     OPEN(unit=local_file_unit,file=filename)
   end if
   
-  CALL write_file_format_information(local_file_unit,n_lines)
+  CALL write_file_format_information(local_file_unit,n_lines,number_of_comment_lines,number_of_data_lines)
   
   rewind(unit=local_file_unit)
   
-  write(*,*)'Enter the first line of the data file to plot'
+  write(*,*)'Enter the first line of the numeric data to plot'
   read(*,*)first_line
-  write(record_user_inputs_unit,*)first_line,' First line of the data file to process'
+  write(record_user_inputs_unit,*)first_line,' First line of the numeric data to plot'
   
   write(*,*)'Enter the last line of the data file to process or 0 to read the whole file'
   read(*,*)last_line
-  write(record_user_inputs_unit,*)last_line,' Last line of the data file to process or 0 to read the whole file'
+  write(record_user_inputs_unit,*)last_line,' Last line of the numeric data to plot or 0 to read the whole file'
   
-  if ( (last_line.EQ.0).OR.(last_line.GT.n_lines) ) then
-    last_line=n_lines
+  if ( (last_line.EQ.0).OR.(last_line.GT.(n_lines-number_of_comment_lines)) ) then
+    last_line=n_lines-number_of_comment_lines
   end if 
   
   if (last_line.LT.first_line) then
@@ -191,7 +197,7 @@ integer	:: function_number
   min_data(1:max_columns)= 1D30
 
 ! read lines to ignore
-  do i=1,first_line-1
+  do i=1,number_of_comment_lines
      read(local_file_unit,*,ERR=9000)
   end do
     
@@ -222,9 +228,21 @@ integer	:: function_number
   end do
   
 ! organise the data into a sensible format
-  write(*,*)'Enter the number of dimensions to plot (between 1 and 4)'
-  read(*,*)nDim
-  write(record_user_inputs_unit,*)nDim,' Number of dimensions to plot (between 1 and 4)'
+  write(*,*)"Enter the number of dimensions to plot (between 1 and 4) and add 'plus_map' to plot the tile outlines"
+  write(*,*)"e.g. to generate a 4D plot with tile outlines enter:"
+  write(*,*)"4 plus_map"
+  
+  line=''
+  read(*,'(A)')line
+  read(line,*)nDim
+  
+  if (index(line,'plus_map').NE.0) then
+    write_map=.TRUE.
+    write(record_user_inputs_unit,*)nDim,'plus_map : Number of dimensions to plot (between 1 and 4)'
+  else
+    write_map=.FALSE.
+    write(record_user_inputs_unit,*)nDim,' Number of dimensions to plot (between 1 and 4)'
+  end if
       
   ALLOCATE( column_list(1:nDim+1) )
   
@@ -559,12 +577,14 @@ integer	:: function_number
    
   end if
   
-  plot_data(1:nx,1:ny)=0d0
-  min_value=0d0
-  value_range=1d0
-  zrange=1d0
-  filename2=trim(filename)//".map.vtk"
-  CALL write_4D_vtk_data(nx,ny,x_values,y_values,plot_data,min_value,value_range,zrange,filename2)    
+  if (write_map) then
+    plot_data(1:nx,1:ny)=0d0
+    min_value=0d0
+    value_range=1d0
+    zrange=1d0
+    filename2=trim(filename)//".map.vtk"
+    CALL write_4D_vtk_data(nx,ny,x_values,y_values,plot_data,min_value,value_range,zrange,filename2)    
+  end if
    
   DEALLOCATE ( data )
   DEALLOCATE ( max_data )

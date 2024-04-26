@@ -97,6 +97,11 @@ IMPLICIT NONE
   real*8        :: Vspice,Vspice1,Vspice2
   integer       :: spice_node1,spice_node2
   integer       :: spice_port
+  
+! Switch update variables
+
+  real*8  :: t_on,t_off,t_period
+  logical :: switch_on
    
 ! Material update parameters  
   integer material_type

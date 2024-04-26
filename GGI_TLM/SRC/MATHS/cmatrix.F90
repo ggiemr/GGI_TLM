@@ -21,6 +21,7 @@
 !       subroutine cmatvmul(A,ar,ac,B,br,C,matdim)
 !       subroutine cinvert_Gauss_Jordan(A,n,AI,matdim) 
 !       subroutine cinvert_Moore_Penrose(A,m,n,AI,matdim) 
+!       subroutine cinvert_Moore_Penrose2(A,m,n,AI,matdim) 
 ! __________________________________________________
 !
 !
@@ -51,6 +52,27 @@ IMPLICIT NONE
        
        integer nmodes
        complex*16 u(nmodes,nmodes),ut(nmodes,nmodes)
+       integer nr,nc
+       integer r,c
+       
+       do r=1,nr
+         do c=1,nc
+	   ut(c,r)=conjg(u(r,c))
+	 end do
+       end do
+
+       return
+       end
+!
+! __________________________________________________
+!
+!
+       subroutine cconjugate_transpose2(u,nr,nc,ut)
+
+IMPLICIT NONE
+       
+       integer nmodes
+       complex*16 u(nr,nc),ut(nc,nr)
        integer nr,nc
        integer r,c
        
@@ -286,6 +308,47 @@ IMPLICIT NONE
     CALL cmatmul(A,m,n,AH,n,m,T,matdim)
     CALL cinvert_Gauss_Jordan(T,m,TI,matdim) 
     CALL cmatmul(AH,n,m,TI,m,m,AI,matdim)
+  
+  end if
+  
+
+  RETURN
+  
+  END
+!
+! __________________________________________________
+!
+! 
+  SUBROUTINE cinvert_Moore_Penrose2(A,m,n,AI,matdim) 
+
+IMPLICIT NONE
+
+! invert matrix using the Morse Penrose generalised inverse - invert with Gauss Jordan method
+! Used for more equations than unknowns
+! Matrix dimensions are much more efficient here...
+       
+  integer	:: m,n,matdim
+  complex*16	:: A(m,n)
+  complex*16	:: AI(n,m)
+
+! local variables
+  complex*16	:: AH(n,m)
+  complex*16	:: T(n,n)
+  complex*16	:: TI(n,n)
+  		       
+! START
+
+  if (m.ge.n) then
+  
+    CALL cconjugate_transpose2(A,m,n,AH)
+    T=MATMUL(AH,A)
+    CALL cinvert_Gauss_Jordan(T,n,TI,n) 
+    AI=MATMUL(TI,AH)
+    
+  else
+  
+    write(*,*)'ERROR in cinvert_Moore_Penrose2. More unknowns than equations...'
+    STOP 1
   
   end if
   

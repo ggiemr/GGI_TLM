@@ -140,6 +140,10 @@ TYPE::surface_material_type
   integer		:: Spice_circuit_file_nodes(2)
   integer		:: Spice_port_sign
   character*2		:: Spice_port_direction
+  
+  real*8		:: switch_t_on
+  real*8		:: switch_t_off
+  real*8		:: switch_period
    
 END TYPE surface_material_type
 
@@ -158,6 +162,8 @@ END TYPE surface_material_type
   integer,parameter	:: surface_material_type_SPICE=7
   
   integer,parameter	:: surface_material_type_PML=8
+  
+  integer,parameter	:: surface_material_type_SWITCH=9
 
   integer				  :: n_surface_materials
   type(surface_material_type),allocatable :: surface_material_list(:)
