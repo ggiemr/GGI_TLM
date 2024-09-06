@@ -39,10 +39,20 @@ set label "frequency(GHz)" at screen 0.97,0.65 front rotate by -90
 set view 34,228
 splot "bp_temp_beta_omega.dat_1" u 1:2:3 w l
 
-# SURFACE PLOT WITH CONTOOURS
+# SURFACE PLOT WITH CONTOURS
+
 set contour
 set cntrparam levels 20
 splot "ZA.dat_2.0GHz" u 2:3:6 w l
+
+# SURFACE PLOT WITH COLOUR MAP ON BOTTOM SURFACE
+
+set pm3d at b interpolate 4,4
+set palette
+set view 0,0
+set title "Ez"
+splot "Ez.dat" u 1:2:3 w l
+pause -1
 
 #MULTIPLOT EXAMPLE
 

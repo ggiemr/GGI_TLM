@@ -249,7 +249,7 @@ SUBROUTINE get_switch_impedance(time,t_on,t_off,t_period,switch_on)
 
 IMPLICIT NONE
 
-real*8 	:: time,t_on,t_off,t_period
+real*8 	:: time,t_on,t_off,t_period,t_delay
 logical :: switch_on
 
 ! local variables
@@ -259,9 +259,11 @@ real*8 	:: time_in_period
 
 ! START
 
-  n_periods=INT(time/t_period)
+  t_delay=0d0
+  
+  n_periods=INT((time-t_delay)/t_period)
 
-  time_in_period=time-t_period*n_periods
+  time_in_period=(time-t_delay)-t_period*n_periods
 
   if ( (time_in_period.LT.t_on).OR.(time_in_period.GT.t_off) ) then
     switch_on=.FALSE.
@@ -272,3 +274,51 @@ real*8 	:: time_in_period
 RETURN
 
 END SUBROUTINE get_switch_impedance
+!
+! NAME
+!     get_switch_resistance(time,t_on,t_off,t_period,t_delay,r_on,r_off,switch_on,Rswitch)
+!
+! DESCRIPTION
+!     
+! determine whether the switch should be on or off at this time
+! and return the switch resistance
+!     
+!     
+! COMMENTS
+!     
+!
+! HISTORY
+!
+!     started 20/3/2024 CJS
+!     add delay 6/9/2024 CJS
+!
+SUBROUTINE get_switch_resistance(time,t_on,t_off,t_period,t_delay,r_on,r_off,switch_on,Rswitch)
+
+IMPLICIT NONE
+
+real*8 	:: time,t_on,t_off,t_period,t_delay,r_on,r_off
+logical :: switch_on
+real*8  :: Rswitch
+
+! local variables
+
+integer :: n_periods
+real*8 	:: time_in_period
+
+! START
+
+  n_periods=INT((time-t_delay)/t_period)
+
+  time_in_period=(time-t_delay)-t_period*n_periods
+
+  if ( (time_in_period.LT.t_on).OR.(time_in_period.GT.t_off) ) then
+    switch_on=.FALSE.
+    Rswitch=r_off
+  else
+    switch_on=.TRUE.
+    Rswitch=r_on
+  end if
+
+RETURN
+
+END SUBROUTINE get_switch_resistance

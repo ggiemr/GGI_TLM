@@ -100,7 +100,9 @@ IMPLICIT NONE
   
 ! Switch update variables
 
-  real*8  :: t_on,t_off,t_period
+  real*8  :: t_on,t_off,t_period,t_delay
+  real*8  :: r_on,r_off
+  real*8  :: Rswitch
   logical :: switch_on
    
 ! Material update parameters  

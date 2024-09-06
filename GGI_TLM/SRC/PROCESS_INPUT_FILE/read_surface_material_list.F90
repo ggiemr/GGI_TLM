@@ -70,6 +70,7 @@
 !    3/09/2014		CJS: Implement simple diode impedance boundary conditions
 !    11/03/2019		CJS: Implement SPICE circuit model link
 !    20/03/2024		CJS: Implement SWITCH model
+!    6/09/2024		CJS: Implement DSWITCH model
 !
 !
 SUBROUTINE read_surface_material_list
@@ -407,6 +408,36 @@ logical	:: file_exists
                                      surface_material_list(surface_material_number)%switch_t_off,	   &
                                      surface_material_list(surface_material_number)%switch_period
 
+      surface_material_list(surface_material_number)%switch_delay =0d0
+      surface_material_list(surface_material_number)%switch_R_on =0d0
+      surface_material_list(surface_material_number)%switch_R_off=1d12
+      
+    else if (material_name.eq.'dswitch') then
+    
+      surface_material_list(surface_material_number)%type=surface_material_type_SWITCH
+      
+! Read switch_t_on switch_t_off switch_period and switch_delay
+      read(input_file_unit,*,err=9005,end=9005)surface_material_list(surface_material_number)%switch_t_on, &
+                                     surface_material_list(surface_material_number)%switch_t_off,	   &
+                                     surface_material_list(surface_material_number)%switch_period,         &
+                                     surface_material_list(surface_material_number)%switch_delay
+
+      surface_material_list(surface_material_number)%switch_R_on =0d0
+      surface_material_list(surface_material_number)%switch_R_off=1d12
+    
+    else if (material_name.eq.'rswitch') then
+    
+      surface_material_list(surface_material_number)%type=surface_material_type_SWITCH
+      
+! Read switch_t_on switch_t_off switch_period switch_R_on switch_R_off
+      read(input_file_unit,*,err=9005,end=9005)surface_material_list(surface_material_number)%switch_t_on, &
+                                     surface_material_list(surface_material_number)%switch_t_off,	   &
+                                     surface_material_list(surface_material_number)%switch_period,	   &
+                                     surface_material_list(surface_material_number)%switch_R_on,	   &
+                                     surface_material_list(surface_material_number)%switch_R_off
+
+      surface_material_list(surface_material_number)%switch_delay =0d0
+      
     else
 ! not a recognised material type so an error
 

@@ -144,6 +144,9 @@ TYPE::surface_material_type
   real*8		:: switch_t_on
   real*8		:: switch_t_off
   real*8		:: switch_period
+  real*8		:: switch_delay
+  real*8		:: switch_R_on
+  real*8		:: switch_R_off
    
 END TYPE surface_material_type
 

@@ -734,6 +734,11 @@
 
 20/3/2024       CJS: Add a switch type surface which periodically switches impedance between PEC and infinity.                      This can be used to model simplified switching converters.
 
+4/7/2024       CJS: Add a rswitch type surface which periodically switches impedance between two resistance values.
+                    This is implemented as a generalisation of the switch type. 
+
+6/9/2024       CJS: Implement the DSWITCH surface type which is a periodic switching surface with a variable time delay
+
 Missing Packets...	
 		- SAR_output: DONE - not for dispersive materials though...
 		- Periodic structures: STARTED

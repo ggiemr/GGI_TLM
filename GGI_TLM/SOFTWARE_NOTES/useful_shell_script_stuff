@@ -127,13 +127,15 @@ sed "s/#X11/$X11/g ; s/#X22/$X22/g" input_file_TEMPLATE.inp > input_file.inp
 
 ### Check the status of the process just finished
 RETURN_CODE=$?        
+PROCESS_NAME="process_name"
 if [[ $RETURN_CODE != 0 ]] ; then
   
-  echo "***** FAILED *****"
+  echo "***** ${PROCESS_NAME} FAILED *****"
+  exit 1
    
 else
 
-  echo "FINISHED CORRECTLY"     
+  echo "***** ${PROCESS_NAME} FINISHED CORRECTLY *****"     
 
 fi
 
