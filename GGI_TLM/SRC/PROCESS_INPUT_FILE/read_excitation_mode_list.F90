@@ -102,6 +102,9 @@ character*256	:: input_line
     CALL read_field_component(input_file_unit,excitation_mode_list(mode_number)%field_component)
 
     read(input_file_unit,'(A)',err=9005,end=9005)input_line
+
+! convert text to lower case
+    CALL convert_to_lower_case(input_line,256)
     
     if (input_line.eq.'soft') then
     

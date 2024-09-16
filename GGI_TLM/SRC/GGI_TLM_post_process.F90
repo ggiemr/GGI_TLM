@@ -46,7 +46,7 @@ IMPLICIT NONE
 
 ! local variables
 
-  integer,parameter	:: number_of_options=59
+  integer,parameter	:: number_of_options=62
   integer	:: option
 
   character(len=256)	:: command
@@ -130,6 +130,7 @@ IMPLICIT NONE
   write(*,*)'59. Convert time domain waveform to sound (.wav file)'
   write(*,*)'60. Apply EMI reciever model to time domain data'
   write(*,*)'61. Equivalent source model for near field scan data'
+  write(*,*)'62. Time-gate time domain data'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -636,6 +637,14 @@ IMPLICIT NONE
     write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: EQUIVALENT SOURCE MODEL FOR NEAR FIELD SCAN DATA'
     write(post_process_info_unit,*)'Equivalent source model for near field scan data'
     CALL equivalent_source_model()
+    
+  else if (option.EQ.62) then
+
+    write(*,*)'Time-gate time domain data'
+    
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: TIME-GATE TIME DOMAIN DATA'
+    write(post_process_info_unit,*)'Time-gate time domain data'
+    CALL time_gate_time_domain_data()
       
   else
    

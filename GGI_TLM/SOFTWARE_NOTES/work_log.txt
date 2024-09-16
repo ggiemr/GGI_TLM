@@ -739,6 +739,10 @@
 
 6/9/2024       CJS: Implement the DSWITCH surface type which is a periodic switching surface with a variable time delay
 
+16/9/2024      CJS: Convert soft/ hard source spec to lower case before checking for source type.
+
+16/9/2024      CJS: Implement simple time-gating process
+ 
 Missing Packets...	
 		- SAR_output: DONE - not for dispersive materials though...
 		- Periodic structures: STARTED

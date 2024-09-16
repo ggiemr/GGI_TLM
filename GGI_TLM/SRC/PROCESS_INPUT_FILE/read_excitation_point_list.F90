@@ -90,6 +90,9 @@ character*256	:: input_line
     CALL read_centre_or_face(input_file_unit,excitation_points(excitation_number)%cell_point%point)
 
     read(input_file_unit,'(A)',err=9005,end=9005)input_line
+
+! convert text to lower case
+    CALL convert_to_lower_case(input_line,256)
     
     if (input_line.eq.'soft') then
     
