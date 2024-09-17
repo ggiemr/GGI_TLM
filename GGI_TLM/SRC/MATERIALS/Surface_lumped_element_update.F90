@@ -261,7 +261,11 @@ real*8 	:: time_in_period
 
   t_delay=0d0
   
-  n_periods=INT((time-t_delay)/t_period)
+  if ((time-t_delay).GE.0d0) then
+    n_periods=INT((time-t_delay)/t_period)
+  else
+    n_periods=INT((time-t_delay)/t_period)-1
+  end if
 
   time_in_period=(time-t_delay)-t_period*n_periods
 
@@ -307,7 +311,11 @@ real*8 	:: time_in_period
 
 ! START
 
-  n_periods=INT((time-t_delay)/t_period)
+  if ((time-t_delay).GE.0d0) then
+    n_periods=INT((time-t_delay)/t_period)
+  else
+    n_periods=INT((time-t_delay)/t_period)-1
+  end if
 
   time_in_period=(time-t_delay)-t_period*n_periods
 
