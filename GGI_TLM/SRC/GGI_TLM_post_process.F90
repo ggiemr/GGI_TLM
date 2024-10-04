@@ -131,6 +131,7 @@ IMPLICIT NONE
   write(*,*)'60. Apply EMI reciever model to time domain data'
   write(*,*)'61. Equivalent source model for near field scan data'
   write(*,*)'62. Time-gate time domain data'
+  write(*,*)'63. Animate complex multi-dimensional data sets (up to 4D)'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -645,6 +646,14 @@ IMPLICIT NONE
     write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: TIME-GATE TIME DOMAIN DATA'
     write(post_process_info_unit,*)'Time-gate time domain data'
     CALL time_gate_time_domain_data()
+     
+  else if (option.EQ.63) then
+
+    write(*,*)'Animate complex multi-dimensional data'
+    
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: ANIMATE COMPLEX MULTI-DIMENSIONAL DATA'
+    write(post_process_info_unit,*)'Animate complex multi-dimensional data'
+    CALL animate_nD_complex_data()
       
   else
    

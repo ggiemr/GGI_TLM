@@ -743,6 +743,8 @@
 
 16/9/2024      CJS: Implement simple time-gating process
  
+4/10/2024      CJS: Implement process to animate complex n dimensional data
+
 Missing Packets...	
 		- SAR_output: DONE - not for dispersive materials though...
 		- Periodic structures: STARTED
