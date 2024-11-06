@@ -466,7 +466,8 @@ POST_PROCESSOR/convert_data_to_sound.o \
 POST_PROCESSOR/EMI_receiver_model.o\
 POST_PROCESSOR/equivalent_source_model.o \
 POST_PROCESSOR/time_gate_time_domain_data.o \
-POST_PROCESSOR/animate_nD_complex.o
+POST_PROCESSOR/animate_nD_complex.o \
+POST_PROCESSOR/animate_near_field_time_data.o
 
 
 OPTIMISATION_OBJS=  \

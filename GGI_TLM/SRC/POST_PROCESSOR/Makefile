@@ -55,7 +55,8 @@ convert_data_to_sound.o \
 EMI_receiver_model.o \
 equivalent_source_model.o \
 time_gate_time_domain_data.o \
-animate_nD_complex.o
+animate_nD_complex.o \
+animate_near_field_time_data.o
 
 default: $(POST_PROCESSOR_OBJS)
 

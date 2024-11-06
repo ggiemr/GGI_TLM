@@ -132,6 +132,7 @@ IMPLICIT NONE
   write(*,*)'61. Equivalent source model for near field scan data'
   write(*,*)'62. Time-gate time domain data'
   write(*,*)'63. Animate complex multi-dimensional data sets (up to 4D)'
+  write(*,*)'64. Animate time domain near field scan data'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -654,6 +655,14 @@ IMPLICIT NONE
     write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: ANIMATE COMPLEX MULTI-DIMENSIONAL DATA'
     write(post_process_info_unit,*)'Animate complex multi-dimensional data'
     CALL animate_nD_complex_data()
+     
+  else if (option.EQ.64) then
+
+    write(*,*)'Animate near field scan data'
+    
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: ANIMATE NEAR FIELD SCAN DATA'
+    write(post_process_info_unit,*)'Animate near field scan data'
+    CALL animate_near_field_time_data()
       
   else
    

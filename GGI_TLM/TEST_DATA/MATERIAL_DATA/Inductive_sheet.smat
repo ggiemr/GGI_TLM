@@ -1,0 +1,26 @@
+# Impenetrable, two sided Inductive impedance sheet, L=1e-6H
+0.0 1e8     # frequency range of validity
+# Z11 filter
+1.0      # wnormalisation constant
+1        # a order
+0.0 1e-6 # a coefficients, a1= inductance
+0        # b order
+1.0      # b coefficients
+# Z12 filter
+1.0      # wnormalisation constant
+0        # a order
+0.0      # a coefficients
+0        # b order
+1.0      # b coefficients
+# Z21 filter
+1.0      # wnormalisation constant
+0        # a order
+0.0      # a coefficients
+0        # b order
+1.0      # b coefficients
+# Z22 filter
+1.0      # wnormalisation constant
+1        # a order
+0.0 1e-6 # a coefficients, a1= inductance
+0        # b order
+1.0      # b coefficients

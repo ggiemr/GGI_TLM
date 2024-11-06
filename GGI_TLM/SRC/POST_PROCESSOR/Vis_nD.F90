@@ -386,7 +386,7 @@ integer	:: function_number
 ! define the plotting array - this is rather aritrary at the moment: 
 ! keep the x/y aspect ratio unless it is too large (too small)
   
-  if ( ( (nxplot*5.LT.nyplot).OR.(nyplot*5.LT.nxplot) ).AND.(ndim.ne.1) ) then
+  if ( ( (nxplot*10.LT.nyplot).OR.(nyplot*10.LT.nxplot) ).AND.(ndim.ne.1) ) then
 
 ! large aspect ratio- make the plot square
     dx=1d0/(nxplot-1)
