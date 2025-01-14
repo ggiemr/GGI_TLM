@@ -105,6 +105,7 @@ TYPE::huygens_surface_type
 
   logical       	:: outer_surface_flag
   integer       	:: n_surface_patches
+  real*8        	:: HS_Z0
   real*8        	:: Ei(3),Hi(3)
   real*8        	:: Ki(3)
   real*8        	:: xmin,xmax,ymin,ymax,zmin,zmax
@@ -125,6 +126,7 @@ TYPE::excitation_mode_type
 
   INTEGER	    	:: excitation_function_number
   INTEGER	    	:: surface_number
+  INTEGER	    	:: side_of_surface
   logical 		:: excitation_on_outward_normal
   integer		:: field_component
   integer		:: source_type

@@ -97,9 +97,13 @@ IMPLICIT NONE
       end if
     end if 
     
-    frequency_domain_power_surface(i)%fstep=							&
+    if (frequency_domain_power_surface(i)%n_frequencies.NE.1) then
+      frequency_domain_power_surface(i)%fstep=							&
        ( (frequency_domain_power_surface(i)%fmax-frequency_domain_power_surface(i)%fmin)	&
                          /dble(frequency_domain_power_surface(i)%n_frequencies-1) )
+    else
+      frequency_domain_power_surface(i)%fstep=0d0	
+    end if
      
   end do ! next frequency output surface    
   

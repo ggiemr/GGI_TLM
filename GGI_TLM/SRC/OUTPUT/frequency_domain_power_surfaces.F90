@@ -328,7 +328,7 @@ IMPLICIT NONE
       frequency=                   frequency_domain_power_surface(output_surface)%fmin+	&
                 (frequency_loop-1)*frequency_domain_power_surface(output_surface)%fstep
 	      
-      ejwt=exp(-j*2d0*pi*frequency*time)*dt
+      ejwt=exp(-j*2d0*pi*frequency*time)       ! *dt  ! remove dt normalisation here
     
       do output_face=1,number_of_faces
          

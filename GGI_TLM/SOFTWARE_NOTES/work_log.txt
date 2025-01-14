@@ -745,6 +745,28 @@
  
 4/10/2024      CJS: Implement process to animate complex n dimensional data
 
+17/12/2024     CJS: Allow n_freq=1 in frequency_domain_power_surface
+
+9/1/2025       CJS: Allow the wave impedance to be optionally changed in the Huygens surface
+! Example packet3:
+!
+!Huygens_surface
+!0       !surface number
+!-1	 ! side of surface for excitation
+!wave_impedance
+!266.6
+!1       !  excitation function number
+!Random  !  wave vector Theta and Phi 
+!Random  !  Polarisation theta and Phi
+
+14/1/2025     CJS: Attempt to fix the mode excitation surface for surface wave modes. We find that
+                   for modes in materials we have to scale the source fields. 
+                   e.g. for surface waves on a grounded dielectric slab, provided that we source both tangential E and H                         fields and the source mode fields are scaled such that:
+                   E_source_mode=E_mode*Z0/Zwmode, H_source_mode=H_mode*Zwmode/Z0 and the side of the surface 
+                   for the excitation is set to 0 (which uses a double sided source) then we source the correct 
+                   modal field.
+
+
 Missing Packets...	
 		- SAR_output: DONE - not for dispersive materials though...
 		- Periodic structures: STARTED

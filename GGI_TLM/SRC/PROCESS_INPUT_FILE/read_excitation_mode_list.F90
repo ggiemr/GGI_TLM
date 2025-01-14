@@ -93,8 +93,13 @@ character*256	:: input_line
     
     if (side_of_surface_for_excitation.eq.1) then
       excitation_mode_list(mode_number)%excitation_on_outward_normal=.TRUE.
+      excitation_mode_list(mode_number)%side_of_surface=1
     else if (side_of_surface_for_excitation.eq.-1) then
       excitation_mode_list(mode_number)%excitation_on_outward_normal=.FALSE.
+      excitation_mode_list(mode_number)%side_of_surface=-1
+    else if (side_of_surface_for_excitation.eq.0) then
+      excitation_mode_list(mode_number)%excitation_on_outward_normal=.FALSE.  ! This value has no effect in this case
+      excitation_mode_list(mode_number)%side_of_surface=0
     else 
       GOTO 9020
     end if

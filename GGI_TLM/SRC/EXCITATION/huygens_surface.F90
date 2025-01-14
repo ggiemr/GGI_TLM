@@ -345,7 +345,7 @@ IMPLICIT NONE
 !note K cross E = H
 
     call vector_product(kx,ky,kz,Ei(1),Ei(2),Ei(3),Hi(1),Hi(2),Hi(3))
-    Hi(:)=Hi(:)/Z0
+    Hi(:)=Hi(:)/huygens_surface%HS_Z0
     
     huygens_surface%Ei(1)=Ei(1)
     huygens_surface%Ei(2)=Ei(2)

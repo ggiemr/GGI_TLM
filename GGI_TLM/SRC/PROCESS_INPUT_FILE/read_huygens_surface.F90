@@ -41,6 +41,17 @@
 !1       !  excitation function number
 !Random  !  wave vector Theta and Phi 
 !Random  !  Polarisation theta and Phi
+!
+! Example packet3:
+!
+!Huygens_surface
+!0       !surface number
+!-1	 ! side of surface for excitation
+!wave_impedance
+!266.6
+!1       !  excitation function number
+!Random  !  wave vector Theta and Phi 
+!Random  !  Polarisation theta and Phi
 !!
 ! COMMENTS
 !     
@@ -67,6 +78,7 @@ IMPLICIT NONE
   real*8 r,theta,phi,u
   real*8 x,y,z
   character ch
+  character(LEN=256)input_line
 
 ! START  
 
@@ -91,7 +103,19 @@ IMPLICIT NONE
     else 
       GOTO 9020
     end if
+
+! read optional wave impedance 
+   
+    read(input_file_unit,'(A)',err=9000)input_line
+    CALL convert_to_lower_case(input_line,256)
     
+    if (input_line.EQ.'wave_impedance') then
+      read(input_file_unit,*,err=9000)huygens_surface%HS_Z0
+    else
+      huygens_surface%HS_Z0=Z0
+      backspace(input_file_unit)
+    end if
+        
     read(input_file_unit,*,err=9000)huygens_surface%excitation_function_number
 
 ! check for random excitation    

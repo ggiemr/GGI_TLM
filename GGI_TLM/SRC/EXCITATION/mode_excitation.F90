@@ -585,13 +585,38 @@ IMPLICIT NONE
    
 	  excitation_array_point=excitation_mode_list(excitation_mode)%face_excitation_field_number_list(excitation_face)
 	  mode_field_value=excitation_mode_list(excitation_mode)%mode_field(excitation_face)
+
+	  if (excitation_mode_list(excitation_mode)%side_of_surface.NE.0) then
+
+! Original single sided excitation: Changed to double sided as this does noto work properly
+! for modes which are not in free space
+          
+            face_excitation_field(excitation_array_point,side,field_component)=  &
+             face_excitation_field(excitation_array_point,side,field_component)+mode_field_value*value
+            if (field_component.le.6) then
+              face_excitation_type(excitation_array_point,side,field_component)=excitation_mode_list(excitation_mode)%source_type
+            end if
+ 
+          else
+
+! Double single sided excitation: This works for modes in dielectric materials
+! e.g. surface waves on a grounded dielectric slab, provided that the fields are scaled:
+! E_source_mode=E_mode*Z0/Zwmode, H_source_mode=H_mode*Zwmode/Z0
+
+            face_excitation_field(excitation_array_point,1,field_component)=     &
+             face_excitation_field(excitation_array_point,1,field_component)+mode_field_value*value/2d0
+            if (field_component.le.6) then
+              face_excitation_type(excitation_array_point,1,field_component)=excitation_mode_list(excitation_mode)%source_type
+            end if
+         
+            face_excitation_field(excitation_array_point,2,field_component)=     &
+             face_excitation_field(excitation_array_point,2,field_component)+mode_field_value*value/2d0
+            if (field_component.le.6) then
+              face_excitation_type(excitation_array_point,2,field_component)=excitation_mode_list(excitation_mode)%source_type
+            end if
 	  
-          face_excitation_field(excitation_array_point,side,field_component)=	&
-	    face_excitation_field(excitation_array_point,side,field_component)+mode_field_value*value
-          if (field_component.le.6) then
-            face_excitation_type(excitation_array_point,side,field_component)=excitation_mode_list(excitation_mode)%source_type
-	  end if
-	  	  
+          end if	
+                  
 	end if ! excitation point in this processor's mesh
 		  
       end do !next cell face in this surface	  
