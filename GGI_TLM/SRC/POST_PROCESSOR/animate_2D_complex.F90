@@ -1,5 +1,5 @@
-! SUBROUTINE animate_nD_complex_data
-! SUBROUTINE write_4D_vtk_data_cmplx
+! SUBROUTINE animate_2D_complex_data
+! SUBROUTINE write_2D_vtk_data
 !
 !    GGI_TLM Time domain electromagnetic field solver based on the TLM method
 !    Copyright (C) 2013  Chris Smartt
@@ -17,23 +17,24 @@
 !    You should have received a copy of the GNU General Public License
 !    along with this program.  If not, see <http://www.gnu.org/licenses/>.   
 !
-! SUBROUTINE animate_nD_complex_data
+! SUBROUTINE animate_2D_complex_data
 !
 ! NAME
-!    animate_nD_complex_data
+!    animate_2D_complex_data
 !
 ! DESCRIPTION
-!    create vtk format output files for animation of multi-dimensional complex data 
+!    create vtk format output files for animation of 2D complex data 
+!    the data may be on a non-rectangular grid
 !    
 !     
 ! COMMENTS
-!    based on Vis_nD
+!    based on animate_nD_complex_data
 !
 ! HISTORY
 !
-!     started 4/10/2024 CJS
+!     started 22/1/2025 CJS
 !
-SUBROUTINE animate_nD_complex_data(function_number)
+SUBROUTINE animate_2D_complex_data(function_number)
 
 USE constants
 USE post_process
@@ -62,12 +63,15 @@ integer	:: function_number
   integer :: number_of_data_lines
 
   integer		:: nDim
-  integer		:: Dim(4)
+  integer		:: Dim(2)
   
-  character*7		:: axis_label(4)
+  character*7		:: axis_label(2)
   
   integer		:: max_columns
-  integer		:: n_columns,column,Re_data_column,Im_data_column
+  integer		:: n_columns,column
+  integer		:: i_data_column,j_data_column
+  integer		:: x_data_column,y_data_column
+  integer		:: Re_data_column,Im_data_column
   integer		:: data_col
   
   integer		:: loop,col_loop
@@ -85,19 +89,22 @@ integer	:: function_number
   real		:: min_Im_value,Im_value_range
   real          :: zrange
   
-  real		:: value(4)
-  real		:: new_value(4)
-  integer		:: step(0:4)
-  integer		:: n(0:4)
+  real		:: value(2)
+  real		:: new_value(2)
+  integer		:: step(0:2)
+  integer		:: n(0:2)
 
-  real,allocatable    :: x_values(:)
-  real,allocatable    :: y_values(:)
+  real,allocatable    :: i_values(:)
+  real,allocatable    :: j_values(:)
+  real,allocatable    :: xy_values(:,:,:)
+  
+  real :: max_xy,min_xy
 
   real,allocatable    :: plot_data(:,:)
   complex,allocatable    :: cmplx_plot_data(:,:)
  
-  integer		:: i1,i2,i3,i4
-  integer		:: a1,a2,a3,a4
+  integer		:: i1,i2
+  integer		:: a1,a2
 
   integer               ::  nx,ny
   integer               ::  ix,iy
@@ -130,7 +137,7 @@ integer	:: function_number
 
 ! START
 
-  DATA axis_label / 'x_small','y_small','x_large','y_large' /  
+  DATA axis_label / 'x','y' /  
   
   n_frames=20
 
@@ -233,41 +240,40 @@ integer	:: function_number
     write(*,'(A,I3,A,E16.6,A,E16.6)')'Column ',col_loop,' min value=',min_data(col_loop),' max value=',max_data(col_loop)
   end do
   
-! organise the data into a sensible format
-  write(*,*)"Enter the number of dimensions to plot (between 1 and 4) and add 'plus_map' to plot the tile outlines"
-  write(*,*)"e.g. to generate a 4D plot with tile outlines enter:"
-  write(*,*)"4 plus_map"
+  nDim=2
   
-  line=''
-  read(*,'(A)')line
-  read(line,*)nDim
-  
-  if (index(line,'plus_map').NE.0) then
-    write_map=.TRUE.
-    write(record_user_inputs_unit,*)nDim,'plus_map : Number of dimensions to plot (between 1 and 4)'
-  else
-    write_map=.FALSE.
-    write(record_user_inputs_unit,*)nDim,' Number of dimensions to plot (between 1 and 4)'
-  end if
+  write_map=.FALSE.
       
-  ALLOCATE( column_list(1:nDim+2) )
+  ALLOCATE( column_list(1:6) )
   
-  Re_data_column=nDim+1
-  Im_data_column=nDim+2
-  
-  do loop=1,nDim
-  
-    write(*,'(A,A,A)')'Which Column should the ',axis_label(loop),' axis data come from? '
-    read(*,*)column_list(loop)
-    write(record_user_inputs_unit,*)column_list(loop),' Column for the ',axis_label(loop),' axis data '
+  i_data_column=1
+  j_data_column=2
+  x_data_column=3
+  y_data_column=4
+  Re_data_column=5
+  Im_data_column=6
     
-  end do 
+  write(*,'(A)')'Which Column should the i axis data come from? '
+  read(*,*)column_list(i_data_column)
+  write(record_user_inputs_unit,*)column_list(i_data_column),' Column for the i axis data '
+    
+  write(*,'(A)')'Which Column should the j axis data come from? '
+  read(*,*)column_list(j_data_column)
+  write(record_user_inputs_unit,*)column_list(j_data_column),' Column for the j axis data '
+    
+  write(*,'(A)')'Which Column should the x axis data come from? '
+  read(*,*)column_list(x_data_column)
+  write(record_user_inputs_unit,*)column_list(x_data_column),' Column for the x axis data '
+    
+  write(*,'(A)')'Which Column should the y axis data come from? '
+  read(*,*)column_list(y_data_column)
+  write(record_user_inputs_unit,*)column_list(y_data_column),' Column for the y axis data '
   
-  write(*,'(A,A,A)')'Which Column should the Real plot value data come from? '
+  write(*,'(A)')'Which Column should the Real plot value data come from? '
   read(*,*)column_list(Re_data_column)
   write(record_user_inputs_unit,*)column_list(Re_data_column),' Column for the Real plot value data '
   
-  write(*,'(A,A,A)')'Which Column should the Imaginary plot value data come from? '
+  write(*,'(A)')'Which Column should the Imaginary plot value data come from? '
   read(*,*)column_list(Im_data_column)
   write(record_user_inputs_unit,*)column_list(Im_data_column),' Column for the Imaginary plot value data '
   
@@ -329,92 +335,30 @@ integer	:: function_number
   end do
       
 ! get the plotting dimensions
-  nx=n(1)*n(3)
-  ny=n(2)*n(4)
-  
-! ny=1 for 1D plots, we must increase this in order to generate a surface to plot
-  if (ndim.eq.1) ny=2
-  
+  nx=n(1)
+  ny=n(2)
+    
   write(*,*)'nx=',nx
   write(*,*)'ny=',ny
    
-  if (ndim.GT.2) then 
-  
-    write(*,*)'Do you want to restrict the range of the plot (i.e. number of sub plots) (y/n)?'
-    read(*,'(A)')ch
-    write(record_user_inputs_unit,'(A,A)')ch,' ! Restrict range of plot (i.e. number of sub plots)'
-    
-  else
-  
-! only a 1D or 2D plot so don't restrict the number of plots  
-    ch='n'
-    
-  end if
-  
-  if ( (ch.EQ.'y').OR.(ch.EQ.'Y') ) then
-
-! Only restrict the large x and large y axis ranges
-    nplotmin(1:2)=1
-    nplotmax(1:2)=n(1:2)
-      
-! Large x range
-    write(*,*)'Number of plots in the large_x range is',n(3)
-    
-    write(*,*)'Enter the first plot of the xrange to include'
-    read(*,*)nplotmin(3)
-    write(record_user_inputs_unit,*)nplotmin(3),' First plot of the xrange to include'
-    
-    write(*,*)'Enter the last plot of the xrange to include'
-    read(*,*)nplotmax(3)
-    write(record_user_inputs_unit,*)nplotmax(3),' Last plot of the xrange to include'
-      
-! Large y range
-    write(*,*)'Number of plots in the large_y range is',n(4)
-    
-    write(*,*)'Enter the first plot of the yrange to include'
-    read(*,*)nplotmin(4)
-    write(record_user_inputs_unit,*)nplotmin(4),' First plot of the yrange to include'
-    
-    write(*,*)'Enter the last plot of the yrange to include'
-    read(*,*)nplotmax(4)
-    write(record_user_inputs_unit,*)nplotmax(4),' Last plot of the yrange to include'
-
-! get the new plotting dimensions
-    nxplot=(nplotmax(1)-nplotmin(1)+1)*(nplotmax(3)-nplotmin(3)+1)
-    nyplot=(nplotmax(2)-nplotmin(2)+1)*(nplotmax(4)-nplotmin(4)+1)
-   
-  else
-! don't restrict plot range
-    nplotmin(1:4)=1
-    nplotmax(1:4)=n(1:4)
-    nxplot=nx
-    nyplot=ny
-  end if
+  nplotmin(1:2)=1
+  nplotmax(1:2)=n(1:2)
+  nxplot=nx
+  nyplot=ny
 
 ! get the new plotting dimensions
  
-  ALLOCATE( x_values(1:nxplot) )
-  ALLOCATE( y_values(1:nyplot) )
+  ALLOCATE( i_values(1:nxplot) )
+  ALLOCATE( j_values(1:nyplot) )
+  ALLOCATE( xy_values(1:2,1:nxplot,1:nyplot) )
   ALLOCATE( cmplx_plot_data(1:nxplot,1:nyplot) )
   ALLOCATE( plot_data(1:nxplot,1:nyplot) )
 
 ! define the plotting array - this is rather aritrary at the moment: 
 ! keep the x/y aspect ratio unless it is too large (too small)
   
-  if ( ( (nxplot*10.LT.nyplot).OR.(nyplot*10.LT.nxplot) ).AND.(ndim.ne.1) ) then
-
-! large aspect ratio- make the plot square
-    dx=1d0/(nxplot-1)
-    dy=1d0/(nyplot-1)
-    write(*,*)'Large aspect ratio, make plot square'
-    
-  else
-! aspect ratio less than 1:5 or 1D plot so keep it as it is
-
-    dx=1d0
-    dy=1d0
-    
-  end if
+  dx=1d0
+  dy=1d0
   
   lx=dx*(nx-1)
   ly=dy*(ny-1)
@@ -425,104 +369,93 @@ integer	:: function_number
 
 ! loop over the whole x axis and save the x data only where we are plotting results
   ix=0
-  i=0
-  do a3=1,n(3)  ! large x axis
-    do a1=1,n(1)  ! small x axis
+  do a1=1,n(1)  ! x axis
     
-      ix=ix+1
+    ix=ix+1  
+    i_values(ix)=(ix-1)*dx
       
-      if ( (a3.GE.nplotmin(3)).AND.(a3.LE.nplotmax(3)) ) then
-        i=i+1
-        x_values(i)=(ix-1)*dx
-      end if
-      
-    end do
   end do
   
 ! loop over the whole y axis and save the y data only where we are plotting results
   iy=0
-  i=0
-  do a4=1,n(4)  ! large y axis
-    do a2=1,n(2)  ! small y axis
+  do a2=1,n(2)  ! small y axis
     
-      iy=iy+1
-      if ( (a4.GE.nplotmin(4)).AND.(a4.LE.nplotmax(4)) ) then
-        i=i+1
-        y_values(i)=(iy-1)*dy
-      end if
+    iy=iy+1
+    j_values(i)=(iy-1)*dy
       
-    end do
   end do
  
   write(*,*)'Get the complex plot data'
   
   iy=0
   
-  do a4=nplotmin(4),nplotmax(4)  ! large y axis
-    do a2=nplotmin(2),nplotmax(2)  ! small y axis
+  do a2=nplotmin(2),nplotmax(2)  ! y axis
 
-      iy=iy+1
-      
-      ix=0
-      
-      do a3=nplotmin(3),nplotmax(3)  ! large x axis
-        do a1=nplotmin(1),nplotmax(1)  ! small x axis
-      
-          ix=ix+1
-	  
-	  element(4)=a4
-	  element(3)=a3
-	  element(2)=a2
-	  element(1)=a1
+    iy=iy+1
+    
+    ix=0
+    
+    do a1=nplotmin(1),nplotmax(1)  ! small x axis
+    
+      ix=ix+1
+        
+      element(2)=a2
+      element(1)=a1
 
 ! checks on the array ranges	  
-	  do i=1,4
-	    if (element(i).GT.n(i)) then
-	      write(*,*)'Dimension ',i,' error'
-	      write(*,*)'element(i)=',element(i),' n(i)=',n(i)
-	      STOP
-	    end if
-          end do
-	  
-	  if (ix.GT.nxplot) then
-	    write(*,*)'ix error',ix,nxplot
-	    STOP
-	  end if
-	  
-	  if (iy.GT.nyplot) then
-	    write(*,*)'iy error',iy,nyplot
-	    STOP
-	  end if
-	  
-	  sample=1+(a1-1)*step(1)+(a2-1)*step(2)+(a3-1)*step(3)+(a4-1)*step(4)
-	  
-	  if (sample.GT.n_samples) then
-	  
-	    write(*,*)'sample error',sample,n_samples
-	    write(*,*)a1,n(1),step(1)
-	    write(*,*)a2,n(2),step(2)
-	    write(*,*)a3,n(3),step(3)
-	    write(*,*)a4,n(4),step(4)
-	    STOP
-	  end if
+      do i=1,2
+        if (element(i).GT.n(i)) then
+          write(*,*)'Dimension ',i,' error'
+          write(*,*)'element(i)=',element(i),' n(i)=',n(i)
+          STOP
+        end if
+      end do
+
+      if (ix.GT.nxplot) then
+        write(*,*)'ix error',ix,nxplot
+        STOP
+      end if
+
+      if (iy.GT.nyplot) then
+        write(*,*)'iy error',iy,nyplot
+        STOP
+      end if
+
+      sample=1+(a1-1)*step(1)+(a2-1)*step(2)
+
+      if (sample.GT.n_samples) then
+        write(*,*)'sample error',sample,n_samples
+        write(*,*)a1,n(1),step(1)
+        write(*,*)a2,n(2),step(2)
+        STOP
+      end if
+      
+      re=Data(sample,column_list(Re_data_column))
+      im=Data(sample,column_list(Im_data_column))
           
-	  re=Data(sample,column_list(Re_data_column))
-          im=Data(sample,column_list(Im_data_column))
+      cmplx_plot_data(ix,iy)=dcmplx(re,im)
+      xy_values(1,ix,iy)=Data(sample,column_list(x_data_column))
+      xy_values(2,ix,iy)=Data(sample,column_list(y_data_column))
           
-          cmplx_plot_data(ix,iy)=dcmplx(re,im)
-	  	  
-        end do    
-      end do   
     end do    
   end do
   
-! again a special case for 1 dimensional data, artificially add another column of y data
-  if (ndim.eq.1) then
-    cmplx_plot_data(1:nxplot,2)=cmplx_plot_data(1:nxplot,1)
-  end if
-
 ! set the height (zrange) of the surface plot to be related to the x and y extent of the plot  
-  zrange=max(dx*(nxplot-1),dy*(nyplot-1))/4d0
+  max_xy=0d0
+  min_xy=1d30
+  do ix=1,nx
+    do iy=1,ny
+      do i=1,2
+        max_xy=max(max_xy,abs(xy_values(i,ix,iy)))
+        min_xy=min(min_xy,abs(xy_values(i,ix,iy)))
+      end do
+    end do
+  end do
+  
+  write(*,*)'max_xy=',max_xy
+  write(*,*)'min_xy=',min_xy
+  
+  zrange=(max_xy-min_xy)/4d0
   
   min_value=min(min_Re_value,min_Im_value)
   value_range=max(Re_value_range,Im_value_range)
@@ -591,65 +524,19 @@ integer	:: function_number
  
 ! Write the data to vtk file
 
-    CALL write_4D_vtk_data(nxplot,nyplot,x_values,y_values,plot_data,min_value,value_range,zrange,frame_filename)    
-  
+    CALL write_2D_vtk_data(nxplot,nyplot,xy_values,plot_data,min_value,value_range,zrange,frame_filename)    
+
   end do ! next frame 
   
-  DEALLOCATE( x_values )
-  DEALLOCATE( y_values )
+  DEALLOCATE( xy_values )
+  DEALLOCATE( i_values )
+  DEALLOCATE( j_values )
   DEALLOCATE( cmplx_plot_data )
   DEALLOCATE( plot_data )
-
-! write a file which can be used to show the edges of the small plots
-  
-  nx=n(3)+1
-  ny=n(4)+1
-
-  ALLOCATE( x_values(1:nx) )
-  ALLOCATE( y_values(1:ny) )
-  ALLOCATE( plot_data(1:nx,1:ny) )
-  
-  if (ndim.ne.1) then
-  
-    x_values(1)=-0.5*dx
-    do i=2,nx
-      x_values(i)=x_values(i-1)+n(1)*dx
-    end do
-
-    y_values(1)=-0.5*dy
-    do i=2,ny
-      y_values(i)=y_values(i-1)+n(2)*dy
-    end do
-   
-  else if (ndim.eq.1) then
-! Special case for 1 dimensional data
-     
-    x_values(1)=-0.5
-    do i=2,nx
-      x_values(i)=x_values(i-1)+n(1)
-    end do
-
-    y_values(1)=-0.5
-    y_values(2)=1.5
-   
-  end if
-  
-  if (write_map) then
-    plot_data(1:nx,1:ny)=0d0
-    min_value=0d0
-    value_range=1d0
-    zrange=1d0
-    filename2=trim(filename)//".map.vtk"
-    CALL write_4D_vtk_data(nx,ny,x_values,y_values,plot_data,min_value,value_range,zrange,filename2)    
-  end if
-   
   DEALLOCATE ( data )
   DEALLOCATE ( max_data )
   DEALLOCATE ( min_data )
   DEALLOCATE( column_list )
-  DEALLOCATE( x_values )
-  DEALLOCATE( y_values )
-  DEALLOCATE( plot_data )
 
   RETURN
      
@@ -658,19 +545,18 @@ integer	:: function_number
      write(*,*)trim(filename)
      STOP 
   
-END SUBROUTINE animate_nD_complex_data
+END SUBROUTINE animate_2D_complex_data
 !
 ! _______________________________________________________________
 !
 !    
-SUBROUTINE write_4D_vtk_data_cmplx(nx,ny,x_values,y_values,data,min_value,value_range,zrange,filename)    
+SUBROUTINE write_2D_vtk_data(nx,ny,xy_values,data,min_value,value_range,zrange,filename)    
 
   IMPLICIT NONE
 
   integer	::  nx,ny
   
-  real	:: x_values(1:nx)
-  real	:: y_values(1:ny)
+  real	:: xy_values(1:2,1:nx,1:ny)
   
   real	:: data(1:nx,1:ny)
   
@@ -715,7 +601,7 @@ SUBROUTINE write_4D_vtk_data_cmplx(nx,ny,x_values,y_values,data,min_value,value_
   do ix=1,nx
     do iy=1,ny
       
-      write(20,8000)x_values(ix),y_values(iy),(data(ix,iy)-min_value)*zrange/value_range
+      write(20,8000)xy_values(1,ix,iy),xy_values(2,ix,iy),(data(ix,iy)-min_value)*zrange/value_range
 8000  format(3E12.4)
       count=count+1
       
@@ -780,4 +666,4 @@ SUBROUTINE write_4D_vtk_data_cmplx(nx,ny,x_values,y_values,data,min_value,value_
 
   close(UNIT=20)
 
-END SUBROUTINE write_4D_vtk_data_cmplx
+END SUBROUTINE write_2D_vtk_data

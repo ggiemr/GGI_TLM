@@ -765,6 +765,10 @@
                    E_source_mode=E_mode*Z0/Zwmode, H_source_mode=H_mode*Zwmode/Z0 and the side of the surface 
                    for the excitation is set to 0 (which uses a double sided source) then we source the correct 
                    modal field.
+                   
+31/1/2025     CJS: Add a post process: Animate complex 2D data which can animate complex frequency domain data 
+                   on a non-rectangular grid.
+                   
 
 
 Missing Packets...	

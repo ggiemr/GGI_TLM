@@ -133,6 +133,7 @@ IMPLICIT NONE
   write(*,*)'62. Time-gate time domain data'
   write(*,*)'63. Animate complex multi-dimensional data sets (up to 4D)'
   write(*,*)'64. Animate time domain near field scan data'
+  write(*,*)'65. Animate complex 2 dimensional data sets'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -663,10 +664,18 @@ IMPLICIT NONE
     write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: ANIMATE NEAR FIELD SCAN DATA'
     write(post_process_info_unit,*)'Animate near field scan data'
     CALL animate_near_field_time_data()
+     
+  else if (option.EQ.65) then
+
+    write(*,*)'Animate complex 2D data'
+    
+    write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: ANIMATE COMPLEX 2D DATA'
+    write(post_process_info_unit,*)'Animate complex 2D data'
+    CALL animate_2D_complex_data()
       
   else
    
-    write(*,*)'Unknown option',option
+    write(*,*)'Unknown option: ',option
     write(*,'(A,I2)')'Option should be in the range 0 to',number_of_options
     
     CALL write_progress('FAILED: GGI_TLM_post_process')
