@@ -519,3 +519,4 @@ Not sure yet how to deal with this... Could use -fallow-argument-mismatch: This 
                    GGI_TLM_gerber_to_stl (call to read_Aperture_Macro), 
                    create_bundle_LCRG_matrices (call to LC_checks)
 
+160 4/2/2026 CJS: frequency scale is not applied in GGI_TLM_filter fit

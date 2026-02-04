@@ -146,7 +146,10 @@ IMPLICIT NONE
       if(local_frequency(function_loop,freq_loop).ne.frequency(freq_loop)) GOTO 9020
     end do
   end do ! next function
-
+  
+! apply the frequency scaling 
+  frequency(:)=frequency(:)*fscale
+  
 ! Set the frequency normalisation constant to be the last   
   
   fnorm=frequency(n_values)

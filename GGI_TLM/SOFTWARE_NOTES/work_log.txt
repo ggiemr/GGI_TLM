@@ -774,7 +774,7 @@
                    on a non-rectangular grid.
                    
 16/6/2025     CJS: Add a hexahedral volume type
-                   
+       
 3/2/2026 CJS : Fix Some errors with subroutine argument numbers which may cause segmentation faults, especially
                with optimisation turned on. These have been resolved in 
                    cinvert_Moore_penrose2(matdim removed))
@@ -782,6 +782,7 @@
                    GGI_TLM_gerber_to_stl (call to read_Aperture_Macro), 
                    create_bundle_LCRG_matrices (call to LC_checks)
 
+4/2/2026 CJS:  Fix error in which frequency scale is not applied in GGI_TLM_filter_fit    
 
 Missing Packets...	
 		- SAR_output: DONE - not for dispersive materials though...
