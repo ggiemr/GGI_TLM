@@ -509,7 +509,7 @@ IMPLICIT NONE
     
     CALL LC_checks(bundle_segment_geometry_list(bundle_segment_geometry)%L,	&
                    bundle_segment_geometry_list(bundle_segment_geometry)%C,	&
-		   segment_length,total_n_bundle_conductors,total_n_bundle_conductors)
+		   segment_length,total_n_bundle_conductors)
 
 ! Calculate the TLM cable update matrices
 

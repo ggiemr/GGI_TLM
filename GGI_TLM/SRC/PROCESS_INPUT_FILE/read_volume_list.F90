@@ -124,6 +124,10 @@ logical	:: file_exists
       n_params=12
       problem_volumes(volume_number)%volume_type=volume_type_tet
 
+    else if (input_line.eq.'hex') then
+      n_params=24
+      problem_volumes(volume_number)%volume_type=volume_type_hex
+
     else if (input_line.eq.'pyramid_ram') then
       n_params=3
       problem_volumes(volume_number)%volume_type=volume_type_pyramid_ram

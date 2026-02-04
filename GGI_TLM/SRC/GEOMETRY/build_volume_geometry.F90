@@ -75,6 +75,10 @@ integer	:: volume_number
       
       CALL build_volume_tet(volume_number)
 
+    else if (problem_volumes(volume_number)%volume_type.EQ.volume_type_hex) then
+      
+      CALL build_volume_hex(volume_number)
+
     else if (problem_volumes(volume_number)%volume_type.EQ.volume_type_pyramid) then
       
       CALL build_volume_pyramid(volume_number)

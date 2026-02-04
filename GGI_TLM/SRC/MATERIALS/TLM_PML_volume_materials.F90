@@ -620,6 +620,8 @@ IMPLICIT NONE
 
 ! START
 
+  write(*,*)'CALLED: allocate_PML_material_data'
+
   pml_material_cell=0
   
   do cz=nz1,nz2
@@ -675,8 +677,11 @@ IMPLICIT NONE
     STOP 1
   end if
   
-  if (total_number_of_PML_material_cells.Eq.0) RETURN
-
+  if (total_number_of_PML_material_cells.EQ.0) then
+    write(*,*)'FINISHED: allocate_PML_material_data'  
+    RETURN
+  end if
+  
   ALLOCATE( PML_material_cell_data(1:total_number_of_PML_material_cells) )
   
 ! Reset PML_cell_data
@@ -733,6 +738,8 @@ IMPLICIT NONE
     PML_material_cell_data(i)%Vcz_m1=0d0
    
   end do
+  
+  write(*,*)'FINISHED: allocate_PML_material_data'
 
   RETURN
 

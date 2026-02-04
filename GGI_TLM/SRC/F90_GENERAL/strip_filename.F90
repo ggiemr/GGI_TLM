@@ -28,7 +28,7 @@
 !
 ! COMMENTS
 !     
-FUNCTION strip_path(input_string) RESULT(result_string)
+FUNCTION strip_path(input_string,string_length) RESULT(result_string)
 
 USE File_general
 
@@ -36,10 +36,11 @@ IMPLICIT NONE
 
 ! variables passed to subroutine
 
-  character(LEN=filename_length) :: input_string
+  integer :: string_length
+  character(LEN=string_length) :: input_string
   
 ! result  
-  character(LEN=filename_length) :: result_string
+  character(LEN=string_length) :: result_string
   
 ! local variables
 

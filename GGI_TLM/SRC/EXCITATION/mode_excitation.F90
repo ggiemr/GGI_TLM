@@ -602,6 +602,10 @@ IMPLICIT NONE
 ! Double single sided excitation: This works for modes in dielectric materials
 ! e.g. surface waves on a grounded dielectric slab, provided that the fields are scaled:
 ! E_source_mode=E_mode*Z0/Zwmode, H_source_mode=H_mode*Zwmode/Z0
+!
+! This scaling is a fix to dort the confusion between imposed E and H field sources
+! and electric and magentic current sources based on the surface equivalence theorem
+!
 
             face_excitation_field(excitation_array_point,1,field_component)=     &
              face_excitation_field(excitation_array_point,1,field_component)+mode_field_value*value/2d0

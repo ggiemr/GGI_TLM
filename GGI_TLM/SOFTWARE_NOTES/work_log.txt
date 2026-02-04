@@ -765,10 +765,22 @@
                    E_source_mode=E_mode*Z0/Zwmode, H_source_mode=H_mode*Zwmode/Z0 and the side of the surface 
                    for the excitation is set to 0 (which uses a double sided source) then we source the correct 
                    modal field.
+                   This scaling is a fix to dort the confusion between imposed E and H field sources
+                   and electric and magentic current sources based on the surface equivalence theorem
                    
+                   There is a problem here: See known problems 158.
+
 31/1/2025     CJS: Add a post process: Animate complex 2D data which can animate complex frequency domain data 
                    on a non-rectangular grid.
                    
+16/6/2025     CJS: Add a hexahedral volume type
+                   
+3/2/2026 CJS : Fix Some errors with subroutine argument numbers which may cause segmentation faults, especially
+               with optimisation turned on. These have been resolved in 
+                   cinvert_Moore_penrose2(matdim removed))
+                   strip_path(string_length included), 
+                   GGI_TLM_gerber_to_stl (call to read_Aperture_Macro), 
+                   create_bundle_LCRG_matrices (call to LC_checks)
 
 
 Missing Packets...	

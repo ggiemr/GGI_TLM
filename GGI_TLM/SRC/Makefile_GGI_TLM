@@ -245,6 +245,7 @@ GEOMETRY/build_volume_rectangular_block.o  \
 GEOMETRY/build_volume_rectangular_block2.o \
 GEOMETRY/build_volume_cylinder.o \
 GEOMETRY/build_volume_tet.o \
+GEOMETRY/build_volume_hex.o \
 GEOMETRY/build_volume_pyramid.o \
 GEOMETRY/build_volume_pyramid_ram.o \
 GEOMETRY/build_volume_tet_mesh.o \
@@ -468,7 +469,8 @@ POST_PROCESSOR/equivalent_source_model.o \
 POST_PROCESSOR/time_gate_time_domain_data.o \
 POST_PROCESSOR/animate_nD_complex.o \
 POST_PROCESSOR/animate_2D_complex.o \
-POST_PROCESSOR/animate_near_field_time_data.o
+POST_PROCESSOR/animate_near_field_time_data.o \
+POST_PROCESSOR/S_to_Y.o
 
 
 OPTIMISATION_OBJS=  \

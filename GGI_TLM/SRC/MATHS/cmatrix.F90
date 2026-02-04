@@ -21,7 +21,7 @@
 !       subroutine cmatvmul(A,ar,ac,B,br,C,matdim)
 !       subroutine cinvert_Gauss_Jordan(A,n,AI,matdim) 
 !       subroutine cinvert_Moore_Penrose(A,m,n,AI,matdim) 
-!       subroutine cinvert_Moore_Penrose2(A,m,n,AI,matdim) 
+!       subroutine cinvert_Moore_Penrose2(A,m,n,AI) 
 ! __________________________________________________
 !
 !
@@ -319,7 +319,7 @@ IMPLICIT NONE
 ! __________________________________________________
 !
 ! 
-  SUBROUTINE cinvert_Moore_Penrose2(A,m,n,AI,matdim) 
+  SUBROUTINE cinvert_Moore_Penrose2(A,m,n,AI) 
 
 IMPLICIT NONE
 
@@ -327,7 +327,7 @@ IMPLICIT NONE
 ! Used for more equations than unknowns
 ! Matrix dimensions are much more efficient here...
        
-  integer	:: m,n,matdim
+  integer	:: m,n
   complex*16	:: A(m,n)
   complex*16	:: AI(n,m)
 

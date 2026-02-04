@@ -31,6 +31,7 @@ build_volume_rectangular_block.o  \
 build_volume_rectangular_block2.o \
 build_volume_cylinder.o \
 build_volume_tet.o \
+build_volume_hex.o \
 build_volume_pyramid.o \
 build_volume_pyramid_ram.o \
 build_volume_tet_mesh.o \

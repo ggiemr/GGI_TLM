@@ -497,3 +497,25 @@ Not sure yet how to deal with this... Could use -fallow-argument-mismatch: This 
                   the GGI_TLM far field pattern is scaled by the timeatep but the far field pattern from the 
                   equivalent source model post process is not...
                   STARTED: This has disabled the possibility of plotting far field as dBi though..
+
+158 See work_log 14/1/2025     CJS: Attempt to fix the mode excitation surface for surface wave modes. We find that
+                   for modes in materials we have to scale the source fields. 
+                   e.g. for surface waves on a grounded dielectric slab, provided that we source both tangential E and H                                 fields and the source mode fields are scaled such that:
+                   E_source_mode=E_mode*Z0/Zwmode, H_source_mode=H_mode*Zwmode/Z0 and the side of the surface 
+                   for the excitation is set to 0 (which uses a double sided source) then we source the correct 
+                   modal field.
+                   
+                   Effectively the mode excitation sources are incorrect but the scaling adjusts for this. 
+                   If Zwmode=Emode/Hmode then Esource_mode=Emode*Z0/Zmode= Emode*Z0/(Emode/Hmode)= Hmode*Z0. 
+                   We need to understand, document and fix this...
+                   This scaling is a fix to dort the confusion between imposed E and H field sources
+                   and electric and magentic current sources based on the surface equivalence theorem
+                   
+159 3/2/2026 CJS : Segmentation fault when running on a mac and also in Ubuntu 24.04.
+                   The error occurrs following FINISHED: allocate_volume_material_filter_data.
+                   Some errors with subroutine argument numbers have been resolved in 
+                   cinvert_Moore_penrose2(matdim removed))
+                   strip_path(string_length included), 
+                   GGI_TLM_gerber_to_stl (call to read_Aperture_Macro), 
+                   create_bundle_LCRG_matrices (call to LC_checks)
+

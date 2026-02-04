@@ -46,7 +46,7 @@ IMPLICIT NONE
 
 ! local variables
 
-  integer,parameter	:: number_of_options=62
+  integer,parameter	:: number_of_options=66
   integer	:: option
 
   character(len=256)	:: command
@@ -134,6 +134,7 @@ IMPLICIT NONE
   write(*,*)'63. Animate complex multi-dimensional data sets (up to 4D)'
   write(*,*)'64. Animate time domain near field scan data'
   write(*,*)'65. Animate complex 2 dimensional data sets'
+  write(*,*)'66. S parameter to Y parameter transformation'
   write(*,*)
   
   write(*,'(A,I2,A)')'Please enter the required post processing option 1 :',number_of_options,' or 0 to quit'
@@ -672,6 +673,14 @@ IMPLICIT NONE
     write(record_user_inputs_unit,*)option,' POST PROCESSING OPTION: ANIMATE COMPLEX 2D DATA'
     write(post_process_info_unit,*)'Animate complex 2D data'
     CALL animate_2D_complex_data()
+    
+  else if (option.EQ.66) then
+  
+    write(*,*)'S parameter to Y parameter transformation for symmetric structures'
+    write(record_user_inputs_unit,*)option,	&
+    ' POST PROCESSING OPTION: S PARAMETER TO Y PARAMETER TRANSFORMATION '
+    write(post_process_info_unit,*)'S parameter to Y parameter transformation'
+    CALL S_to_Y()
       
   else
    

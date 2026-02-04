@@ -100,7 +100,7 @@ TYPE::volume_type
   integer 			:: volume_number
   integer 			:: volume_material_number
   integer 			:: n_volume_parameters
-  real*8			:: volume_parameters(20)
+  real*8			:: volume_parameters(24)
   type(transformation_type) 	:: trans
   integer			:: number_of_tets
   type(xyz_tet),allocatable	:: tet_list(:)
@@ -177,6 +177,7 @@ END TYPE point_type
   integer,parameter 	  :: volume_type_pyramid_ram=8
   integer,parameter	  :: volume_type_tet_mesh=9
   integer,parameter	  :: volume_type_fill_surface=10
+  integer,parameter 	  :: volume_type_hex=11
 
 ! SURFACE OBJECT TYPES
 

@@ -251,7 +251,7 @@ character(len=256) :: opfilename
     
       else if (line(1:3).EQ.'%AM') then
       
-        CALL read_Aperture_Macro(line,n_AM)
+        CALL read_Aperture_Macro(line)
     
       else if (line(1:3).EQ.'%AB') then
       

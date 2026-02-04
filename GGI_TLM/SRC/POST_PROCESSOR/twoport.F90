@@ -210,6 +210,8 @@ IMPLICIT NONE
   
   OPEN(unit=local_file_unit,file=filename)
   
+!  OPEN(unit=local_file_unit2,file='temp.dat')
+  
   if (excitation_port.eq.1) then
     write(local_file_unit,*)	&
     '# f,dble(S11),dimag(S11),abs(S11),20.0*log10(abs(S11)),dble(S21),dimag(S21),abs(S21),20.0*log10(abs(S21)), Pr, Pt, Pa'
@@ -250,6 +252,8 @@ IMPLICIT NONE
       
       write(local_file_unit,8000)frequency,dble(S11),dimag(S11),abs(S11),20.0*log10(abs(S11)),	&
                                            dble(S21),dimag(S21),abs(S21),20.0*log10(abs(S21)),Pr,Pt,Pa
+
+!      write(local_file_unit2,8000)frequency,dble(beta1),dimag(beta1),dble(beta2),dimag(beta2)
       
     else if (excitation_port.eq.2) then
     
@@ -261,6 +265,8 @@ IMPLICIT NONE
       
       write(local_file_unit,8000)frequency,dble(S12),dimag(S12),abs(S12),20.0*log10(abs(S12)),	&
                                            dble(S22),dimag(S22),abs(S22),20.0*log10(abs(S22)),Pr,Pt,Pa
+
+!      write(local_file_unit2,8000)frequency,dble(beta1),dimag(beta1),dble(beta2),dimag(beta2)
       
     end if
 
@@ -269,6 +275,8 @@ IMPLICIT NONE
   end do ! next frequency value
   
   CLOSE(unit=local_file_unit)
+  
+!  CLOSE(unit=local_file_unit2)
 
   CALL Deallocate_post_data()
 
