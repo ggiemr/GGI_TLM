@@ -1,0 +1,20 @@
+# radius of inner PEC sphere
+0.30
+# radius of coating
+0.30
+# material filename
+coating_mat.vmat
+# thin_layer constant. set to 0 for no sheet, 1 to include IBC sheet, 2 for SIBC on PEC 
+2
+# thin_layer filename
+Zsibc_377.smat
+# fmin,fmax,nf 
+1e9 1e9 1
+# thetamin,thetamax,ntheta
+0.0 180.0 181
+# phimin,phimax,nphi
+0.0 0.0 1
+# number of terms in series solution
+100
+# output filename
+sphere.rcs

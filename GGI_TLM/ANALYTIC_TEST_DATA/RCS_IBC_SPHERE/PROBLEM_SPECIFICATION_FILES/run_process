@@ -1,0 +1,7 @@
+#echo "pec_sphere.inp" > name.txt
+echo "Zsibc_377_sphere.inp" > name.txt
+
+GGI_RCS_sphere < name.txt
+
+gnuplot plot_result.plt
+

@@ -67,11 +67,27 @@
        
        real*8 oterm,iterm,osum,isum,norm
        
+       logical :: verbose=.FALSE.
+       
+! START
+       
 ! set parameters       
 
        beta0=cmplx(w/c0)
               
        beta0_a0=beta0*a0
+       
+       if (verbose) then
+         write(*,*)'CALLED: rcs_ibc'
+	 write(*,*)'theta=',theta
+	 write(*,*)'phi=',phi
+	 write(*,*)'w=',w
+	 write(*,*)'a0=',a0
+	 write(*,*)'nmax=',nmax
+	 write(*,*)'z11=',z11
+	 write(*,*)'beta0=',beta0
+	 write(*,*)'beta0_a0=',beta0_a0
+       end if
        
 ! evaluate bessel functions
 
@@ -118,6 +134,10 @@
 	 k2=-( (1.0/(w*eps0*z0))*sp_besselJ_beta0_a0(n)	&
             -z11*(beta0/(j*w*w*mu0*eps0*z0))*sp_dbesselJ_beta0_a0(n) ) 
 	 
+	 bn=an*j*k1/k11
+     
+	 cn=an*j*k2/k22
+	 
 ! cope with the limiting case of theta=0,180 degrees...     
 	 ct=cos(theta)	 
 	 if(ct.eq.1.0) ct=1.0-0.0000001
@@ -126,17 +146,36 @@
      
 ! given the expansion coefficients, calculate the scattered E field in the far field    
            Ethetaf=Ethetaf+j*(exp(-j*beta0_a0)/beta0)*cos(phi)*(j**n)	&
-                *(  bn*st*dPn1(n,ct)	&
-                   -cn*Pn1(n,ct)/st    )
+                *(  bn*st*dPn1(n,ct)-cn*Pn1(n,ct)/st    )
      
            Ephif=Ephif+j*(exp(-j*beta0_a0)/beta0)*sin(phi)*(j**n)	&
-                *(  bn*Pn1(n,ct)/st	&
-                   -cn*st*dPn1(n,ct)   )
-     
-
+                *(  bn*Pn1(n,ct)/st-cn*st*dPn1(n,ct)   )     
+              	 
 ! Convergence testing
          oterm=sqrt(abs(bn*bn)+abs(cn*cn))
 	 osum=osum+oterm
+		   
+         if(verbose) then
+	   write(*,*)'an=',an
+	   write(*,*)'bn=',bn
+	   write(*,*)'cn=',cn
+	   write(*,*)'k11=',k11
+	   write(*,*)'k1=',k1
+	   write(*,*)'k22=',k22
+	   write(*,*)'k2=',k2
+	   write(*,*)'Ethetaf=',Ethetaf
+	   write(*,*)'Ephif=',Ephif
+	   write(*,*)'oterm=',oterm
+	   write(*,*)'osum=',osum
+	   write(*,*)'st=',st
+	   write(*,*)'ct=',ct
+	   write(*,*)'dPn1(n,ct)=',dPn1(n,ct)
+	   write(*,*)'Pn1(n,ct)=',Pn1(n,ct)
+	   write(*,*)'j*(exp(-j*beta0_a0)/beta0)*cos(phi)*(j**n)=',j*(exp(-j*beta0_a0)/beta0)*cos(phi)*(j**n)
+	   write(*,*)'bn*st*dPn1(n,ct)-cn*Pn1(n,ct)/st=',bn*st*dPn1(n,ct)-cn*Pn1(n,ct)/st
+	   write(*,*)'j*(exp(-j*beta0_a0)/beta0)*sin(phi)*(j**n)=',j*(exp(-j*beta0_a0)/beta0)*sin(phi)*(j**n)
+	   write(*,*)'bn*Pn1(n,ct)/st-cn*st*dPn1(n,ct)=',bn*Pn1(n,ct)/st-cn*st*dPn1(n,ct)
+	 end if
 	 
 	 if ((oterm)/(osum).lt.small) goto 1234
      
@@ -156,6 +195,11 @@
 ! SCATTERED FIELD       
 !       Etheta=Etheta-Ethetai
 !       Ephi=Ephi-Ephii
+       
+       if (verbose) then
+         write(*,*)'FINISHED: rcs_ibc'
+	 write(*,*)'sigma3d=',sigma3d
+       end if
               
        return       
        end

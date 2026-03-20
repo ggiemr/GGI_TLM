@@ -784,6 +784,8 @@
 
 4/2/2026 CJS:  Fix error in which frequency scale is not applied in GGI_TLM_filter_fit    
 
+19/3/2026CJS:     Fix unfinished analytic RCS calculation for Zsibc sphere 
+
 Missing Packets...	
 		- SAR_output: DONE - not for dispersive materials though...
 		- Periodic structures: STARTED
