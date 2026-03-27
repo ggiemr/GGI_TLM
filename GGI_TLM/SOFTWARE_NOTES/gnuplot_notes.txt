@@ -18,6 +18,10 @@ set key  top left
 
 set key at 9,3    
 
+# greek letters e.g. for greek beta
+
+set ylabel "{/symbol b}" enhanced
+
 # AXES
 set xrange[0:4e9]
 set x2range[0:4]
@@ -58,6 +62,9 @@ set view 0,0
 set title "Ez"
 splot "Ez.dat" u 1:2:3 w l
 pause -1
+
+# surface plot: align axis labels with axis:
+set xlabel "Frequency (GHz)"      rotate parallel
 
 #MULTIPLOT EXAMPLE
 

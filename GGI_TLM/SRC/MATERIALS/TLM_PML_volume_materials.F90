@@ -623,6 +623,7 @@ IMPLICIT NONE
   write(*,*)'CALLED: allocate_PML_material_data'
 
   pml_material_cell=0
+  cell_number=0
   
   do cz=nz1,nz2
     do cy=1,ny

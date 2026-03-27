@@ -786,6 +786,10 @@
 
 19/3/2026CJS:     Fix unfinished analytic RCS calculation for Zsibc sphere 
 
+27/3/2026    CJS: Fixed error in TLM_PML_volume_materials. We didn't set cell_number=0 at the 
+                  start of allocate_PML_volume_materials. This may fix the segementation fault which we see with 
+                  full optimisation turned on.
+
 Missing Packets...	
 		- SAR_output: DONE - not for dispersive materials though...
 		- Periodic structures: STARTED

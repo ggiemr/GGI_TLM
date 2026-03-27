@@ -518,6 +518,10 @@ Not sure yet how to deal with this... Could use -fallow-argument-mismatch: This 
                    strip_path(string_length included), 
                    GGI_TLM_gerber_to_stl (call to read_Aperture_Macro), 
                    create_bundle_LCRG_matrices (call to LC_checks)
+                   These dont fix the error though...
+                   
+                   27/3/2026: Fixed error in allocate_PML_volume_materials (set cell_number=0) 
+                   This MAY fix the issue...
 
 160 4/2/2026 CJS: frequency scale is not applied in GGI_TLM_filter fit
 
