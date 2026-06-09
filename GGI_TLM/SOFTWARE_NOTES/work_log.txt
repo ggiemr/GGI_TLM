@@ -790,6 +790,9 @@
                   start of allocate_PML_volume_materials. This may fix the segementation fault which we see with 
                   full optimisation turned on.
 
+8/6/2026     CJS: Fixed error in  animate_near_field_time_data which is seen if the x data is not the
+                  fastest varying coordinate in the data file. 
+
 Missing Packets...	
 		- SAR_output: DONE - not for dispersive materials though...
 		- Periodic structures: STARTED

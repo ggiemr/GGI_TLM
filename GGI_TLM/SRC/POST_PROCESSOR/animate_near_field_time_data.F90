@@ -190,6 +190,7 @@ integer	:: function_number
   min_data(1:max_columns)= 1D30
 
 ! read the initial line to ignore
+  write(*,*)'read the initial header line to ignore...'
   read(local_file_unit,*,ERR=9000)
   
   sample=0
@@ -265,9 +266,13 @@ write(*,*)'Number of samples expected=',n_samples
 ! get initial plot axis values
   value(:)=0d0
   
+  write(*,*)'Initial column values:'
+  
   do loop=1,nDim
     value(loop)=data(1,column_list(loop)) 
+    write(*,*)'value number',loop,' col=',column_list(loop),' value=',real(value(loop))
   end do
+  
 
 ! keep reading through the file looking for changes in each of the dimension variables
   do sample=2,n_samples
@@ -277,7 +282,10 @@ write(*,*)'Number of samples expected=',n_samples
     end do
   
     do i=1,nDim
-      if ( (new_value(i).NE.value(i)).AND.(step(i).eq.0) ) step(i)=sample-1
+      if ( (new_value(i).NE.value(i)).AND.(step(i).eq.0) ) then
+        step(i)=sample-1
+        write(*,*)'iDim=',i,' new_value=',real(new_value(i)),' old_value=',real(value(i)),' step=',step(i)
+      end if
     end do
 
   end do
@@ -285,10 +293,10 @@ write(*,*)'Number of samples expected=',n_samples
   step(0)=n_samples
   
 ! work out the number of elements in each dimensions
-  
-  do i=0,nDim
-    write(*,'(A,I2,A,I10)')'Step ',i,'=',step(i)
-  end do
+  write(*,'(A,I10)')'Step 0 =nsamples=',step(0)
+  write(*,'(A,I10)')'Step 1 =nx      =',step(1)
+  write(*,'(A,I10)')'Step 2 =ny      =',step(2)
+  write(*,'(A,I10)')'Step 3 =nt      =',step(3)
   
   n(:)=1 ! default dimension is 1
   
@@ -332,14 +340,14 @@ write(*,*)'Number of samples expected=',n_samples
   sample=1
   do ix=1,nx
     x_values(ix)=data(sample,column_list(1))
-    sample=sample+1
+    sample=sample+step(1)
     write(*,*)'ix=',ix,' x=',x_values(ix)
   end do
 
   sample=1
   do iy=1,ny
     y_values(iy)=data(sample,column_list(2))
-    sample=sample+nx
+    sample=sample+step(2)
     write(*,*)'iy=',iy,' y=',y_values(iy)
   end do
 
@@ -410,13 +418,26 @@ write(*,*)'Number of samples expected=',n_samples
     write(*,*)'Writing frame to file:',trim(frame_filename)
   
 ! get the values to plot 
-
-    do iy=1,ny
-      do ix=1,nx
-        sample=sample+1
-        plot_data(ix,iy)=data(sample,column_list(Re_data_column))
+    
+    if (step(1).EQ.1) then
+      do iy=1,ny
+        do ix=1,nx
+          sample=sample+1
+          plot_data(ix,iy)=data(sample,column_list(Re_data_column))
+        end do
       end do
-    end do
+    else  if (step(2).EQ.1) then
+      do ix=1,nx
+        do iy=1,ny
+          sample=sample+1
+          plot_data(ix,iy)=data(sample,column_list(Re_data_column))
+        end do
+      end do
+    else
+      write(*,*)'ERROR in animate_near_field_time_data: step in x or y data should be 1'
+      write(*,*)'step(1)=',step(1)
+      write(*,*)'step(2)=',step(2)
+    end if
  
 ! Write the data to vtk file
 

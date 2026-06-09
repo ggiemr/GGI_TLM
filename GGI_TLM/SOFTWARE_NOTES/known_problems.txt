@@ -526,3 +526,6 @@ Not sure yet how to deal with this... Could use -fallow-argument-mismatch: This 
 160 4/2/2026 CJS: frequency scale is not applied in GGI_TLM_filter fit
 
 19/3/2026 CJS:     Analytic RCS calculation for Zsibc sphere code is unfinished...
+
+8/6/2026           CJS: Fixed error in  animate_near_field_time_data which is seen if the x data is not the
+                    fastest varying coordinate in the data file. Need to test and updata repository.
